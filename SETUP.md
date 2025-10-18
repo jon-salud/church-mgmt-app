@@ -16,7 +16,7 @@ pnpm install
 ## API (mock data)
 
 ```bash
-pnpm -C api dev
+pnpm dev:api:mock
 ```
 
 ## Web
@@ -33,5 +33,6 @@ pnpm -C web dev
 ## Notes
 
 - Demo login via `/auth/login` issues mock OAuth tokens (see README).
-- Prisma schema remains for future Postgres wiring but is not required for the demo.
+- The API honours `DATA_MODE` (`mock` by default). Future persistence work will plug in additional modes without breaking mock demos.
+- Prisma schema remains for future Postgres wiring but is not required for the demo today.
 - Playwright smoke test in `web/e2e` targets the dashboard page.

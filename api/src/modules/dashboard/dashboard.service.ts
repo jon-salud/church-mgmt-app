@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { MockDatabaseService } from '../../mock/mock-database.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { DATA_STORE, DataStore } from '../../datastore';
 
 @Injectable()
 export class DashboardService {
-  constructor(private readonly db: MockDatabaseService) {}
+  constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
   summary() {
     const church = this.db.getChurch();

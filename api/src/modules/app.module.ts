@@ -7,13 +7,13 @@ import { EventsModule } from './events/events.module';
 import { AnnouncementsModule } from './announcements/announcements.module';
 import { GivingModule } from './giving/giving.module';
 import { DashboardModule } from './dashboard/dashboard.module';
-import { MockDataModule } from '../mock/mock-data.module';
+import { DataStoreModule } from '../datastore';
 import { AuditModule } from './audit/audit.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    MockDataModule,
+    DataStoreModule,
     AuthModule,
     UsersModule,
     GroupsModule,

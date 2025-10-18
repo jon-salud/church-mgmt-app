@@ -1,13 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { MockDatabaseService } from '../../mock/mock-database.service';
+import { Inject, Injectable } from '@nestjs/common';
 import { ListAuditQueryDto } from './dto/list-audit-query.dto';
+import { DATA_STORE, DataStore } from '../../datastore';
 
 @Injectable()
 export class AuditService {
-  constructor(private readonly db: MockDatabaseService) {}
+  constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
   list(query: ListAuditQueryDto) {
     return this.db.listAuditLogs(query);
   }
 }
-

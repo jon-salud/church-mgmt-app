@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { MockDatabaseService } from '../../mock/mock-database.service';
+import { Inject, Injectable } from '@nestjs/common';
 import { Role } from '../../mock/mock-data';
+import { DATA_STORE, DataStore } from '../../datastore';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly db: MockDatabaseService) {}
+  constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
   login(email: string, provider: 'google' | 'facebook', role?: Role) {
     return this.db.createSession(email, provider, role);
