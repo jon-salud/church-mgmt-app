@@ -8,6 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+  app.enableCors({ origin: true });
   const config = new DocumentBuilder()
     .setTitle('Church Management API')
     .setVersion('1.0.0')

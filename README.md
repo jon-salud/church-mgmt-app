@@ -1,56 +1,137 @@
-# Church Management — Starter Monorepo
+# Church Management — Demo-Ready MVP
 
-Tech stack:
-- **API:** NestJS (Fastify) + Prisma (PostgreSQL), OpenAPI
-- **Web (PWA):** Next.js (App Router) + React + Tailwind + shadcn/ui (scaffold hook)
-- **Tests:** Jest (API unit/integration) + Playwright (web e2e)
-- **Auth (placeholder):** OAuth (Google/Facebook) via Passport or Auth0 — stubs included
+This monorepo packages a complete walkthrough of the PRD using mock data only. You get:
 
-> This is a scaffold aligned with the PRD. It compiles once dependencies are installed.
+| Surface | Highlights |
+| ------- | ---------- |
+| **API** | NestJS (Fastify), in-memory mock store, OAuth-style demo login, OpenAPI docs |
+| **Web** | Next.js App Router + React + Tailwind + PWA service worker + shadcn-style UI seeds |
+| **Data** | Members, groups, events, announcements, giving, seeded sessions (no Postgres required) |
+| **Tests** | Jest (API smoke) and Playwright (dashboard e2e) |
 
-## Quickstart
+---
+
+## Prerequisites
+- Node.js 20+
+- `pnpm` (recommended via `corepack enable`)
+- macOS/Linux/WSL (windows works via WSL2)
+
+> The Prisma schema remains in the repo for future Postgres wiring, but the MVP runs entirely from the mock store. You do **not** need a database to demo the product.
+
+---
+
+## Installation & Environment
 
 ```bash
-# Node 20+ recommended
-corepack enable
+corepack enable             # if pnpm is not already available
+pnpm install                # install workspace dependencies
 
-# Install workspaces
-pnpm install
-
-# Environment
+# Optional – API .env (currently only used for future secrets)
 cp api/.env.example api/.env
 
-# Dev: run API and Web
-pnpm -C api prisma:generate
+# Optional – Web env overrides (defaults already point to local API)
+cp web/.env.example web/.env
+```
+
+The web env template exposes:
+- `NEXT_PUBLIC_API_BASE_URL` / `API_BASE_URL` – defaults to `http://localhost:3001/api/v1`
+- `DEMO_DEFAULT_TOKEN` – defaults to `demo-admin`, used when no cookie token is present.
+
+---
+
+## Run the Stacks (mock data)
+
+In two terminals:
+
+```bash
+# API (NestJS + Fastify, in-memory store)
 pnpm -C api dev
+
+# Web (Next.js PWA)
 pnpm -C web dev
 ```
 
-## Structure
+Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/docs](http://localhost:3001/docs). The web app lives at [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Demo Authentication
+- POST `/auth/login` with `{ email, provider, role }` to obtain a mock JWT.
+- Pre-seeded accounts (also shown on the login screen):
+  - `admin@example.com` (provider: `google`, token: `demo-admin`)
+  - `leader@example.com` (provider: `facebook`, token: `demo-leader`)
+  - `member1@example.com` (provider: `google`, token: `demo-member`)
+- If no token is supplied, the API falls back to `demo-admin` to keep the demo browseable.
+- The Next.js login form stores the token in an httpOnly cookie so server components render with the correct role.
+
+---
+
+## Feature Walkthrough
+
+- **Dashboard** – snapshot cards (members, groups, events, giving), next events, unread announcements, and recent contributions.
+- **Member Directory** – search by name/email, view profiles with groups, attendance history, giving records.
+- **Groups** – roster, meeting schedule, taxonomy, linked upcoming events.
+- **Events & Attendance** – event list with inline attendance form (writes back to the mock store).
+- **Announcements** – feed with read tracking and basic audience metadata.
+- **Giving** – manual ledger with create form and seeded funds.
+- **Auth** – mock Google/Facebook flows with role assignment.
+- **PWA** – manifest + service worker pre-cache key routes for offline dashboard snapshots (install via browser menu).
+
+---
+
+## Project Structure
 ```
 .
-├─ package.json               # workspaces root
+├─ package.json               # workspace root scripts
 ├─ pnpm-workspace.yaml
 ├─ .github/workflows/ci.yml
-├─ api/                       # NestJS + Prisma
-└─ web/                       # Next.js PWA
+├─ api/                       # NestJS API (mock store + modules)
+└─ web/                       # Next.js PWA client
 ```
 
+---
 
-## Auth0 Setup (Quick)
-1. Create an Auth0 tenant and Application (Regular Web App).
-2. Set allowed callback/logout URLs to `http://localhost:3000/api/auth/callback` and `http://localhost:3000/`.
-3. Copy envs into `web/.env` and `api/.env`:
-   - WEB: `AUTH0_SECRET, AUTH0_BASE_URL, AUTH0_ISSUER_BASE_URL, AUTH0_CLIENT_ID, AUTH0_CLIENT_SECRET`
-   - API: `AUTH0_ISSUER, AUTH0_AUDIENCE`
-4. Start web: `pnpm -C web dev` → Login using `/api/auth/login`.
-5. The API expects Bearer JWTs issued by Auth0 (RS256). Protect routes via `@UseGuards(AuthGuard('jwt'))`.
+## Useful Commands
 
-## Tailwind & UI
-- Tailwind is configured. Use classes in components.
-- A minimal shadcn-style `<Button />` component is included in `components/ui/button.tsx`.
-- Add more components as needed.
+| Action | Command |
+| ------ | ------- |
+| Start API dev server | `pnpm -C api dev` |
+| Build API | `pnpm -C api build` |
+| Run API tests (Jest smoke) | `pnpm -C api test` |
+| Start web dev server | `pnpm -C web dev` |
+| Build web for prod | `pnpm -C web build` |
+| Install Playwright browsers | `pnpm -C web exec playwright install` |
+| Run Playwright smoke | `pnpm -C web test:e2e` (requires the dev server at :3000) |
 
-## Prisma Seed
-- Run `pnpm -C api prisma:migrate` then `pnpm -C api prisma:seed`.
-- Seeds a church, admin user (`admin@example.com`), worship team group, event, and initial announcement.
+---
+
+## Mock Data Source
+- Canonical seed data lives in `api/src/mock/mock-data.ts`.
+- Runtime operations go through `MockDatabaseService`, providing side-effecting CRUD behaviours in-memory so the app “feels real” without a database.
+
+---
+
+## Styling & UI
+- Tailwind CSS is configured globally (`web/app/globals.css`, `tailwind.config.ts`).
+- A starter shadcn-style `<Button />` lives in `web/components/ui/button.tsx`.
+- Mix and match your own component library on top of the Tailwind foundation.
+
+---
+
+## PWA Notes
+- Manifest (`web/public/manifest.json`) and service worker (`web/public/service-worker.js`) are included.
+- The service worker caches core read screens for offline demos.
+- Install the app via your browser menu to experience the PWA shell.
+
+---
+
+## Troubleshooting
+
+| Symptom | Fix |
+| ------- | --- |
+| `@fastify/static` missing | Run `pnpm -C api install` (already in `package.json`). |
+| TypeScript packages missing in web | `pnpm -C web install` ensures `@types/node`, `@types/react`, `@types/react-dom` are present. |
+| API shows ESM module errors | Ensure `api/tsconfig.json` still targets `"module": "commonjs"` and rerun `pnpm -C api dev`. |
+| Playwright needs browsers | `pnpm -C web exec playwright install` installs the chromium snapshot. |
+
+Enjoy the demo, and feel free to swap the mock layer for Prisma + Postgres when you’re ready for production data.

@@ -1,15 +1,17 @@
-import request from 'supertest';
-import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../src/modules/app.module';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 
 describe('Users (e2e-light)', () => {
-  let app: INestApplication;
+  let app: NestFastifyApplication;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
-    app = moduleRef.createNestApplication();
+    const adapter = new FastifyAdapter();
+    app = moduleRef.createNestApplication<NestFastifyApplication>(adapter);
+    app.setGlobalPrefix('api/v1');
     await app.init();
+    await adapter.getInstance().ready();
   });
 
   afterAll(async () => {
@@ -17,7 +19,33 @@ describe('Users (e2e-light)', () => {
   });
 
   it('GET /users should 200', async () => {
-    const res = await request(app.getHttpServer()).get('/users');
-    expect([200, 404, 500]).toContain(res.statusCode); // lenient for scaffold
+    const res = await app.inject({ method: 'GET', url: '/api/v1/users' });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(Array.isArray(body)).toBe(true);
+    expect(body.length).toBeGreaterThan(0);
+  });
+
+  it('GET /groups should 200', async () => {
+    const res = await app.inject({ method: 'GET', url: '/api/v1/groups' });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body[0]).toHaveProperty('name');
+  });
+
+  it('POST /events/:id/attendance should 201/200', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/v1/events/event-sunday-service/attendance',
+      payload: { userId: 'user-member-2', status: 'checkedIn' },
+    });
+    expect([200, 201]).toContain(res.statusCode);
+    expect(res.json()).toHaveProperty('status', 'checkedIn');
+  });
+
+  it('GET /announcements should include reads array', async () => {
+    const res = await app.inject({ method: 'GET', url: '/api/v1/announcements' });
+    expect(res.statusCode).toBe(200);
+    expect(res.json()[0]).toHaveProperty('reads');
   });
 });

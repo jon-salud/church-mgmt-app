@@ -4,7 +4,7 @@
 
 - Node.js 20+
 - pnpm (`corepack enable`)
-- PostgreSQL (local or managed)
+- PostgreSQL (optional – mock data is served in-memory for the MVP demo)
 
 ## Install
 
@@ -13,13 +13,9 @@ corepack enable
 pnpm install
 ```
 
-## API
+## API (mock data)
 
 ```bash
-cp api/.env.example api/.env
-pnpm -C api prisma:generate
-pnpm -C api prisma:migrate
-pnpm -C api prisma:seed
 pnpm -C api dev
 ```
 
@@ -36,6 +32,6 @@ pnpm -C web dev
 
 ## Notes
 
-- Auth0 wiring included (configure envs).
-- Prisma schema reflects multi-group membership & taxonomy.
-- Playwright smoke test in `web/e2e`.
+- Demo login via `/auth/login` issues mock OAuth tokens (see README).
+- Prisma schema remains for future Postgres wiring but is not required for the demo.
+- Playwright smoke test in `web/e2e` targets the dashboard page.

@@ -1,22 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../../prisma/prisma.service';
+import { MockDatabaseService } from '../../mock/mock-database.service';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly db: MockDatabaseService) {}
 
   async list(q?: string) {
-    return this.prisma.user.findMany({
-      where: q ? { OR: [{ primaryEmail: { contains: q, mode: 'insensitive' } }, { profile: { OR: [{ firstName: { contains: q, mode: 'insensitive' } }, { lastName: { contains: q, mode: 'insensitive' } }] } }] } : undefined,
-      include: { profile: true },
-      take: 50,
-    });
+    return this.db.listUsers(q);
   }
 
   async get(id: string) {
-    return this.prisma.user.findUnique({
-      where: { id },
-      include: { profile: true },
-    });
+    return this.db.getUserProfile(id);
   }
 }
