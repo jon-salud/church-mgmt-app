@@ -36,3 +36,5 @@ pnpm -C web dev
 - The API honours `DATA_MODE` (`mock` by default). Future persistence work will plug in additional modes without breaking mock demos.
 - Prisma schema remains for future Postgres wiring but is not required for the demo today.
 - Playwright smoke test in `web/e2e` targets the dashboard page.
+- API unit/integration suite: `pnpm -C api test` (append `-- --coverage` for reports).
+- E2E smoke (mock data): `pnpm test:e2e:mock` (boots API+Web automatically).

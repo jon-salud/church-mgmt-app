@@ -123,7 +123,8 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 | ------ | ------- |
 | Start API dev server (mock) | `pnpm dev:api:mock` |
 | Build API | `pnpm -C api build` |
-| Run API tests (Jest smoke) | `pnpm -C api test` |
+| Run API unit/integration tests | `pnpm -C api test` |
+| Run API tests with coverage | `pnpm -C api test -- --coverage` |
 | Start web dev server | `pnpm -C web dev` |
 | Build web for prod | `pnpm -C web build` |
 | Install Playwright browsers | `pnpm -C web exec playwright install` |
