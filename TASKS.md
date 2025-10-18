@@ -19,6 +19,7 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - Audit log: mock-backed API with filters, admin-only UI, and regression tests
 - CI guardrails: path-aware GitHub Actions workflow running API and web smoke suites
 - Data store abstraction with selectable `DATA_MODE` (mock-default) and updated tooling/docs
+- API unit & integration test expansion with coverage reporting wired into CI
 
 ### 🔄 In Progress
 
