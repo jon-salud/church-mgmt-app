@@ -69,6 +69,173 @@ export async function recordContributionAction(formData: FormData) {
   revalidatePath('/giving');
 }
 
+export async function createMemberAction(formData: FormData) {
+  const firstName = String(formData.get('firstName') ?? '');
+  const lastName = String(formData.get('lastName') ?? '');
+  const primaryEmail = String(formData.get('primaryEmail') ?? '');
+  const phone = formData.get('phone') ? String(formData.get('phone')) : undefined;
+  const address = formData.get('address') ? String(formData.get('address')) : undefined;
+  const notes = formData.get('notes') ? String(formData.get('notes')) : undefined;
+  const status = formData.get('status') ? String(formData.get('status')) : undefined;
+  const role = formData.get('role') ? String(formData.get('role')) : 'Member';
+  const payload = {
+    firstName,
+    lastName,
+    primaryEmail,
+    phone,
+    address,
+    notes,
+    status,
+    roles: [role].filter(Boolean),
+  };
+  const created = await request<any>('/users', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+  revalidatePath('/members');
+  const targetId: string | undefined = created?.id ?? created?.user?.id;
+  if (targetId) {
+    redirect(`/members/${targetId}`);
+  }
+  redirect('/members');
+}
+
+export async function updateMemberAction(formData: FormData) {
+  const userId = String(formData.get('userId'));
+  const payload: Record<string, unknown> = {};
+  const fields: Array<[string, string | undefined]> = [
+    ['firstName', formData.get('firstName') ? String(formData.get('firstName')) : undefined],
+    ['lastName', formData.get('lastName') ? String(formData.get('lastName')) : undefined],
+    ['primaryEmail', formData.get('primaryEmail') ? String(formData.get('primaryEmail')) : undefined],
+    ['phone', formData.get('phone') ? String(formData.get('phone')) : undefined],
+    ['address', formData.get('address') ? String(formData.get('address')) : undefined],
+    ['notes', formData.get('notes') ? String(formData.get('notes')) : undefined],
+  ];
+  for (const [key, value] of fields) {
+    if (value !== undefined) {
+      payload[key] = value;
+    }
+  }
+  const status = formData.get('status') ? String(formData.get('status')) : undefined;
+  if (status) {
+    payload.status = status;
+  }
+  const role = formData.get('role') ? String(formData.get('role')) : undefined;
+  if (role) {
+    payload.roles = [role];
+  }
+  await request(`/users/${userId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+  revalidatePath(`/members/${userId}`);
+  revalidatePath('/members');
+}
+
+export async function deleteMemberAction(formData: FormData) {
+  const userId = String(formData.get('userId'));
+  await request(`/users/${userId}`, { method: 'DELETE' });
+  revalidatePath('/members');
+  redirect('/members');
+}
+
+export async function addGroupMemberAction(formData: FormData) {
+  const groupId = String(formData.get('groupId'));
+  const userId = String(formData.get('userId'));
+  const role = formData.get('role') ? String(formData.get('role')) : undefined;
+  const status = formData.get('status') ? String(formData.get('status')) : undefined;
+  await request(`/groups/${groupId}/members`, {
+    method: 'POST',
+    body: JSON.stringify({ userId, role, status }),
+  });
+  revalidatePath(`/groups/${groupId}`);
+}
+
+export async function updateGroupMemberAction(formData: FormData) {
+  const groupId = String(formData.get('groupId'));
+  const userId = String(formData.get('userId'));
+  const role = formData.get('role') ? String(formData.get('role')) : undefined;
+  const status = formData.get('status') ? String(formData.get('status')) : undefined;
+  await request(`/groups/${groupId}/members/${userId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ role, status }),
+  });
+  revalidatePath(`/groups/${groupId}`);
+}
+
+export async function removeGroupMemberAction(formData: FormData) {
+  const groupId = String(formData.get('groupId'));
+  const userId = String(formData.get('userId'));
+  await request(`/groups/${groupId}/members/${userId}`, { method: 'DELETE' });
+  revalidatePath(`/groups/${groupId}`);
+}
+
+const toIsoString = (value: string | undefined | null) => {
+  if (!value) return undefined;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return undefined;
+  }
+  return date.toISOString();
+};
+
+const parseTags = (value: FormDataEntryValue | null) => {
+  if (!value) return undefined;
+  return String(value)
+    .split(',')
+    .map(tag => tag.trim())
+    .filter(Boolean);
+};
+
+export async function createEventAction(formData: FormData) {
+  const payload = {
+    title: String(formData.get('title') ?? ''),
+    description: formData.get('description') ? String(formData.get('description')) : undefined,
+    startAt: toIsoString(String(formData.get('startAt') ?? '')),
+    endAt: toIsoString(formData.get('endAt') ? String(formData.get('endAt')) : undefined),
+    location: formData.get('location') ? String(formData.get('location')) : undefined,
+    visibility: formData.get('visibility') ? String(formData.get('visibility')) : undefined,
+    groupId: formData.get('groupId') ? String(formData.get('groupId')) : undefined,
+    tags: parseTags(formData.get('tags')),
+  };
+  await request('/events', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+  revalidatePath('/events');
+}
+
+export async function updateEventAction(formData: FormData) {
+  const eventId = String(formData.get('eventId'));
+  const rawGroupId = formData.get('groupId');
+  const payload = {
+    title: formData.get('title') ? String(formData.get('title')) : undefined,
+    description: formData.get('description') ? String(formData.get('description')) : undefined,
+    startAt: toIsoString(formData.get('startAt') ? String(formData.get('startAt')) : undefined),
+    endAt: toIsoString(formData.get('endAt') ? String(formData.get('endAt')) : undefined),
+    location: formData.get('location') ? String(formData.get('location')) : undefined,
+    visibility: formData.get('visibility') ? String(formData.get('visibility')) : undefined,
+    groupId:
+      rawGroupId === ''
+        ? null
+        : rawGroupId
+        ? String(rawGroupId)
+        : undefined,
+    tags: parseTags(formData.get('tags')),
+  };
+  await request(`/events/${eventId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+  revalidatePath('/events');
+}
+
+export async function deleteEventAction(formData: FormData) {
+  const eventId = String(formData.get('eventId'));
+  await request(`/events/${eventId}`, { method: 'DELETE' });
+  revalidatePath('/events');
+}
+
 export async function demoLoginAction() {
   const cookieStore = cookies();
   cookieStore.set('session_token', 'demo-admin', {

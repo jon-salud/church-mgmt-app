@@ -4,6 +4,7 @@ import {
   MockUser,
   mockUsers,
   MockGroup,
+  MockGroupMember,
   mockGroups,
   MockEvent,
   mockEvents,
@@ -19,6 +20,7 @@ import {
   DemoSession,
   createSessionToken,
   Role,
+  MembershipStatus,
   AttendanceStatus,
   MockAuditLog,
   mockAuditLogs,
@@ -41,6 +43,80 @@ interface ContributionInput {
   method: MockContribution['method'];
   note?: string;
   recordedBy?: string;
+}
+
+interface UserCreateInput {
+  primaryEmail: string;
+  firstName: string;
+  lastName: string;
+  phone?: string;
+  address?: string;
+  notes?: string;
+  status?: MockUser['status'];
+  roles?: Role[];
+  actorUserId: string;
+}
+
+interface UserUpdateInput {
+  primaryEmail?: string;
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  address?: string;
+  notes?: string;
+  status?: MockUser['status'];
+  roles?: Role[];
+  actorUserId: string;
+}
+
+interface UserDeleteInput {
+  actorUserId: string;
+}
+
+interface GroupMemberCreateInput {
+  userId: string;
+  role?: MockGroupMember['role'];
+  status?: MembershipStatus;
+  joinedAt?: string;
+  actorUserId: string;
+}
+
+interface GroupMemberUpdateInput {
+  role?: MockGroupMember['role'];
+  status?: MembershipStatus;
+  actorUserId: string;
+}
+
+interface GroupMemberRemoveInput {
+  actorUserId: string;
+}
+
+interface EventCreateInput {
+  title: string;
+  description?: string;
+  startAt: string;
+  endAt?: string;
+  location?: string;
+  visibility?: MockEvent['visibility'];
+  groupId?: string;
+  tags?: string[];
+  actorUserId: string;
+}
+
+interface EventUpdateInput {
+  title?: string;
+  description?: string;
+  startAt?: string;
+  endAt?: string;
+  location?: string;
+  visibility?: MockEvent['visibility'];
+  groupId?: string | null;
+  tags?: string[];
+  actorUserId: string;
+}
+
+interface EventDeleteInput {
+  actorUserId: string;
 }
 
 interface AuditLogFilter {
@@ -147,6 +223,160 @@ export class MockDatabaseService {
     };
   }
 
+  createUser(input: UserCreateInput) {
+    const emailTaken = this.users.some(
+      user => user.primaryEmail.toLowerCase() === input.primaryEmail.toLowerCase(),
+    );
+    if (emailTaken) {
+      throw new Error('A user with that email already exists');
+    }
+    const churchId = this.getChurch().id;
+    const now = new Date().toISOString();
+    const roles =
+      input.roles && input.roles.length
+        ? input.roles.map(role => ({ churchId, role }))
+        : [{ churchId, role: 'Member' as Role }];
+    const user: MockUser = {
+      id: `user-${randomUUID()}`,
+      primaryEmail: input.primaryEmail,
+      status: input.status ?? 'active',
+      createdAt: now,
+      roles,
+      profile: {
+        firstName: input.firstName,
+        lastName: input.lastName,
+        phone: input.phone,
+        address: input.address,
+        notes: input.notes,
+      },
+    };
+    this.users.push(user);
+    const actorName = this.getUserName(input.actorUserId);
+    const targetName = this.getUserName(user.id);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'user.created',
+      entity: 'user',
+      entityId: user.id,
+      summary: `${actorName} added ${targetName} to the directory`,
+      metadata: {
+        userId: user.id,
+        email: user.primaryEmail,
+        roles: roles.map(role => role.role),
+      },
+    });
+    return this.getUserProfile(user.id);
+  }
+
+  updateUser(id: string, input: UserUpdateInput) {
+    const user = this.users.find(record => record.id === id);
+    if (!user) return null;
+    if (
+      input.primaryEmail &&
+      input.primaryEmail.toLowerCase() !== user.primaryEmail.toLowerCase() &&
+      this.users.some(
+        record => record.id !== id && record.primaryEmail.toLowerCase() === input.primaryEmail!.toLowerCase(),
+      )
+    ) {
+      throw new Error('A user with that email already exists');
+    }
+    const diff: Record<string, { previous: unknown; newValue: unknown }> = {};
+    const track = (key: string, previous: unknown, next: unknown) => {
+      if (previous !== next) {
+        diff[key] = { previous, newValue: next };
+      }
+    };
+    if (input.primaryEmail && input.primaryEmail !== user.primaryEmail) {
+      track('primaryEmail', user.primaryEmail, input.primaryEmail);
+      user.primaryEmail = input.primaryEmail;
+    }
+    if (input.status && input.status !== user.status) {
+      track('status', user.status, input.status);
+      user.status = input.status;
+    }
+    if (typeof input.firstName === 'string' && input.firstName !== user.profile.firstName) {
+      track('profile.firstName', user.profile.firstName, input.firstName);
+      user.profile.firstName = input.firstName;
+    }
+    if (typeof input.lastName === 'string' && input.lastName !== user.profile.lastName) {
+      track('profile.lastName', user.profile.lastName, input.lastName);
+      user.profile.lastName = input.lastName;
+    }
+    if (typeof input.phone === 'string' && input.phone !== user.profile.phone) {
+      track('profile.phone', user.profile.phone ?? null, input.phone);
+      user.profile.phone = input.phone;
+    }
+    if (typeof input.address === 'string' && input.address !== user.profile.address) {
+      track('profile.address', user.profile.address ?? null, input.address);
+      user.profile.address = input.address;
+    }
+    if (typeof input.notes === 'string' && input.notes !== user.profile.notes) {
+      track('profile.notes', user.profile.notes ?? null, input.notes);
+      user.profile.notes = input.notes;
+    }
+    if (input.roles) {
+      const churchId = this.getChurch().id;
+      const normalised = input.roles.map(role => ({ churchId, role }));
+      const previousRoles = user.roles.map(role => role.role);
+      const newRoles = normalised.map(role => role.role);
+      if (previousRoles.join(',') !== newRoles.join(',')) {
+        track('roles', previousRoles, newRoles);
+        user.roles = normalised;
+      }
+    }
+    const actorName = this.getUserName(input.actorUserId);
+    const targetName = this.getUserName(user.id);
+    if (Object.keys(diff).length > 0) {
+      this.createAuditLog({
+        actorUserId: input.actorUserId,
+        action: 'user.updated',
+        entity: 'user',
+        entityId: user.id,
+        summary: `${actorName} updated ${targetName}'s profile`,
+        diff,
+        metadata: {
+          userId: user.id,
+        },
+      });
+    }
+    return this.getUserProfile(user.id);
+  }
+
+  deleteUser(id: string, input: UserDeleteInput) {
+    const index = this.users.findIndex(user => user.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    const [removed] = this.users.splice(index, 1);
+    this.groups.forEach(group => {
+      group.members = group.members.filter(member => member.userId !== id);
+      if (group.leaderUserId === id) {
+        group.leaderUserId = group.members[0]?.userId;
+      }
+    });
+    this.events.forEach(event => {
+      event.attendance = event.attendance.filter(record => record.userId !== id);
+    });
+    this.contributions = this.contributions.filter(contribution => contribution.memberId !== id);
+    this.announcementReads = this.announcementReads.filter(read => read.userId !== id);
+    this.sessions = this.sessions.filter(session => session.userId !== id);
+    this.oauthAccounts = this.oauthAccounts.filter(account => account.userId !== id);
+    const actorName = this.getUserName(input.actorUserId);
+    const targetName = `${removed.profile.firstName} ${removed.profile.lastName}`.trim() || removed.primaryEmail;
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'user.deleted',
+      entity: 'user',
+      entityId: removed.id,
+      summary: `${actorName} removed ${targetName} from the directory`,
+      metadata: {
+        userId: removed.id,
+        email: removed.primaryEmail,
+      },
+    });
+    return { success: true };
+  }
+
   getUserByEmail(email: string) {
     return this.users.find(user => user.primaryEmail.toLowerCase() === email.toLowerCase()) || null;
   }
@@ -169,12 +399,243 @@ export class MockDatabaseService {
     }));
   }
 
+  addGroupMember(groupId: string, input: GroupMemberCreateInput) {
+    const group = this.groups.find(g => g.id === groupId);
+    if (!group) {
+      throw new Error('Group not found');
+    }
+    const existing = group.members.find(member => member.userId === input.userId);
+    if (existing) {
+      throw new Error('User is already a member of this group');
+    }
+    const user = this.users.find(record => record.id === input.userId);
+    if (!user) {
+      throw new Error('User not found');
+    }
+    const member: MockGroupMember = {
+      userId: input.userId,
+      role: input.role ?? 'Member',
+      status: input.status ?? 'Active',
+      joinedAt: input.joinedAt ?? new Date().toISOString(),
+    };
+    group.members.push(member);
+    const actorName = this.getUserName(input.actorUserId);
+    const memberName = this.getUserName(input.userId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'group.members.added',
+      entity: 'group',
+      entityId: group.id,
+      summary: `${actorName} added ${memberName} to ${group.name}`,
+      metadata: {
+        groupId,
+        userId: input.userId,
+        role: member.role,
+        status: member.status,
+      },
+    });
+    return {
+      ...clone(member),
+      user: clone(user),
+    };
+  }
+
+  updateGroupMember(groupId: string, userId: string, input: GroupMemberUpdateInput) {
+    const group = this.groups.find(g => g.id === groupId);
+    if (!group) {
+      throw new Error('Group not found');
+    }
+    const member = group.members.find(record => record.userId === userId);
+    if (!member) {
+      throw new Error('Member not found in group');
+    }
+    const diff: Record<string, { previous: unknown; newValue: unknown }> = {};
+    const track = (key: string, previous: unknown, next: unknown) => {
+      if (previous !== next) {
+        diff[key] = { previous, newValue: next };
+      }
+    };
+    if (input.role && input.role !== member.role) {
+      track('role', member.role, input.role);
+      member.role = input.role;
+    }
+    if (input.status && input.status !== member.status) {
+      track('status', member.status, input.status);
+      member.status = input.status;
+    }
+    if (Object.keys(diff).length > 0) {
+      const actorName = this.getUserName(input.actorUserId);
+      const memberName = this.getUserName(userId);
+      this.createAuditLog({
+        actorUserId: input.actorUserId,
+        action: 'group.members.updated',
+        entity: 'group',
+        entityId: group.id,
+        summary: `${actorName} updated ${memberName}'s membership in ${group.name}`,
+        diff,
+        metadata: {
+          groupId,
+          userId,
+        },
+      });
+    }
+    const user = this.users.find(record => record.id === userId);
+    return {
+      ...clone(member),
+      user: user ? clone(user) : null,
+    };
+  }
+
+  removeGroupMember(groupId: string, userId: string, input: GroupMemberRemoveInput) {
+    const group = this.groups.find(g => g.id === groupId);
+    if (!group) {
+      throw new Error('Group not found');
+    }
+    const index = group.members.findIndex(member => member.userId === userId);
+    if (index === -1) {
+      return { success: false };
+    }
+    const [removed] = group.members.splice(index, 1);
+    const actorName = this.getUserName(input.actorUserId);
+    const memberName = this.getUserName(userId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'group.members.removed',
+      entity: 'group',
+      entityId: group.id,
+      summary: `${actorName} removed ${memberName} from ${group.name}`,
+      metadata: {
+        groupId,
+        userId,
+        role: removed.role,
+      },
+    });
+    return { success: true };
+  }
+
   listEvents() {
     return clone(this.events);
   }
 
   getEventById(id: string) {
     return clone(this.events.find(event => event.id === id) || null);
+  }
+
+  createEvent(input: EventCreateInput) {
+    const event: MockEvent = {
+      id: `event-${randomUUID()}`,
+      churchId: this.getChurch().id,
+      title: input.title,
+      description: input.description,
+      startAt: input.startAt,
+      endAt: input.endAt ?? input.startAt,
+      location: input.location,
+      visibility: input.visibility ?? 'private',
+      groupId: input.groupId ?? undefined,
+      tags: input.tags ?? [],
+      attendance: [],
+    };
+    this.events.push(event);
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'event.created',
+      entity: 'event',
+      entityId: event.id,
+      summary: `${actorName} scheduled ${event.title}`,
+      metadata: {
+        eventId: event.id,
+        startAt: event.startAt,
+        groupId: event.groupId ?? null,
+      },
+    });
+    return clone(event);
+  }
+
+  updateEvent(id: string, input: EventUpdateInput) {
+    const event = this.events.find(record => record.id === id);
+    if (!event) return null;
+    const diff: Record<string, { previous: unknown; newValue: unknown }> = {};
+    const track = (key: string, previous: unknown, next: unknown) => {
+      if (previous !== next) {
+        diff[key] = { previous, newValue: next };
+      }
+    };
+    if (typeof input.title === 'string' && input.title !== event.title) {
+      track('title', event.title, input.title);
+      event.title = input.title;
+    }
+    if (typeof input.description === 'string' && input.description !== event.description) {
+      track('description', event.description ?? null, input.description);
+      event.description = input.description;
+    }
+    if (typeof input.startAt === 'string' && input.startAt !== event.startAt) {
+      track('startAt', event.startAt, input.startAt);
+      event.startAt = input.startAt;
+    }
+    if (typeof input.endAt === 'string' && input.endAt !== event.endAt) {
+      track('endAt', event.endAt, input.endAt);
+      event.endAt = input.endAt;
+    }
+    if (typeof input.location === 'string' && input.location !== event.location) {
+      track('location', event.location ?? null, input.location);
+      event.location = input.location;
+    }
+    if (typeof input.visibility === 'string' && input.visibility !== event.visibility) {
+      track('visibility', event.visibility, input.visibility);
+      event.visibility = input.visibility;
+    }
+    if (input.groupId !== undefined) {
+      const newGroupId = input.groupId ?? undefined;
+      if (newGroupId !== event.groupId) {
+        track('groupId', event.groupId ?? null, newGroupId ?? null);
+        event.groupId = newGroupId;
+      }
+    }
+    if (input.tags) {
+      const prev = event.tags ?? [];
+      const next = input.tags;
+      if (prev.length !== next.length || prev.some((value, index) => value !== next[index])) {
+        track('tags', prev, next);
+        event.tags = [...next];
+      }
+    }
+    if (Object.keys(diff).length > 0) {
+      const actorName = this.getUserName(input.actorUserId);
+      this.createAuditLog({
+        actorUserId: input.actorUserId,
+        action: 'event.updated',
+        entity: 'event',
+        entityId: event.id,
+        summary: `${actorName} updated ${event.title}`,
+        diff,
+        metadata: {
+          eventId: event.id,
+        },
+      });
+    }
+    return clone(event);
+  }
+
+  deleteEvent(id: string, input: EventDeleteInput) {
+    const index = this.events.findIndex(event => event.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    const [removed] = this.events.splice(index, 1);
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'event.deleted',
+      entity: 'event',
+      entityId: removed.id,
+      summary: `${actorName} deleted event ${removed.title}`,
+      metadata: {
+        eventId: removed.id,
+        startAt: removed.startAt,
+      },
+    });
+    return { success: true };
   }
 
   recordAttendance(input: AttendanceInput) {
@@ -381,6 +842,15 @@ export class MockDatabaseService {
         pageSize,
       },
     };
+  }
+
+  private getUserName(userId: string) {
+    const user = this.users.find(record => record.id === userId);
+    if (!user) {
+      return userId;
+    }
+    const fullName = `${user.profile.firstName ?? ''} ${user.profile.lastName ?? ''}`.trim();
+    return fullName || user.primaryEmail || userId;
   }
 
   createAuditLog(input: AuditLogCreateInput) {
