@@ -1,10 +1,20 @@
 import { Injectable, OnModuleInit, INestApplication } from '@nestjs/common';
 
+const mode = process.env.DATA_MODE ?? 'mock';
+const isTestEnv = process.env.NODE_ENV === 'test';
+const shouldUseStub = mode !== 'prisma' || isTestEnv;
+
 let PrismaClient: any;
-try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
-  PrismaClient = require('@prisma/client').PrismaClient;
-} catch {
+if (!shouldUseStub) {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    PrismaClient = require('@prisma/client').PrismaClient;
+  } catch {
+    PrismaClient = undefined;
+  }
+}
+
+if (!PrismaClient) {
   PrismaClient = class {
     async $connect(): Promise<void> {
       // eslint-disable-next-line no-console
