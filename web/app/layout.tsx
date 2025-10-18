@@ -33,6 +33,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="min-h-screen bg-slate-900 text-slate-100">
         <ServiceWorkerRegister />
         <div className="flex min-h-screen flex-col">
+          <a href="#main-content" className="skip-link">
+            Skip to main content
+          </a>
           <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur">
             <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
               <div>
@@ -41,7 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 </Link>
                 <p className="text-xs text-slate-400">Role: {role}</p>
               </div>
-              <nav className="hidden gap-4 text-sm font-medium md:flex">
+              <nav className="hidden gap-4 text-sm font-medium md:flex" aria-label="Primary navigation">
                 {navItems.map(item => (
                   <Link
                     key={item.href}
@@ -63,8 +66,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             </div>
           </header>
           <div className="flex flex-1 flex-col md:flex-row">
-            <aside className="border-b border-slate-900 bg-slate-950 px-4 py-4 md:w-64 md:border-b-0 md:border-r">
-              <nav className="grid gap-2">
+            <aside
+              className="border-b border-slate-900 bg-slate-950 px-4 py-4 md:w-64 md:border-b-0 md:border-r"
+              aria-label="Secondary navigation"
+            >
+              <nav className="grid gap-2" aria-label="Section navigation">
                 {navItems.map(item => (
                   <Link
                     key={item.href}
@@ -76,7 +82,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 ))}
               </nav>
             </aside>
-            <main className="flex-1 bg-slate-900/60 p-6">
+            <main id="main-content" className="flex-1 bg-slate-900/60 p-6">
               <div className="mx-auto w-full max-w-4xl space-y-8" data-testid="page-content">
                 {children}
               </div>

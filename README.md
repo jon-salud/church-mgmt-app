@@ -12,6 +12,7 @@ This monorepo packages a complete walkthrough of the PRD using mock data only. Y
 ---
 
 ## Prerequisites
+
 - Node.js 20+
 - `pnpm` (recommended via `corepack enable`)
 - macOS/Linux/WSL (windows works via WSL2)
@@ -34,6 +35,7 @@ cp web/.env.example web/.env
 ```
 
 The web env template exposes:
+
 - `NEXT_PUBLIC_API_BASE_URL` / `API_BASE_URL` – defaults to `http://localhost:3001/api/v1`
 - `DEMO_DEFAULT_TOKEN` – defaults to `demo-admin`, used when no cookie token is present.
 
@@ -56,6 +58,7 @@ Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/d
 ---
 
 ## Demo Authentication
+
 - POST `/auth/login` with `{ email, provider, role }` to obtain a mock JWT.
 - Pre-seeded accounts (also shown on the login screen):
   - `admin@example.com` (provider: `google`, token: `demo-admin`)
@@ -80,7 +83,8 @@ Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/d
 ---
 
 ## Project Structure
-```
+
+```sh
 .
 ├─ package.json               # workspace root scripts
 ├─ pnpm-workspace.yaml
@@ -102,16 +106,19 @@ Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/d
 | Build web for prod | `pnpm -C web build` |
 | Install Playwright browsers | `pnpm -C web exec playwright install` |
 | Run Playwright smoke | `pnpm -C web test:e2e` (requires the dev server at :3000) |
+| One-shot E2E (boot API/Web + test) | `pnpm test:e2e` |
 
 ---
 
 ## Mock Data Source
+
 - Canonical seed data lives in `api/src/mock/mock-data.ts`.
 - Runtime operations go through `MockDatabaseService`, providing side-effecting CRUD behaviours in-memory so the app “feels real” without a database.
 
 ---
 
 ## Styling & UI
+
 - Tailwind CSS is configured globally (`web/app/globals.css`, `tailwind.config.ts`).
 - A starter shadcn-style `<Button />` lives in `web/components/ui/button.tsx`.
 - Mix and match your own component library on top of the Tailwind foundation.
@@ -119,9 +126,20 @@ Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/d
 ---
 
 ## PWA Notes
+
 - Manifest (`web/public/manifest.json`) and service worker (`web/public/service-worker.js`) are included.
 - The service worker caches core read screens for offline demos.
 - Install the app via your browser menu to experience the PWA shell.
+
+---
+
+## Accessibility
+
+- Global skip link lets keyboard and assistive tech users bypass navigation.
+- Primary and secondary navigation landmarks expose descriptive `aria-label`s.
+- Listings tables now ship with captions and scoped column headers for screen readers.
+- Search inputs include associated labels (visually hidden) to satisfy WCAG form requirements.
+- Playwright E2E suite includes automated checks for skip link focus, labelled navigation, and table captions (`pnpm -C web test:e2e`).
 
 ---
 

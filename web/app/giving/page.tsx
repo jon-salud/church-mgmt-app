@@ -19,13 +19,24 @@ export default async function GivingPage() {
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
           <h2 className="text-lg font-semibold">Recent contributions</h2>
-          <table className="mt-3 min-w-full text-sm">
+          <table className="mt-3 min-w-full text-sm" aria-describedby="contributions-caption">
+            <caption id="contributions-caption" className="text-left text-xs uppercase text-slate-500">
+              List of the most recent manual giving entries
+            </caption>
             <thead className="text-left text-xs uppercase text-slate-400">
               <tr>
-                <th className="py-2">Date</th>
-                <th className="py-2">Member</th>
-                <th className="py-2">Fund</th>
-                <th className="py-2">Amount</th>
+                <th scope="col" className="py-2">
+                  Date
+                </th>
+                <th scope="col" className="py-2">
+                  Member
+                </th>
+                <th scope="col" className="py-2">
+                  Fund
+                </th>
+                <th scope="col" className="py-2">
+                  Amount
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-800">
