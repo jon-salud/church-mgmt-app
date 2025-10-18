@@ -1,8 +1,8 @@
 import { Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
 import { AnnouncementsService } from './announcements.service';
-import { DemoAuthGuard } from '../auth/demo-auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 
-@UseGuards(DemoAuthGuard)
+@UseGuards(AuthGuard)
 @Controller('announcements')
 export class AnnouncementsController {
   constructor(private readonly announcementsService: AnnouncementsService) {}

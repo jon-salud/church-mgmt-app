@@ -2,11 +2,12 @@
 
 ## Work Tracker
 
-Use this file as the single source of truth for what has shipped in the demo MVP and what is still outstanding. Update it whenever a task meaningfully progresses so the next agent can pick up quickly.
+Use this file as the single source of truth for what has shipped in the demo MVP and what is still outstanding. Update it whenever a task meaningfully progresses so the next agent can pick up quickly. When you pull an item from backlog, move it into **In Progress** before you begin work.
 
 ### ✅ Completed
 
 - Mock OAuth login with seeded sessions (Google/Facebook) — API & web flows
+- Production OAuth login with Google/Facebook (live provider callback + JWT issuance)
 - Member directory: list + profile detail with groups, attendance, and giving history
 - Groups module: list + detail views with roster data
 - Events module: list, detail, and attendance recording (API + web action)
@@ -30,8 +31,11 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - Flesh out `/users` admin CRUD (create/update) and profile editing
 - Group membership management (bulk add/remove endpoints + UI actions)
 - Event CRUD (create/update) and attendee filtering
+- Attendance CSV export for events
 - Announcement create/edit experience with scheduling controls
-- Giving reports and contribution editing
-- OpenAPI schema enhancements to cover all endpoints
+- Giving reports, contribution editing, and CSV export
+- PWA offline caching for announcements and events read views
 - Environment hardening: auth guard improvements, error handling, audit trails persistence
+- Observability hardening: structured logging, Sentry wiring, basic metrics/analytics
+- OpenAPI schema enhancements to cover all endpoints
 - Documentation refresh once outstanding MVP items land

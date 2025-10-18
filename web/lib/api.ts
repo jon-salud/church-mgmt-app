@@ -29,11 +29,17 @@ type AuditLogResponse = {
 
 const defaultHeaders = () => {
   const cookieStore = cookies();
-  const token = cookieStore.get('demo_token')?.value || DEFAULT_TOKEN;
-  return {
-    Authorization: `Bearer ${token}`,
+  const token =
+    cookieStore.get('session_token')?.value ||
+    cookieStore.get('demo_token')?.value ||
+    (process.env.NODE_ENV !== 'production' ? DEFAULT_TOKEN : '');
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-  } as Record<string, string>;
+  };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  return headers;
 };
 
 async function apiFetch<T>(path: string, init?: RequestInit) {

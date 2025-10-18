@@ -8,9 +8,14 @@ const API_BASE = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_UR
 
 async function request<T>(path: string, init?: RequestInit) {
   const cookieStore = cookies();
-  const token = cookieStore.get('demo_token')?.value || 'demo-admin';
+  const token =
+    cookieStore.get('session_token')?.value ||
+    cookieStore.get('demo_token')?.value ||
+    (process.env.NODE_ENV !== 'production' ? 'demo-admin' : '');
   const headers = new Headers(init?.headers || {});
-  headers.set('Authorization', `Bearer ${token}`);
+  if (token) {
+    headers.set('Authorization', `Bearer ${token}`);
+  }
   headers.set('Content-Type', 'application/json');
   const response = await fetch(`${API_BASE}${path}`, {
     ...init,
@@ -23,29 +28,10 @@ async function request<T>(path: string, init?: RequestInit) {
   return (await response.json()) as T;
 }
 
-export async function loginAction(formData: FormData) {
-  const email = String(formData.get('email'));
-  const provider = (formData.get('provider') as 'google' | 'facebook') || 'google';
-  const role = formData.get('role') ? String(formData.get('role')) : undefined;
-  const response = await fetch(`${API_BASE}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email, provider, role }),
-  });
-  if (!response.ok) {
-    const text = await response.text();
-    throw new Error(text);
-  }
-  const data = await response.json();
-  const cookieStore = cookies();
-  cookieStore.set('demo_token', data.token, { path: '/', httpOnly: true });
-  cookieStore.set('demo_user_email', data.user.primaryEmail, { path: '/', httpOnly: true });
-  revalidatePath('/');
-  redirect('/dashboard');
-}
-
 export async function logoutAction() {
   const cookieStore = cookies();
+  cookieStore.delete('session_token');
+  cookieStore.delete('session_provider');
   cookieStore.delete('demo_token');
   cookieStore.delete('demo_user_email');
   redirect('/(auth)/login');
@@ -81,4 +67,21 @@ export async function recordContributionAction(formData: FormData) {
     body: JSON.stringify({ memberId, amount, date, fundId, method, note }),
   });
   revalidatePath('/giving');
+}
+
+export async function demoLoginAction() {
+  const cookieStore = cookies();
+  cookieStore.set('session_token', 'demo-admin', {
+    path: '/',
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  });
+  cookieStore.set('session_provider', 'demo', {
+    path: '/',
+    httpOnly: false,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  });
+  redirect('/dashboard');
 }

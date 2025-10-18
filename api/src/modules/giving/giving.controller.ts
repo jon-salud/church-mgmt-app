@@ -1,9 +1,9 @@
 import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { GivingService } from './giving.service';
-import { DemoAuthGuard } from '../auth/demo-auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 import { CreateContributionDto } from './dto/create-contribution.dto';
 
-@UseGuards(DemoAuthGuard)
+@UseGuards(AuthGuard)
 @Controller('giving')
 export class GivingController {
   constructor(private readonly givingService: GivingService) {}

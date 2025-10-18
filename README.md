@@ -78,15 +78,16 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 
 ---
 
-## Demo Authentication
+## Authentication
 
-- POST `/auth/login` with `{ email, provider, role }` to obtain a mock JWT.
-- Pre-seeded accounts (also shown on the login screen):
-  - `admin@example.com` (provider: `google`, token: `demo-admin`)
-  - `leader@example.com` (provider: `facebook`, token: `demo-leader`)
-  - `member1@example.com` (provider: `google`, token: `demo-member`)
-- If no token is supplied, the API falls back to `demo-admin` to keep the demo browseable.
-- The Next.js login form stores the token in an httpOnly cookie so server components render with the correct role.
+- **Production flows:** `/auth/google` and `/auth/facebook` perform real OAuth handshakes (Passport strategies) and issue signed JWT access tokens. Configure the providers with:
+  - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`
+  - `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`, `FACEBOOK_CALLBACK_URL`
+  - `JWT_SECRET`, `JWT_EXPIRES_IN` *(optional, defaults to 1h)*
+  - `WEB_APP_URL` *(used to send users back to the Next.js app on success)*
+- **Demo shortcut:** POST `/auth/login` with `{ email, provider, role }` still works for the seeded accounts and returns both the historical mock token and a JWT. The login screen also exposes a “demo mode” button that sets the `demo-admin` session without leaving the app.
+- If no Bearer token is provided and demo mode is enabled, the API falls back to `demo-admin` so unauthenticated users can still explore the UI.
+- The Next.js callback route stores the JWT in an httpOnly `session_token` cookie; a companion `session_provider` cookie (non-HTTP-only) lets the UI surface which path the user took.
 
 ---
 

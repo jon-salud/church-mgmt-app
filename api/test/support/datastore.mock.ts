@@ -22,6 +22,7 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   recordContribution: resolvedFn(),
   createSession: resolvedFn(),
   getSessionByToken: resolvedFn(),
+  upsertUserFromOAuth: resolvedFn(),
   listAuditLogs: resolvedFn(),
   createAuditLog: resolvedFn(),
 });
