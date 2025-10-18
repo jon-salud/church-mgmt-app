@@ -28,6 +28,7 @@ wait_for_api() {
 }
 
 wait_for_api &
+API_READY_PID=$!
 
 pnpm -C web dev >/tmp/web-dev.log 2>&1 &
 WEB_PID=$!
@@ -42,7 +43,10 @@ wait_for_web() {
 }
 
 wait_for_web &
+WEB_READY_PID=$!
 
-wait
+wait "$API_READY_PID"
+wait "$WEB_READY_PID"
+echo "Services warmed, running Playwright…"
 
 pnpm -C web test:e2e

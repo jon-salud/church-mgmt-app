@@ -1,0 +1,94 @@
+name: CI
+
+on:
+    push:
+        branches:
+            - main
+    pull_request:
+
+jobs:
+    detect_changes:
+        name: Detect changes
+        runs-on: ubuntu-latest
+        outputs:
+            api: ${{ contains(fromJson(steps.filter.outputs.changes), 'api') }}
+            web: ${{ contains(fromJson(steps.filter.outputs.changes), 'web') }}
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+            - name: Filter paths
+              id: filter
+              uses: dorny/paths-filter@v2
+              with:
+                  list-files: json
+                  filters: |
+                      api:
+                        - 'api/**'
+                        - 'scripts/**'
+                        - 'package.json'
+                        - 'pnpm-lock.yaml'
+                        - 'pnpm-workspace.yaml'
+                      web:
+                        - 'web/**'
+                        - 'scripts/**'
+                        - 'package.json'
+                        - 'pnpm-lock.yaml'
+                        - 'pnpm-workspace.yaml'
+
+    test_api:
+        name: API tests
+        needs: detect_changes
+        if: ${{ needs.detect_changes.outputs.api == 'true' }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        env:
+            CI: true
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Install pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 9.0.0
+                  run_install: false
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: pnpm
+                  cache-dependency-path: pnpm-lock.yaml
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+            - name: Run API smoke tests
+              run: pnpm -C api test
+
+    test_web:
+        name: Web e2e smoke
+        needs: detect_changes
+        if: ${{ needs.detect_changes.outputs.web == 'true' }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 5
+        env:
+            CI: true
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Install pnpm
+              uses: pnpm/action-setup@v2
+              with:
+                  version: 9.0.0
+                  run_install: false
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+                  cache: pnpm
+                  cache-dependency-path: pnpm-lock.yaml
+            - name: Install dependencies
+              run: pnpm install --frozen-lockfile
+            - name: Install Playwright browsers
+              run: pnpm -C web exec playwright install --with-deps
+            - name: Run Playwright smoke
+              run: pnpm test:e2e

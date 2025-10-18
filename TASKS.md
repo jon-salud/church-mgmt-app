@@ -17,6 +17,7 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - Jest API smoke tests and Playwright dashboard e2e checks
 - Mock data layer powering all modules (no external DB dependency)
 - Audit log: mock-backed API with filters, admin-only UI, and regression tests
+- CI guardrails: path-aware GitHub Actions workflow running API and web smoke suites
 
 ### 🔄 In Progress
 
