@@ -17,7 +17,11 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
           <p className="text-sm text-slate-400">Search and drill into profiles, roles, and group involvement.</p>
         </div>
         <form className="flex gap-2" action="">
+          <label htmlFor="member-search" className="sr-only">
+            Search members
+          </label>
           <input
+            id="member-search"
             name="q"
             defaultValue={query}
             placeholder="Search name or email"
@@ -28,13 +32,24 @@ export default async function MembersPage({ searchParams }: MembersPageProps) {
       </header>
 
       <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-950/60">
-        <table className="min-w-full text-sm">
+        <table className="min-w-full text-sm" aria-describedby="members-table-caption">
+          <caption id="members-table-caption" className="px-4 py-2 text-left text-xs uppercase text-slate-500">
+            Members matching the current search query
+          </caption>
           <thead className="text-left text-xs uppercase tracking-wide text-slate-400">
             <tr>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Email</th>
-              <th className="px-4 py-3">Role</th>
-              <th className="px-4 py-3">Groups</th>
+              <th scope="col" className="px-4 py-3">
+                Name
+              </th>
+              <th scope="col" className="px-4 py-3">
+                Email
+              </th>
+              <th scope="col" className="px-4 py-3">
+                Role
+              </th>
+              <th scope="col" className="px-4 py-3">
+                Groups
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-800">
