@@ -91,4 +91,4 @@ jobs:
             - name: Install Playwright browsers
               run: pnpm -C web exec playwright install --with-deps
             - name: Run Playwright smoke
-              run: pnpm -C web test:e2e
+              run: pnpm test:e2e
