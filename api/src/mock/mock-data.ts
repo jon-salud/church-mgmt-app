@@ -112,6 +112,19 @@ export interface MockContribution {
   note?: string;
 }
 
+export interface MockAuditLog {
+  id: string;
+  churchId: string;
+  actorUserId: string;
+  action: string;
+  entity: string;
+  entityId?: string;
+  summary: string;
+  diff?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
+  createdAt: string;
+}
+
 export interface MockChurch {
   id: string;
   name: string;
@@ -390,6 +403,42 @@ export const mockContributions: MockContribution[] = [
     amount: 40.0,
     method: 'cash',
     fundId: 'fund-missions',
+  },
+];
+
+export const mockAuditLogs: MockAuditLog[] = [
+  {
+    id: 'audit-1',
+    churchId,
+    actorUserId: 'user-admin',
+    action: 'attendance.updated',
+    entity: 'event',
+    entityId: 'event-sunday-service',
+    summary: 'Admin marked Maria Taulagi as checked in for Sunday Service',
+    metadata: { userId: 'user-member-1', newStatus: 'checkedIn' },
+    createdAt: makeDate(-2, 10),
+  },
+  {
+    id: 'audit-2',
+    churchId,
+    actorUserId: 'user-admin',
+    action: 'giving.recorded',
+    entity: 'contribution',
+    entityId: 'contribution-2',
+    summary: 'Admin recorded $40.00 cash gift for Tomas Perenise',
+    metadata: { memberId: 'user-member-2', amount: 40, fundId: 'fund-missions' },
+    createdAt: makeDate(-2, 11),
+  },
+  {
+    id: 'audit-3',
+    churchId,
+    actorUserId: 'user-leader',
+    action: 'announcement.read',
+    entity: 'announcement',
+    entityId: 'announcement-welcome',
+    summary: 'Sione Latu read announcement "Welcome to the new app!"',
+    metadata: { userId: 'user-leader' },
+    createdAt: makeDate(-2, 12),
   },
 ];
 

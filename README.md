@@ -77,6 +77,7 @@ Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/d
 - **Events & Attendance** – event list with inline attendance form (writes back to the mock store).
 - **Announcements** – feed with read tracking and basic audience metadata.
 - **Giving** – manual ledger with create form and seeded funds.
+- **Audit Log** – admin-only view of recent activity with filters for entity, actor, and date range.
 - **Auth** – mock Google/Facebook flows with role assignment.
 - **PWA** – manifest + service worker pre-cache key routes for offline dashboard snapshots (install via browser menu).
 

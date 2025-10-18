@@ -3,6 +3,30 @@ import { cookies } from 'next/headers';
 const DEFAULT_API_BASE = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api/v1';
 const DEFAULT_TOKEN = process.env.DEMO_DEFAULT_TOKEN || 'demo-admin';
 
+type AuditLogActor = {
+  id: string;
+  primaryEmail: string;
+  profile?: { firstName?: string; lastName?: string };
+};
+
+type AuditLogEntry = {
+  id: string;
+  actorUserId: string;
+  action: string;
+  entity: string;
+  entityId?: string;
+  summary: string;
+  createdAt: string;
+  metadata?: Record<string, unknown>;
+  diff?: Record<string, unknown>;
+  actor?: AuditLogActor | null;
+};
+
+type AuditLogResponse = {
+  items: AuditLogEntry[];
+  meta: { total: number; page: number; pageSize: number };
+};
+
 const defaultHeaders = () => {
   const cookieStore = cookies();
   const token = cookieStore.get('demo_token')?.value || DEFAULT_TOKEN;
@@ -73,6 +97,26 @@ export const api = {
   async contributions(memberId?: string) {
     const query = memberId ? `?memberId=${encodeURIComponent(memberId)}` : '';
     return apiFetch<Array<any>>(`/giving/contributions${query}`);
+  },
+  async auditLogs(params?: {
+    actorUserId?: string;
+    entity?: string;
+    entityId?: string;
+    from?: string;
+    to?: string;
+    page?: number;
+    pageSize?: number;
+  }) {
+    const search = new URLSearchParams();
+    if (params?.actorUserId) search.set('actorUserId', params.actorUserId);
+    if (params?.entity) search.set('entity', params.entity);
+    if (params?.entityId) search.set('entityId', params.entityId);
+    if (params?.from) search.set('from', params.from);
+    if (params?.to) search.set('to', params.to);
+    if (params?.page && params.page > 1) search.set('page', String(params.page));
+    if (params?.pageSize) search.set('pageSize', String(params.pageSize));
+    const query = search.toString();
+    return apiFetch<AuditLogResponse>(`/audit${query ? `?${query}` : ''}`);
   },
 };
 
