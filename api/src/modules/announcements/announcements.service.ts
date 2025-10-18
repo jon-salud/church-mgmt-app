@@ -5,8 +5,9 @@ import { DATA_STORE, DataStore } from '../../datastore';
 export class AnnouncementsService {
   constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
-  list() {
-    return this.db.listAnnouncements(this.db.getChurch().id);
+  async list() {
+    const church = await this.db.getChurch();
+    return this.db.listAnnouncements(church.id);
   }
 
   markRead(announcementId: string, userId: string) {

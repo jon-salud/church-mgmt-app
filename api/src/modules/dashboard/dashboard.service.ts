@@ -5,24 +5,26 @@ import { DATA_STORE, DataStore } from '../../datastore';
 export class DashboardService {
   constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
-  summary() {
-    const church = this.db.getChurch();
+  async summary() {
+    const church = await this.db.getChurch();
     return this.db.getDashboardSnapshot(church.id);
   }
 
-  overview() {
-    const church = this.db.getChurch();
-    const events = this.db
-      .listEvents()
-      .filter(event => new Date(event.startAt) >= new Date())
-      .slice(0, 5);
-    const announcements = this.db.listAnnouncements(church.id).slice(0, 5);
-    const contributions = this.db.listContributions().slice(-5).reverse();
+  async overview() {
+    const church = await this.db.getChurch();
+    const [events, announcements, contributions] = await Promise.all([
+      this.db.listEvents(),
+      this.db.listAnnouncements(church.id),
+      this.db.listContributions(),
+    ]);
+    const upcomingEvents = events.filter(event => new Date(event.startAt as any) >= new Date()).slice(0, 5);
+    const recentAnnouncements = announcements.slice(0, 5);
+    const recentContributions = contributions.slice(-5).reverse();
     return {
       church,
-      events,
-      announcements,
-      contributions,
+      events: upcomingEvents,
+      announcements: recentAnnouncements,
+      contributions: recentContributions,
     };
   }
 }

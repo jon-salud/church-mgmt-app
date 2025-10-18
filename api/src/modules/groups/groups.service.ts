@@ -9,18 +9,20 @@ export class GroupsService {
     return this.db.listGroups();
   }
 
-  detail(id: string) {
-    const group = this.db.getGroupById(id);
+  async detail(id: string) {
+    const group = await this.db.getGroupById(id);
     if (!group) return null;
-    const members = this.db.getGroupMembers(id);
-    const events = this.db
-      .listEvents()
+    const [members, events] = await Promise.all([
+      this.db.getGroupMembers(id),
+      this.db.listEvents(),
+    ]);
+    const matchingEvents = events
       .filter(event => event.groupId === id)
-      .sort((a, b) => a.startAt.localeCompare(b.startAt));
+      .sort((a, b) => String(a.startAt).localeCompare(String(b.startAt)));
     return {
       ...group,
       members,
-      events,
+      events: matchingEvents,
     };
   }
 

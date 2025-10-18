@@ -5,12 +5,12 @@ import { DATA_STORE, DataStore } from '../../datastore';
 export class DemoAuthGuard implements CanActivate {
   constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const authHeader: string | undefined = request.headers['authorization'];
     const token =
       authHeader?.startsWith('Bearer ') === true ? authHeader.slice(7) : authHeader;
-    const session = this.db.getSessionByToken(token || 'demo-admin');
+    const session = await this.db.getSessionByToken(token || 'demo-admin');
     if (!session) {
       throw new UnauthorizedException(
         'Invalid or missing demo token. Use one of demo-admin | demo-leader | demo-member or login via /auth/login.',

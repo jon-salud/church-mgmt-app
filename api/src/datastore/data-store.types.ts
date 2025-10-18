@@ -1,27 +1,11 @@
 import { MockDatabaseService } from '../mock/mock-database.service';
 
-type Method<T extends keyof MockDatabaseService> = MockDatabaseService[T];
+type Asyncify<T> = T extends (...args: infer A) => infer R
+  ? (...args: A) => Promise<Awaited<R>>
+  : never;
 
-export interface DataStore {
-  getChurch: Method<'getChurch'>;
-  getDashboardSnapshot: Method<'getDashboardSnapshot'>;
-  listUsers: Method<'listUsers'>;
-  getUserProfile: Method<'getUserProfile'>;
-  listGroups: Method<'listGroups'>;
-  getGroupById: Method<'getGroupById'>;
-  getGroupMembers: Method<'getGroupMembers'>;
-  listEvents: Method<'listEvents'>;
-  getEventById: Method<'getEventById'>;
-  recordAttendance: Method<'recordAttendance'>;
-  listAnnouncements: Method<'listAnnouncements'>;
-  markAnnouncementRead: Method<'markAnnouncementRead'>;
-  listFunds: Method<'listFunds'>;
-  listContributions: Method<'listContributions'>;
-  recordContribution: Method<'recordContribution'>;
-  createSession: Method<'createSession'>;
-  getSessionByToken: Method<'getSessionByToken'>;
-  listAuditLogs: Method<'listAuditLogs'>;
-  createAuditLog: Method<'createAuditLog'>;
-}
+export type DataStore = {
+  [K in keyof MockDatabaseService]: Asyncify<MockDatabaseService[K]>;
+};
 
 export const DATA_STORE = Symbol('DATA_STORE');

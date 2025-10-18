@@ -5,11 +5,11 @@ import { DATA_STORE, DataStore } from '../../datastore';
 export class UsersService {
   constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
-  async list(q?: string) {
+  list(q?: string) {
     return this.db.listUsers(q);
   }
 
-  async get(id: string) {
+  get(id: string) {
     return this.db.getUserProfile(id);
   }
 }
