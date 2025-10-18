@@ -47,13 +47,34 @@ In two terminals:
 
 ```bash
 # API (NestJS + Fastify, in-memory store)
-pnpm -C api dev
+pnpm dev:api:mock
 
 # Web (Next.js PWA)
 pnpm -C web dev
 ```
 
 Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/docs](http://localhost:3001/docs). The web app lives at [http://localhost:3000](http://localhost:3000).
+
+---
+
+## Data Modes
+
+The API chooses its backing store via `DATA_MODE`:
+
+- `mock` *(default)* – uses the in-memory `MockDatabaseService`. This is what CI and the Playwright smoke suite run against.
+- Additional modes (e.g. `prisma`) will be wired up as the persistent layer lands. Choosing an unsupported value currently throws a helpful error so you know to keep the flag on `mock`.
+
+Examples:
+
+```bash
+# Unix/macOS
+DATA_MODE=mock pnpm -C api dev          # explicit mock mode
+
+# Windows (PowerShell)
+$Env:DATA_MODE = "mock"; pnpm -C api dev
+```
+
+The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those exports for convenience.
 
 ---
 
@@ -100,13 +121,13 @@ Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/d
 
 | Action | Command |
 | ------ | ------- |
-| Start API dev server | `pnpm -C api dev` |
+| Start API dev server (mock) | `pnpm dev:api:mock` |
 | Build API | `pnpm -C api build` |
 | Run API tests (Jest smoke) | `pnpm -C api test` |
 | Start web dev server | `pnpm -C web dev` |
 | Build web for prod | `pnpm -C web build` |
 | Install Playwright browsers | `pnpm -C web exec playwright install` |
-| Run Playwright smoke | `pnpm -C web test:e2e` (requires the dev server at :3000) |
+| Run Playwright smoke (mock) | `pnpm test:e2e:mock` |
 | One-shot E2E (boot API/Web + test) | `pnpm test:e2e` |
 
 ---
@@ -114,7 +135,7 @@ Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/d
 ## Mock Data Source
 
 - Canonical seed data lives in `api/src/mock/mock-data.ts`.
-- Runtime operations go through `MockDatabaseService`, providing side-effecting CRUD behaviours in-memory so the app “feels real” without a database.
+- By default (`DATA_MODE=mock`), runtime operations go through the in-memory data store so the app “feels real” without a database.
 
 ---
 

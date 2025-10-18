@@ -3,6 +3,8 @@ set -euo pipefail
 
 API_PORT=${API_PORT:-3001}
 WEB_PORT=${WEB_PORT:-3000}
+DATA_MODE=${DATA_MODE:-mock}
+export DATA_MODE
 
 cleanup() {
   if [[ -n "${API_PID:-}" ]] && kill -0 "$API_PID" 2>/dev/null; then

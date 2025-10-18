@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
-import { MockDatabaseService } from '../../mock/mock-database.service';
+import { Inject, Injectable } from '@nestjs/common';
 import { AttendanceStatus } from '../../mock/mock-data';
+import { DATA_STORE, DataStore } from '../../datastore';
 
 @Injectable()
 export class EventsService {
-  constructor(private readonly db: MockDatabaseService) {}
+  constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
   list() {
     return this.db.listEvents();

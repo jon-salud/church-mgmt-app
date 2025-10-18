@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { MockDatabaseService } from '../../mock/mock-database.service';
+import { Inject, Injectable } from '@nestjs/common';
+import { DATA_STORE, DataStore } from '../../datastore';
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly db: MockDatabaseService) {}
+  constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
   async list(q?: string) {
     return this.db.listUsers(q);
