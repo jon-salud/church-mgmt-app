@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
 import {
   MockUser,
   mockUsers,
@@ -80,6 +81,7 @@ export class MockDatabaseService {
   private contributions: MockContribution[] = clone(mockContributions);
   private auditLogs: MockAuditLog[] = clone(mockAuditLogs);
   private sessions: DemoSession[] = clone(mockSessions);
+  private oauthAccounts: Array<{ provider: 'google' | 'facebook'; providerUserId: string; userId: string }> = [];
 
   getChurch() {
     return clone(mockChurches[0]);
@@ -451,5 +453,56 @@ export class MockDatabaseService {
     const user = this.getUserById(session.userId);
     if (!user) return null;
     return { session: clone(session), user };
+  }
+
+  upsertUserFromOAuth(input: {
+    provider: 'google' | 'facebook';
+    providerUserId: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    picture?: string;
+  }) {
+    const churchId = this.getChurch().id;
+    let user = this.getUserByEmail(input.email);
+    let created = false;
+    if (!user) {
+      const id = `user-${randomUUID()}`;
+      user = {
+        id,
+        primaryEmail: input.email,
+        status: 'active',
+        createdAt: new Date().toISOString(),
+        lastLoginAt: new Date().toISOString(),
+        roles: [{ churchId, role: 'Member' }],
+        profile: {
+          firstName: input.firstName || 'New',
+          lastName: input.lastName || 'Member',
+          photoUrl: input.picture,
+        },
+      };
+      this.users.push(user);
+      created = true;
+    } else {
+      user.lastLoginAt = new Date().toISOString();
+      if (input.firstName) {
+        user.profile.firstName = input.firstName;
+      }
+      if (input.lastName) {
+        user.profile.lastName = input.lastName;
+      }
+      if (input.picture) {
+        user.profile.photoUrl = input.picture;
+      }
+      if (!user.roles.some(role => role.churchId === churchId)) {
+        user.roles.push({ churchId, role: 'Member' });
+      }
+    }
+
+    if (!this.oauthAccounts.some(account => account.provider === input.provider && account.providerUserId === input.providerUserId)) {
+      this.oauthAccounts.push({ provider: input.provider, providerUserId: input.providerUserId, userId: user.id });
+    }
+
+    return { user: clone(user), created };
   }
 }

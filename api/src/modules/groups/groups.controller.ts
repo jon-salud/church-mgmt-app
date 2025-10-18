@@ -1,8 +1,8 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { GroupsService } from './groups.service';
-import { DemoAuthGuard } from '../auth/demo-auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 
-@UseGuards(DemoAuthGuard)
+@UseGuards(AuthGuard)
 @Controller('groups')
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}

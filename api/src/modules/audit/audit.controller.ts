@@ -1,9 +1,9 @@
 import { Controller, ForbiddenException, Get, Query, Req, UseGuards } from '@nestjs/common';
 import { AuditService } from './audit.service';
 import { ListAuditQueryDto } from './dto/list-audit-query.dto';
-import { DemoAuthGuard } from '../auth/demo-auth.guard';
+import { AuthGuard } from '../auth/auth.guard';
 
-@UseGuards(DemoAuthGuard)
+@UseGuards(AuthGuard)
 @Controller('audit')
 export class AuditController {
   constructor(private readonly auditService: AuditService) {}
@@ -18,4 +18,3 @@ export class AuditController {
     return this.auditService.list(query);
   }
 }
-

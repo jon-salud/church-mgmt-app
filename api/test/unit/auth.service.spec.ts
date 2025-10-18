@@ -1,15 +1,22 @@
 import { AuthService } from '../../src/modules/auth/auth.service';
 import { createDataStoreMock } from '../support/datastore.mock';
 
-describe('AuthService', () => {
+const createConfigMock = (overrides: Record<string, unknown> = {}) => (
+  {
+    get: jest.fn((key: string) => overrides[key]),
+  }
+) as any;
+
+const createService = () => {
   const store = createDataStoreMock();
-  const service = new AuthService(store);
+  const config = createConfigMock({ ALLOW_DEMO_LOGIN: 'true' });
+  return { store, service: new AuthService(store, config) };
+};
 
-  beforeEach(() => {
-    jest.clearAllMocks();
-  });
-
+describe('AuthService', () => {
   it('delegates login to the datastore', async () => {
+    const { store, service } = createService();
+
     const session = { token: 'demo', user: { id: 'user-1' } };
     store.createSession.mockResolvedValue(session as any);
 
@@ -20,6 +27,7 @@ describe('AuthService', () => {
   });
 
   it('resolves the current session from token', async () => {
+    const { store, service } = createService();
     store.getSessionByToken.mockResolvedValue({ session: { token: 'demo' } } as any);
 
     const result = await service.me('demo');

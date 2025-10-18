@@ -26,13 +26,33 @@ cp web/.env.example web/.env
 pnpm -C web dev
 ```
 
+### OAuth configuration
+
+1. Copy the API env template and populate the secrets:
+
+   ```bash
+   cp api/.env.example api/.env
+   ```
+
+2. Register Google and Facebook apps and fill in:
+
+   - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`
+   - `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`, `FACEBOOK_CALLBACK_URL`
+   - `WEB_APP_URL` (defaults to `http://localhost:3000` for dev)
+   - `JWT_SECRET` *(change from the default before deploying)*
+
+3. Restart the API so the new environment variables are picked up.
+
+The login page links to `/auth/google` and `/auth/facebook`. Successful callbacks redirect to
+`WEB_APP_URL/(auth)/oauth/callback`, which stores the JWT inside an httpOnly `session_token` cookie.
+
 ## CI (optional)
 
 - See `.github/workflows/ci.yml`
 
 ## Notes
 
-- Demo login via `/auth/login` issues mock OAuth tokens (see README).
+- OAuth login is now the default. Demo logins remain available and issue JWTs alongside the historical mock tokens.
 - The API honours `DATA_MODE` (`mock` by default). Future persistence work will plug in additional modes without breaking mock demos.
 - Prisma schema remains for future Postgres wiring but is not required for the demo today.
 - Playwright smoke test in `web/e2e` targets the dashboard page.

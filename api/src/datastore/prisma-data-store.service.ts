@@ -377,6 +377,103 @@ export class PrismaDataStore implements DataStore {
     };
   }
 
+  async upsertUserFromOAuth(input: {
+    provider: 'google' | 'facebook';
+    providerUserId: string;
+    email: string;
+    firstName?: string;
+    lastName?: string;
+    picture?: string;
+  }) {
+    const { provider, providerUserId, email, firstName, lastName, picture } = input;
+    const churchId = await this.getPrimaryChurchId();
+
+    const account = await this.client.oAuthAccount.findUnique({
+      where: { provider_providerUserId: { provider, providerUserId } },
+      include: {
+        user: { include: { profile: true, churches: true } },
+      },
+    });
+
+    if (account?.user) {
+      await this.client.user.update({
+        where: { id: account.user.id },
+        data: { lastLoginAt: new Date() },
+      });
+      const hydrated = await this.getUserById(account.user.id);
+      return { user: hydrated!, created: false };
+    }
+
+    let user = await this.client.user.findUnique({
+      where: { primaryEmail: email },
+      include: { profile: true, churches: true },
+    });
+    let created = false;
+
+    if (!user) {
+      user = await this.client.user.create({
+        data: {
+          primaryEmail: email,
+          status: 'active',
+          lastLoginAt: new Date(),
+          profile: {
+            create: {
+              firstName: firstName || 'New',
+              lastName: lastName || 'Member',
+              photoUrl: picture,
+            },
+          },
+          churches: {
+            create: {
+              churchId,
+              role: 'Member',
+            },
+          },
+        },
+        include: { profile: true, churches: true },
+      });
+      created = true;
+    } else {
+      await this.client.user.update({
+        where: { id: user.id },
+        data: {
+          lastLoginAt: new Date(),
+          profile: {
+            upsert: {
+              create: {
+                firstName: firstName || 'New',
+                lastName: lastName || 'Member',
+                photoUrl: picture,
+              },
+              update: {
+                firstName: firstName ?? undefined,
+                lastName: lastName ?? undefined,
+                photoUrl: picture ?? undefined,
+              },
+            },
+          },
+        },
+      });
+      const hasChurch = (user.churches as any[]).some((churchUser: any) => churchUser.churchId === churchId);
+      if (!hasChurch) {
+        await this.client.churchUser.upsert({
+          where: { churchId_userId: { churchId, userId: user.id } },
+          update: {},
+          create: { churchId, userId: user.id, role: 'Member' },
+        });
+      }
+    }
+
+    await this.client.oAuthAccount.upsert({
+      where: { provider_providerUserId: { provider, providerUserId } },
+      update: { userId: user.id },
+      create: { provider, providerUserId, userId: user.id },
+    });
+
+    const hydrated = await this.getUserById(user.id);
+    return { user: hydrated!, created };
+  }
+
   async listAuditLogs(filter?: { churchId?: string; actorUserId?: string; entity?: string; entityId?: string; from?: string; to?: string; page?: number; pageSize?: number }) {
     const churchId = filter?.churchId ?? (await this.getPrimaryChurchId());
     const page = filter?.page && filter.page > 0 ? filter.page : 1;

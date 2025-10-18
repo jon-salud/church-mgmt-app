@@ -89,4 +89,8 @@ export class MockDataStoreAdapter implements DataStore {
   async createAuditLog(input: Parameters<MockDatabaseService['createAuditLog']>[0]) {
     return this.mock.createAuditLog(input);
   }
+
+  async upsertUserFromOAuth(input: Parameters<MockDatabaseService['upsertUserFromOAuth']>[0]) {
+    return this.mock.upsertUserFromOAuth(input);
+  }
 }
