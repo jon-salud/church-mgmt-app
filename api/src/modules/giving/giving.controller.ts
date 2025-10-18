@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { GivingService } from './giving.service';
 import { DemoAuthGuard } from '../auth/demo-auth.guard';
 import { CreateContributionDto } from './dto/create-contribution.dto';
@@ -19,7 +19,7 @@ export class GivingController {
   }
 
   @Post('contributions')
-  create(@Body() dto: CreateContributionDto) {
-    return this.givingService.recordContribution(dto);
+  create(@Body() dto: CreateContributionDto, @Req() req: any) {
+    return this.givingService.recordContribution(dto, req.user?.id);
   }
 }

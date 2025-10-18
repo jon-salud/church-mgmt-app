@@ -14,7 +14,10 @@ export class GivingService {
     return this.db.listContributions(filter);
   }
 
-  recordContribution(input: { memberId: string; amount: number; date: string; fundId?: string; method: ContributionMethod; note?: string }) {
-    return this.db.recordContribution(input);
+  recordContribution(
+    input: { memberId: string; amount: number; date: string; fundId?: string; method: ContributionMethod; note?: string },
+    actorUserId?: string,
+  ) {
+    return this.db.recordContribution({ ...input, recordedBy: actorUserId });
   }
 }

@@ -19,6 +19,8 @@ import {
   createSessionToken,
   Role,
   AttendanceStatus,
+  MockAuditLog,
+  mockAuditLogs,
   mockChurches,
 } from './mock-data';
 
@@ -37,6 +39,30 @@ interface ContributionInput {
   fundId?: string;
   method: MockContribution['method'];
   note?: string;
+  recordedBy?: string;
+}
+
+interface AuditLogFilter {
+  churchId?: string;
+  actorUserId?: string;
+  entity?: string;
+  entityId?: string;
+  from?: string;
+  to?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+interface AuditLogCreateInput {
+  churchId?: string;
+  actorUserId: string;
+  action: string;
+  entity: string;
+  entityId?: string;
+  summary: string;
+  diff?: Record<string, unknown>;
+  metadata?: Record<string, unknown>;
+  createdAt?: string;
 }
 
 function clone<T>(value: T): T {
@@ -52,6 +78,7 @@ export class MockDatabaseService {
   private announcementReads: MockAnnouncementRead[] = clone(mockAnnouncementReads);
   private funds: MockFund[] = clone(mockFunds);
   private contributions: MockContribution[] = clone(mockContributions);
+  private auditLogs: MockAuditLog[] = clone(mockAuditLogs);
   private sessions: DemoSession[] = clone(mockSessions);
 
   getChurch() {
@@ -152,11 +179,39 @@ export class MockDatabaseService {
     const event = this.events.find(e => e.id === input.eventId);
     if (!event) return null;
     const existing = event.attendance.find(a => a.userId === input.userId);
+    const attendee = this.users.find(user => user.id === input.userId);
+    const actorUserId = input.recordedBy ?? input.userId;
+    const actor = this.users.find(user => user.id === actorUserId);
+    const attendeeName = attendee
+      ? `${attendee.profile.firstName} ${attendee.profile.lastName}`.trim()
+      : input.userId;
+    const actorName = actor ? `${actor.profile.firstName} ${actor.profile.lastName}`.trim() : actorUserId;
     if (existing) {
+      const previousStatus = existing.status;
       existing.status = input.status;
       existing.note = input.note;
-      existing.recordedBy = input.recordedBy;
+      existing.recordedBy = actorUserId;
       existing.recordedAt = new Date().toISOString();
+      this.createAuditLog({
+        actorUserId,
+        action: 'attendance.updated',
+        entity: 'event',
+        entityId: event.id,
+        summary:
+          actorUserId === input.userId
+            ? `${attendeeName} recorded their attendance as ${input.status} for ${event.title}`
+            : `${actorName} marked ${attendeeName} as ${input.status} for ${event.title}`,
+        diff:
+          previousStatus !== input.status
+            ? { previousStatus, newStatus: input.status }
+            : undefined,
+        metadata: {
+          userId: input.userId,
+          newStatus: input.status,
+          previousStatus,
+          note: input.note ?? null,
+        },
+      });
       return clone(existing);
     }
     const record = {
@@ -164,10 +219,26 @@ export class MockDatabaseService {
       userId: input.userId,
       status: input.status,
       note: input.note,
-      recordedBy: input.recordedBy,
+      recordedBy: actorUserId,
       recordedAt: new Date().toISOString(),
     };
     event.attendance.push(record);
+    this.createAuditLog({
+      actorUserId,
+      action: 'attendance.updated',
+      entity: 'event',
+      entityId: event.id,
+      summary:
+        actorUserId === input.userId
+          ? `${attendeeName} recorded their attendance as ${input.status} for ${event.title}`
+          : `${actorName} marked ${attendeeName} as ${input.status} for ${event.title}`,
+      metadata: {
+        userId: input.userId,
+        newStatus: input.status,
+        previousStatus: null,
+        note: input.note ?? null,
+      },
+    });
     return clone(record);
   }
 
@@ -186,12 +257,28 @@ export class MockDatabaseService {
     if (already) {
       return clone(already);
     }
+    const announcement = this.announcements.find(a => a.id === announcementId);
+    const user = this.users.find(u => u.id === userId);
+    const userName = user ? `${user.profile.firstName} ${user.profile.lastName}`.trim() : userId;
     const record = {
       announcementId,
       userId,
       readAt: new Date().toISOString(),
     };
     this.announcementReads.push(record);
+    if (announcement) {
+      this.createAuditLog({
+        actorUserId: userId,
+        action: 'announcement.read',
+        entity: 'announcement',
+        entityId: announcement.id,
+        summary: `${userName} read announcement "${announcement.title}"`,
+        metadata: {
+          userId,
+          announcementId,
+        },
+      });
+    }
     return clone(record);
   }
 
@@ -222,7 +309,96 @@ export class MockDatabaseService {
       note: input.note,
     };
     this.contributions.push(contribution);
+    const actorUserId = input.recordedBy ?? input.memberId;
+    const member = this.users.find(user => user.id === contribution.memberId);
+    const actor = this.users.find(user => user.id === actorUserId);
+    const memberName = member
+      ? `${member.profile.firstName} ${member.profile.lastName}`.trim()
+      : contribution.memberId;
+    const actorName = actor ? `${actor.profile.firstName} ${actor.profile.lastName}`.trim() : actorUserId;
+    const fund = contribution.fundId ? this.funds.find(f => f.id === contribution.fundId) : undefined;
+    const fundLabel = fund?.name ?? 'General Offering';
+    const methodLabel = contribution.method.replace(/-/g, ' ');
+    const amountDisplay = contribution.amount.toFixed(2);
+    this.createAuditLog({
+      actorUserId,
+      action: 'giving.recorded',
+      entity: 'contribution',
+      entityId: contribution.id,
+      summary:
+        actorUserId === contribution.memberId
+          ? `${memberName} logged a $${amountDisplay} ${methodLabel} gift to ${fundLabel}`
+          : `${actorName} recorded $${amountDisplay} ${methodLabel} gift for ${memberName}`,
+      metadata: {
+        memberId: contribution.memberId,
+        amount: contribution.amount,
+        fundId: contribution.fundId ?? null,
+        method: contribution.method,
+      },
+    });
     return clone(contribution);
+  }
+
+  listAuditLogs(filter: AuditLogFilter = {}) {
+    const churchId = filter.churchId ?? this.getChurch().id;
+    const fromTime = filter.from ? new Date(filter.from).getTime() : undefined;
+    const toTime = filter.to ? new Date(filter.to).getTime() : undefined;
+    let logs = this.auditLogs.filter(log => log.churchId === churchId);
+    if (filter.actorUserId) {
+      logs = logs.filter(log => log.actorUserId === filter.actorUserId);
+    }
+    if (filter.entity) {
+      logs = logs.filter(log => log.entity === filter.entity);
+    }
+    if (filter.entityId) {
+      logs = logs.filter(log => log.entityId === filter.entityId);
+    }
+    if (fromTime) {
+      logs = logs.filter(log => new Date(log.createdAt).getTime() >= fromTime);
+    }
+    if (toTime) {
+      logs = logs.filter(log => new Date(log.createdAt).getTime() <= toTime);
+    }
+    logs = [...logs].sort(
+      (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+    const page = filter.page && filter.page > 0 ? filter.page : 1;
+    const pageSizeRaw = filter.pageSize && filter.pageSize > 0 ? filter.pageSize : 20;
+    const pageSize = Math.min(pageSizeRaw, 100);
+    const start = (page - 1) * pageSize;
+    const paged = logs.slice(start, start + pageSize);
+    const items = paged.map(log => ({
+      ...clone(log),
+      actor: this.getUserById(log.actorUserId),
+    }));
+    return {
+      items,
+      meta: {
+        total: logs.length,
+        page,
+        pageSize,
+      },
+    };
+  }
+
+  createAuditLog(input: AuditLogCreateInput) {
+    const churchId = input.churchId ?? this.getChurch().id;
+    const record: MockAuditLog = {
+      id: input.entityId
+        ? `audit-${input.entity}-${input.entityId}-${Date.now()}`
+        : `audit-${Date.now()}-${Math.random().toString(16).slice(2, 6)}`,
+      churchId,
+      actorUserId: input.actorUserId,
+      action: input.action,
+      entity: input.entity,
+      entityId: input.entityId,
+      summary: input.summary,
+      diff: input.diff,
+      metadata: input.metadata,
+      createdAt: input.createdAt ?? new Date().toISOString(),
+    };
+    this.auditLogs.push(record);
+    return clone(record);
   }
 
   getDashboardSnapshot(churchId: string) {

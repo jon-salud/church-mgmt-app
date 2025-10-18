@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   themeColor: '#0f172a',
 };
 
-const navItems = [
+const baseNavItems = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/members', label: 'Members' },
   { href: '/groups', label: 'Groups' },
@@ -27,6 +27,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     ? `${me.user.profile.firstName} ${me.user.profile.lastName ?? ''}`.trim()
     : me?.user?.primaryEmail || 'Demo Admin';
   const role = me?.user?.roles?.[0]?.role ?? 'Admin';
+  const navItems =
+    role === 'Admin' ? [...baseNavItems, { href: '/audit-log', label: 'Audit Log' }] : baseNavItems;
 
   return (
     <html lang="en" className="bg-slate-900">

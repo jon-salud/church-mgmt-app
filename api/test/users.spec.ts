@@ -48,4 +48,21 @@ describe('Users (e2e-light)', () => {
     expect(res.statusCode).toBe(200);
     expect(res.json()[0]).toHaveProperty('reads');
   });
+
+  it('GET /audit should 200 with paged payload for admins', async () => {
+    const res = await app.inject({ method: 'GET', url: '/api/v1/audit' });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(Array.isArray(body.items)).toBe(true);
+    expect(body.meta).toHaveProperty('total');
+  });
+
+  it('GET /audit should 403 for non-admin token', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/v1/audit',
+      headers: { authorization: 'Bearer demo-member' },
+    });
+    expect(res.statusCode).toBe(403);
+  });
 });

@@ -8,6 +8,7 @@ import { AnnouncementsModule } from './announcements/announcements.module';
 import { GivingModule } from './giving/giving.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { MockDataModule } from '../mock/mock-data.module';
+import { AuditModule } from './audit/audit.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { MockDataModule } from '../mock/mock-data.module';
     AnnouncementsModule,
     GivingModule,
     DashboardModule,
+    AuditModule,
   ],
 })
 export class AppModule {}
