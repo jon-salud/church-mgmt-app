@@ -1,0 +1,11 @@
+{
+  "name": "church-mgmt",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@9.0.0",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "echo \"Run packages individually: pnpm -C api dev | pnpm -C web dev\"",
+    "test": "pnpm -r test"
+  }
+}

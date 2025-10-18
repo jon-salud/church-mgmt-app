@@ -1,0 +1,202 @@
+// Prisma schema aligned with MVP core
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Church {
+  id        String   @id @default(cuid())
+  name      String
+  timezone  String   @default("Pacific/Auckland")
+  address   String?
+  createdAt DateTime @default(now())
+  users     ChurchUser[]
+  groups    Group[]
+  events    Event[]
+  funds     Fund[]
+  announcements Announcement[]
+  auditLogs AuditLog[]
+}
+
+model User {
+  id           String    @id @default(cuid())
+  primaryEmail String    @unique
+  status       String    @default("active")
+  createdAt    DateTime  @default(now())
+  lastLoginAt  DateTime?
+  profile      Profile?
+  oauth        OAuthAccount[]
+  churches     ChurchUser[]
+  attendances  Attendance[]
+  contributions Contribution[]
+  reads        AnnouncementRead[]
+  auditLogs    AuditLog[] @relation("ActorLogs")
+}
+
+model Profile {
+  userId   String @id
+  firstName String
+  lastName  String
+  phone     String?
+  address   String?
+  birthday  DateTime?
+  photoUrl  String?
+  notes     String?
+  user      User   @relation(fields: [userId], references: [id])
+}
+
+model OAuthAccount {
+  id             String   @id @default(cuid())
+  provider       String
+  providerUserId String
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  @@unique([provider, providerUserId])
+}
+
+model ChurchUser {
+  churchId String
+  userId   String
+  role     Role    @default(Member)
+  church   Church  @relation(fields: [churchId], references: [id])
+  user     User    @relation(fields: [userId], references: [id])
+  joinedAt DateTime @default(now())
+  @@id([churchId, userId])
+}
+
+enum Role {
+  Member
+  Leader
+  Admin
+}
+
+enum GroupType {
+  GeographicalMinistry
+  ServiceMinistry
+  VolunteerTeam
+  SmallGroup
+  Other
+}
+
+enum GroupMemberRole {
+  Member
+  Leader
+  Coordinator
+  Volunteer
+}
+
+enum MembershipStatus {
+  Active
+  Inactive
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  churchId    String
+  name        String
+  description String?
+  type GroupType
+  meetingDay  String?
+  meetingTime String?
+  tags       Json?
+  church      Church   @relation(fields: [churchId], references: [id])
+  members     GroupMember[]
+}
+
+model GroupMember {
+  groupId  String
+  userId   String
+  role     GroupMemberRole @default(Member)
+  status   MembershipStatus @default(Active)
+  joinedAt DateTime @default(now())
+  group    Group  @relation(fields: [groupId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+  @@id([groupId, userId])
+}
+
+model Event {
+  id          String   @id @default(cuid())
+  churchId    String
+  title       String
+  description String?
+  startAt     DateTime
+  endAt       DateTime
+  location    String?
+  visibility  String   @default("private")
+  groupId     String?
+  church      Church   @relation(fields: [churchId], references: [id])
+  attendances Attendance[]
+}
+
+model Attendance {
+  eventId    String
+  userId     String
+  status     String   @default("checkedIn")
+  note       String?
+  recordedBy String?
+  recordedAt DateTime @default(now())
+  event      Event    @relation(fields: [eventId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  @@id([eventId, userId])
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  churchId  String
+  title     String
+  body      String
+  audience  String   @default("all")
+  groupIds  Json?
+  publishAt DateTime @default(now())
+  expireAt  DateTime?
+  church    Church   @relation(fields: [churchId], references: [id])
+  reads     AnnouncementRead[]
+}
+
+model AnnouncementRead {
+  announcementId String
+  userId         String
+  readAt         DateTime @default(now())
+  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
+  @@id([announcementId, userId])
+}
+
+model Fund {
+  id       String  @id @default(cuid())
+  churchId String
+  name     String
+  church   Church  @relation(fields: [churchId], references: [id])
+  contributions Contribution[]
+}
+
+model Contribution {
+  id        String   @id @default(cuid())
+  churchId  String
+  memberId  String
+  date      DateTime
+  amount    Decimal
+  method    String
+  fundId    String?
+  note      String?
+  church    Church  @relation(fields: [churchId], references: [id])
+  member    User    @relation(fields: [memberId], references: [id])
+  fund      Fund?   @relation(fields: [fundId], references: [id])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  churchId    String
+  actorUserId String?
+  action      String
+  entity      String
+  entityId    String
+  diff        Json?
+  createdAt   DateTime @default(now())
+  church      Church   @relation(fields: [churchId], references: [id])
+  actor       User?    @relation("ActorLogs", fields: [actorUserId], references: [id])
+}
