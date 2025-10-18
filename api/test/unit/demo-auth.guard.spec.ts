@@ -17,35 +17,35 @@ describe('DemoAuthGuard', () => {
     jest.clearAllMocks();
   });
 
-  it('allows requests when token resolves to a session', () => {
-    store.getSessionByToken.mockReturnValue({
+  it('allows requests when token resolves to a session', async () => {
+    store.getSessionByToken.mockResolvedValue({
       session: { token: 'demo-admin' },
       user: { id: 'user-admin', primaryEmail: 'admin@example.com', roles: [], profile: {} },
     } as any);
     const context = createExecutionContext({ authorization: 'Bearer demo-admin' });
 
-    const result = guard.canActivate(context);
+    const result = await guard.canActivate(context);
 
     expect(result).toBe(true);
     expect(store.getSessionByToken).toHaveBeenCalledWith('demo-admin');
   });
 
-  it('falls back to demo-admin token when header is missing', () => {
-    store.getSessionByToken.mockReturnValue({
+  it('falls back to demo-admin token when header is missing', async () => {
+    store.getSessionByToken.mockResolvedValue({
       session: { token: 'demo-admin' },
       user: { id: 'user-admin', primaryEmail: 'admin@example.com', roles: [], profile: {} },
     } as any);
     const context = createExecutionContext();
 
-    guard.canActivate(context);
+    await guard.canActivate(context);
 
     expect(store.getSessionByToken).toHaveBeenCalledWith('demo-admin');
   });
 
-  it('throws when session cannot be resolved', () => {
-    store.getSessionByToken.mockReturnValue(null);
+  it('throws when session cannot be resolved', async () => {
+    store.getSessionByToken.mockResolvedValue(null);
     const context = createExecutionContext({ authorization: 'Bearer invalid' });
 
-    expect(() => guard.canActivate(context)).toThrow(UnauthorizedException);
+    await expect(guard.canActivate(context)).rejects.toThrow(UnauthorizedException);
   });
 });
