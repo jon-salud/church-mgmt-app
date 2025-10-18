@@ -7,6 +7,8 @@ const toISO = (value: Date | null | undefined) => (value ? value.toISOString() :
 
 const toNumber = (value: any) => (value === null || value === undefined ? value : Number(value));
 
+type StoreReturn<T extends keyof DataStore> = Awaited<ReturnType<DataStore[T]>>;
+
 @Injectable()
 export class PrismaDataStore implements DataStore {
   constructor(private readonly prisma: PrismaService) {}
@@ -169,6 +171,18 @@ export class PrismaDataStore implements DataStore {
     };
   }
 
+  async createUser(input: Parameters<DataStore['createUser']>[0]): Promise<StoreReturn<'createUser'>> {
+    throw new Error('createUser is not yet implemented for Prisma data store');
+  }
+
+  async updateUser(id: string, input: Parameters<DataStore['updateUser']>[1]): Promise<StoreReturn<'updateUser'>> {
+    throw new Error('updateUser is not yet implemented for Prisma data store');
+  }
+
+  async deleteUser(id: string, input: Parameters<DataStore['deleteUser']>[1]): Promise<StoreReturn<'deleteUser'>> {
+    throw new Error('deleteUser is not yet implemented for Prisma data store');
+  }
+
   async listGroups(churchId?: string) {
     const church = churchId ?? (await this.getPrimaryChurchId());
     return this.client.group.findMany({
@@ -190,6 +204,29 @@ export class PrismaDataStore implements DataStore {
       where: { groupId },
       include: { user: { include: { profile: true } } },
     });
+  }
+
+  async addGroupMember(
+    groupId: string,
+    input: Parameters<DataStore['addGroupMember']>[1],
+  ): Promise<StoreReturn<'addGroupMember'>> {
+    throw new Error('addGroupMember is not yet implemented for Prisma data store');
+  }
+
+  async updateGroupMember(
+    groupId: string,
+    userId: string,
+    input: Parameters<DataStore['updateGroupMember']>[2],
+  ): Promise<StoreReturn<'updateGroupMember'>> {
+    throw new Error('updateGroupMember is not yet implemented for Prisma data store');
+  }
+
+  async removeGroupMember(
+    groupId: string,
+    userId: string,
+    input: Parameters<DataStore['removeGroupMember']>[2],
+  ): Promise<StoreReturn<'removeGroupMember'>> {
+    throw new Error('removeGroupMember is not yet implemented for Prisma data store');
   }
 
   async listEvents() {
@@ -226,6 +263,18 @@ export class PrismaDataStore implements DataStore {
         recordedAt: toISO(entry.recordedAt)!,
       })),
     };
+  }
+
+  async createEvent(input: Parameters<DataStore['createEvent']>[0]): Promise<StoreReturn<'createEvent'>> {
+    throw new Error('createEvent is not yet implemented for Prisma data store');
+  }
+
+  async updateEvent(id: string, input: Parameters<DataStore['updateEvent']>[1]): Promise<StoreReturn<'updateEvent'>> {
+    throw new Error('updateEvent is not yet implemented for Prisma data store');
+  }
+
+  async deleteEvent(id: string, input: Parameters<DataStore['deleteEvent']>[1]): Promise<StoreReturn<'deleteEvent'>> {
+    throw new Error('deleteEvent is not yet implemented for Prisma data store');
   }
 
   async recordAttendance(input: Parameters<DataStore['recordAttendance']>[0]) {

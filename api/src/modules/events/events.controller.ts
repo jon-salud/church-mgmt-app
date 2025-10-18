@@ -1,7 +1,9 @@
-import { Body, Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { EventsService } from './events.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
+import { CreateEventDto } from './dto/create-event.dto';
+import { UpdateEventDto } from './dto/update-event.dto';
 
 @UseGuards(AuthGuard)
 @Controller('events')
@@ -25,5 +27,31 @@ export class EventsController {
     @Req() req: any,
   ) {
     return this.eventsService.recordAttendance(id, dto.userId, dto.status, dto.note, req.user?.id);
+  }
+
+  @Post()
+  create(@Body() dto: CreateEventDto, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.eventsService.create(dto, req.user.id);
+  }
+
+  @Patch(':id')
+  update(@Param('id') id: string, @Body() dto: UpdateEventDto, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.eventsService.update(id, dto, req.user.id);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.eventsService.remove(id, req.user.id);
+  }
+
+  private ensureAdmin(req: any) {
+    const roles: Array<{ churchId: string; role: string }> = req.user?.roles ?? [];
+    const isAdmin = roles.some(role => role.role === 'Admin');
+    if (!isAdmin) {
+      throw new ForbiddenException('Admin role required for event management');
+    }
   }
 }

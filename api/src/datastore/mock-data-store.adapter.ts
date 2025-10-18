@@ -30,6 +30,18 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.getUserByEmail(email);
   }
 
+  async createUser(input: Parameters<MockDatabaseService['createUser']>[0]) {
+    return this.mock.createUser(input);
+  }
+
+  async updateUser(id: string, input: Parameters<MockDatabaseService['updateUser']>[1]) {
+    return this.mock.updateUser(id, input);
+  }
+
+  async deleteUser(id: string, input: Parameters<MockDatabaseService['deleteUser']>[1]) {
+    return this.mock.deleteUser(id, input);
+  }
+
   async listGroups(churchId?: string) {
     return this.mock.listGroups(churchId);
   }
@@ -42,12 +54,44 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.getGroupMembers(groupId);
   }
 
+  async addGroupMember(groupId: string, input: Parameters<MockDatabaseService['addGroupMember']>[1]) {
+    return this.mock.addGroupMember(groupId, input);
+  }
+
+  async updateGroupMember(
+    groupId: string,
+    userId: string,
+    input: Parameters<MockDatabaseService['updateGroupMember']>[2],
+  ) {
+    return this.mock.updateGroupMember(groupId, userId, input);
+  }
+
+  async removeGroupMember(
+    groupId: string,
+    userId: string,
+    input: Parameters<MockDatabaseService['removeGroupMember']>[2],
+  ) {
+    return this.mock.removeGroupMember(groupId, userId, input);
+  }
+
   async listEvents() {
     return this.mock.listEvents();
   }
 
   async getEventById(id: string) {
     return this.mock.getEventById(id);
+  }
+
+  async createEvent(input: Parameters<MockDatabaseService['createEvent']>[0]) {
+    return this.mock.createEvent(input);
+  }
+
+  async updateEvent(id: string, input: Parameters<MockDatabaseService['updateEvent']>[1]) {
+    return this.mock.updateEvent(id, input);
+  }
+
+  async deleteEvent(id: string, input: Parameters<MockDatabaseService['deleteEvent']>[1]) {
+    return this.mock.deleteEvent(id, input);
   }
 
   async recordAttendance(input: Parameters<MockDatabaseService['recordAttendance']>[0]) {

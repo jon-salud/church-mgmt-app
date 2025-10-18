@@ -4,6 +4,9 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 
 describe('Users (e2e-light)', () => {
   let app: NestFastifyApplication;
+  let createdUserId: string;
+  let createdEventId: string;
+  let targetGroupId: string;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
@@ -31,6 +34,150 @@ describe('Users (e2e-light)', () => {
     expect(res.statusCode).toBe(200);
     const body = res.json();
     expect(body[0]).toHaveProperty('name');
+    targetGroupId = body[0]?.id;
+    expect(targetGroupId).toBeDefined();
+  });
+
+  it('POST /users should create user when admin', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/v1/users',
+      headers: { authorization: 'Bearer demo-admin' },
+      payload: {
+        primaryEmail: `qa-user-${Date.now()}@example.com`,
+        firstName: 'Quality',
+        lastName: 'Assurance',
+        phone: '555-1234',
+        roles: ['Member'],
+        status: 'active',
+      },
+    });
+    expect([200, 201]).toContain(res.statusCode);
+    const body = res.json();
+    expect(body).toHaveProperty('id');
+    createdUserId = body.id;
+  });
+
+  it('PATCH /users/:id should update profile when admin', async () => {
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `/api/v1/users/${createdUserId}`,
+      headers: { authorization: 'Bearer demo-admin' },
+      payload: {
+        phone: '555-9999',
+        address: '123 Integration Ave',
+        notes: 'Updated via automated test',
+        status: 'invited',
+        roles: ['Leader'],
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body.profile.phone).toBe('555-9999');
+    expect(body.roles[0].role).toBe('Leader');
+  });
+
+  it('POST /groups/:id/members should add user to group', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: `/api/v1/groups/${targetGroupId}/members`,
+      headers: { authorization: 'Bearer demo-admin' },
+      payload: {
+        userId: createdUserId,
+        role: 'Volunteer',
+        status: 'Active',
+      },
+    });
+    expect([200, 201]).toContain(res.statusCode);
+    const body = res.json();
+    expect(body).toMatchObject({ userId: createdUserId, role: 'Volunteer' });
+  });
+
+  it('PATCH /groups/:id/members/:userId should update membership', async () => {
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `/api/v1/groups/${targetGroupId}/members/${createdUserId}`,
+      headers: { authorization: 'Bearer demo-admin' },
+      payload: { role: 'Leader', status: 'Inactive' },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body.role).toBe('Leader');
+    expect(body.status).toBe('Inactive');
+  });
+
+  it('POST /events should create event when admin', async () => {
+    const startAt = new Date(Date.now() + 3600_000).toISOString();
+    const endAt = new Date(Date.now() + 7200_000).toISOString();
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/v1/events',
+      headers: { authorization: 'Bearer demo-admin' },
+      payload: {
+        title: 'QA Integration Event',
+        description: 'Automated test fixture event',
+        startAt,
+        endAt,
+        location: 'Conference Room',
+        visibility: 'private',
+        groupId: targetGroupId,
+        tags: ['QA', 'Integration'],
+      },
+    });
+    expect([200, 201]).toContain(res.statusCode);
+    const body = res.json();
+    expect(body).toHaveProperty('id');
+    createdEventId = body.id;
+  });
+
+  it('PATCH /events/:id should update event when admin', async () => {
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `/api/v1/events/${createdEventId}`,
+      headers: { authorization: 'Bearer demo-admin' },
+      payload: {
+        title: 'QA Integration Event (Updated)',
+        tags: ['QA'],
+        groupId: null,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body.title).toContain('Updated');
+    expect(body.groupId).toBeUndefined();
+  });
+
+  it('DELETE /events/:id should remove event when admin', async () => {
+    const res = await app.inject({
+      method: 'DELETE',
+      url: `/api/v1/events/${createdEventId}`,
+      headers: { authorization: 'Bearer demo-admin' },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body).toMatchObject({ success: true });
+  });
+
+  it('DELETE /groups/:id/members/:userId should remove membership when admin', async () => {
+    const res = await app.inject({
+      method: 'DELETE',
+      url: `/api/v1/groups/${targetGroupId}/members/${createdUserId}`,
+      headers: { authorization: 'Bearer demo-admin' },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body).toMatchObject({ success: true });
+  });
+
+  it('DELETE /users/:id should remove user when admin', async () => {
+    const res = await app.inject({
+      method: 'DELETE',
+      url: `/api/v1/users/${createdUserId}`,
+      headers: { authorization: 'Bearer demo-admin' },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body).toMatchObject({ success: true });
   });
 
   it('POST /events/:id/attendance should 201/200', async () => {

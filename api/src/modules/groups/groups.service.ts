@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DATA_STORE, DataStore } from '../../datastore';
+import { AddGroupMemberDto } from './dto/add-group-member.dto';
+import { UpdateGroupMemberDto } from './dto/update-group-member.dto';
 
 @Injectable()
 export class GroupsService {
@@ -28,5 +30,17 @@ export class GroupsService {
 
   members(id: string) {
     return this.db.getGroupMembers(id);
+  }
+
+  addMember(groupId: string, input: AddGroupMemberDto, actorUserId: string) {
+    return this.db.addGroupMember(groupId, { ...input, actorUserId });
+  }
+
+  updateMember(groupId: string, userId: string, input: UpdateGroupMemberDto, actorUserId: string) {
+    return this.db.updateGroupMember(groupId, userId, { ...input, actorUserId });
+  }
+
+  removeMember(groupId: string, userId: string, actorUserId: string) {
+    return this.db.removeGroupMember(groupId, userId, { actorUserId });
   }
 }

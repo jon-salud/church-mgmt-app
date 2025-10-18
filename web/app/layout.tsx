@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import { Metadata, Viewport } from 'next';
 import Link from 'next/link';
 import './globals.css';
 import { api } from '../lib/api';
@@ -9,6 +9,9 @@ export const metadata: Metadata = {
   title: 'Church Management Console',
   description: 'Member, group, events, announcements, and giving management for the ACC MVP.',
   manifest: '/manifest.json',
+};
+
+export const viewport: Viewport = {
   themeColor: '#0f172a',
 };
 

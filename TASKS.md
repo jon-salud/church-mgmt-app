@@ -21,6 +21,9 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - CI guardrails: path-aware GitHub Actions workflow running API and web smoke suites
 - Data store abstraction with selectable `DATA_MODE` (mock-default) and updated tooling/docs
 - API unit & integration test expansion with coverage reporting wired into CI
+- `/users` admin CRUD (create/update/delete) with profile editing UI
+- Group membership management flows (add/update/remove via API + web)
+- Event lifecycle CRUD with admin UI controls
 
 ### 🔄 In Progress
 
@@ -28,9 +31,6 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 
 ### 📝 Backlog / Upcoming
 
-- Flesh out `/users` admin CRUD (create/update) and profile editing
-- Group membership management (bulk add/remove endpoints + UI actions)
-- Event CRUD (create/update) and attendee filtering
 - Attendance CSV export for events
 - Announcement create/edit experience with scheduling controls
 - Giving reports, contribution editing, and CSV export

@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DATA_STORE, DataStore } from '../../datastore';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -11,5 +13,17 @@ export class UsersService {
 
   get(id: string) {
     return this.db.getUserProfile(id);
+  }
+
+  create(input: CreateUserDto, actorUserId: string) {
+    return this.db.createUser({ ...input, actorUserId });
+  }
+
+  update(id: string, input: UpdateUserDto, actorUserId: string) {
+    return this.db.updateUser(id, { ...input, actorUserId });
+  }
+
+  delete(id: string, actorUserId: string) {
+    return this.db.deleteUser(id, { actorUserId });
   }
 }
