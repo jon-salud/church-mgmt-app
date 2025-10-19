@@ -9,6 +9,7 @@ import { GivingModule } from './giving/giving.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { DataStoreModule } from '../datastore';
 import { AuditModule } from './audit/audit.module';
+import { ObservabilityModule } from './observability/observability.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AuditModule } from './audit/audit.module';
     GivingModule,
     DashboardModule,
     AuditModule,
+    ObservabilityModule,
   ],
 })
 export class AppModule {}

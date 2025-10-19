@@ -1,0 +1,44 @@
+[
+  {
+    "id": "audit-1",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "attendance.updated",
+    "entity": "event",
+    "entityId": "event-sunday-service",
+    "summary": "Admin marked Maria Taulagi as checked in for Sunday Service",
+    "metadata": {
+      "userId": "user-member-1",
+      "newStatus": "checkedIn"
+    },
+    "createdAt": "2025-10-16T21:00:00.000Z"
+  },
+  {
+    "id": "audit-2",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "giving.recorded",
+    "entity": "contribution",
+    "entityId": "contribution-2",
+    "summary": "Admin recorded $40.00 cash gift for Tomas Perenise",
+    "metadata": {
+      "memberId": "user-member-2",
+      "amount": 40,
+      "fundId": "fund-missions"
+    },
+    "createdAt": "2025-10-16T22:00:00.000Z"
+  },
+  {
+    "id": "audit-3",
+    "churchId": "church-acc",
+    "actorUserId": "user-leader",
+    "action": "announcement.read",
+    "entity": "announcement",
+    "entityId": "announcement-welcome",
+    "summary": "Sione Latu read announcement \"Welcome to the new app!\"",
+    "metadata": {
+      "userId": "user-leader"
+    },
+    "createdAt": "2025-10-16T23:00:00.000Z"
+  }
+]
