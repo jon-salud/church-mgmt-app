@@ -65,9 +65,12 @@
 
 - **As an Admin/Leader**, I can create groups, assign leaders, and add members **who may belong to multiple groups simultaneously** (e.g., a Christian can be in a geographical ministry, a service ministry, and a volunteer team).
   - AC: Group has `name`, `description`, `type` (taxonomy below), optional `meetingDay/time`, and tags.
-  - AC: Members can be added to many groups; group-level roles supported (Member, Leader, Coordinator, Volunteer).
-  - AC: Leader can see & manage only their group(s).
-  - AC: View a group roster and quick actions (add/remove member, change role).
+- **As an Admin/Leader**, I can manage group membership.
+  - AC: Members can be added to many groups.
+  - AC: Group-level roles are supported (Member, Leader, Coordinator, Volunteer).
+  - AC: Leaders can see and manage only their own group(s).
+- **As a Member**, I can view the roster for groups I belong to.
+  - AC: Members can see a list of other members in their groups.
 
 ### **Group Taxonomy (MVP)**
 
@@ -103,23 +106,28 @@
 
 - **As an Admin**, I can post announcements visible to all members or to selected groups.
   - AC: Announcement has title, body (basic rich text/markdown), audience (All or selected groupIds), publishAt, expireAt.
-  - AC: Members see an **Announcements feed**; mark as read.
+- **As a Member**, I can view and interact with the announcements feed.
+  - AC: Members see an **Announcements feed**.
+  - AC: Members can mark announcements as read.
   - AC: Email delivery can be a **no-op** in MVP with a “Send email” stub (log only) to avoid deliverability setup; real email in roadmap.
 
-### 3.6 Giving (Manual Records)
+### 3.7 Giving (Manual Records)
 
 - **As an Admin**, I can record pledges and received giving **manually** per member.
   - AC: Contribution: memberId, date, amount, method (cash, bank transfer), fund (General, Missions, etc.), note.
   - AC: Filter by date range/member/fund; CSV export.
   - AC: Provide summary metrics (overall, month-to-date, previous month, average gift) and breakdowns by fund/month for dashboards.
+- **As a Member**, I can view my own giving history.
+  - AC: Members can see a list of their past contributions.
+  - AC: Members can download a CSV export of their giving history for a specified date range.
 
-### 3.7 PWA
+### 3.8 PWA
 
 - **As a Member**, I can install the app on my phone and quickly access announcements, my groups, and upcoming events.
   - AC: Web app meets PWA install criteria (manifest + service worker).
   - AC: Basic offline read cache for last-seen announcements & event list; write operations require online.
 
-### 3.8 Pastoral Care
+### 3.9 Pastoral Care
 
 - **As a Member**, I can submit a prayer request.
   - AC: Prayer requests can be marked as "public" or "private".
