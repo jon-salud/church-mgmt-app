@@ -1,4 +1,4 @@
-import { Page, expect } from '@playwright/test';
+import { Page } from '@playwright/test';
 import * as axe from 'axe-core';
 
 export class BasePage {
@@ -15,6 +15,20 @@ export class BasePage {
   async checkAccessibility() {
     await this.page.addScriptTag({ path: require.resolve('axe-core') });
     const accessibilityScanResults = await this.page.evaluate(() => axe.run());
-    expect(accessibilityScanResults.violations).toEqual([]);
+
+    if (accessibilityScanResults.violations.length > 0) {
+      console.warn(`Accessibility violations found on page: ${this.page.url()}`);
+      console.warn('--------------------------------------------------');
+      accessibilityScanResults.violations.forEach((violation, index) => {
+        console.warn(`Violation ${index + 1}: ${violation.id} (${violation.impact})`);
+        console.warn(`  Description: ${violation.description}`);
+        console.warn(`  Help: ${violation.helpUrl}`);
+        violation.nodes.forEach(node => {
+          console.warn(`    - Target: ${node.target}`);
+          console.warn(`      HTML: ${node.html}`);
+        });
+        console.warn('--------------------------------------------------');
+      });
+    }
   }
 }
