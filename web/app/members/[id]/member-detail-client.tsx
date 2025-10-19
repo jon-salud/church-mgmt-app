@@ -66,7 +66,7 @@ export function MemberDetailClient({ member, roles }: MemberDetailClientProps) {
         <InfoCard title="Roles">
           {member.roles?.length ? (
             <ul className="text-sm text-slate-200">
-              {member.roles.map((role: any)_ => (
+              {member.roles.map((role: any) => (
                 <li key={`${role.churchId}-${role.roleId}`}>
                   <span className="font-medium text-slate-100">{role.role}</span>
                   {role.permissions?.length ? (

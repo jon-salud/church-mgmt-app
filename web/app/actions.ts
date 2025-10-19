@@ -255,27 +255,12 @@ export async function createMemberAction(formData: FormData) {
 export async function updateMemberAction(formData: FormData) {
   const userId = String(formData.get('userId'));
   const payload: Record<string, unknown> = {};
-  const fields: Array<[string, string | undefined]> = [
-    ['firstName', formData.get('firstName') ? String(formData.get('firstName')) : undefined],
-    ['lastName', formData.get('lastName') ? String(formData.get('lastName')) : undefined],
-    ['primaryEmail', formData.get('primaryEmail') ? String(formData.get('primaryEmail')) : undefined],
-    ['phone', formData.get('phone') ? String(formData.get('phone')) : undefined],
-    ['address', formData.get('address') ? String(formData.get('address')) : undefined],
-    ['notes', formData.get('notes') ? String(formData.get('notes')) : undefined],
-  ];
-  for (const [key, value] of fields) {
-    if (value !== undefined) {
+  for (const [key, value] of formData.entries()) {
+    if (key !== 'userId') {
       payload[key] = value;
     }
   }
-  const status = formData.get('status') ? String(formData.get('status')) : undefined;
-  if (status) {
-    payload.status = status;
-  }
-  const roleId = formData.get('roleId') ? String(formData.get('roleId')) : undefined;
-  if (roleId) {
-    payload.roleIds = [roleId];
-  }
+
   await request(`/users/${userId}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),

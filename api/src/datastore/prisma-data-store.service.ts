@@ -247,6 +247,27 @@ export class PrismaDataStore implements DataStore {
             lastName: input.lastName,
             phone: input.phone,
             notes: input.notes,
+            membershipStatus: input.membershipStatus,
+            joinMethod: input.joinMethod,
+            joinDate: input.joinDate,
+            previousChurch: input.previousChurch,
+            baptismDate: input.baptismDate,
+            spiritualGifts: input.spiritualGifts,
+            coursesAttended: input.coursesAttended,
+            maritalStatus: input.maritalStatus,
+            occupation: input.occupation,
+            school: input.school,
+            gradeLevel: input.gradeLevel,
+            graduationYear: input.graduationYear,
+            skillsAndInterests: input.skillsAndInterests,
+            backgroundCheckStatus: input.backgroundCheckStatus,
+            backgroundCheckDate: input.backgroundCheckDate,
+            onboardingComplete: input.onboardingComplete,
+            emergencyContactName: input.emergencyContactName,
+            emergencyContactPhone: input.emergencyContactPhone,
+            allergiesOrMedicalNotes: input.allergiesOrMedicalNotes,
+            parentalConsentOnFile: input.parentalConsentOnFile,
+            pastoralNotes: input.pastoralNotes,
           },
         },
       },
@@ -278,7 +299,14 @@ export class PrismaDataStore implements DataStore {
     const settings = await this.client.settings.findUnique({
       where: { churchId },
     });
-    return settings ? JSON.parse(settings.optionalFields ?? '{}') : {};
+    if (!settings || !settings.optionalFields) {
+      return {};
+    }
+    try {
+      return JSON.parse(settings.optionalFields);
+    } catch (error) {
+      return {};
+    }
   }
 
   async updateSettings(churchId: string, settings: any) {
@@ -288,7 +316,14 @@ export class PrismaDataStore implements DataStore {
       update: { optionalFields },
       create: { churchId, optionalFields },
     });
-    return result ? JSON.parse(result.optionalFields ?? '{}') : {};
+    if (!result || !result.optionalFields) {
+      return {};
+    }
+    try {
+      return JSON.parse(result.optionalFields);
+    } catch (error) {
+      return {};
+    }
   }
 
   async listRoles(): Promise<StoreReturn<'listRoles'>> {
