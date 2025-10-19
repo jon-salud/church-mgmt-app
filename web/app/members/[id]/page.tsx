@@ -8,8 +8,9 @@ interface MemberDetailProps {
 
 export default async function MemberDetailPage({ params }: MemberDetailProps) {
   const member = await api.member(params.id);
+  const roles = await api.roles();
   if (!member) {
     notFound();
   }
-  return <MemberDetailClient member={member} />;
+  return <MemberDetailClient member={member} roles={roles} />;
 }

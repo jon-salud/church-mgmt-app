@@ -10,6 +10,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { DataStoreModule } from '../datastore';
 import { AuditModule } from './audit/audit.module';
 import { ObservabilityModule } from './observability/observability.module';
+import { RolesModule } from './roles/roles.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { ObservabilityModule } from './observability/observability.module';
     DashboardModule,
     AuditModule,
     ObservabilityModule,
+    RolesModule,
   ],
 })
 export class AppModule {}

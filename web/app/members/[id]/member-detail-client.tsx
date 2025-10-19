@@ -8,11 +8,13 @@ import { updateMemberAction, deleteMemberAction } from "../../actions";
 
 type MemberDetailClientProps = {
   member: any;
+  roles: Array<{ id: string; name: string; slug?: string }>;
 };
 
-export function MemberDetailClient({ member }: MemberDetailClientProps) {
+export function MemberDetailClient({ member, roles }: MemberDetailClientProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
+  const primaryRoleId = member.roles?.[0]?.roleId ?? roles.find(role => role.slug === "member")?.id ?? roles[0]?.id ?? "";
 
   return (
     <section className="space-y-6">
@@ -48,11 +50,23 @@ export function MemberDetailClient({ member }: MemberDetailClientProps) {
           <p className="text-xs text-slate-500">Joined: {format(new Date(member.createdAt), "d MMM yyyy")}</p>
         </InfoCard>
         <InfoCard title="Roles">
-          <ul className="text-sm text-slate-200">
-            {member.roles?.map((role: any) => (
-              <li key={`${role.churchId}-${role.role}`}>{role.role}</li>
-            ))}
-          </ul>
+          {member.roles?.length ? (
+            <ul className="text-sm text-slate-200">
+              {member.roles.map((role: any) => (
+                <li key={`${role.churchId}-${role.roleId}`}>
+                  <span className="font-medium text-slate-100">{role.role}</span>
+                  {role.permissions?.length ? (
+                    <span className="block text-xs text-slate-400">
+                      Permissions: {role.permissions.slice(0, 4).join(", ")}
+                      {role.permissions.length > 4 ? "…" : ""}
+                    </span>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-slate-400">Member</p>
+          )}
         </InfoCard>
       </div>
 
@@ -174,13 +188,16 @@ export function MemberDetailClient({ member }: MemberDetailClientProps) {
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             Role
             <select
-              name="role"
-              defaultValue={member.roles?.[0]?.role ?? "Member"}
-              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              name="roleId"
+              defaultValue={primaryRoleId}
+              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 disabled:opacity-50"
+              disabled={roles.length === 0}
             >
-              <option value="Member">Member</option>
-              <option value="Leader">Leader</option>
-              <option value="Admin">Admin</option>
+              {roles.map(role => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              ))}
             </select>
           </label>
           <label className="grid gap-1 text-xs uppercase text-slate-400 md:col-span-2">

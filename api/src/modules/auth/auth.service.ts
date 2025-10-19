@@ -2,12 +2,11 @@ import { Inject, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Secret, SignOptions, sign, verify } from 'jsonwebtoken';
 import { DATA_STORE, DataStore } from '../../datastore';
-import { Role } from '../../mock/mock-data';
 
 interface JwtPayload {
   sub: string;
   email: string;
-  roles: Array<{ churchId: string; role: Role }>;
+  roles: Array<{ churchId: string; roleId: string; role: string }>;
   provider?: 'google' | 'facebook' | 'demo';
 }
 
@@ -55,7 +54,7 @@ export class AuthService {
     this.allowDemoLogin = (this.config.get<string>('ALLOW_DEMO_LOGIN') ?? 'true').toLowerCase() !== 'false';
   }
 
-  login(email: string, provider: 'google' | 'facebook', role?: Role) {
+  login(email: string, provider: 'google' | 'facebook', role?: string) {
     if (!this.allowDemoLogin) {
       throw new UnauthorizedException('Demo credential flow is disabled.');
     }
@@ -73,11 +72,18 @@ export class AuthService {
     return this.db.getSessionByToken(token);
   }
 
-  issueJwt(user: { id: string; primaryEmail: string; roles: Array<{ churchId: string; role: Role }> }, provider: JwtPayload['provider']) {
+  issueJwt(
+    user: { id: string; primaryEmail: string; roles: Array<{ churchId: string; roleId?: string; role?: string }> },
+    provider: JwtPayload['provider'],
+  ) {
     const payload: JwtPayload = {
       sub: user.id,
       email: user.primaryEmail,
-      roles: user.roles ?? [],
+      roles: (user.roles ?? []).map(role => ({
+        churchId: role.churchId,
+        roleId: role.roleId ?? role.role ?? '',
+        role: role.role ?? 'Unknown Role',
+      })),
       provider,
     };
     return sign(payload, this.jwtSecret, { expiresIn: this.jwtExpiresIn });

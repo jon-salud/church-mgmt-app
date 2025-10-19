@@ -1,6 +1,20 @@
 import { randomUUID } from 'node:crypto';
 
-export type Role = 'Member' | 'Leader' | 'Admin';
+export const DEFAULT_ROLE_SLUGS = ['admin', 'leader', 'member'] as const;
+export type DefaultRoleSlug = (typeof DEFAULT_ROLE_SLUGS)[number];
+
+export interface MockRole {
+  id: string;
+  churchId: string;
+  slug: DefaultRoleSlug | string;
+  name: string;
+  description?: string;
+  permissions: string[];
+  isSystem: boolean;
+  isDeletable: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export type MembershipStatus = 'Active' | 'Inactive';
 
@@ -24,13 +38,13 @@ export interface MockUser {
   status: 'active' | 'invited';
   createdAt: string;
   lastLoginAt?: string;
-  roles: Array<{ churchId: string; role: Role }>;
+  roles: Array<{ churchId: string; roleId: string }>;
   profile: MockProfile;
 }
 
 export interface MockGroupMember {
   userId: string;
-  role: Role | 'Coordinator' | 'Volunteer';
+  role: 'Member' | 'Leader' | 'Admin' | 'Coordinator' | 'Volunteer';
   status: MembershipStatus;
   joinedAt: string;
 }
@@ -157,6 +171,53 @@ export const mockChurches: MockChurch[] = [
   },
 ];
 
+export const mockRoles: MockRole[] = [
+  {
+    id: 'role-admin',
+    churchId,
+    slug: 'admin',
+    name: 'Admin',
+    description: 'Full access to manage people, groups, events, announcements, giving, and audit logs.',
+    permissions: [
+      'people.manage',
+      'groups.manage',
+      'events.manage',
+      'announcements.manage',
+      'giving.manage',
+      'audit.read',
+      'settings.manage',
+    ],
+    isSystem: true,
+    isDeletable: false,
+    createdAt: makeDate(-365),
+    updatedAt: makeDate(-7),
+  },
+  {
+    id: 'role-leader',
+    churchId,
+    slug: 'leader',
+    name: 'Leader',
+    description: 'Manage assigned groups and record attendance.',
+    permissions: ['groups.own.manage', 'attendance.record', 'announcements.read'],
+    isSystem: false,
+    isDeletable: true,
+    createdAt: makeDate(-365),
+    updatedAt: makeDate(-7),
+  },
+  {
+    id: 'role-member',
+    churchId,
+    slug: 'member',
+    name: 'Member',
+    description: 'View personal profile, announcements, and events.',
+    permissions: ['self.view', 'announcements.read', 'events.view'],
+    isSystem: false,
+    isDeletable: true,
+    createdAt: makeDate(-365),
+    updatedAt: makeDate(-7),
+  },
+];
+
 export const mockUsers: MockUser[] = [
   {
     id: 'user-admin',
@@ -164,7 +225,7 @@ export const mockUsers: MockUser[] = [
     status: 'active',
     createdAt: makeDate(-90),
     lastLoginAt: makeDate(-1, 9),
-    roles: [{ churchId, role: 'Admin' }],
+    roles: [{ churchId, roleId: 'role-admin' }],
     profile: {
       firstName: 'Ariana',
       lastName: 'Matau',
@@ -179,7 +240,7 @@ export const mockUsers: MockUser[] = [
     status: 'active',
     createdAt: makeDate(-60),
     lastLoginAt: makeDate(-2, 8),
-    roles: [{ churchId, role: 'Leader' }],
+    roles: [{ churchId, roleId: 'role-leader' }],
     profile: {
       firstName: 'Sione',
       lastName: 'Latu',
@@ -194,7 +255,7 @@ export const mockUsers: MockUser[] = [
     status: 'active',
     createdAt: makeDate(-45),
     lastLoginAt: makeDate(-3, 11),
-    roles: [{ churchId, role: 'Member' }],
+    roles: [{ churchId, roleId: 'role-member' }],
     profile: {
       firstName: 'Maria',
       lastName: 'Taulagi',
@@ -208,7 +269,7 @@ export const mockUsers: MockUser[] = [
     status: 'active',
     createdAt: makeDate(-20),
     lastLoginAt: makeDate(-5, 12),
-    roles: [{ churchId, role: 'Member' }],
+    roles: [{ churchId, roleId: 'role-member' }],
     profile: {
       firstName: 'Tomas',
       lastName: 'Perenise',
@@ -221,7 +282,7 @@ export const mockUsers: MockUser[] = [
     primaryEmail: 'member3@example.com',
     status: 'active',
     createdAt: makeDate(-10),
-    roles: [{ churchId, role: 'Member' }],
+    roles: [{ churchId, roleId: 'role-member' }],
     profile: {
       firstName: 'Lydia',
       lastName: 'Ngata',

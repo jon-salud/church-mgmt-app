@@ -1,7 +1,6 @@
 import { ArrayNotEmpty, IsArray, IsEmail, IsIn, IsOptional, IsString, MaxLength } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export const ROLE_VALUES = ['Member', 'Leader', 'Admin'] as const;
 export const STATUS_VALUES = ['active', 'invited'] as const;
 
 export class CreateUserDto {
@@ -43,10 +42,10 @@ export class CreateUserDto {
   @IsIn(STATUS_VALUES)
   status?: (typeof STATUS_VALUES)[number];
 
-  @ApiPropertyOptional({ type: [String], enum: ROLE_VALUES })
+  @ApiPropertyOptional({ type: [String], description: 'Role IDs to assign at creation time' })
   @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
-  @IsIn(ROLE_VALUES, { each: true })
-  roles?: Array<(typeof ROLE_VALUES)[number]>;
+  @IsString({ each: true })
+  roleIds?: string[];
 }

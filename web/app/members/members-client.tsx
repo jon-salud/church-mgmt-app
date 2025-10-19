@@ -5,13 +5,21 @@ import Link from "next/link";
 import { Modal } from "../../components/ui/modal";
 import { createMemberAction } from "../actions";
 
+type RoleOption = {
+  id: string;
+  name: string;
+  slug?: string;
+};
+
 type MembersClientProps = {
   members: Array<any>;
+  roles: RoleOption[];
   initialQuery: string;
 };
 
-export function MembersClient({ members, initialQuery }: MembersClientProps) {
+export function MembersClient({ members, roles, initialQuery }: MembersClientProps) {
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const defaultRoleId = roles.find(role => role.slug === "member")?.id ?? roles[0]?.id ?? "";
 
   return (
     <section className="space-y-6">
@@ -74,7 +82,9 @@ export function MembersClient({ members, initialQuery }: MembersClientProps) {
                   </Link>
                 </td>
                 <td className="px-4 py-3 text-slate-400">{member.primaryEmail}</td>
-                <td className="px-4 py-3 text-slate-300">{member.roles?.[0]?.role ?? "Member"}</td>
+                <td className="px-4 py-3 text-slate-300">
+                  {member.roles?.map((role: any) => role.role).join(", ") || "Member"}
+                </td>
                 <td className="px-4 py-3 text-slate-400">
                   {member.groups?.map((g: any) => g.name).join(", ") || "—"}
                 </td>
@@ -148,13 +158,16 @@ export function MembersClient({ members, initialQuery }: MembersClientProps) {
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             Role
             <select
-              name="role"
-              defaultValue="Member"
-              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              name="roleId"
+              defaultValue={defaultRoleId}
+              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 disabled:opacity-50"
+              disabled={roles.length === 0}
             >
-              <option value="Member">Member</option>
-              <option value="Leader">Leader</option>
-              <option value="Admin">Admin</option>
+              {roles.map(role => (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              ))}
             </select>
           </label>
           <label className="grid gap-1 text-xs uppercase text-slate-400 md:col-span-2">

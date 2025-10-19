@@ -227,8 +227,8 @@ export async function createMemberAction(formData: FormData) {
   const address = formData.get('address') ? String(formData.get('address')) : undefined;
   const notes = formData.get('notes') ? String(formData.get('notes')) : undefined;
   const status = formData.get('status') ? String(formData.get('status')) : undefined;
-  const role = formData.get('role') ? String(formData.get('role')) : 'Member';
-  const payload = {
+  const roleId = formData.get('roleId') ? String(formData.get('roleId')) : undefined;
+  const payload: Record<string, unknown> = {
     firstName,
     lastName,
     primaryEmail,
@@ -236,8 +236,10 @@ export async function createMemberAction(formData: FormData) {
     address,
     notes,
     status,
-    roles: [role].filter(Boolean),
   };
+  if (roleId) {
+    payload.roleIds = [roleId];
+  }
   const created = await request<any>('/users', {
     method: 'POST',
     body: JSON.stringify(payload),
@@ -270,9 +272,9 @@ export async function updateMemberAction(formData: FormData) {
   if (status) {
     payload.status = status;
   }
-  const role = formData.get('role') ? String(formData.get('role')) : undefined;
-  if (role) {
-    payload.roles = [role];
+  const roleId = formData.get('roleId') ? String(formData.get('roleId')) : undefined;
+  if (roleId) {
+    payload.roleIds = [roleId];
   }
   await request(`/users/${userId}`, {
     method: 'PATCH',
@@ -287,6 +289,58 @@ export async function deleteMemberAction(formData: FormData) {
   await request(`/users/${userId}`, { method: 'DELETE' });
   revalidatePath('/members');
   redirect('/members');
+}
+
+export async function createRoleAction(formData: FormData) {
+  const name = String(formData.get('name') ?? '');
+  const description = formData.get('description') ? String(formData.get('description')) : undefined;
+  const permissions = formData.getAll('permissions').map(value => String(value));
+  await request('/roles', {
+    method: 'POST',
+    body: JSON.stringify({
+      name,
+      description,
+      permissions,
+    }),
+  });
+  revalidatePath('/roles');
+  revalidatePath('/members');
+}
+
+export async function updateRoleAction(formData: FormData) {
+  const roleId = String(formData.get('roleId'));
+  const payload: Record<string, unknown> = {};
+  const name = formData.get('name') ? String(formData.get('name')) : undefined;
+  if (name !== undefined) {
+    payload.name = name;
+  }
+  if (formData.has('description')) {
+    const description = formData.get('description');
+    payload.description = description !== null && String(description).length > 0 ? String(description) : '';
+  }
+  const permissions = formData.getAll('permissions').map(value => String(value));
+  payload.permissions = permissions;
+  await request(`/roles/${roleId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+  revalidatePath('/roles');
+  revalidatePath('/members');
+  revalidatePath('/dashboard');
+}
+
+export async function deleteRoleAction(formData: FormData) {
+  const roleId = String(formData.get('roleId'));
+  const reassignRoleId = formData.get('reassignRoleId') ? String(formData.get('reassignRoleId')) : undefined;
+  await request(`/roles/${roleId}`, {
+    method: 'DELETE',
+    body: JSON.stringify({
+      reassignRoleId: reassignRoleId && reassignRoleId.length > 0 ? reassignRoleId : undefined,
+    }),
+  });
+  revalidatePath('/roles');
+  revalidatePath('/members');
+  revalidatePath('/dashboard');
 }
 
 export async function addGroupMemberAction(formData: FormData) {

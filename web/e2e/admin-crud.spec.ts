@@ -27,12 +27,12 @@ test.fixme("admin can manage members, groups, and events end-to-end", async ({ p
     await page.getByLabel("Phone").fill(memberPhone);
     await page.getByLabel("Address").fill("123 QA Street");
     await page.getByLabel("Status").selectOption("invited");
-    await page.getByLabel("Role").selectOption("Leader");
+    await page.getByLabel("Role").selectOption({ label: "Leader" });
     await page.getByRole("button", { name: "Save Changes" }).click();
     await expect(page.getByText(`Phone: ${memberPhone}`)).toBeVisible();
 
-    const rolesCard = page.locator("table").filter({ has: page.getByRole("heading", { name: "Roles" }) });
-    await expect(rolesCard.locator("li").filter({ hasText: new RegExp(`^${memberFirst}\\s+${memberLast}`) })).toBeVisible();
+    const rolesSection = page.locator("section").filter({ has: page.getByRole("heading", { name: "Roles" }) });
+    await expect(rolesSection.locator("li").filter({ hasText: /Leader/ })).toBeVisible();
 
     await page.goto(`${baseUrl}/groups/group-worship`);
     const addMemberForm = page.locator("form").filter({ has: page.getByRole("button", { name: "Add to Group" }) });

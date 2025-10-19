@@ -94,7 +94,14 @@ export class PrismaDataStore implements DataStore {
       createdAt: user.createdAt,
       lastLoginAt: user.lastLoginAt,
       profile: user.profile,
-      roles: (user.churches as any[]).map((churchUser: any) => ({ churchId: churchUser.churchId, role: churchUser.role })),
+      roles: (user.churches as any[]).map((churchUser: any) => ({
+        churchId: churchUser.churchId,
+        roleId: churchUser.roleId ?? churchUser.role,
+        role: churchUser.role,
+        permissions: [],
+        isSystem: false,
+        isDeletable: true,
+      })),
       groups: (user.groupMembers as any[]).map((member: any) => ({
         id: member.groupId,
         name: member.group?.name,
@@ -111,7 +118,14 @@ export class PrismaDataStore implements DataStore {
     if (!user) return null;
     return {
       ...user,
-      roles: (user.churches as any[]).map((churchUser: any) => ({ churchId: churchUser.churchId, role: churchUser.role })),
+      roles: (user.churches as any[]).map((churchUser: any) => ({
+        churchId: churchUser.churchId,
+        roleId: churchUser.roleId ?? churchUser.role,
+        role: churchUser.role,
+        permissions: [],
+        isSystem: false,
+        isDeletable: true,
+      })),
     };
   }
 
@@ -123,7 +137,14 @@ export class PrismaDataStore implements DataStore {
     if (!user) return null;
     return {
       ...user,
-      roles: (user.churches as any[]).map((churchUser: any) => ({ churchId: churchUser.churchId, role: churchUser.role })),
+      roles: (user.churches as any[]).map((churchUser: any) => ({
+        churchId: churchUser.churchId,
+        roleId: churchUser.roleId ?? churchUser.role,
+        role: churchUser.role,
+        permissions: [],
+        isSystem: false,
+        isDeletable: true,
+      })),
     };
   }
 
@@ -181,6 +202,22 @@ export class PrismaDataStore implements DataStore {
 
   async deleteUser(id: string, input: Parameters<DataStore['deleteUser']>[1]): Promise<StoreReturn<'deleteUser'>> {
     throw new Error('deleteUser is not yet implemented for Prisma data store');
+  }
+
+  async listRoles(): Promise<StoreReturn<'listRoles'>> {
+    return [];
+  }
+
+  async createRole(input: Parameters<DataStore['createRole']>[0]): Promise<StoreReturn<'createRole'>> {
+    throw new Error('Role management is not yet implemented for Prisma data store');
+  }
+
+  async updateRole(id: string, input: Parameters<DataStore['updateRole']>[1]): Promise<StoreReturn<'updateRole'>> {
+    throw new Error('Role management is not yet implemented for Prisma data store');
+  }
+
+  async deleteRole(id: string, input: Parameters<DataStore['deleteRole']>[1]): Promise<StoreReturn<'deleteRole'>> {
+    throw new Error('Role management is not yet implemented for Prisma data store');
   }
 
   async listGroups(churchId?: string) {

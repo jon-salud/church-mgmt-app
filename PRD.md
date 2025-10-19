@@ -10,7 +10,7 @@
 
 ### **Primary Goals (MVP):**
 
-- Central **Member Directory** with roles/permissions.
+- Central **Member Directory** with admin-configurable roles/permissions.
 - **Groups / Ministries** management and member assignments.
 - **Events & Attendance** (create events, check-in/out, record attendance).
 - **Announcements** (simple one-to-many comms via email placeholder + in-app feed; SMS/Push in roadmap).
@@ -32,10 +32,13 @@
 
 ## 2) Users & Roles
 
-- **Member** (default): view own profile, view announcements, RSVP to events, view their groups & upcoming events.
-- **Leader** (group/ministry leader): everything a Member can do + manage their group membership & mark attendance for events assigned to them.
+- **Admin-managed role catalog**: Church Admins can add, edit, and delete roles to match their workflows; the built-in **Admin** role is system-protected and always retains full access.
+- **Member** (default template): view own profile, view announcements, RSVP to events, view their groups & upcoming events.
+- **Leader** (template): everything a Member can do + manage their group membership & mark attendance for events assigned to them.
 - **Admin** (church admin staff): full CRUD on people, groups, events, announcements, simple giving records, role assignment, and access to audit logs.
 - **Super Admin** (system owner; optional for multi-tenant): manage churches/organisations and environment-wide configs.
+
+> Templates seed new churches with sensible defaults; Admins can adjust or duplicate them, but the Admin role itself cannot be deleted.
 
 ---
 
@@ -46,7 +49,7 @@
 - **As a user**, I can sign in with **Google or Facebook**.
   - AC: Successful OAuth returns a JWT (or session) mapped to a **User** with a **Profile**.
   - AC: First-time sign-in creates a user; duplicates by email are prevented.
-  - AC: Role defaults to **Member**; Admin can elevate roles.
+  - AC: Role defaults to the **Member** template; Admin can assign any available custom role.
 
 ### 3.2 Member Directory
 
@@ -54,6 +57,9 @@
   - AC: Required fields: firstName, lastName, email; optional: phone, address, birthday, notes.
   - AC: Search by name/email; paginate & sort.
   - AC: Import CSV (post-MVP; optional stub in MVP).
+- **As an Admin**, I can manage the role catalog (create, edit, delete non-system roles).
+  - AC: Roles capture name, description, and permission scopes (modules/actions toggles).
+  - AC: System roles (e.g., Admin) are read-only and non-deletable; deleting a role with assignees prompts reassignment.
 
 ### 3.3 Groups / Ministries
 
@@ -161,7 +167,8 @@
 ### **Organisation / Multi-Tenant**
 
 - `Church` (id, name, timezone, address, createdAt)
-- `ChurchUser` (churchId, userId, role: Member|Leader|Admin)  ← allows multi-church later
+- `Role` (id, churchId, name, description, permissions JSONB, isSystem boolean default false, isDeletable boolean default true)
+- `ChurchUser` (churchId, userId, roleId FK → Role, assignedAt)  ← allows multi-church later
 
 ### **Identity**
 
@@ -256,6 +263,10 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 
 ### **Admin & Audit**
 
+- `GET /roles` (Admin) — list roles + assignment counts
+- `POST /roles` (Admin) — create custom role
+- `PATCH /roles/:id` (Admin) — update non-system role metadata/permissions
+- `DELETE /roles/:id` (Admin) — delete role (reject if system role or without reassignment)
 - `GET /audit?entity=&actorUserId=&from=&to=`
 - `GET /health` (readiness/liveness)
 - `GET /metrics` (prometheus—optional)

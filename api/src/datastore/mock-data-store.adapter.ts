@@ -113,6 +113,21 @@ export class MockDataStoreAdapter implements DataStore {
   async updateAnnouncement(id: string, input: Parameters<MockDatabaseService['updateAnnouncement']>[1]) {
     return this.mock.updateAnnouncement(id, input);
   }
+  async listRoles() {
+    return this.mock.listRoles();
+  }
+
+  async createRole(input: Parameters<MockDatabaseService['createRole']>[0]) {
+    return this.mock.createRole(input);
+  }
+
+  async updateRole(id: string, input: Parameters<MockDatabaseService['updateRole']>[1]) {
+    return this.mock.updateRole(id, input);
+  }
+
+  async deleteRole(id: string, input: Parameters<MockDatabaseService['deleteRole']>[1]) {
+    return this.mock.deleteRole(id, input);
+  }
 
   async listFunds() {
     return this.mock.listFunds();
