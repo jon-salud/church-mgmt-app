@@ -49,7 +49,7 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
   const page = Number.isNaN(pageParam) || pageParam < 1 ? 1 : pageParam;
 
   const me = await api.currentUser();
-  const isAdmin = me?.user?.roles?.some(role => role.role === 'Admin');
+  const isAdmin = me?.user?.roles?.some((role: { role: string }) => role.role === 'Admin');
   if (!isAdmin) {
     redirect('/dashboard');
   }

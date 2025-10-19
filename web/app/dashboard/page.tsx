@@ -11,7 +11,7 @@ export default async function DashboardPage() {
         <p className="text-sm text-slate-400">Snapshot of community health and activity.</p>
       </div>
 
-      <dl className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <StatCard
           label="Members"
           value={summary.memberCount}
@@ -36,7 +36,7 @@ export default async function DashboardPage() {
           helper="Recorded manually"
           testId="stat-giving"
         />
-      </dl>
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card title="Next events">
@@ -111,14 +111,14 @@ function StatCard({
   testId?: string;
 }) {
   return (
-    <div
+    <dl
       data-testid={testId}
       className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 shadow-lg shadow-slate-950/40"
     >
       <dt className="text-xs uppercase tracking-wide text-slate-400">{label}</dt>
       <dd className="mt-2 text-2xl font-semibold text-slate-100">{value}</dd>
       <p className="text-xs text-slate-500">{helper}</p>
-    </div>
+    </dl>
   );
 }
 
