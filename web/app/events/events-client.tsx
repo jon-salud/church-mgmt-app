@@ -73,6 +73,12 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                   <span className="rounded-full border border-slate-700 px-3 py-1 text-xs uppercase tracking-wide text-slate-400">
                     {event.visibility}
                   </span>
+                  <a
+                    href={event.attendanceCsvUrl}
+                    className="rounded-md border border-slate-700 px-3 py-1 text-xs text-slate-200 transition hover:bg-slate-900"
+                  >
+                    Download CSV
+                  </a>
                   <button
                     type="button"
                     onClick={() =>

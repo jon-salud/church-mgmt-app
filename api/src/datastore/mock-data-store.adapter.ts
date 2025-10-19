@@ -106,6 +106,14 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.markAnnouncementRead(announcementId, userId);
   }
 
+  async createAnnouncement(input: Parameters<MockDatabaseService['createAnnouncement']>[0]) {
+    return this.mock.createAnnouncement(input);
+  }
+
+  async updateAnnouncement(id: string, input: Parameters<MockDatabaseService['updateAnnouncement']>[1]) {
+    return this.mock.updateAnnouncement(id, input);
+  }
+
   async listFunds() {
     return this.mock.listFunds();
   }
@@ -116,6 +124,18 @@ export class MockDataStoreAdapter implements DataStore {
 
   async recordContribution(input: Parameters<MockDatabaseService['recordContribution']>[0]) {
     return this.mock.recordContribution(input);
+  }
+
+  async updateContribution(id: string, input: Parameters<MockDatabaseService['updateContribution']>[1]) {
+    return this.mock.updateContribution(id, input);
+  }
+
+  async getGivingSummary(churchId: string) {
+    return this.mock.getGivingSummary(churchId);
+  }
+
+  async exportContributionsCsv(input?: Parameters<MockDatabaseService['exportContributionsCsv']>[0]) {
+    return this.mock.exportContributionsCsv(input);
   }
 
   async createSession(email: string, provider: any, requestedRole?: any) {

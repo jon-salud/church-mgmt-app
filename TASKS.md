@@ -24,6 +24,9 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - `/users` admin CRUD (create/update/delete) with profile editing UI
 - Group membership management flows (add/update/remove via API + web)
 - Event lifecycle CRUD with admin UI controls
+- Attendance CSV export for events
+- Announcement create/edit experience with scheduling controls
+- Giving reports, contribution editing, and CSV export
 
 ### 🔄 In Progress
 
@@ -31,9 +34,6 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 
 ### 📝 Backlog / Upcoming
 
-- Attendance CSV export for events
-- Announcement create/edit experience with scheduling controls
-- Giving reports, contribution editing, and CSV export
 - PWA offline caching for announcements and events read views
 - Environment hardening: auth guard improvements, error handling, audit trails persistence
 - Observability hardening: structured logging, Sentry wiring, basic metrics/analytics

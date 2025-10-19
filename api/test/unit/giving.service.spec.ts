@@ -7,6 +7,7 @@ describe('GivingService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    store.getChurch.mockResolvedValue({ id: 'church-1' } as any);
   });
 
   it('returns funds from the datastore', async () => {
@@ -50,5 +51,42 @@ describe('GivingService', () => {
       recordedBy: 'admin-user',
     });
     expect(result).toEqual(contribution);
+  });
+
+  it('provides giving summary for the current church', async () => {
+    store.getGivingSummary.mockResolvedValue({ totals: { overall: 100 } } as any);
+
+    const summary = await service.summary();
+
+    expect(store.getChurch).toHaveBeenCalled();
+    expect(store.getGivingSummary).toHaveBeenCalledWith('church-1');
+    expect(summary.totals.overall).toBe(100);
+  });
+
+  it('updates contributions via datastore with cleanup helpers', async () => {
+    store.updateContribution.mockResolvedValue({ id: 'contribution-1', amount: 75 } as any);
+
+    const updated = await service.updateContribution(
+      'contribution-1',
+      { amount: 75, note: '' },
+      'admin-user',
+    );
+
+    expect(store.updateContribution).toHaveBeenCalledWith('contribution-1', {
+      amount: 75,
+      note: null,
+      actorUserId: 'admin-user',
+    });
+    expect(updated).not.toBeNull();
+    expect((updated as any).amount).toBe(75);
+  });
+
+  it('exports contributions to csv with filters', async () => {
+    store.exportContributionsCsv.mockResolvedValue({ filename: 'giving.csv', content: 'data' } as any);
+
+    const result = await service.exportContributionsCsv({ memberId: 'user-1' });
+
+    expect(store.exportContributionsCsv).toHaveBeenCalledWith({ memberId: 'user-1' });
+    expect(result.filename).toBe('giving.csv');
   });
 });

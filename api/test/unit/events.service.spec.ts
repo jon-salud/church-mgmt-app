@@ -51,4 +51,52 @@ describe('EventsService', () => {
     });
     expect(result).toEqual({ status: 'checkedIn' });
   });
+
+  it('exports attendance as csv with derived filename', async () => {
+    store.getEventById.mockResolvedValue({
+      id: 'event-1',
+      title: 'Sunday Gathering',
+      startAt: '2024-05-01T10:00:00.000Z',
+      endAt: '2024-05-01T11:30:00.000Z',
+      location: 'Main Hall',
+      attendance: [
+        {
+          eventId: 'event-1',
+          userId: 'user-1',
+          status: 'checkedIn',
+          note: 'Arrived early',
+          recordedBy: 'user-2',
+          recordedAt: '2024-05-01T10:05:00.000Z',
+        },
+      ],
+    } as any);
+    store.listUsers.mockResolvedValue([
+      {
+        id: 'user-1',
+        primaryEmail: 'attendee@example.com',
+        profile: { firstName: 'Alex', lastName: 'Smith' },
+      },
+      {
+        id: 'user-2',
+        primaryEmail: 'recorder@example.com',
+        profile: { firstName: 'Jamie', lastName: 'Lee' },
+      },
+    ] as any);
+
+    const result = await service.exportAttendanceCsv('event-1');
+
+    expect(store.getEventById).toHaveBeenCalledWith('event-1');
+    expect(store.listUsers).toHaveBeenCalledTimes(1);
+    expect(result.filename).toBe('sunday-gathering-attendance.csv');
+    expect(result.content).toContain('Event Title,Sunday Gathering');
+    expect(result.content).toContain('Alex Smith');
+    expect(result.content).toContain('Jamie Lee');
+    expect(result.content).toContain('Checked-in');
+  });
+
+  it('throws when exporting attendance for missing event', async () => {
+    store.getEventById.mockResolvedValue(null);
+
+    await expect(service.exportAttendanceCsv('missing')).rejects.toThrow('Event missing not found');
+  });
 });

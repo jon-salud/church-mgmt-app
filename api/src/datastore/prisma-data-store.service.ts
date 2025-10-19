@@ -324,18 +324,35 @@ export class PrismaDataStore implements DataStore {
     return { ...read, readAt: toISO(read.readAt)! };
   }
 
+  async createAnnouncement(
+    _input: Parameters<DataStore['createAnnouncement']>[0],
+  ): Promise<any> {
+    throw new Error('Not implemented: createAnnouncement');
+  }
+
+  async updateAnnouncement(
+    _id: string,
+    _input: Parameters<DataStore['updateAnnouncement']>[1],
+  ): Promise<any> {
+    throw new Error('Not implemented: updateAnnouncement');
+  }
+
   async listFunds() {
     const churchId = await this.getPrimaryChurchId();
     return this.client.fund.findMany({ where: { churchId } });
   }
 
-  async listContributions(filter?: { memberId?: string; fundId?: string }) {
+  async listContributions(filter?: { memberId?: string; fundId?: string; from?: string; to?: string }) {
     const churchId = await this.getPrimaryChurchId();
     const contributions = await this.client.contribution.findMany({
       where: {
         churchId,
         memberId: filter?.memberId,
         fundId: filter?.fundId,
+        date: {
+          gte: filter?.from ? new Date(filter.from) : undefined,
+          lte: filter?.to ? new Date(filter.to) : undefined,
+        },
       },
       orderBy: { date: 'desc' },
     });
@@ -364,6 +381,23 @@ export class PrismaDataStore implements DataStore {
       amount: toNumber(contribution.amount),
       date: toISO(contribution.date)!,
     };
+  }
+
+  async updateContribution(
+    _id: string,
+    _input: Parameters<DataStore['updateContribution']>[1],
+  ): Promise<any> {
+    throw new Error('Not implemented: updateContribution');
+  }
+
+  async getGivingSummary(_churchId: string): Promise<any> {
+    throw new Error('Not implemented: getGivingSummary');
+  }
+
+  async exportContributionsCsv(
+    _input?: Parameters<DataStore['exportContributionsCsv']>[0],
+  ): Promise<any> {
+    throw new Error('Not implemented: exportContributionsCsv');
   }
 
   async createSession(email: string, provider: string, requestedRole?: string) {
