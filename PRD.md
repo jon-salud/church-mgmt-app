@@ -83,7 +83,16 @@
 - Per-membership fields: `role` (Member/Leader/Coordinator/Volunteer), `status` (Active/Inactive), `joinedAt`.
 - Bulk add/remove supported.
 
-### 3.4 Events & Attendance
+### 3.4 Small Group Enhancements
+
+- **As a Leader**, I can share resources with my group.
+  - AC: Leaders can add a name and a shareable link (e.g., from Google Drive) to a resource.
+  - AC: Group members can view the list of resources.
+- **As a Member**, I can RSVP to a group meeting.
+  - AC: Members can indicate if they will be attending a meeting.
+  - AC: Leaders can view the list of RSVPs.
+
+### 3.5 Events & Attendance
 
 - **As an Admin/Leader**, I can create events and record attendance.
   - AC: Event fields: title, description, start/end, location, tags, groupId (optional), visibility (public/private).
@@ -109,6 +118,17 @@
 - **As a Member**, I can install the app on my phone and quickly access announcements, my groups, and upcoming events.
   - AC: Web app meets PWA install criteria (manifest + service worker).
   - AC: Basic offline read cache for last-seen announcements & event list; write operations require online.
+
+### 3.8 Pastoral Care
+
+- **As a Member**, I can submit a prayer request.
+  - AC: Prayer requests can be marked as "public" or "private".
+  - AC: Public prayer requests are visible to all members.
+  - AC: Private prayer requests are visible only to pastoral staff.
+- **As a Pastor**, I can view and manage prayer requests.
+  - AC: Pastors can add notes and track follow-ups on prayer requests.
+- **As a Pastor**, I can add pastoral notes to a member's profile.
+  - AC: Pastoral notes are only visible to authorized staff.
 
 ---
 
@@ -173,7 +193,8 @@
 ### **Identity**
 
 - `User` (id, primaryEmail, status, createdAt, lastLoginAt)
-- `Profile` (userId FK, firstName, lastName, phone, address, birthday, photoUrl, notes)
+- `Household` (id, churchId, name, address, phone, anniversary)
+- `Profile` (userId FK, firstName, lastName, phone, address, birthday, photoUrl, notes, householdId, householdRole)
 - `OAuthAccount` (userId FK, provider: google|facebook, providerUserId, accessToken*, refreshToken*, expiresAt*) *stored securely or via Auth0*
 
 ### **Groups**
@@ -213,6 +234,11 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 
 - `POST /auth/oauth/callback` (if self-hosted OAuth) — exchanges code → JWT.
 - `GET /auth/me` → current user + roles per church.
+
+### **Households**
+
+- `GET /households` (Admin)
+- `GET /households/:id`
 
 ### **Users & Profiles**
 
@@ -529,6 +555,10 @@ paths:
 - **Email/SMS** communications (SendGrid/SESV2, Twilio), templates, audiences.
 - **Push Notifications** (Web Push; native later).
 - **Payments/Donations** (Stripe), gift-aid/receipts.
+- **Content Management System (CMS):** A lightweight CMS for churches to manage their own content, such as sermon notes, blog posts, and custom pages.
+- **Google Drive Integration:** Full integration with Google Drive for seamless document management.
+- **Volunteer Management and Scheduling (Rota):** A comprehensive system for managing volunteers, including skills and interests, scheduling, and automated reminders.
+- **Child Check-In and Safety:** A secure check-in system for children's ministries, including security codes, name tags, and allergy tracking.
 - **Rota/Scheduling**, volunteer sign-ups.
 - **Check-in via QR**, attendance kiosks.
 - **Forms** (prayer requests, sign-ups) with workflow.
