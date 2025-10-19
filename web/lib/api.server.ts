@@ -82,6 +82,12 @@ export const api = {
   async member(id: string) {
     return apiFetch<any>(`/users/${id}`);
   },
+  async households() {
+    return apiFetch<Array<any>>('/households');
+  },
+  async household(id: string) {
+    return apiFetch<any>(`/households/${id}`);
+  },
   async groups() {
     return apiFetch<Array<any>>('/groups');
   },
@@ -134,6 +140,15 @@ export const api = {
     if (params?.pageSize) search.set('pageSize', String(params.pageSize));
     const query = search.toString();
     return apiFetch<AuditLogResponse>(`/audit${query ? `?${query}` : ''}`);
+  },
+  async getSettings(churchId: string) {
+    return apiFetch<any>(`/settings/${churchId}`);
+  },
+  async updateSettings(churchId: string, settings: any) {
+    return apiFetch<any>(`/settings/${churchId}`, {
+      method: 'PUT',
+      body: JSON.stringify(settings),
+    });
   },
 };
 

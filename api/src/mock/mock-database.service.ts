@@ -27,6 +27,8 @@ import {
   MockAuditLog,
   mockAuditLogs,
   mockChurches,
+  MockHousehold,
+  mockHouseholds,
 } from './mock-data';
 import { AuditLogPersistence } from './audit-log.persistence';
 
@@ -68,6 +70,27 @@ interface UserCreateInput {
   status?: MockUser['status'];
   roleIds?: string[];
   actorUserId: string;
+  membershipStatus?: string;
+  joinMethod?: string;
+  joinDate?: string;
+  previousChurch?: string;
+  baptismDate?: string;
+  spiritualGifts?: string[];
+  coursesAttended?: string[];
+  maritalStatus?: string;
+  occupation?: string;
+  school?: string;
+  gradeLevel?: string;
+  graduationYear?: number;
+  skillsAndInterests?: string[];
+  backgroundCheckStatus?: string;
+  backgroundCheckDate?: string;
+  onboardingComplete?: boolean;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  allergiesOrMedicalNotes?: string;
+  parentalConsentOnFile?: boolean;
+  pastoralNotes?: string;
 }
 
 interface UserUpdateInput {
@@ -80,6 +103,27 @@ interface UserUpdateInput {
   status?: MockUser['status'];
   roleIds?: string[];
   actorUserId: string;
+  membershipStatus?: string;
+  joinMethod?: string;
+  joinDate?: string;
+  previousChurch?: string;
+  baptismDate?: string;
+  spiritualGifts?: string[];
+  coursesAttended?: string[];
+  maritalStatus?: string;
+  occupation?: string;
+  school?: string;
+  gradeLevel?: string;
+  graduationYear?: number;
+  skillsAndInterests?: string[];
+  backgroundCheckStatus?: string;
+  backgroundCheckDate?: string;
+  onboardingComplete?: boolean;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  allergiesOrMedicalNotes?: string;
+  parentalConsentOnFile?: boolean;
+  pastoralNotes?: string;
 }
 
 interface UserDeleteInput {
@@ -217,6 +261,7 @@ function slugify(value: string) {
 export class MockDatabaseService {
   private readonly logger = new Logger(MockDatabaseService.name);
   private users: MockUser[] = clone(mockUsers);
+  private households: MockHousehold[] = clone(mockHouseholds);
   private roles: MockRole[] = clone(mockRoles);
   private groups: MockGroup[] = clone(mockGroups);
   private events: MockEvent[] = clone(mockEvents);
@@ -227,6 +272,7 @@ export class MockDatabaseService {
   private auditLogs: MockAuditLog[] = clone(mockAuditLogs);
   private sessions: DemoSession[] = clone(mockSessions);
   private oauthAccounts: Array<{ provider: 'google' | 'facebook'; providerUserId: string; userId: string }> = [];
+  private settings: Record<string, any> = {};
 
   constructor(private readonly auditPersistence: AuditLogPersistence) {
     this.hydrateAuditLogSnapshot();
@@ -309,7 +355,41 @@ export class MockDatabaseService {
   private buildUserPayload(user: MockUser) {
     const payload = clone(user) as any;
     payload.roles = user.roles.map(role => this.buildUserRolePayload(role));
+    payload.household = this.households.find(h => h.id === user.profile.householdId) ?? null;
     return payload;
+  }
+
+  listHouseholds(churchId?: string) {
+    const list = this.households
+      .filter(h => !churchId || h.churchId === churchId)
+      .map(h => {
+        const members = this.users
+          .filter(u => u.profile.householdId === h.id)
+          .map(u => ({
+            userId: u.id,
+            firstName: u.profile.firstName,
+            lastName: u.profile.lastName,
+            householdRole: u.profile.householdRole,
+          }));
+        return {
+          ...clone(h),
+          memberCount: members.length,
+          members,
+        };
+      });
+    return list;
+  }
+
+  getHouseholdById(id: string) {
+    const household = this.households.find(h => h.id === id);
+    if (!household) return null;
+    const members = this.users
+      .filter(u => u.profile.householdId === id)
+      .map(u => this.buildUserPayload(u));
+    return {
+      ...clone(household),
+      members,
+    };
   }
 
   private withAssignmentCount(role: MockRole) {
@@ -405,6 +485,17 @@ export class MockDatabaseService {
       churchId,
       roleId: this.resolveRoleId(identifier),
     }));
+
+    const household: MockHousehold = {
+      id: `hh-${randomUUID()}`,
+      churchId,
+      name: `${input.lastName} Family`,
+      address: input.address,
+      createdAt: now,
+      updatedAt: now,
+    };
+    this.households.push(household);
+
     const user: MockUser = {
       id: `user-${randomUUID()}`,
       primaryEmail: input.primaryEmail,
@@ -415,8 +506,9 @@ export class MockDatabaseService {
         firstName: input.firstName,
         lastName: input.lastName,
         phone: input.phone,
-        address: input.address,
         notes: input.notes,
+        householdId: household.id,
+        householdRole: 'Head',
       },
     };
     this.users.push(user);
@@ -476,13 +568,100 @@ export class MockDatabaseService {
       track('profile.phone', user.profile.phone ?? null, input.phone);
       user.profile.phone = input.phone;
     }
-    if (typeof input.address === 'string' && input.address !== user.profile.address) {
-      track('profile.address', user.profile.address ?? null, input.address);
-      user.profile.address = input.address;
+    if (typeof input.address === 'string') {
+      const household = this.households.find(h => h.id === user.profile.householdId);
+      if (household && input.address !== household.address) {
+        track('household.address', household.address ?? null, input.address);
+        household.address = input.address;
+      }
     }
     if (typeof input.notes === 'string' && input.notes !== user.profile.notes) {
       track('profile.notes', user.profile.notes ?? null, input.notes);
       user.profile.notes = input.notes;
+    }
+    if (typeof input.membershipStatus === 'string' && input.membershipStatus !== user.profile.membershipStatus) {
+      track('profile.membershipStatus', user.profile.membershipStatus ?? null, input.membershipStatus);
+      user.profile.membershipStatus = input.membershipStatus as any;
+    }
+    if (typeof input.joinMethod === 'string' && input.joinMethod !== user.profile.joinMethod) {
+      track('profile.joinMethod', user.profile.joinMethod ?? null, input.joinMethod);
+      user.profile.joinMethod = input.joinMethod as any;
+    }
+    if (typeof input.joinDate === 'string' && input.joinDate !== user.profile.joinDate) {
+      track('profile.joinDate', user.profile.joinDate ?? null, input.joinDate);
+      user.profile.joinDate = input.joinDate;
+    }
+    if (typeof input.previousChurch === 'string' && input.previousChurch !== user.profile.previousChurch) {
+      track('profile.previousChurch', user.profile.previousChurch ?? null, input.previousChurch);
+      user.profile.previousChurch = input.previousChurch;
+    }
+    if (typeof input.baptismDate === 'string' && input.baptismDate !== user.profile.baptismDate) {
+      track('profile.baptismDate', user.profile.baptismDate ?? null, input.baptismDate);
+      user.profile.baptismDate = input.baptismDate;
+    }
+    if (input.spiritualGifts) {
+      track('profile.spiritualGifts', user.profile.spiritualGifts ?? null, input.spiritualGifts);
+      user.profile.spiritualGifts = input.spiritualGifts;
+    }
+    if (input.coursesAttended) {
+      track('profile.coursesAttended', user.profile.coursesAttended ?? null, input.coursesAttended);
+      user.profile.coursesAttended = input.coursesAttended;
+    }
+    if (typeof input.maritalStatus === 'string' && input.maritalStatus !== user.profile.maritalStatus) {
+      track('profile.maritalStatus', user.profile.maritalStatus ?? null, input.maritalStatus);
+      user.profile.maritalStatus = input.maritalStatus as any;
+    }
+    if (typeof input.occupation === 'string' && input.occupation !== user.profile.occupation) {
+      track('profile.occupation', user.profile.occupation ?? null, input.occupation);
+      user.profile.occupation = input.occupation;
+    }
+    if (typeof input.school === 'string' && input.school !== user.profile.school) {
+      track('profile.school', user.profile.school ?? null, input.school);
+      user.profile.school = input.school;
+    }
+    if (typeof input.gradeLevel === 'string' && input.gradeLevel !== user.profile.gradeLevel) {
+      track('profile.gradeLevel', user.profile.gradeLevel ?? null, input.gradeLevel);
+      user.profile.gradeLevel = input.gradeLevel;
+    }
+    if (typeof input.graduationYear === 'number' && input.graduationYear !== user.profile.graduationYear) {
+      track('profile.graduationYear', user.profile.graduationYear ?? null, input.graduationYear);
+      user.profile.graduationYear = input.graduationYear;
+    }
+    if (input.skillsAndInterests) {
+      track('profile.skillsAndInterests', user.profile.skillsAndInterests ?? null, input.skillsAndInterests);
+      user.profile.skillsAndInterests = input.skillsAndInterests;
+    }
+    if (typeof input.backgroundCheckStatus === 'string' && input.backgroundCheckStatus !== user.profile.backgroundCheckStatus) {
+      track('profile.backgroundCheckStatus', user.profile.backgroundCheckStatus ?? null, input.backgroundCheckStatus);
+      user.profile.backgroundCheckStatus = input.backgroundCheckStatus as any;
+    }
+    if (typeof input.backgroundCheckDate === 'string' && input.backgroundCheckDate !== user.profile.backgroundCheckDate) {
+      track('profile.backgroundCheckDate', user.profile.backgroundCheckDate ?? null, input.backgroundCheckDate);
+      user.profile.backgroundCheckDate = input.backgroundCheckDate;
+    }
+    if (typeof input.onboardingComplete === 'boolean' && input.onboardingComplete !== user.profile.onboardingComplete) {
+      track('profile.onboardingComplete', user.profile.onboardingComplete ?? null, input.onboardingComplete);
+      user.profile.onboardingComplete = input.onboardingComplete;
+    }
+    if (typeof input.emergencyContactName === 'string' && input.emergencyContactName !== user.profile.emergencyContactName) {
+      track('profile.emergencyContactName', user.profile.emergencyContactName ?? null, input.emergencyContactName);
+      user.profile.emergencyContactName = input.emergencyContactName;
+    }
+    if (typeof input.emergencyContactPhone === 'string' && input.emergencyContactPhone !== user.profile.emergencyContactPhone) {
+      track('profile.emergencyContactPhone', user.profile.emergencyContactPhone ?? null, input.emergencyContactPhone);
+      user.profile.emergencyContactPhone = input.emergencyContactPhone;
+    }
+    if (typeof input.allergiesOrMedicalNotes === 'string' && input.allergiesOrMedicalNotes !== user.profile.allergiesOrMedicalNotes) {
+      track('profile.allergiesOrMedicalNotes', user.profile.allergiesOrMedicalNotes ?? null, input.allergiesOrMedicalNotes);
+      user.profile.allergiesOrMedicalNotes = input.allergiesOrMedicalNotes;
+    }
+    if (typeof input.parentalConsentOnFile === 'boolean' && input.parentalConsentOnFile !== user.profile.parentalConsentOnFile) {
+      track('profile.parentalConsentOnFile', user.profile.parentalConsentOnFile ?? null, input.parentalConsentOnFile);
+      user.profile.parentalConsentOnFile = input.parentalConsentOnFile;
+    }
+    if (typeof input.pastoralNotes === 'string' && input.pastoralNotes !== user.profile.pastoralNotes) {
+      track('profile.pastoralNotes', user.profile.pastoralNotes ?? null, input.pastoralNotes);
+      user.profile.pastoralNotes = input.pastoralNotes;
     }
     if (input.roleIds) {
       const churchId = this.getChurch().id;
@@ -1529,19 +1708,31 @@ export class MockDatabaseService {
     let user = this.getUserByEmail(input.email);
     let created = false;
     if (!user) {
+      const now = new Date().toISOString();
+      const household: MockHousehold = {
+        id: `hh-${randomUUID()}`,
+        churchId,
+        name: `${input.lastName || 'New'} Family`,
+        createdAt: now,
+        updatedAt: now,
+      };
+      this.households.push(household);
+
       const id = `user-${randomUUID()}`;
       const defaultRoleId = this.getDefaultRoleId('member');
       user = {
         id,
         primaryEmail: input.email,
         status: 'active',
-        createdAt: new Date().toISOString(),
-        lastLoginAt: new Date().toISOString(),
+        createdAt: now,
+        lastLoginAt: now,
         roles: [{ churchId, roleId: defaultRoleId }],
         profile: {
           firstName: input.firstName || 'New',
           lastName: input.lastName || 'Member',
           photoUrl: input.picture,
+          householdId: household.id,
+          householdRole: 'Head',
         },
       };
       this.users.push(user);
@@ -1567,5 +1758,14 @@ export class MockDatabaseService {
     }
 
     return { user: this.buildUserPayload(user), created };
+  }
+
+  getSettings(churchId: string) {
+    return this.settings[churchId] ?? {};
+  }
+
+  updateSettings(churchId: string, settings: any) {
+    this.settings[churchId] = settings;
+    return this.settings[churchId];
   }
 }

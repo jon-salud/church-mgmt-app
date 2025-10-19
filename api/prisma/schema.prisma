@@ -20,6 +20,9 @@ model Church {
   funds     Fund[]
   announcements Announcement[]
   auditLogs AuditLog[]
+  households Household[]
+  contributions Contribution[]
+  settings  Settings?
 }
 
 model User {
@@ -36,18 +39,55 @@ model User {
   reads        AnnouncementRead[]
   auditLogs    AuditLog[] @relation("ActorLogs")
   sessions     DemoSession[]
+  groupMembers GroupMember[]
+}
+
+model Household {
+  id          String   @id @default(cuid())
+  churchId    String
+  name        String
+  address     String?
+  phoneNumber String?
+  anniversaryDate DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  church      Church   @relation(fields: [churchId], references: [id])
+  profiles    Profile[]
 }
 
 model Profile {
-  userId   String @id
-  firstName String
-  lastName  String
-  phone     String?
-  address   String?
-  birthday  DateTime?
-  photoUrl  String?
-  notes     String?
-  user      User   @relation(fields: [userId], references: [id])
+  userId                String    @id
+  firstName             String
+  lastName              String
+  phone                 String?
+  birthday              DateTime?
+  photoUrl              String?
+  notes                 String?
+  householdId           String
+  householdRole         String    @default("Head")
+  membershipStatus      String?
+  joinMethod            String?
+  joinDate              DateTime?
+  previousChurch        String?
+  baptismDate           DateTime?
+  spiritualGifts        String?
+  coursesAttended       String?
+  maritalStatus         String?
+  occupation            String?
+  school                String?
+  gradeLevel            String?
+  graduationYear        Int?
+  skillsAndInterests    String?
+  backgroundCheckStatus String?
+  backgroundCheckDate   DateTime?
+  onboardingComplete    Boolean?
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  allergiesOrMedicalNotes String?
+  parentalConsentOnFile Boolean?
+  pastoralNotes         String?
+  user                  User      @relation(fields: [userId], references: [id])
+  household             Household @relation(fields: [householdId], references: [id])
 }
 
 model OAuthAccount {
@@ -62,37 +102,11 @@ model OAuthAccount {
 model ChurchUser {
   churchId String
   userId   String
-  role     Role    @default(Member)
+  role     String    @default("Member")
   church   Church  @relation(fields: [churchId], references: [id])
   user     User    @relation(fields: [userId], references: [id])
   joinedAt DateTime @default(now())
   @@id([churchId, userId])
-}
-
-enum Role {
-  Member
-  Leader
-  Admin
-}
-
-enum GroupType {
-  GeographicalMinistry
-  ServiceMinistry
-  VolunteerTeam
-  SmallGroup
-  Other
-}
-
-enum GroupMemberRole {
-  Member
-  Leader
-  Coordinator
-  Volunteer
-}
-
-enum MembershipStatus {
-  Active
-  Inactive
 }
 
 model Group {
@@ -100,10 +114,10 @@ model Group {
   churchId    String
   name        String
   description String?
-  type GroupType
+  type        String
   meetingDay  String?
   meetingTime String?
-  tags       Json?
+  tags        String?
   church      Church   @relation(fields: [churchId], references: [id])
   members     GroupMember[]
 }
@@ -111,8 +125,8 @@ model Group {
 model GroupMember {
   groupId  String
   userId   String
-  role     GroupMemberRole @default(Member)
-  status   MembershipStatus @default(Active)
+  role     String @default("Member")
+  status   String @default("Active")
   joinedAt DateTime @default(now())
   group    Group  @relation(fields: [groupId], references: [id])
   user     User   @relation(fields: [userId], references: [id])
@@ -151,7 +165,7 @@ model Announcement {
   title     String
   body      String
   audience  String   @default("all")
-  groupIds  Json?
+  groupIds  String?
   publishAt DateTime @default(now())
   expireAt  DateTime?
   church    Church   @relation(fields: [churchId], references: [id])
@@ -196,7 +210,7 @@ model AuditLog {
   action      String
   entity      String
   entityId    String
-  diff        Json?
+  diff        String?
   createdAt   DateTime @default(now())
   church      Church   @relation(fields: [churchId], references: [id])
   actor       User?    @relation("ActorLogs", fields: [actorUserId], references: [id])
@@ -208,4 +222,10 @@ model DemoSession {
   provider  String
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id])
+}
+
+model Settings {
+  churchId       String  @id
+  optionalFields String?
+  church         Church  @relation(fields: [churchId], references: [id])
 }

@@ -34,8 +34,9 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 
 ### 🔄 In Progress
 
-- _None — pick the next item from the backlog_
+- Architect and Implement Household Data Model
 
 ### 📝 Backlog / Upcoming
 
 - Documentation refresh once outstanding MVP items land
+- Debug and stabilize the E2E test environment to prevent port conflicts.
