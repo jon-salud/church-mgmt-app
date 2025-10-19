@@ -1,13 +1,15 @@
 "use client";
 
 import { format } from "date-fns";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Modal } from "../../components/ui/modal";
 import {
   createAnnouncementAction,
   markAnnouncementReadAction,
   updateAnnouncementAction,
 } from "../actions";
+import { loadOfflineSnapshot, persistOfflineSnapshot } from "../../lib/offline-cache";
+import { useOfflineStatus } from "../../lib/use-offline-status";
 
 type Announcement = {
   id: string;
@@ -75,13 +77,55 @@ const audienceLabel = (announcement: Announcement, groupMap: Map<string, Group>)
 };
 
 export function AnnouncementsClient({ announcements, groups }: AnnouncementsClientProps) {
-  const groupMap = useMemo(() => new Map(groups.map(group => [group.id, group])), [groups]);
+  const [announcementState, setAnnouncementState] = useState(announcements);
+  const [groupState, setGroupState] = useState(groups);
+  const isOffline = useOfflineStatus();
+
+  useEffect(() => {
+    setAnnouncementState(announcements);
+    setGroupState(groups);
+  }, [announcements, groups]);
+
+  useEffect(() => {
+    persistOfflineSnapshot('announcements', {
+      announcements: announcementState,
+      groups: groupState,
+    });
+  }, [announcementState, groupState]);
+
+  useEffect(() => {
+    if (!isOffline) {
+      return;
+    }
+    if (announcementState.length > 0 || groupState.length > 0) {
+      return;
+    }
+    loadOfflineSnapshot<'announcements'>('announcements').then(snapshot => {
+      if (!snapshot) {
+        return;
+      }
+      const offlineAnnouncements = Array.isArray(snapshot.announcements)
+        ? (snapshot.announcements as Announcement[])
+        : [];
+      const offlineGroups = Array.isArray(snapshot.groups)
+        ? (snapshot.groups as Group[])
+        : [];
+      if (offlineAnnouncements.length > 0) {
+        setAnnouncementState(offlineAnnouncements);
+      }
+      if (offlineGroups.length > 0) {
+        setGroupState(offlineGroups);
+      }
+    });
+  }, [isOffline, announcementState.length, groupState.length]);
+
+  const groupMap = useMemo(() => new Map(groupState.map(group => [group.id, group])), [groupState]);
   const sortedAnnouncements = useMemo(
     () =>
-      [...announcements].sort(
+      [...announcementState].sort(
         (a, b) => new Date(b.publishAt).getTime() - new Date(a.publishAt).getTime(),
       ),
-    [announcements],
+    [announcementState],
   );
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [createAudience, setCreateAudience] = useState<"all" | "custom">("all");
@@ -91,11 +135,16 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
   return (
     <section className="space-y-6">
       <header className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
+        <div className="space-y-2">
           <h1 className="text-3xl font-semibold">Announcements</h1>
           <p className="text-sm text-slate-400">
             Share updates across the church or target specific groups with scheduling controls.
           </p>
+          {isOffline ? (
+            <p className="text-xs text-amber-300">
+              Offline mode: showing the most recent announcements saved on this device.
+            </p>
+          ) : null}
         </div>
         <button
           type="button"
@@ -220,7 +269,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
                 multiple
                 className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
               >
-                {groups.map(group => (
+                {groupState.map(group => (
                   <option key={group.id} value={group.id}>
                     {group.name}
                   </option>
@@ -311,7 +360,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
                   defaultValue={editModal.groupIds}
                   className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
                 >
-                  {groups.map(group => (
+                  {groupState.map(group => (
                     <option key={group.id} value={group.id}>
                       {group.name}
                     </option>
