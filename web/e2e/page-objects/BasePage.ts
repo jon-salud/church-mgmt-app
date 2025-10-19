@@ -13,7 +13,7 @@ export class BasePage {
   }
 
   async checkAccessibility() {
-    const accessibilityScanResults = await new AxeBuilder({ client: this.page }).analyze();
+    const accessibilityScanResults = await new AxeBuilder(this.page).analyze();
     expect(accessibilityScanResults.violations).toEqual([]);
   }
 }

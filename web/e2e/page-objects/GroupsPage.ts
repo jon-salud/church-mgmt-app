@@ -2,6 +2,10 @@ import { Page, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class GroupsPage extends BasePage {
+  constructor(page: Page) {
+    super(page);
+  }
+
   async goto(groupName: string) {
     await super.goto(`http://localhost:3000/groups/${groupName}`);
   }
