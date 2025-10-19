@@ -8,5 +8,6 @@ interface MembersPageProps {
 export default async function MembersPage({ searchParams }: MembersPageProps) {
   const query = searchParams?.q || '';
   const members = await api.members(query);
-  return <MembersClient members={members} initialQuery={query} />;
+  const roles = await api.roles();
+  return <MembersClient members={members} roles={roles} initialQuery={query} />;
 }

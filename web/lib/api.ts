@@ -97,6 +97,9 @@ export const api = {
   async announcements() {
     return apiFetch<Array<any>>('/announcements');
   },
+  async roles() {
+    return apiFetch<Array<any>>('/roles');
+  },
   async funds() {
     return apiFetch<Array<any>>('/giving/funds');
   },

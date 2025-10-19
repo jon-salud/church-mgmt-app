@@ -19,7 +19,9 @@ import {
   mockSessions,
   DemoSession,
   createSessionToken,
-  Role,
+  MockRole,
+  mockRoles,
+  DefaultRoleSlug,
   MembershipStatus,
   AttendanceStatus,
   MockAuditLog,
@@ -64,7 +66,7 @@ interface UserCreateInput {
   address?: string;
   notes?: string;
   status?: MockUser['status'];
-  roles?: Role[];
+  roleIds?: string[];
   actorUserId: string;
 }
 
@@ -76,7 +78,7 @@ interface UserUpdateInput {
   address?: string;
   notes?: string;
   status?: MockUser['status'];
-  roles?: Role[];
+  roleIds?: string[];
   actorUserId: string;
 }
 
@@ -128,6 +130,26 @@ interface EventUpdateInput {
 
 interface EventDeleteInput {
   actorUserId: string;
+}
+
+interface RoleCreateInput {
+  name: string;
+  description?: string;
+  permissions?: string[];
+  actorUserId: string;
+  slug?: string;
+}
+
+interface RoleUpdateInput {
+  name?: string;
+  description?: string | null;
+  permissions?: string[];
+  actorUserId: string;
+}
+
+interface RoleDeleteInput {
+  actorUserId: string;
+  reassignRoleId?: string;
 }
 
 interface AuditLogFilter {
@@ -182,10 +204,20 @@ function formatMonthKey(value: string) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
 
+function slugify(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 50);
+}
+
 @Injectable()
 export class MockDatabaseService {
   private readonly logger = new Logger(MockDatabaseService.name);
   private users: MockUser[] = clone(mockUsers);
+  private roles: MockRole[] = clone(mockRoles);
   private groups: MockGroup[] = clone(mockGroups);
   private events: MockEvent[] = clone(mockEvents);
   private announcements: MockAnnouncement[] = clone(mockAnnouncements);
@@ -225,6 +257,69 @@ export class MockDatabaseService {
     }
   }
 
+  private getRoleById(roleId: string) {
+    return this.roles.find(role => role.id === roleId) ?? null;
+  }
+
+  private getRoleBySlug(slug: string) {
+    return this.roles.find(role => role.slug?.toLowerCase() === slug.toLowerCase()) ?? null;
+  }
+
+  private getDefaultRoleId(slug: DefaultRoleSlug): string {
+    const role = this.getRoleBySlug(slug);
+    if (role) {
+      return role.id;
+    }
+    return this.roles[0]?.id ?? `role-${slug}`;
+  }
+
+  private resolveRoleId(identifier?: string | null) {
+    if (!identifier) {
+      return this.getDefaultRoleId('member');
+    }
+    const byId = this.getRoleById(identifier);
+    if (byId) {
+      return byId.id;
+    }
+    const lowered = identifier.toLowerCase();
+    const bySlug = this.roles.find(role => role.slug?.toLowerCase() === lowered);
+    if (bySlug) {
+      return bySlug.id;
+    }
+    const byName = this.roles.find(role => role.name.toLowerCase() === lowered);
+    if (byName) {
+      return byName.id;
+    }
+    return this.getDefaultRoleId('member');
+  }
+
+  private buildUserRolePayload(role: MockUser['roles'][number]) {
+    const definition = this.getRoleById(role.roleId);
+    return {
+      churchId: role.churchId,
+      roleId: role.roleId,
+      role: definition?.name ?? 'Unknown Role',
+      slug: definition?.slug,
+      permissions: definition?.permissions ?? [],
+      isSystem: definition?.isSystem ?? false,
+      isDeletable: definition?.isDeletable ?? true,
+    };
+  }
+
+  private buildUserPayload(user: MockUser) {
+    const payload = clone(user) as any;
+    payload.roles = user.roles.map(role => this.buildUserRolePayload(role));
+    return payload;
+  }
+
+  private withAssignmentCount(role: MockRole) {
+    const count = this.users.filter(user => user.roles.some(r => r.roleId === role.id)).length;
+    return {
+      ...clone(role),
+      assignmentCount: count,
+    };
+  }
+
   getChurch() {
     return clone(mockChurches[0]);
   }
@@ -239,17 +334,24 @@ export class MockDatabaseService {
         profile.firstName.toLowerCase().includes(lower) ||
         profile.lastName.toLowerCase().includes(lower)
       );
-    }).map(user => ({
-      ...user,
-      groups: this.groups
+    }).map(user => {
+      const payload = this.buildUserPayload(user);
+      payload.groups = this.groups
         .filter(group => group.members.some(member => member.userId === user.id))
-        .map(group => ({ id: group.id, name: group.name, role: group.members.find(member => member.userId === user.id)?.role })),
-    }));
-    return clone(list);
+        .map(group => ({
+          id: group.id,
+          name: group.name,
+          role: group.members.find(member => member.userId === user.id)?.role,
+        }));
+      return payload;
+    });
+    return clone(list) as any;
   }
 
   getUserById(id: string) {
-    return clone(this.users.find(user => user.id === id) || null);
+    const user = this.users.find(record => record.id === id);
+    if (!user) return null;
+    return this.buildUserPayload(user);
   }
 
   getUserProfile(id: string) {
@@ -298,10 +400,11 @@ export class MockDatabaseService {
     }
     const churchId = this.getChurch().id;
     const now = new Date().toISOString();
-    const roles =
-      input.roles && input.roles.length
-        ? input.roles.map(role => ({ churchId, role }))
-        : [{ churchId, role: 'Member' as Role }];
+    const roleIdsSource = input.roleIds && input.roleIds.length ? Array.from(new Set(input.roleIds)) : [this.getDefaultRoleId('member')];
+    const roles = roleIdsSource.map(identifier => ({
+      churchId,
+      roleId: this.resolveRoleId(identifier),
+    }));
     const user: MockUser = {
       id: `user-${randomUUID()}`,
       primaryEmail: input.primaryEmail,
@@ -319,6 +422,7 @@ export class MockDatabaseService {
     this.users.push(user);
     const actorName = this.getUserName(input.actorUserId);
     const targetName = this.getUserName(user.id);
+    const roleSummaries = roles.map(role => this.buildUserRolePayload(role).role);
     this.createAuditLog({
       actorUserId: input.actorUserId,
       action: 'user.created',
@@ -328,7 +432,7 @@ export class MockDatabaseService {
       metadata: {
         userId: user.id,
         email: user.primaryEmail,
-        roles: roles.map(role => role.role),
+        roles: roleSummaries,
       },
     });
     return this.getUserProfile(user.id);
@@ -380,11 +484,15 @@ export class MockDatabaseService {
       track('profile.notes', user.profile.notes ?? null, input.notes);
       user.profile.notes = input.notes;
     }
-    if (input.roles) {
+    if (input.roleIds) {
       const churchId = this.getChurch().id;
-      const normalised = input.roles.map(role => ({ churchId, role }));
-      const previousRoles = user.roles.map(role => role.role);
-      const newRoles = normalised.map(role => role.role);
+      const unique = Array.from(new Set(input.roleIds));
+      const normalised =
+        unique.length > 0
+          ? unique.map(identifier => ({ churchId, roleId: this.resolveRoleId(identifier) }))
+          : [{ churchId, roleId: this.getDefaultRoleId('member') }];
+      const previousRoles = user.roles.map(role => this.buildUserRolePayload(role).role);
+      const newRoles = normalised.map(role => this.buildUserRolePayload(role).role);
       if (previousRoles.join(',') !== newRoles.join(',')) {
         track('roles', previousRoles, newRoles);
         user.roles = normalised;
@@ -1220,14 +1328,174 @@ export class MockDatabaseService {
     };
   }
 
-  createSession(email: string, provider: DemoSession['provider'], requestedRole?: Role) {
+  listRoles() {
+    return this.roles.map(role => this.withAssignmentCount(role));
+  }
+
+  createRole(input: RoleCreateInput) {
+    const churchId = this.getChurch().id;
+    const name = input.name?.trim();
+    if (!name) {
+      throw new Error('Role name is required.');
+    }
+    if (this.roles.some(role => role.churchId === churchId && role.name.toLowerCase() === name.toLowerCase())) {
+      throw new Error('A role with that name already exists.');
+    }
+    const permissions = input.permissions
+      ? Array.from(new Set(input.permissions.map(entry => entry.trim()).filter(Boolean))).sort()
+      : [];
+    const now = new Date().toISOString();
+    const role: MockRole = {
+      id: `role-${randomUUID()}`,
+      churchId,
+      slug: input.slug?.trim() || slugify(name),
+      name,
+      description: input.description,
+      permissions,
+      isSystem: false,
+      isDeletable: true,
+      createdAt: now,
+      updatedAt: now,
+    };
+    this.roles.push(role);
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'role.created',
+      entity: 'role',
+      entityId: role.id,
+      summary: `${actorName} created role ${role.name}`,
+      metadata: {
+        roleId: role.id,
+        permissions: role.permissions,
+      },
+    });
+    return this.withAssignmentCount(role);
+  }
+
+  updateRole(id: string, input: RoleUpdateInput) {
+    const role = this.roles.find(record => record.id === id);
+    if (!role) {
+      return null;
+    }
+    const diff: Record<string, { previous: unknown; newValue: unknown }> = {};
+    const track = (key: string, previous: unknown, next: unknown) => {
+      if (previous !== next) {
+        diff[key] = { previous, newValue: next };
+      }
+    };
+    if (role.isSystem && role.slug === 'admin') {
+      if (input.name && input.name.trim() !== role.name) {
+        throw new Error('The Admin role cannot be renamed.');
+      }
+      if (input.permissions && input.permissions.length > 0) {
+        throw new Error('The Admin role permissions cannot be modified.');
+      }
+    }
+    if (input.name) {
+      const name = input.name.trim();
+      if (!name) {
+        throw new Error('Role name is required.');
+      }
+      if (
+        this.roles.some(
+          other => other.id !== id && other.churchId === role.churchId && other.name.toLowerCase() === name.toLowerCase(),
+        )
+      ) {
+        throw new Error('Another role with that name already exists.');
+      }
+      track('name', role.name, name);
+      role.name = name;
+      if (!role.isSystem) {
+        const newSlug = slugify(name);
+        track('slug', role.slug, newSlug);
+        role.slug = newSlug;
+      }
+    }
+    if (input.description !== undefined) {
+      const description = input.description ?? undefined;
+      track('description', role.description ?? null, description ?? null);
+      role.description = description;
+    }
+    if (input.permissions) {
+      const permissions = Array.from(new Set(input.permissions.map(entry => entry.trim()).filter(Boolean))).sort();
+      track('permissions', role.permissions, permissions);
+      role.permissions = permissions;
+    }
+    if (Object.keys(diff).length > 0) {
+      role.updatedAt = new Date().toISOString();
+      const actorName = this.getUserName(input.actorUserId);
+      this.createAuditLog({
+        actorUserId: input.actorUserId,
+        action: 'role.updated',
+        entity: 'role',
+        entityId: role.id,
+        summary: `${actorName} updated role ${role.name}`,
+        diff,
+      });
+    }
+    return this.withAssignmentCount(role);
+  }
+
+  deleteRole(id: string, input: RoleDeleteInput) {
+    const roleIndex = this.roles.findIndex(record => record.id === id);
+    if (roleIndex === -1) {
+      return { deleted: false, reassigned: 0 };
+    }
+    const role = this.roles[roleIndex];
+    if (!role.isDeletable || role.slug === 'admin') {
+      throw new Error('This role cannot be deleted.');
+    }
+    const assignments = this.users.filter(user => user.roles.some(r => r.roleId === id));
+    let reassigned = 0;
+    let targetRoleId: string | null = null;
+    if (assignments.length > 0) {
+      if (!input.reassignRoleId) {
+        throw new Error('Role is assigned to users. Provide reassignRoleId to transfer assignments.');
+      }
+      const resolved = this.resolveRoleId(input.reassignRoleId);
+      if (resolved === id) {
+        throw new Error('Reassignment role must be different from the role being deleted.');
+      }
+      const targetRole = this.getRoleById(resolved);
+      if (!targetRole) {
+        throw new Error('Target role not found.');
+      }
+      targetRoleId = targetRole.id;
+      this.users.forEach(user => {
+        if (!user.roles.some(r => r.roleId === id)) return;
+        user.roles = user.roles.filter(r => r.roleId !== id);
+        if (!user.roles.some(r => r.roleId === targetRole.id)) {
+          user.roles.push({ churchId: targetRole.churchId, roleId: targetRole.id });
+        }
+        reassigned += 1;
+      });
+    }
+    this.roles.splice(roleIndex, 1);
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'role.deleted',
+      entity: 'role',
+      entityId: role.id,
+      summary: `${actorName} deleted role ${role.name}`,
+      metadata: {
+        reassignedTo: targetRoleId,
+        reassignedCount: reassigned,
+      },
+    });
+    return { deleted: true, reassigned };
+  }
+
+  createSession(email: string, provider: DemoSession['provider'], requestedRole?: string) {
     const user = this.getUserByEmail(email);
     if (!user) {
       throw new Error('User not found for demo login. Use one of the seeded accounts.');
     }
-    const role = requestedRole || user.roles[0]?.role || 'Member';
-    if (!user.roles.some(r => r.role === role)) {
-      user.roles.push({ churchId: this.getChurch().id, role });
+    const churchId = this.getChurch().id;
+    const roleId = this.resolveRoleId(requestedRole);
+    if (!user.roles.some(r => r.roleId === roleId && r.churchId === churchId)) {
+      user.roles.push({ churchId, roleId });
     }
     const token = createSessionToken();
     const session: DemoSession = {
@@ -1237,7 +1505,7 @@ export class MockDatabaseService {
       provider,
     };
     this.sessions.push(session);
-    return { session, user: clone(user) };
+    return { session, user: this.buildUserPayload(user) };
   }
 
   getSessionByToken(token?: string) {
@@ -1262,13 +1530,14 @@ export class MockDatabaseService {
     let created = false;
     if (!user) {
       const id = `user-${randomUUID()}`;
+      const defaultRoleId = this.getDefaultRoleId('member');
       user = {
         id,
         primaryEmail: input.email,
         status: 'active',
         createdAt: new Date().toISOString(),
         lastLoginAt: new Date().toISOString(),
-        roles: [{ churchId, role: 'Member' }],
+        roles: [{ churchId, roleId: defaultRoleId }],
         profile: {
           firstName: input.firstName || 'New',
           lastName: input.lastName || 'Member',
@@ -1289,7 +1558,7 @@ export class MockDatabaseService {
         user.profile.photoUrl = input.picture;
       }
       if (!user.roles.some(role => role.churchId === churchId)) {
-        user.roles.push({ churchId, role: 'Member' });
+        user.roles.push({ churchId, roleId: this.getDefaultRoleId('member') });
       }
     }
 
@@ -1297,6 +1566,6 @@ export class MockDatabaseService {
       this.oauthAccounts.push({ provider: input.provider, providerUserId: input.providerUserId, userId: user.id });
     }
 
-    return { user: clone(user), created };
+    return { user: this.buildUserPayload(user), created };
   }
 }

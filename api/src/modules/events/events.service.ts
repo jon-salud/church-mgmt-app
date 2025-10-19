@@ -38,8 +38,12 @@ export class EventsService {
       throw new NotFoundException(`Event ${eventId} not found`);
     }
 
-    const members = await this.db.listUsers();
-    const userLookup = new Map(
+    const members = (await this.db.listUsers()) as Array<{
+      id: string;
+      primaryEmail: string;
+      profile?: { firstName?: string; lastName?: string };
+    }>;
+    const userLookup = new Map<string, { name: string; email: string | undefined }>(
       members.map(member => [
         member.id,
         {

@@ -40,5 +40,40 @@
       "userId": "user-leader"
     },
     "createdAt": "2025-10-16T23:00:00.000Z"
+  },
+  {
+    "id": "audit-role-role-5511f011-6723-42c1-a5f3-b8dd079407f6-1760847904548",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "role.created",
+    "entity": "role",
+    "entityId": "role-5511f011-6723-42c1-a5f3-b8dd079407f6",
+    "summary": "Ariana Matau created role All access",
+    "metadata": {
+      "roleId": "role-5511f011-6723-42c1-a5f3-b8dd079407f6",
+      "permissions": [
+        "announcements.manage",
+        "audit.read",
+        "events.manage",
+        "giving.manage",
+        "groups.manage",
+        "people.manage"
+      ]
+    },
+    "createdAt": "2025-10-19T04:25:04.548Z"
+  },
+  {
+    "id": "audit-role-role-5511f011-6723-42c1-a5f3-b8dd079407f6-1760847920672",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "role.deleted",
+    "entity": "role",
+    "entityId": "role-5511f011-6723-42c1-a5f3-b8dd079407f6",
+    "summary": "Ariana Matau deleted role All access",
+    "metadata": {
+      "reassignedTo": null,
+      "reassignedCount": 0
+    },
+    "createdAt": "2025-10-19T04:25:20.672Z"
   }
 ]

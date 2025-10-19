@@ -1,6 +1,6 @@
 import { ArrayNotEmpty, IsArray, IsEmail, IsIn, IsOptional, IsString, MaxLength } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
-import { ROLE_VALUES, STATUS_VALUES } from './create-user.dto';
+import { STATUS_VALUES } from './create-user.dto';
 
 export class UpdateUserDto {
   @ApiPropertyOptional({ format: 'email', maxLength: 255 })
@@ -44,10 +44,10 @@ export class UpdateUserDto {
   @IsIn(STATUS_VALUES)
   status?: (typeof STATUS_VALUES)[number];
 
-  @ApiPropertyOptional({ type: [String], enum: ROLE_VALUES })
+  @ApiPropertyOptional({ type: [String], description: 'Role IDs to replace current assignments' })
   @IsOptional()
   @IsArray()
   @ArrayNotEmpty()
-  @IsIn(ROLE_VALUES, { each: true })
-  roles?: Array<(typeof ROLE_VALUES)[number]>;
+  @IsString({ each: true })
+  roleIds?: string[];
 }

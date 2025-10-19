@@ -1,6 +1,5 @@
-import { IsEmail, IsIn, IsOptional } from 'class-validator';
+import { IsEmail, IsIn, IsOptional, IsString, MaxLength } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Role } from '../../../mock/mock-data';
 
 export class LoginDto {
   @ApiProperty({ format: 'email' })
@@ -11,8 +10,9 @@ export class LoginDto {
   @IsIn(['google', 'facebook'])
   provider!: 'google' | 'facebook';
 
-  @ApiPropertyOptional({ enum: ['Member', 'Leader', 'Admin'] })
+  @ApiPropertyOptional({ description: 'Optional role identifier or name to assume for the session', maxLength: 100 })
   @IsOptional()
-  @IsIn(['Member', 'Leader', 'Admin'])
-  role?: Role;
+  @IsString()
+  @MaxLength(100)
+  role?: string;
 }

@@ -29,9 +29,18 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const displayName = me?.user?.profile
     ? `${me.user.profile.firstName} ${me.user.profile.lastName ?? ''}`.trim()
     : me?.user?.primaryEmail || 'Demo Admin';
-  const role = me?.user?.roles?.[0]?.role ?? 'Admin';
+  const roles = me?.user?.roles ?? [];
+  const isAdmin = roles.some((entry: any) => entry?.slug === 'admin' || entry?.role === 'Admin');
+  const primaryRole = roles[0]?.role ?? (isAdmin ? 'Admin' : 'Member');
   const navItems =
-    role === 'Admin' ? [...baseNavItems, { href: '/audit-log', label: 'Audit Log' }] : baseNavItems;
+    isAdmin
+      ? [
+          ...baseNavItems.slice(0, 2),
+          { href: '/roles', label: 'Roles' },
+          ...baseNavItems.slice(2),
+          { href: '/audit-log', label: 'Audit Log' },
+        ]
+      : baseNavItems;
 
   return (
     <html lang="en" className="bg-slate-900">
@@ -47,7 +56,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 <Link href="/dashboard" className="text-xl font-semibold tracking-tight">
                   Auckland Community Church
                 </Link>
-                <p className="text-xs text-slate-400">Role: {role}</p>
+                <p className="text-xs text-slate-400">Role: {primaryRole}</p>
               </div>
               <nav className="hidden gap-4 text-sm font-medium md:flex" aria-label="Primary navigation">
                 {navItems.map(item => (

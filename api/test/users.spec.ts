@@ -7,6 +7,8 @@ describe('Users (e2e-light)', () => {
   let createdUserId: string;
   let createdEventId: string;
   let targetGroupId: string;
+  let memberRoleId: string;
+  let leaderRoleId: string;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
@@ -15,6 +17,18 @@ describe('Users (e2e-light)', () => {
     app.setGlobalPrefix('api/v1');
     await app.init();
     await adapter.getInstance().ready();
+
+    const rolesResponse = await app.inject({
+      method: 'GET',
+      url: '/api/v1/roles',
+      headers: { authorization: 'Bearer demo-admin' },
+    });
+    const roles = rolesResponse.json() as Array<{ id: string; slug?: string; name: string }>;
+    memberRoleId = roles.find(role => role.slug === 'member')?.id ?? roles[0]?.id;
+    leaderRoleId = roles.find(role => role.slug === 'leader')?.id ?? memberRoleId;
+    if (!memberRoleId || !leaderRoleId) {
+      throw new Error('Seed roles not found for tests');
+    }
   });
 
   afterAll(async () => {
@@ -48,7 +62,7 @@ describe('Users (e2e-light)', () => {
         firstName: 'Quality',
         lastName: 'Assurance',
         phone: '555-1234',
-        roles: ['Member'],
+        roleIds: [memberRoleId],
         status: 'active',
       },
     });
@@ -68,13 +82,14 @@ describe('Users (e2e-light)', () => {
         address: '123 Integration Ave',
         notes: 'Updated via automated test',
         status: 'invited',
-        roles: ['Leader'],
+        roleIds: [leaderRoleId],
       },
     });
     expect(res.statusCode).toBe(200);
     const body = res.json();
     expect(body.profile.phone).toBe('555-9999');
     expect(body.roles[0].role).toBe('Leader');
+    expect(body.roles[0].roleId).toBe(leaderRoleId);
   });
 
   it('POST /groups/:id/members should add user to group', async () => {
