@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { api } from '../lib/api.server';
+import { api, postToApi, apiFetch } from '../lib/api.server';
 
 const API_BASE = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api/v1';
 
@@ -18,7 +18,7 @@ export async function logoutAction() {
 }
 
 export async function markAnnouncementReadAction(id: string) {
-  await api.postToApi(`/announcements/${id}/read`);
+  await postToApi(`/announcements/${id}/read`);
   revalidatePath('/announcements');
   revalidatePath('/dashboard');
 }
@@ -50,7 +50,7 @@ export async function createAnnouncementAction(formData: FormData) {
     const groupIds = formData.getAll('groupIds').map(value => String(value)).filter(Boolean);
     payload.groupIds = groupIds;
   }
-  await api.postToApi('/announcements', payload);
+  await postToApi('/announcements', payload);
   revalidatePath('/announcements');
   revalidatePath('/dashboard');
 }
@@ -112,7 +112,7 @@ export async function updateAnnouncementAction(formData: FormData) {
     payload.groupIds = groupIds;
   }
 
-  await api.apiFetch(`/announcements/${announcementId}`, {
+  await apiFetch(`/announcements/${announcementId}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),
   });
@@ -125,7 +125,7 @@ export async function recordAttendanceAction(formData: FormData) {
   const userId = String(formData.get('userId'));
   const status = String(formData.get('status')) as 'checkedIn' | 'absent' | 'excused';
   const note = formData.get('note') ? String(formData.get('note')) : undefined;
-  await api.apiFetch(`/events/${eventId}/attendance`, {
+  await apiFetch(`/events/${eventId}/attendance`, {
     method: 'POST',
     body: JSON.stringify({ userId, status, note }),
   });
@@ -139,7 +139,7 @@ export async function recordContributionAction(formData: FormData) {
   const fundId = formData.get('fundId') ? String(formData.get('fundId')) : undefined;
   const method = (formData.get('method') as 'cash' | 'bank-transfer' | 'eftpos' | 'other') || 'cash';
   const note = formData.get('note') ? String(formData.get('note')) : undefined;
-  await api.apiFetch('/giving/contributions', {
+  await apiFetch('/giving/contributions', {
     method: 'POST',
     body: JSON.stringify({ memberId, amount, date, fundId, method, note }),
   });
@@ -185,7 +185,7 @@ export async function updateContributionAction(formData: FormData) {
     payload.note = String(note);
   }
 
-  await api.apiFetch(`/giving/contributions/${contributionId}`, {
+  await apiFetch(`/giving/contributions/${contributionId}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),
   });
@@ -214,7 +214,7 @@ export async function createMemberAction(formData: FormData) {
   if (roleId) {
     payload.roleIds = [roleId];
   }
-  const created = await api.apiFetch<any>('/users', {
+  const created = await apiFetch<any>('/users', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
@@ -235,7 +235,7 @@ export async function updateMemberAction(formData: FormData) {
     }
   }
 
-  await api.apiFetch(`/users/${userId}`, {
+  await apiFetch(`/users/${userId}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),
   });
@@ -245,7 +245,7 @@ export async function updateMemberAction(formData: FormData) {
 
 export async function deleteMemberAction(formData: FormData) {
   const userId = String(formData.get('userId'));
-  await api.apiFetch(`/users/${userId}`, { method: 'DELETE' });
+  await apiFetch(`/users/${userId}`, { method: 'DELETE' });
   revalidatePath('/members');
   redirect('/members');
 }
@@ -254,7 +254,7 @@ export async function createRoleAction(formData: FormData) {
   const name = String(formData.get('name') ?? '');
   const description = formData.get('description') ? String(formData.get('description')) : undefined;
   const permissions = formData.getAll('permissions').map(value => String(value));
-  await api.apiFetch('/roles', {
+  await apiFetch('/roles', {
     method: 'POST',
     body: JSON.stringify({
       name,
@@ -279,7 +279,7 @@ export async function updateRoleAction(formData: FormData) {
   }
   const permissions = formData.getAll('permissions').map(value => String(value));
   payload.permissions = permissions;
-  await api.apiFetch(`/roles/${roleId}`, {
+  await apiFetch(`/roles/${roleId}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),
   });
@@ -291,7 +291,7 @@ export async function updateRoleAction(formData: FormData) {
 export async function deleteRoleAction(formData: FormData) {
   const roleId = String(formData.get('roleId'));
   const reassignRoleId = formData.get('reassignRoleId') ? String(formData.get('reassignRoleId')) : undefined;
-  await api.apiFetch(`/roles/${roleId}`, {
+  await apiFetch(`/roles/${roleId}`, {
     method: 'DELETE',
     body: JSON.stringify({
       reassignRoleId: reassignRoleId && reassignRoleId.length > 0 ? reassignRoleId : undefined,
@@ -307,7 +307,7 @@ export async function addGroupMemberAction(formData: FormData) {
   const userId = String(formData.get('userId'));
   const role = formData.get('role') ? String(formData.get('role')) : undefined;
   const status = formData.get('status') ? String(formData.get('status')) : undefined;
-  await api.apiFetch(`/groups/${groupId}/members`, {
+  await apiFetch(`/groups/${groupId}/members`, {
     method: 'POST',
     body: JSON.stringify({ userId, role, status }),
   });
@@ -319,7 +319,7 @@ export async function updateGroupMemberAction(formData: FormData) {
   const userId = String(formData.get('userId'));
   const role = formData.get('role') ? String(formData.get('role')) : undefined;
   const status = formData.get('status') ? String(formData.get('status')) : undefined;
-  await api.apiFetch(`/groups/${groupId}/members/${userId}`, {
+  await apiFetch(`/groups/${groupId}/members/${userId}`, {
     method: 'PATCH',
     body: JSON.stringify({ role, status }),
   });
@@ -329,7 +329,7 @@ export async function updateGroupMemberAction(formData: FormData) {
 export async function removeGroupMemberAction(formData: FormData) {
   const groupId = String(formData.get('groupId'));
   const userId = String(formData.get('userId'));
-  await api.apiFetch(`/groups/${groupId}/members/${userId}`, { method: 'DELETE' });
+  await apiFetch(`/groups/${groupId}/members/${userId}`, { method: 'DELETE' });
   revalidatePath(`/groups/${groupId}`);
 }
 
@@ -352,7 +352,7 @@ export async function createEventAction(formData: FormData) {
     groupId: formData.get('groupId') ? String(formData.get('groupId')) : undefined,
     tags: parseTags(formData.get('tags')),
   };
-  await api.apiFetch('/events', {
+  await apiFetch('/events', {
     method: 'POST',
     body: JSON.stringify(payload),
   });
@@ -377,7 +377,7 @@ export async function updateEventAction(formData: FormData) {
         : undefined,
     tags: parseTags(formData.get('tags')),
   };
-  await api.apiFetch(`/events/${eventId}`, {
+  await apiFetch(`/events/${eventId}`, {
     method: 'PATCH',
     body: JSON.stringify(payload),
   });
@@ -386,7 +386,7 @@ export async function updateEventAction(formData: FormData) {
 
 export async function deleteEventAction(formData: FormData) {
   const eventId = String(formData.get('eventId'));
-  await api.apiFetch(`/events/${eventId}`, { method: 'DELETE' });
+  await apiFetch(`/events/${eventId}`, { method: 'DELETE' });
   revalidatePath('/events');
 }
 
