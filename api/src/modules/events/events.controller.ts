@@ -1,4 +1,5 @@
-import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { FastifyReply } from 'fastify';
 import { EventsService } from './events.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
@@ -45,6 +46,15 @@ export class EventsController {
   remove(@Param('id') id: string, @Req() req: any) {
     this.ensureAdmin(req);
     return this.eventsService.remove(id, req.user.id);
+  }
+
+  @Get(':id/attendance.csv')
+  async exportAttendance(@Param('id') id: string, @Req() req: any, @Res({ passthrough: true }) res: FastifyReply) {
+    this.ensureAdmin(req);
+    const { content, filename } = await this.eventsService.exportAttendanceCsv(id);
+    res.header('Content-Type', 'text/csv; charset=utf-8');
+    res.header('Content-Disposition', `attachment; filename="${filename}"`);
+    return content;
   }
 
   private ensureAdmin(req: any) {

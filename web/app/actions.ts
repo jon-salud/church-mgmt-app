@@ -16,7 +16,10 @@ async function request<T>(path: string, init?: RequestInit) {
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
-  headers.set('Content-Type', 'application/json');
+  const hasBody = init?.body !== undefined && init.body !== null;
+  if (hasBody && !headers.has('Content-Type') && !(init?.body instanceof FormData)) {
+    headers.set('Content-Type', 'application/json');
+  }
   const response = await fetch(`${API_BASE}${path}`, {
     ...init,
     headers,
@@ -39,6 +42,106 @@ export async function logoutAction() {
 
 export async function markAnnouncementReadAction(id: string) {
   await request(`/announcements/${id}/read`, { method: 'POST' });
+  revalidatePath('/announcements');
+  revalidatePath('/dashboard');
+}
+
+const toIsoString = (value: string | undefined | null) => {
+  if (!value) return undefined;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return undefined;
+  }
+  return date.toISOString();
+};
+
+export async function createAnnouncementAction(formData: FormData) {
+  const audience = (formData.get('audience') as 'all' | 'custom') || 'all';
+  const publishInput = formData.get('publishAt') ? String(formData.get('publishAt')) : undefined;
+  const expireInput = formData.get('expireAt') ? String(formData.get('expireAt')) : undefined;
+  const payload: Record<string, unknown> = {
+    title: String(formData.get('title') ?? ''),
+    body: String(formData.get('body') ?? ''),
+    audience,
+    publishAt: toIsoString(publishInput) ?? new Date().toISOString(),
+  };
+  const expireIso = toIsoString(expireInput);
+  if (expireIso) {
+    payload.expireAt = expireIso;
+  }
+  if (audience === 'custom') {
+    const groupIds = formData.getAll('groupIds').map(value => String(value)).filter(Boolean);
+    payload.groupIds = groupIds;
+  }
+  await request('/announcements', {
+    method: 'POST',
+    body: JSON.stringify(payload),
+  });
+  revalidatePath('/announcements');
+  revalidatePath('/dashboard');
+}
+
+export async function updateAnnouncementAction(formData: FormData) {
+  const announcementId = String(formData.get('announcementId'));
+  const payload: Record<string, unknown> = {};
+  const entries: Array<[string, FormDataEntryValue | null]> = [
+    ['title', formData.get('title')],
+    ['body', formData.get('body')],
+  ];
+  for (const [key, value] of entries) {
+    if (value !== null) {
+      const text = String(value);
+      if (text.length > 0) {
+        payload[key] = text;
+      }
+    }
+  }
+
+  const audienceRaw = formData.get('audience');
+  const audience = audienceRaw ? String(audienceRaw) : undefined;
+  if (audience) {
+    payload.audience = audience;
+  }
+
+  const publishAtRaw = formData.get('publishAt');
+  if (publishAtRaw) {
+    const publishIso = toIsoString(String(publishAtRaw));
+    if (publishIso) {
+      payload.publishAt = publishIso;
+    }
+  }
+
+  if (formData.has('expireAt')) {
+    const expireValue = formData.get('expireAt');
+    if (expireValue === null) {
+      // no-op
+    } else {
+      const expireText = String(expireValue);
+      if (expireText === '') {
+        payload.expireAt = null;
+      } else {
+        const expireIso = toIsoString(expireText);
+        if (expireIso) {
+          payload.expireAt = expireIso;
+        }
+      }
+    }
+  }
+
+  const groupIds = formData.getAll('groupIds').map(value => String(value)).filter(Boolean);
+  const groupFieldTouched = formData.has('groupIdsMarker');
+  if (audience === 'custom') {
+    payload.groupIds = groupIds;
+  } else if (audience && audience !== 'custom') {
+    payload.groupIds = [];
+  } else if (groupFieldTouched) {
+    payload.groupIds = groupIds;
+  }
+
+  await request(`/announcements/${announcementId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
   revalidatePath('/announcements');
   revalidatePath('/dashboard');
 }
@@ -67,6 +170,53 @@ export async function recordContributionAction(formData: FormData) {
     body: JSON.stringify({ memberId, amount, date, fundId, method, note }),
   });
   revalidatePath('/giving');
+  revalidatePath('/dashboard');
+}
+
+export async function updateContributionAction(formData: FormData) {
+  const contributionId = String(formData.get('contributionId'));
+  const payload: Record<string, unknown> = {};
+  const memberId = formData.get('memberId');
+  if (memberId) {
+    const value = String(memberId);
+    if (value.length > 0) {
+      payload.memberId = value;
+    }
+  }
+  const amountRaw = formData.get('amount');
+  if (amountRaw) {
+    const amount = Number(amountRaw);
+    if (!Number.isNaN(amount)) {
+      payload.amount = amount;
+    }
+  }
+  const dateRaw = formData.get('date');
+  if (dateRaw) {
+    const iso = toIsoString(String(dateRaw));
+    if (iso) {
+      payload.date = iso;
+    }
+  }
+  const fundId = formData.get('fundId');
+  if (fundId !== null) {
+    const value = String(fundId);
+    payload.fundId = value;
+  }
+  const method = formData.get('method');
+  if (method) {
+    payload.method = String(method);
+  }
+  const note = formData.get('note');
+  if (note !== null) {
+    payload.note = String(note);
+  }
+
+  await request(`/giving/contributions/${contributionId}`, {
+    method: 'PATCH',
+    body: JSON.stringify(payload),
+  });
+  revalidatePath('/giving');
+  revalidatePath('/dashboard');
 }
 
 export async function createMemberAction(formData: FormData) {
@@ -169,15 +319,6 @@ export async function removeGroupMemberAction(formData: FormData) {
   await request(`/groups/${groupId}/members/${userId}`, { method: 'DELETE' });
   revalidatePath(`/groups/${groupId}`);
 }
-
-const toIsoString = (value: string | undefined | null) => {
-  if (!value) return undefined;
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return undefined;
-  }
-  return date.toISOString();
-};
 
 const parseTags = (value: FormDataEntryValue | null) => {
   if (!value) return undefined;

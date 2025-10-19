@@ -100,9 +100,17 @@ export const api = {
   async funds() {
     return apiFetch<Array<any>>('/giving/funds');
   },
-  async contributions(memberId?: string) {
-    const query = memberId ? `?memberId=${encodeURIComponent(memberId)}` : '';
-    return apiFetch<Array<any>>(`/giving/contributions${query}`);
+  async contributions(params?: { memberId?: string; fundId?: string; from?: string; to?: string }) {
+    const search = new URLSearchParams();
+    if (params?.memberId) search.set('memberId', params.memberId);
+    if (params?.fundId) search.set('fundId', params.fundId);
+    if (params?.from) search.set('from', params.from);
+    if (params?.to) search.set('to', params.to);
+    const query = search.toString();
+    return apiFetch<Array<any>>(`/giving/contributions${query ? `?${query}` : ''}`);
+  },
+  async givingSummary() {
+    return apiFetch<any>('/giving/reports/summary');
   },
   async auditLogs(params?: {
     actorUserId?: string;

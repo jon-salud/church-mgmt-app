@@ -45,6 +45,16 @@ interface ContributionInput {
   recordedBy?: string;
 }
 
+interface ContributionUpdateInput {
+  memberId?: string;
+  amount?: number;
+  date?: string;
+  fundId?: string | null;
+  method?: MockContribution['method'];
+  note?: string | null;
+  actorUserId: string;
+}
+
 interface UserCreateInput {
   primaryEmail: string;
   firstName: string;
@@ -142,8 +152,33 @@ interface AuditLogCreateInput {
   createdAt?: string;
 }
 
+interface AnnouncementCreateInput {
+  title: string;
+  body: string;
+  audience: MockAnnouncement['audience'];
+  groupIds?: string[];
+  publishAt?: string;
+  expireAt?: string | null;
+  actorUserId: string;
+}
+
+interface AnnouncementUpdateInput {
+  title?: string;
+  body?: string;
+  audience?: MockAnnouncement['audience'];
+  groupIds?: string[];
+  publishAt?: string;
+  expireAt?: string | null;
+  actorUserId: string;
+}
+
 function clone<T>(value: T): T {
   return structuredClone(value);
+}
+
+function formatMonthKey(value: string) {
+  const date = new Date(value);
+  return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
 }
 
 @Injectable()
@@ -707,10 +742,15 @@ export class MockDatabaseService {
 
   listAnnouncements(churchId?: string) {
     const filtered = this.announcements.filter(a => !churchId || a.churchId === churchId);
-    return filtered.map(announcement => ({
-      ...clone(announcement),
-      reads: this.announcementReads.filter(read => read.announcementId === announcement.id),
-    }));
+    return filtered
+      .map(announcement => ({
+        ...clone(announcement),
+        reads: this.announcementReads.filter(read => read.announcementId === announcement.id),
+      }))
+      .sort(
+        (a, b) =>
+          new Date(b.publishAt).getTime() - new Date(a.publishAt).getTime(),
+      );
   }
 
   markAnnouncementRead(announcementId: string, userId: string) {
@@ -745,11 +785,106 @@ export class MockDatabaseService {
     return clone(record);
   }
 
+  createAnnouncement(input: AnnouncementCreateInput) {
+    const publishAt = input.publishAt ?? new Date().toISOString();
+    const expireAt = input.expireAt ?? undefined;
+    const announcement: MockAnnouncement = {
+      id: `announcement-${randomUUID()}`,
+      churchId: this.getChurch().id,
+      title: input.title,
+      body: input.body,
+      audience: input.audience,
+      groupIds: input.audience === 'custom' ? [...(input.groupIds ?? [])] : undefined,
+      publishAt,
+      expireAt: expireAt ?? undefined,
+    };
+    this.announcements.push(announcement);
+    const actorName = this.getUserName(input.actorUserId);
+    const publishDate = new Date(publishAt);
+    const now = new Date();
+    const actionVerb = publishDate.getTime() > now.getTime() ? 'scheduled' : 'published';
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'announcement.created',
+      entity: 'announcement',
+      entityId: announcement.id,
+      summary: `${actorName} ${actionVerb} announcement "${announcement.title}"`,
+      metadata: {
+        audience: announcement.audience,
+        groupIds: announcement.groupIds ?? [],
+        publishAt: announcement.publishAt,
+        expireAt: announcement.expireAt ?? null,
+      },
+    });
+    return clone(announcement);
+  }
+
+  updateAnnouncement(id: string, input: AnnouncementUpdateInput) {
+    const announcement = this.announcements.find(item => item.id === id);
+    if (!announcement) {
+      return null;
+    }
+    const diff: Record<string, { previous: unknown; newValue: unknown }> = {};
+    const apply = <K extends keyof MockAnnouncement>(key: K, next: MockAnnouncement[K]) => {
+      const previous = announcement[key];
+      const isArray = Array.isArray(previous) || Array.isArray(next);
+      const hasChanged = isArray
+        ? JSON.stringify(previous) !== JSON.stringify(next)
+        : previous !== next;
+      if (hasChanged) {
+        diff[String(key)] = { previous, newValue: next };
+        if (next === undefined) {
+          delete (announcement as any)[key];
+        } else {
+          (announcement as any)[key] = next;
+        }
+      }
+    };
+
+    if (input.title !== undefined) {
+      apply('title', input.title);
+    }
+    if (input.body !== undefined) {
+      apply('body', input.body);
+    }
+    if (input.publishAt !== undefined) {
+      apply('publishAt', input.publishAt);
+    }
+    if (input.expireAt !== undefined) {
+      apply('expireAt', input.expireAt ?? undefined);
+    }
+    if (input.audience !== undefined) {
+      apply('audience', input.audience);
+      if (input.audience === 'custom') {
+        const nextGroups = input.groupIds ?? announcement.groupIds ?? [];
+        apply('groupIds', nextGroups);
+      } else {
+        apply('groupIds', undefined);
+      }
+    } else if (input.groupIds !== undefined) {
+      apply('groupIds', input.groupIds);
+    }
+
+    if (Object.keys(diff).length > 0) {
+      const actorName = this.getUserName(input.actorUserId);
+      this.createAuditLog({
+        actorUserId: input.actorUserId,
+        action: 'announcement.updated',
+        entity: 'announcement',
+        entityId: announcement.id,
+        summary: `${actorName} updated announcement "${announcement.title}"`,
+        diff,
+      });
+    }
+
+    return clone(announcement);
+  }
+
   listFunds() {
     return clone(this.funds);
   }
 
-  listContributions(filter?: { memberId?: string; fundId?: string }) {
+  listContributions(filter?: { memberId?: string; fundId?: string; from?: string; to?: string }) {
     let list = this.contributions;
     if (filter?.memberId) {
       list = list.filter(contribution => contribution.memberId === filter.memberId);
@@ -757,7 +892,18 @@ export class MockDatabaseService {
     if (filter?.fundId) {
       list = list.filter(contribution => contribution.fundId === filter.fundId);
     }
-    return clone(list);
+    if (filter?.from) {
+      const fromTime = new Date(filter.from).getTime();
+      list = list.filter(contribution => new Date(contribution.date).getTime() >= fromTime);
+    }
+    if (filter?.to) {
+      const toTime = new Date(filter.to).getTime();
+      list = list.filter(contribution => new Date(contribution.date).getTime() <= toTime);
+    }
+    const sorted = [...list].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
+    return clone(sorted);
   }
 
   recordContribution(input: ContributionInput) {
@@ -800,6 +946,152 @@ export class MockDatabaseService {
       },
     });
     return clone(contribution);
+  }
+
+  updateContribution(id: string, input: ContributionUpdateInput) {
+    const contribution = this.contributions.find(item => item.id === id);
+    if (!contribution) {
+      return null;
+    }
+    const diff: Record<string, { previous: unknown; newValue: unknown }> = {};
+    const apply = <K extends keyof MockContribution>(key: K, next: MockContribution[K]) => {
+      const previous = contribution[key];
+      if (previous !== next) {
+        diff[String(key)] = { previous, newValue: next };
+        if (next === undefined) {
+          delete (contribution as any)[key];
+        } else {
+          (contribution as any)[key] = next;
+        }
+      }
+    };
+
+    if (input.memberId !== undefined) {
+      apply('memberId', input.memberId);
+    }
+    if (input.amount !== undefined) {
+      apply('amount', input.amount);
+    }
+    if (input.date !== undefined) {
+      apply('date', input.date);
+    }
+    if (input.fundId !== undefined) {
+      apply('fundId', input.fundId ?? undefined);
+    }
+    if (input.method !== undefined) {
+      apply('method', input.method);
+    }
+    if (input.note !== undefined) {
+      apply('note', input.note ?? undefined);
+    }
+
+    if (Object.keys(diff).length > 0) {
+      const actorName = this.getUserName(input.actorUserId);
+      const memberName = this.getUserName(contribution.memberId);
+      this.createAuditLog({
+        actorUserId: input.actorUserId,
+        action: 'giving.updated',
+        entity: 'contribution',
+        entityId: contribution.id,
+        summary: `${actorName} updated $${contribution.amount.toFixed(2)} gift for ${memberName}`,
+        diff,
+      });
+    }
+
+    return clone(contribution);
+  }
+
+  getGivingSummary(churchId: string) {
+    const contributions = this.contributions.filter(entry => entry.churchId === churchId);
+    const totals = contributions.reduce(
+      (acc, entry) => {
+        acc.overall += entry.amount;
+        acc.count += 1;
+        const monthKey = formatMonthKey(entry.date);
+        acc.monthTotals.set(monthKey, (acc.monthTotals.get(monthKey) ?? 0) + entry.amount);
+        acc.fundTotals.set(entry.fundId ?? 'general', (acc.fundTotals.get(entry.fundId ?? 'general') ?? 0) + entry.amount);
+        return acc;
+      },
+      {
+        overall: 0,
+        count: 0,
+        monthTotals: new Map<string, number>(),
+        fundTotals: new Map<string, number>(),
+      },
+    );
+
+    const now = new Date();
+    const currentMonthKey = formatMonthKey(now.toISOString());
+    const previousMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const previousMonthKey = formatMonthKey(previousMonth.toISOString());
+
+    const byFund = Array.from(totals.fundTotals.entries()).map(([fundId, amount]) => {
+      const fund = fundId === 'general' ? undefined : this.funds.find(f => f.id === fundId);
+      return {
+        fundId: fund?.id ?? null,
+        name: fund?.name ?? 'General',
+        amount,
+      };
+    });
+
+    const monthly = Array.from(totals.monthTotals.entries())
+      .map(([month, amount]) => ({ month, amount }))
+      .sort((a, b) => (a.month < b.month ? 1 : -1))
+      .slice(0, 6);
+
+    return {
+      totals: {
+        overall: totals.overall,
+        monthToDate: totals.monthTotals.get(currentMonthKey) ?? 0,
+        previousMonth: totals.monthTotals.get(previousMonthKey) ?? 0,
+        averageGift: totals.count > 0 ? totals.overall / totals.count : 0,
+      },
+      byFund,
+      monthly,
+    };
+  }
+
+  exportContributionsCsv(filter?: { memberId?: string; fundId?: string; from?: string; to?: string }) {
+    const contributions = this.listContributions(filter);
+    const escape = (value: string | number | null | undefined) => {
+      if (value === undefined || value === null) {
+        return '';
+      }
+      const stringValue = String(value);
+      if (/[",\n]/.test(stringValue)) {
+        return `"${stringValue.replace(/"/g, '""')}"`;
+      }
+      return stringValue;
+    };
+    const fundMap = new Map(this.funds.map(fund => [fund.id, fund.name]));
+    const userMap = new Map(this.users.map(user => [user.id, user]));
+    const lines = [
+      ['Generated At', escape(new Date().toISOString())].join(','),
+      ['Total Records', String(contributions.length)].join(','),
+      '',
+      ['Contribution ID', 'Date', 'Member', 'Email', 'Fund', 'Amount', 'Method', 'Note'].join(','),
+      ...contributions.map(entry => {
+        const user = userMap.get(entry.memberId);
+        const memberName = user
+          ? `${user.profile.firstName ?? ''} ${user.profile.lastName ?? ''}`.trim() || user.primaryEmail
+          : entry.memberId;
+        const fundName = entry.fundId ? fundMap.get(entry.fundId) ?? entry.fundId : 'General';
+        return [
+          escape(entry.id),
+          escape(entry.date),
+          escape(memberName),
+          escape(user?.primaryEmail ?? ''),
+          escape(fundName),
+          escape(entry.amount.toFixed(2)),
+          escape(entry.method),
+          escape(entry.note ?? ''),
+        ].join(',');
+      }),
+    ];
+    return {
+      filename: `giving-contributions-${new Date().toISOString().slice(0, 10)}.csv`,
+      content: lines.join('\n'),
+    };
   }
 
   listAuditLogs(filter: AuditLogFilter = {}) {
