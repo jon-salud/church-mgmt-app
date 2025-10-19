@@ -27,6 +27,7 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - Attendance CSV export for events
 - Announcement create/edit experience with scheduling controls
 - Giving reports, contribution editing, and CSV export
+- PWA offline caching for announcements and events read views
 
 ### 🔄 In Progress
 
@@ -34,7 +35,6 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 
 ### 📝 Backlog / Upcoming
 
-- PWA offline caching for announcements and events read views
 - Environment hardening: auth guard improvements, error handling, audit trails persistence
 - Observability hardening: structured logging, Sentry wiring, basic metrics/analytics
 - OpenAPI schema enhancements to cover all endpoints

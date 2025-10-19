@@ -9,6 +9,7 @@
 **Vision:** Equip churches with a lightweight, secure, and modern system to manage people, groups/ministries, events, attendance, simple communications, and (optional) manual giving records—accessible on desktop and mobile (PWA) with an extensible API.
 
 **Primary Goals (MVP):**
+
 - Central **Member Directory** with roles/permissions.
 - **Groups / Ministries** management and member assignments.
 - **Events & Attendance** (create events, check-in/out, record attendance).
@@ -20,6 +21,7 @@
 - **Automated tests**: unit, integration, and UI e2e.
 
 **Non-Goals (post-MVP/roadmap):**
+
 - Online payments/recurring donations.
 - Complex workflows (rota/scheduling, facilities bookings).
 - Advanced email/SMS automation & templates.
@@ -40,18 +42,21 @@
 ## 3) Core MVP Use Cases & Acceptance Criteria
 
 ### 3.1 Auth & Account
+
 - **As a user**, I can sign in with **Google or Facebook**.
   - AC: Successful OAuth returns a JWT (or session) mapped to a **User** with a **Profile**.
   - AC: First-time sign-in creates a user; duplicates by email are prevented.
   - AC: Role defaults to **Member**; Admin can elevate roles.
 
 ### 3.2 Member Directory
+
 - **As an Admin**, I can create/edit/search members.
   - AC: Required fields: firstName, lastName, email; optional: phone, address, birthday, notes.
   - AC: Search by name/email; paginate & sort.
   - AC: Import CSV (post-MVP; optional stub in MVP).
 
 ### 3.3 Groups / Ministries
+
 - **As an Admin/Leader**, I can create groups, assign leaders, and add members **who may belong to multiple groups simultaneously** (e.g., a Christian can be in a geographical ministry, a service ministry, and a volunteer team).
   - AC: Group has `name`, `description`, `type` (taxonomy below), optional `meetingDay/time`, and tags.
   - AC: Members can be added to many groups; group-level roles supported (Member, Leader, Coordinator, Volunteer).
@@ -59,6 +64,7 @@
   - AC: View a group roster and quick actions (add/remove member, change role).
 
 **Group Taxonomy (MVP)**
+
 - `GeographicalMinistry` (e.g., North Shore, West Auckland)
 - `ServiceMinistry` (e.g., Worship Team, Kids, Tech/AV)
 - `VolunteerTeam` (e.g., Set-up Crew, Outreach Team)
@@ -66,28 +72,34 @@
 - `Other`
 
 **Membership**
+
 - Many-to-many (User↔Group) via `GroupMember`.
 - Per-membership fields: `role` (Member/Leader/Coordinator/Volunteer), `status` (Active/Inactive), `joinedAt`.
 - Bulk add/remove supported.
 
 ### 3.4 Events & Attendance
+
 - **As an Admin/Leader**, I can create events and record attendance.
   - AC: Event fields: title, description, start/end, location, tags, groupId (optional), visibility (public/private).
   - AC: Attendance: check-in/check-out; add note per attendee.
   - AC: Export attendance CSV (MVP).
 
 ### 3.5 Announcements
+
 - **As an Admin**, I can post announcements visible to all members or to selected groups.
   - AC: Announcement has title, body (basic rich text/markdown), audience (All or selected groupIds), publishAt, expireAt.
   - AC: Members see an **Announcements feed**; mark as read.
   - AC: Email delivery can be a **no-op** in MVP with a “Send email” stub (log only) to avoid deliverability setup; real email in roadmap.
 
 ### 3.6 Giving (Manual Records)
+
 - **As an Admin**, I can record pledges and received giving **manually** per member.
   - AC: Contribution: memberId, date, amount, method (cash, bank transfer), fund (General, Missions, etc.), note.
   - AC: Filter by date range/member/fund; CSV export.
+  - AC: Provide summary metrics (overall, month-to-date, previous month, average gift) and breakdowns by fund/month for dashboards.
 
 ### 3.7 PWA
+
 - **As a Member**, I can install the app on my phone and quickly access announcements, my groups, and upcoming events.
   - AC: Web app meets PWA install criteria (manifest + service worker).
   - AC: Basic offline read cache for last-seen announcements & event list; write operations require online.
@@ -97,9 +109,11 @@
 ## 4) Architecture & Tech Choices
 
 ### 4.1 Database (Recommended)
+
 **PostgreSQL** (managed; e.g., Supabase/Neon/RDS)
 
 **Why Postgres?**
+
 - Strong relational consistency for church data (people↔groups↔events↔attendance).
 - Mature SQL, JSONB for flexible metadata, robust indexing & constraints.
 - Great ecosystem (Prisma, TypeORM), simple migrations, easy to scale and back up.
@@ -107,6 +121,7 @@
 > Alternative considered: Firebase/MongoDB—fast iteration but weaker relational integrity for this domain; payments/attendance/giving queries benefit from SQL.
 
 ### 4.2 Backend (API-first)
+
 - **NestJS (TypeScript) + Fastify** for performance, modularity.
 - **Prisma ORM** for Postgres schema & migrations.
 - **OpenAPI 3.1** generated via `@nestjs/swagger`; exposed at `/docs`.
@@ -116,6 +131,7 @@
 - **Storage**: Cloud object storage for profile images (optional in MVP).
 
 ### 4.3 Frontend (PWA)
+
 - **Next.js (App Router) + React + TypeScript**
 - **UI**: Tailwind CSS + shadcn/ui
 - **State/query**: React Query (TanStack) against REST API.
@@ -123,6 +139,7 @@
 - **PWA**: Next PWA plugin, service worker for caching “shell” + key GETs.
 
 ### 4.4 Testing & Quality
+
 - **Unit/Integration**: **Jest** (backend), **Vitest** (frontend if preferred).
 - **API integration**: **Supertest** (NestJS), Prisma test DB.
 - **UI e2e**: **Playwright** (login, CRUD happy paths, attendance flow).
@@ -135,31 +152,38 @@
 ## 5) Data Model (MVP)
 
 **Organisation / Multi-Tenant**
+
 - `Church` (id, name, timezone, address, createdAt)
 - `ChurchUser` (churchId, userId, role: Member|Leader|Admin)  ← allows multi-church later
 
 **Identity**
+
 - `User` (id, primaryEmail, status, createdAt, lastLoginAt)
 - `Profile` (userId FK, firstName, lastName, phone, address, birthday, photoUrl, notes)
 - `OAuthAccount` (userId FK, provider: google|facebook, providerUserId, accessToken*, refreshToken*, expiresAt*) *stored securely or via Auth0*
 
 **Groups**
+
 - `Group` (id, churchId, name, description, `type` enum, meetingDay, meetingTime, tags JSONB)
 - `GroupMember` (groupId, userId, `role` enum, `status` enum, joinedAt)
 
 **Events & Attendance**
+
 - `Event` (id, churchId, title, description, startAt, endAt, location, visibility, groupId?)
 - `Attendance` (eventId, userId, status: checkedIn|absent|excused, note, recordedBy, recordedAt)
 
 **Announcements**
+
 - `Announcement` (id, churchId, title, body, audience: all|custom, groupIds JSONB, publishAt, expireAt)
 - `AnnouncementRead` (announcementId, userId, readAt)
 
 **Giving (Manual)**
+
 - `Fund` (id, churchId, name)
 - `Contribution` (id, churchId, memberId, date, amount decimal(10,2), method enum, fundId, note)
 
 **Audit & System**
+
 - `AuditLog` (id, churchId, actorUserId, action, entity, entityId, diff JSONB, createdAt)
 - `FeatureFlag` (key, value JSONB)
 
@@ -172,10 +196,12 @@
 All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JSON. Pagination: `?page=&pageSize=`, sorting: `?sort=field:asc`, filtering with query params.
 
 **Auth**
+
 - `POST /auth/oauth/callback` (if self-hosted OAuth) — exchanges code → JWT.
 - `GET /auth/me` → current user + roles per church.
 
 **Users & Profiles**
+
 - `GET /users` (Admin) — list; filters: `q, role, groupId`
 - `POST /users` (Admin) — create bare user (invite flow post-MVP)
 - `GET /users/:id`
@@ -184,6 +210,7 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - `PATCH /profiles/:userId`
 
 **Groups**
+
 - `GET /groups` (Member sees groups they belong to; Admin sees all)
 - `POST /groups` (Admin/Leader for own ministry scope)
 - `GET /groups/:id`
@@ -193,14 +220,17 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - `GET /groups/:id/members`
 
 **Events**
+
 - `GET /events?from=&to=&groupId=`
 - `POST /events` (Admin/Leader)
 - `GET /events/:id`
 - `PATCH /events/:id`
 - `GET /events/:id/attendees`
 - `POST /events/:id/attendance` (bulk upsert: [{userId, status, note}])
+- `GET /events/:id/attendance.csv` (Admin) — export attendance report
 
 **Announcements**
+
 - `GET /announcements` (filters: activeOnly=true, groupId)
 - `POST /announcements` (Admin)
 - `GET /announcements/:id`
@@ -208,13 +238,17 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - `POST /announcements/:id/read` (Member marks read)
 
 **Giving (Manual)**
-- `GET /funds`
-- `POST /funds`
-- `GET /contributions?memberId=&from=&to=&fundId=`
-- `POST /contributions`
-- `PATCH /contributions/:id`
+
+- `GET /giving/funds`
+- `POST /giving/funds`
+- `GET /giving/contributions?memberId=&from=&to=&fundId=`
+- `POST /giving/contributions`
+- `PATCH /giving/contributions/:id`
+- `GET /giving/contributions.csv?memberId=&from=&to=&fundId=` (Admin)
+- `GET /giving/reports/summary` (Admin)
 
 **Admin & Audit**
+
 - `GET /audit?entity=&actorUserId=&from=&to=`
 - `GET /health` (readiness/liveness)
 - `GET /metrics` (prometheus—optional)
@@ -226,6 +260,7 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 ## 7) Frontend (PWA) Screens (MVP)
 
 **Member**
+
 - Login (Google/Facebook)
 - Home / Announcements Feed
 - My Profile (edit core fields)
@@ -234,16 +269,18 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - Offline fallback (read-only cached announcements & events)
 
 **Leader**
+
 - Group Detail (manage members)
 - Event Attendance (check-in/out, quick search, mark all present/absent)
 
 **Admin**
+
 - Dashboard (quick stats: members, groups, events this week)
 - People (CRUD, search)
 - Groups (CRUD, membership)
 - Events (CRUD, attendance export)
 - Announcements (CRUD, target audience)
-- Giving (manual records, CSV export)
+- Giving (manual records, summary dashboard, CSV export)
 - Audit Logs (view)
 
 ---
@@ -285,11 +322,13 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 ## 11) Testing Strategy (MVP—must have)
 
 **Coverage Goals:**  
+
 - Unit ≥ 70% statements/branches on backend services & controllers.  
 - Integration: critical flows (auth, CRUD for members/groups/events/attendance).  
 - UI e2e: smoke suite covering login, create group, add member, create event, record attendance, post announcement, member reads announcement.
 
 **Test Types & Tooling**
+
 - **Backend Unit**: Jest (service logic, DTO validation).
 - **Backend Integration**: Jest + Supertest against ephemeral Postgres (Testcontainers) & Prisma migrations.
 - **Frontend Unit**: Vitest + React Testing Library.
@@ -298,6 +337,7 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - **Static Checks**: ESLint/TypeScript strict, Zod/class-validator schemas.
 
 **CI Pipeline (GitHub Actions)**
+
 1. `install → lint → typecheck → unit → integration (spins Postgres) → build`
 2. Preview deploy to staging
 3. Run Playwright e2e against preview
@@ -308,6 +348,7 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 ## 12) Delivery Plan (MVP Milestones)
 
 **Milestone 0 — Foundations (1–2 weeks)**
+
 - Repo setup (pnpm), workspaces (api, web).
 - Postgres (managed), Prisma init & base schema.
 - NestJS skeleton (Auth, Users modules), OpenAPI scaffolding.
@@ -315,18 +356,21 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - CI/CD pipeline + pre-commit hooks.
 
 **Milestone 1 — People & Auth (1–2 weeks)**
+
 - OAuth login (Google/Facebook).
 - Users/Profiles CRUD (Admin) + basic RBAC.
 - Member directory UI (search/paginate).
 - Unit/integration tests for users/auth.
 
 **Milestone 2 — Groups & Events (1–2 weeks)**
+
 - Groups CRUD + membership.
 - Events CRUD + list/calendar view.
 - Attendance recording (Leader/Admin) + exports.
 - e2e flows for groups/events/attendance.
 
 **Milestone 3 — Announcements & PWA (1–2 weeks)**
+
 - Announcements CRUD + member feed + mark read.
 - PWA manifest + service worker + basic offline cache.
 - Manual Giving records (simple CRUD + export).
@@ -334,6 +378,7 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - Final test hardening, perf checks, accessibility pass.
 
 **Go/No-Go Checklist**
+
 - Auth works across Google & Facebook.
 - CRUD happy paths covered by e2e.
 - OpenAPI docs accurate; 400/401/403/404/409/500 handled.
@@ -406,6 +451,7 @@ paths:
 ## 14) Coding Standards & Project Structure
 
 **Backend (NestJS)**
+
 ```
 /api
   /src
@@ -427,6 +473,7 @@ paths:
 ```
 
 **Frontend (Next.js)**
+
 ```
 /web
   /app
@@ -443,6 +490,7 @@ paths:
 ```
 
 **Conventions**
+
 - TypeScript strict mode, no `any`.
 - DTOs validated at boundaries; never trust client input.
 - Feature flags for risky features.
@@ -473,6 +521,7 @@ paths:
 ---
 
 ### TL;DR Build Decisions (for Codex)
+
 - **DB:** PostgreSQL (managed) + Prisma.
 - **API:** NestJS (Fastify), OpenAPI 3.1, JWT (OIDC).
 - **Auth:** Google + Facebook via Auth0 (or Passport strategies).

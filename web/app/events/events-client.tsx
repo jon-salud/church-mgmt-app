@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
 import { Modal } from "../../components/ui/modal";
 import {
@@ -9,6 +9,8 @@ import {
   recordAttendanceAction,
   updateEventAction,
 } from "../actions";
+import { loadOfflineSnapshot, persistOfflineSnapshot } from "../../lib/offline-cache";
+import { useOfflineStatus } from "../../lib/use-offline-status";
 
 type EventsClientProps = {
   events: Array<any>;
@@ -31,21 +33,70 @@ type EventDraft = {
 export function EventsClient({ events, members, groups }: EventsClientProps) {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [eventModal, setEventModal] = useState<EventDraft | null>(null);
+  const [eventState, setEventState] = useState(events);
+  const [memberState, setMemberState] = useState(members);
+  const [groupState, setGroupState] = useState(groups);
+  const isOffline = useOfflineStatus();
+
+  useEffect(() => {
+    setEventState(events);
+    setMemberState(members);
+    setGroupState(groups);
+  }, [events, members, groups]);
+
+  useEffect(() => {
+    persistOfflineSnapshot("events", {
+      events: eventState,
+      members: memberState,
+      groups: groupState,
+    });
+  }, [eventState, memberState, groupState]);
+
+  useEffect(() => {
+    if (!isOffline) {
+      return;
+    }
+    if (eventState.length > 0 || memberState.length > 0 || groupState.length > 0) {
+      return;
+    }
+    loadOfflineSnapshot<'events'>("events").then(snapshot => {
+      if (!snapshot) {
+        return;
+      }
+      const offlineEvents = Array.isArray(snapshot.events) ? (snapshot.events as Array<any>) : [];
+      const offlineMembers = Array.isArray(snapshot.members) ? (snapshot.members as Array<any>) : [];
+      const offlineGroups = Array.isArray(snapshot.groups) ? (snapshot.groups as Array<any>) : [];
+      if (offlineEvents.length > 0) {
+        setEventState(offlineEvents);
+      }
+      if (offlineMembers.length > 0) {
+        setMemberState(offlineMembers);
+      }
+      if (offlineGroups.length > 0) {
+        setGroupState(offlineGroups);
+      }
+    });
+  }, [isOffline, eventState.length, memberState.length, groupState.length]);
 
   const sortedEvents = useMemo(
     () =>
-      [...events].sort(
+      [...eventState].sort(
         (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime(),
       ),
-    [events],
+    [eventState],
   );
 
   return (
     <section className="space-y-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-        <div>
+        <div className="space-y-2">
           <h1 className="text-3xl font-semibold">Events & Attendance</h1>
           <p className="text-sm text-slate-400">Record attendance for services, rehearsals, and training.</p>
+          {isOffline ? (
+            <p className="text-xs text-amber-300">
+              Offline mode: displaying the last synced events, groups, and members available on this device.
+            </p>
+          ) : null}
         </div>
         <button
           type="button"
@@ -110,7 +161,9 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                         key={record.userId}
                         className="flex justify-between rounded-md border border-slate-800 bg-slate-950/60 px-3 py-2"
                       >
-                        <span>{members.find(m => m.id === record.userId)?.profile?.firstName || record.userId}</span>
+                        <span>
+                          {memberState.find(m => m.id === record.userId)?.profile?.firstName || record.userId}
+                        </span>
                         <span className="text-slate-400">{record.status}</span>
                       </li>
                     ))}
@@ -127,7 +180,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                         name="userId"
                         className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
                       >
-                        {members.map(member => (
+                        {memberState.map(member => (
                           <option key={member.id} value={member.id}>
                             {member.profile?.firstName} {member.profile?.lastName}
                           </option>
@@ -226,7 +279,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
             >
               <option value="">No linked group</option>
-              {groups.map(group => (
+              {groupState.map(group => (
                 <option key={group.id} value={group.id}>
                   {group.name}
                 </option>
@@ -334,7 +387,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                   className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
                 >
                   <option value="">No linked group</option>
-                  {groups.map(group => (
+                  {groupState.map(group => (
                     <option key={group.id} value={group.id}>
                       {group.name}
                     </option>
