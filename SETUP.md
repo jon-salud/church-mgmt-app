@@ -19,6 +19,9 @@ pnpm install
 pnpm dev:api:mock
 ```
 
+- Swagger docs live at `http://localhost:3001/docs` (OpenAPI 3.1) for quick endpoint discovery.
+- Metrics endpoint: `http://localhost:3001/api/v1/metrics`.
+
 ## Web
 
 ```bash

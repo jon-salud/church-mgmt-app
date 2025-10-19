@@ -123,7 +123,7 @@
 ### 4.2 Backend (API-first)
 
 - **NestJS (TypeScript) + Fastify** for performance, modularity.
-- **Prisma ORM** for Postgres schema & migrations.
+- **Prisma ORM** for Postgres schema & migrations (mock store ships today; Prisma wiring is stubbed for future persistence).
 - **OpenAPI 3.1** generated via `@nestjs/swagger`; exposed at `/docs`.
 - **Auth**: OAuth 2.0 / OIDC via **Auth0** (fastest path) or **Passport (Google, Facebook)** with JWT access tokens.
 - **Validation**: Zod or class-validator (DTOs).
@@ -146,6 +146,13 @@
 - **Contract tests** (optional): **Pact** between API and web client.
 - **Lint/Format**: ESLint + Prettier; **Husky** pre-commit hooks.
 - **CI/CD**: GitHub Actions (build, test, lint, e2e on preview deploy).
+
+### 4.5 Observability & Operations
+
+- **Logging**: Structured JSON via `pino`; adjustable through `LOG_LEVEL`.
+- **Error monitoring**: Optional Sentry integration (`SENTRY_DSN`, `SENTRY_TRACES_SAMPLE_RATE`) captures uncaught exceptions and traces.
+- **Metrics**: Prometheus-compatible counters/histograms exposed at `/api/v1/metrics`.
+- **Audit logging**: All mutating actions recorded via the audit module; mock mode persists snapshots to disk, production mode stores via Prisma.
 
 ---
 
