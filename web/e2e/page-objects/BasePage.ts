@@ -1,5 +1,5 @@
 import { Page, expect } from '@playwright/test';
-import AxeBuilder from '@axe-core/playwright';
+import * as axe from 'axe-core';
 
 export class BasePage {
   protected readonly page: Page;
@@ -13,7 +13,8 @@ export class BasePage {
   }
 
   async checkAccessibility() {
-    const accessibilityScanResults = await new AxeBuilder(this.page).analyze();
+    await this.page.addScriptTag({ path: require.resolve('axe-core') });
+    const accessibilityScanResults = await this.page.evaluate(() => axe.run());
     expect(accessibilityScanResults.violations).toEqual([]);
   }
 }
