@@ -39,6 +39,13 @@ The web env template exposes:
 - `NEXT_PUBLIC_API_BASE_URL` / `API_BASE_URL` – defaults to `http://localhost:3001/api/v1`
 - `DEMO_DEFAULT_TOKEN` – defaults to `demo-admin`, used when no cookie token is present.
 
+API runtime toggles:
+
+- `LOG_LEVEL` controls pino structured log verbosity (`debug`, `info`, `warn`, `error`).
+- `SENTRY_DSN` and optional `SENTRY_TRACES_SAMPLE_RATE` enable error reporting to Sentry.
+- `AUDIT_LOG_FILE` overrides the persisted audit trail location (`storage/audit-log.json` by default).
+- `AUDIT_LOG_PERSIST=false` disables audit log writes (automatically disabled during Jest runs).
+
 ---
 
 ## Run the Stacks (mock data)
@@ -146,6 +153,29 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 - Tailwind CSS is configured globally (`web/app/globals.css`, `tailwind.config.ts`).
 - A starter shadcn-style `<Button />` lives in `web/components/ui/button.tsx`.
 - Mix and match your own component library on top of the Tailwind foundation.
+
+---
+
+## Observability
+
+- Structured JSON logging via `pino`; adjust verbosity with `LOG_LEVEL`.
+  - Local tail: `pnpm dev:api:mock | pino-pretty` (or any JSON log viewer) to watch request lifecycle and bootstrap events.
+  - Each entry includes `service`, `environment`, and contextual payloads so you can ship logs straight to ELK/Loki.
+- Global HTTP error filter returns consistent payloads and forwards 5xx responses to Sentry when `SENTRY_DSN` is set.
+  - Configure `SENTRY_DSN` (+ optional `SENTRY_TRACES_SAMPLE_RATE`) in `api/.env`, restart the API, and verify by hitting a failing route—the error shows up in Sentry with method/path metadata.
+- Prometheus-friendly metrics live at `/api/v1/metrics` (request counts and latency histogram).
+  - Curl locally: `curl http://localhost:3001/api/v1/metrics`.
+  - Prometheus scrape example:
+
+    ```yaml
+    scrape_configs:
+      - job_name: 'church-api'
+        static_configs:
+          - targets: ['localhost:3001']
+        metrics_path: /api/v1/metrics
+    ```
+
+  - Grafana tips: plot `rate(church_app_http_requests_total[5m])` for throughput, and `histogram_quantile(0.95, sum(rate(church_app_http_request_duration_seconds_bucket[5m])) by (le,route))` for latency.
 
 ---
 

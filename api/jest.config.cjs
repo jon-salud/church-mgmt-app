@@ -8,4 +8,7 @@ module.exports = {
   coverageDirectory: '<rootDir>/coverage',
   coverageReporters: ['text', 'lcov'],
   collectCoverageFrom: ['<rootDir>/src/**/*.ts', '!<rootDir>/src/main.ts'],
+  moduleNameMapper: {
+    '^prom-client$': '<rootDir>/test/support/stubs/prom-client',
+  },
 };

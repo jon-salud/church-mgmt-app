@@ -46,6 +46,13 @@ pnpm -C web dev
 The login page links to `/auth/google` and `/auth/facebook`. Successful callbacks redirect to
 `WEB_APP_URL/(auth)/oauth/callback`, which stores the JWT inside an httpOnly `session_token` cookie.
 
+### Observability extras
+
+- `LOG_LEVEL` tunes the structured pino logger (`debug` in dev, `info`+ in prod).
+- Provide `SENTRY_DSN` (and optional `SENTRY_TRACES_SAMPLE_RATE`) to forward 5xx errors and traces to Sentry automatically.
+- Audit entries now persist to disk by default (`storage/audit-log.json`); override with `AUDIT_LOG_FILE` or disable via `AUDIT_LOG_PERSIST=false`.
+- Prometheus scrapers can read metrics from `/api/v1/metrics` (request counts + latency histograms).
+
 ## CI (optional)
 
 - See `.github/workflows/ci.yml`

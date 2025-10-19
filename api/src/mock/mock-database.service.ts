@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
 import {
   MockUser,
@@ -26,6 +26,7 @@ import {
   mockAuditLogs,
   mockChurches,
 } from './mock-data';
+import { AuditLogPersistence } from './audit-log.persistence';
 
 interface AttendanceInput {
   eventId: string;
@@ -183,6 +184,7 @@ function formatMonthKey(value: string) {
 
 @Injectable()
 export class MockDatabaseService {
+  private readonly logger = new Logger(MockDatabaseService.name);
   private users: MockUser[] = clone(mockUsers);
   private groups: MockGroup[] = clone(mockGroups);
   private events: MockEvent[] = clone(mockEvents);
@@ -193,6 +195,35 @@ export class MockDatabaseService {
   private auditLogs: MockAuditLog[] = clone(mockAuditLogs);
   private sessions: DemoSession[] = clone(mockSessions);
   private oauthAccounts: Array<{ provider: 'google' | 'facebook'; providerUserId: string; userId: string }> = [];
+
+  constructor(private readonly auditPersistence: AuditLogPersistence) {
+    this.hydrateAuditLogSnapshot();
+  }
+
+  private hydrateAuditLogSnapshot() {
+    try {
+      const persisted = this.auditPersistence.load();
+      if (Array.isArray(persisted) && persisted.length > 0) {
+        this.auditLogs = persisted.map(log => clone(log));
+        this.logger.log(`Loaded ${this.auditLogs.length} audit log entries from disk.`);
+        return;
+      }
+      this.auditPersistence.save(this.auditLogs);
+    } catch (error) {
+      this.logger.warn('Falling back to in-memory audit log only; persistence unavailable.');
+      if (error instanceof Error) {
+        this.logger.verbose(error.message);
+      }
+    }
+  }
+
+  private persistAuditLogs() {
+    try {
+      this.auditPersistence.save(this.auditLogs);
+    } catch (error) {
+      this.logger.error('Failed to persist audit logs after mutation.', error instanceof Error ? error.stack : undefined);
+    }
+  }
 
   getChurch() {
     return clone(mockChurches[0]);
@@ -1162,6 +1193,7 @@ export class MockDatabaseService {
       createdAt: input.createdAt ?? new Date().toISOString(),
     };
     this.auditLogs.push(record);
+    this.persistAuditLogs();
     return clone(record);
   }
 
