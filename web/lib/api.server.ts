@@ -42,7 +42,7 @@ const defaultHeaders = () => {
   return headers;
 };
 
-async function apiFetch<T>(path: string, init?: RequestInit) {
+export async function apiFetch<T>(path: string, init?: RequestInit) {
   const headers = new Headers(init?.headers || {});
   const defaults = defaultHeaders();
   Object.entries(defaults).forEach(([key, value]) => headers.set(key, value));
