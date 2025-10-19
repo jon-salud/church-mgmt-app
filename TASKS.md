@@ -31,11 +31,11 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - Environment hardening: auth guard cookie support + active-account enforcement, JSON error filter, and persisted audit logs
 - Observability hardening: structured pino logging, Sentry initialization hooks, and Prometheus-friendly `/api/v1/metrics`
 - OpenAPI schema enhancements documenting core modules (users, groups, events, giving, dashboard, audit, auth)
+- Architect and Implement Household Data Model
 
 ### 🔄 In Progress
-
-- _None — pick the next item from the backlog_
 
 ### 📝 Backlog / Upcoming
 
 - Documentation refresh once outstanding MVP items land
+- Debug and stabilize the E2E test environment to prevent port conflicts.

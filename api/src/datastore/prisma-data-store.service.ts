@@ -192,16 +192,138 @@ export class PrismaDataStore implements DataStore {
     };
   }
 
-  async createUser(input: Parameters<DataStore['createUser']>[0]): Promise<StoreReturn<'createUser'>> {
-    throw new Error('createUser is not yet implemented for Prisma data store');
+  async createUser(input: Parameters<DataStore['createUser']>[0]) {
+    const churchId = await this.getPrimaryChurchId();
+    const household = await this.client.household.create({
+      data: {
+        churchId,
+        name: `${input.lastName} Family`,
+        address: input.address,
+      },
+    });
+    const user = await this.client.user.create({
+      data: {
+        primaryEmail: input.primaryEmail,
+        status: input.status ?? 'active',
+        profile: {
+          create: {
+            firstName: input.firstName,
+            lastName: input.lastName,
+            phone: input.phone,
+            notes: input.notes,
+            householdId: household.id,
+          },
+        },
+        churches: {
+          create: {
+            churchId,
+            role: 'Member',
+          },
+        },
+      },
+    });
+    return this.getUserById(user.id);
   }
 
-  async updateUser(id: string, input: Parameters<DataStore['updateUser']>[1]): Promise<StoreReturn<'updateUser'>> {
-    throw new Error('updateUser is not yet implemented for Prisma data store');
+  async updateUser(id: string, input: Parameters<DataStore['updateUser']>[1]) {
+    const user = await this.client.user.findUnique({ where: { id }, include: { profile: true } });
+    if (!user) return null;
+
+    if (input.address && user.profile) {
+      await this.client.household.update({
+        where: { id: user.profile.householdId },
+        data: { address: input.address },
+      });
+    }
+
+    const updatedUser = await this.client.user.update({
+      where: { id },
+      data: {
+        primaryEmail: input.primaryEmail,
+        status: input.status,
+        profile: {
+          update: {
+            firstName: input.firstName,
+            lastName: input.lastName,
+            phone: input.phone,
+            notes: input.notes,
+            membershipStatus: input.membershipStatus,
+            joinMethod: input.joinMethod,
+            joinDate: input.joinDate,
+            previousChurch: input.previousChurch,
+            baptismDate: input.baptismDate,
+            spiritualGifts: input.spiritualGifts,
+            coursesAttended: input.coursesAttended,
+            maritalStatus: input.maritalStatus,
+            occupation: input.occupation,
+            school: input.school,
+            gradeLevel: input.gradeLevel,
+            graduationYear: input.graduationYear,
+            skillsAndInterests: input.skillsAndInterests,
+            backgroundCheckStatus: input.backgroundCheckStatus,
+            backgroundCheckDate: input.backgroundCheckDate,
+            onboardingComplete: input.onboardingComplete,
+            emergencyContactName: input.emergencyContactName,
+            emergencyContactPhone: input.emergencyContactPhone,
+            allergiesOrMedicalNotes: input.allergiesOrMedicalNotes,
+            parentalConsentOnFile: input.parentalConsentOnFile,
+            pastoralNotes: input.pastoralNotes,
+          },
+        },
+      },
+    });
+    return this.getUserById(updatedUser.id);
   }
 
   async deleteUser(id: string, input: Parameters<DataStore['deleteUser']>[1]): Promise<StoreReturn<'deleteUser'>> {
     throw new Error('deleteUser is not yet implemented for Prisma data store');
+  }
+
+  async listHouseholds(churchId?: string) {
+    const church = churchId ?? (await this.getPrimaryChurchId());
+    return this.client.household.findMany({
+      where: { churchId: church },
+      include: { profiles: true },
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  async getHouseholdById(id: string) {
+    return this.client.household.findUnique({
+      where: { id },
+      include: { profiles: { include: { user: true } } },
+    });
+  }
+
+  async getSettings(churchId: string) {
+    const settings = await this.client.settings.findUnique({
+      where: { churchId },
+    });
+    if (!settings || !settings.optionalFields) {
+      return {};
+    }
+    try {
+      return JSON.parse(settings.optionalFields);
+    } catch (error) {
+      return {};
+    }
+  }
+
+  async updateSettings(churchId: string, settings: any) {
+    const optionalFields = JSON.stringify(settings.optionalFields);
+    const result = await this.client.settings.upsert({
+      where: { churchId },
+      update: { optionalFields },
+      create: { churchId, optionalFields },
+    });
+    if (!result || !result.optionalFields) {
+      return {};
+    }
+    try {
+      return JSON.parse(result.optionalFields);
+    } catch (error) {
+      return {};
+    }
   }
 
   async listRoles(): Promise<StoreReturn<'listRoles'>> {

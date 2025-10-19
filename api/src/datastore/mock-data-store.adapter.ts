@@ -42,6 +42,14 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.deleteUser(id, input);
   }
 
+  async listHouseholds(churchId?: string) {
+    return this.mock.listHouseholds(churchId);
+  }
+
+  async getHouseholdById(id: string) {
+    return this.mock.getHouseholdById(id);
+  }
+
   async listGroups(churchId?: string) {
     return this.mock.listGroups(churchId);
   }
@@ -171,5 +179,13 @@ export class MockDataStoreAdapter implements DataStore {
 
   async upsertUserFromOAuth(input: Parameters<MockDatabaseService['upsertUserFromOAuth']>[0]) {
     return this.mock.upsertUserFromOAuth(input);
+  }
+
+  async getSettings(churchId: string) {
+    return this.mock.getSettings(churchId);
+  }
+
+  async updateSettings(churchId: string, settings: any) {
+    return this.mock.updateSettings(churchId, settings);
   }
 }
