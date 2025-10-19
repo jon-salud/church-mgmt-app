@@ -66,7 +66,7 @@ Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/d
 
 ## API Docs
 
-- Swagger now enumerates every controller (auth, users, groups, events, announcements, giving, dashboard, audit).
+- Swagger now enumerates every controller (auth, users, households, groups, events, announcements, giving, dashboard, audit).
 - DTOs include type metadata for request/response bodies; try the “Try it out” button on any route at `http://localhost:3001/docs`.
 - Generic schemas are used for nested mock payloads so the docs stay useful even as the backing store swaps between mock and future Prisma modes.
 
@@ -116,6 +116,7 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 - **Giving** – manual ledger with create form and seeded funds.
 - **Audit Log** – admin-only view of recent activity with filters for entity, actor, and date range.
 - **Auth** – mock Google/Facebook flows with role assignment.
+- **Households** – household listing and detail views.
 - **PWA** – manifest + service worker pre-cache key routes for offline dashboard snapshots (install via browser menu).
 
 ---
