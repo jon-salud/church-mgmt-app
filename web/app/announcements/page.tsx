@@ -1,4 +1,4 @@
-import { api } from '../../lib/api';
+import { api } from '../../lib/api.server';
 import { AnnouncementsClient } from './announcements-client';
 
 export default async function AnnouncementsPage() {

@@ -1,4 +1,4 @@
-import { api } from '../../lib/api';
+import { api } from '../../lib/api.server';
 import { format } from 'date-fns';
 
 export default async function DashboardPage() {

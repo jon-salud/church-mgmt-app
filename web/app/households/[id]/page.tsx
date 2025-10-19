@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { api } from '../../../lib/api';
+import { api } from '../../../lib/api.server';
 
 export default async function HouseholdDetailPage({ params }: { params: { id: string } }) {
   const household = await api.household(params.id);

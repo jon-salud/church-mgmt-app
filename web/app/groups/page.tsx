@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { api } from '../../lib/api';
+import { api } from '../../lib/api.server';
 
 export default async function GroupsPage() {
   const groups = await api.groups();
