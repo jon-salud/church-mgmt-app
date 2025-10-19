@@ -1,27 +1,38 @@
 import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
+import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiProduces, ApiTags } from '@nestjs/swagger';
 import { EventsService } from './events.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
+import { arrayOfObjectsResponse, objectResponse } from '../../common/openapi/schemas';
+import { SuccessResponseDto } from '../../common/dto/success-response.dto';
 
 @UseGuards(AuthGuard)
+@ApiTags('Events')
+@ApiBearerAuth()
 @Controller('events')
 export class EventsController {
   constructor(private readonly eventsService: EventsService) {}
 
   @Get()
+  @ApiOperation({ summary: 'List events' })
+  @ApiOkResponse(arrayOfObjectsResponse)
   list() {
     return this.eventsService.list();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get event detail' })
+  @ApiOkResponse(objectResponse)
   detail(@Param('id') id: string) {
     return this.eventsService.detail(id);
   }
 
   @Post(':id/attendance')
+  @ApiOperation({ summary: 'Record attendance for an event' })
+  @ApiOkResponse(objectResponse)
   recordAttendance(
     @Param('id') id: string,
     @Body() dto: UpdateAttendanceDto,
@@ -31,24 +42,36 @@ export class EventsController {
   }
 
   @Post()
+  @ApiOperation({ summary: 'Create an event' })
+  @ApiCreatedResponse(objectResponse)
   create(@Body() dto: CreateEventDto, @Req() req: any) {
     this.ensureAdmin(req);
-    return this.eventsService.create(dto, req.user.id);
+  	return this.eventsService.create(dto, req.user.id);
   }
 
   @Patch(':id')
+  @ApiOperation({ summary: 'Update an event' })
+  @ApiOkResponse(objectResponse)
   update(@Param('id') id: string, @Body() dto: UpdateEventDto, @Req() req: any) {
     this.ensureAdmin(req);
     return this.eventsService.update(id, dto, req.user.id);
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete an event' })
+  @ApiOkResponse({ type: SuccessResponseDto })
   remove(@Param('id') id: string, @Req() req: any) {
     this.ensureAdmin(req);
     return this.eventsService.remove(id, req.user.id);
   }
 
   @Get(':id/attendance.csv')
+  @ApiOperation({ summary: 'Export attendance CSV' })
+  @ApiProduces('text/csv')
+  @ApiOkResponse({
+    description: 'CSV payload',
+    schema: { type: 'string', example: 'eventId,userId,status\n' },
+  })
   async exportAttendance(@Param('id') id: string, @Req() req: any, @Res({ passthrough: true }) res: FastifyReply) {
     this.ensureAdmin(req);
     const { content, filename } = await this.eventsService.exportAttendanceCsv(id);

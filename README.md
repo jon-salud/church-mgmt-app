@@ -64,6 +64,14 @@ Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/d
 
 ---
 
+## API Docs
+
+- Swagger now enumerates every controller (auth, users, groups, events, announcements, giving, dashboard, audit).
+- DTOs include type metadata for request/response bodies; try the “Try it out” button on any route at `http://localhost:3001/docs`.
+- Generic schemas are used for nested mock payloads so the docs stay useful even as the backing store swaps between mock and future Prisma modes.
+
+---
+
 ## Data Modes
 
 The API chooses its backing store via `DATA_MODE`:

@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Headers, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from './auth.guard';
@@ -7,12 +8,16 @@ import { GoogleOAuthStartGuard } from './google-oauth-start.guard';
 import { GoogleOAuthCallbackGuard } from './google-oauth-callback.guard';
 import { FacebookOAuthStartGuard } from './facebook-oauth-start.guard';
 import { FacebookOAuthCallbackGuard } from './facebook-oauth-callback.guard';
+import { objectResponse } from '../../common/openapi/schemas';
 
 @Controller('auth')
+@ApiTags('Auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
+  @ApiOperation({ summary: 'Issue demo session token' })
+  @ApiOkResponse(objectResponse)
   async login(@Body() dto: LoginDto) {
     const { session, user } = await this.authService.login(dto.email, dto.provider, dto.role);
     const jwt = this.authService.issueJwt(user, 'demo');
@@ -25,6 +30,9 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'Get current session details' })
+  @ApiBearerAuth()
+  @ApiOkResponse(objectResponse)
   @Get('me')
   async me(@Headers('authorization') authorization?: string) {
     const token = authorization?.startsWith('Bearer ') ? authorization.slice(7) : authorization;
@@ -36,12 +44,16 @@ export class AuthController {
   }
 
   @Get('google')
+  @ApiOperation({ summary: 'Start Google OAuth' })
+  @ApiResponse({ status: 302, description: 'Redirects to Google' })
   @UseGuards(GoogleOAuthStartGuard)
   async google() {
     return;
   }
 
   @Get('google/callback')
+  @ApiOperation({ summary: 'Google OAuth callback' })
+  @ApiResponse({ status: 302, description: 'Redirects back to frontend with session token' })
   @UseGuards(GoogleOAuthCallbackGuard)
   async googleCallback(@Req() req: OAuthRequest, @Res() reply: FastifyReply) {
     const oauthUser = (req.user ?? {}) as any;
@@ -62,12 +74,16 @@ export class AuthController {
   }
 
   @Get('facebook')
+  @ApiOperation({ summary: 'Start Facebook OAuth' })
+  @ApiResponse({ status: 302, description: 'Redirects to Facebook' })
   @UseGuards(FacebookOAuthStartGuard)
   async facebook() {
     return;
   }
 
   @Get('facebook/callback')
+  @ApiOperation({ summary: 'Facebook OAuth callback' })
+  @ApiResponse({ status: 302, description: 'Redirects back to frontend with session token' })
   @UseGuards(FacebookOAuthCallbackGuard)
   async facebookCallback(@Req() req: OAuthRequest, @Res() reply: FastifyReply) {
     const oauthUser = (req.user ?? {}) as any;
