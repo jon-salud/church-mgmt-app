@@ -1,7 +1,7 @@
 import { Metadata, Viewport } from 'next';
 import Link from 'next/link';
 import './globals.css';
-import { api } from '../lib/api';
+import { api } from '../lib/api.server';
 import { ServiceWorkerRegister } from '../components/service-worker-register';
 import { logoutAction } from './actions';
 

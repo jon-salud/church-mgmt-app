@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { format } from 'date-fns';
-import { api } from '../../lib/api';
+import { api } from '../../lib/api.server';
 
 type AuditLogSearchParams = {
   entity?: string;

@@ -1,4 +1,4 @@
-import { api } from '../../lib/api';
+import { api } from '../../lib/api.server';
 import { EventsClient } from './events-client';
 
 export default async function EventsPage() {
