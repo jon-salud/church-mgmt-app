@@ -30,6 +30,7 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - PWA offline caching for announcements and events read views
 - Environment hardening: auth guard cookie support + active-account enforcement, JSON error filter, and persisted audit logs
 - Observability hardening: structured pino logging, Sentry initialization hooks, and Prometheus-friendly `/api/v1/metrics`
+- OpenAPI schema enhancements documenting core modules (users, groups, events, giving, dashboard, audit, auth)
 
 ### 🔄 In Progress
 
@@ -37,5 +38,4 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 
 ### 📝 Backlog / Upcoming
 
-- OpenAPI schema enhancements to cover all endpoints
 - Documentation refresh once outstanding MVP items land
