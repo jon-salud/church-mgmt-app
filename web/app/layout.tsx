@@ -18,6 +18,7 @@ export const viewport: Viewport = {
 const baseNavItems = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/members', label: 'Members' },
+  { href: '/households', label: 'Households' },
   { href: '/groups', label: 'Groups' },
   { href: '/events', label: 'Events' },
   { href: '/announcements', label: 'Announcements' },
@@ -39,6 +40,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           { href: '/roles', label: 'Roles' },
           ...baseNavItems.slice(2),
           { href: '/audit-log', label: 'Audit Log' },
+          { href: '/settings', label: 'Settings' },
         ]
       : baseNavItems;
 

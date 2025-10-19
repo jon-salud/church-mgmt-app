@@ -11,6 +11,8 @@ import { DataStoreModule } from '../datastore';
 import { AuditModule } from './audit/audit.module';
 import { ObservabilityModule } from './observability/observability.module';
 import { RolesModule } from './roles/roles.module';
+import { HouseholdsModule } from './households/households.module';
+import { SettingsModule } from './settings/settings.module';
 
 @Module({
   imports: [
@@ -18,6 +20,7 @@ import { RolesModule } from './roles/roles.module';
     DataStoreModule,
     AuthModule,
     UsersModule,
+    HouseholdsModule,
     GroupsModule,
     EventsModule,
     AnnouncementsModule,
@@ -26,6 +29,7 @@ import { RolesModule } from './roles/roles.module';
     AuditModule,
     ObservabilityModule,
     RolesModule,
+    SettingsModule,
   ],
 })
 export class AppModule {}

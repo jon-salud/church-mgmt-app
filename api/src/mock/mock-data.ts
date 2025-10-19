@@ -17,19 +17,59 @@ export interface MockRole {
 }
 
 export type MembershipStatus = 'Active' | 'Inactive';
-
 export type AttendanceStatus = 'checkedIn' | 'absent' | 'excused';
-
 export type ContributionMethod = 'cash' | 'bank-transfer' | 'eftpos' | 'other';
+export type HouseholdRole = 'Head' | 'Spouse' | 'Child' | 'Other';
+export type MemberJoinMethod = 'Baptism' | 'Transfer of Letter' | 'Restoration' | 'Statement of Faith' | 'New Believer';
+export type MaritalStatus = 'Single' | 'Married' | 'Engaged' | 'Divorced' | 'Widowed';
+export type BackgroundCheckStatus = 'Not Started' | 'Pending' | 'Approved' | 'Expired';
+
+export interface MockHousehold {
+  id: string;
+  churchId: string;
+  name: string; // e.g., "Matau Family"
+  address?: string;
+  phoneNumber?: string;
+  anniversaryDate?: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface MockProfile {
+  // Core Fields
   firstName: string;
   lastName: string;
   phone?: string;
-  address?: string;
   birthday?: string;
   notes?: string;
   photoUrl?: string;
+
+  // Household linking
+  householdId: string;
+  householdRole: HouseholdRole;
+
+  // Optional Fields (Configurable by Tenant)
+  membershipStatus?: 'Inquirer' | 'Attender' | 'Member' | 'Paused' | 'Inactive';
+  joinMethod?: MemberJoinMethod;
+  joinDate?: string;
+  previousChurch?: string;
+  baptismDate?: string;
+  spiritualGifts?: string[];
+  coursesAttended?: string[];
+  maritalStatus?: MaritalStatus;
+  occupation?: string;
+  school?: string;
+  gradeLevel?: string;
+  graduationYear?: number;
+  skillsAndInterests?: string[];
+  backgroundCheckStatus?: BackgroundCheckStatus;
+  backgroundCheckDate?: string;
+  onboardingComplete?: boolean;
+  emergencyContactName?: string;
+  emergencyContactPhone?: string;
+  allergiesOrMedicalNotes?: string;
+  parentalConsentOnFile?: boolean;
+  pastoralNotes?: string;
 }
 
 export interface MockUser {
@@ -218,6 +258,46 @@ export const mockRoles: MockRole[] = [
   },
 ];
 
+export const mockHouseholds: MockHousehold[] = [
+  {
+    id: 'hh-matau',
+    churchId,
+    name: 'Matau Family',
+    address: '12 Karaka Street, Auckland',
+    createdAt: makeDate(-90),
+    updatedAt: makeDate(-1),
+  },
+  {
+    id: 'hh-latu',
+    churchId,
+    name: 'Latu Family',
+    address: '48 Dominion Road, Auckland',
+    createdAt: makeDate(-60),
+    updatedAt: makeDate(-2),
+  },
+  {
+    id: 'hh-taulagi',
+    churchId,
+    name: 'Taulagi Family',
+    createdAt: makeDate(-45),
+    updatedAt: makeDate(-3),
+  },
+  {
+    id: 'hh-perenise',
+    churchId,
+    name: 'Perenise Family',
+    createdAt: makeDate(-20),
+    updatedAt: makeDate(-5),
+  },
+  {
+    id: 'hh-ngata',
+    churchId,
+    name: 'Ngata Family',
+    createdAt: makeDate(-10),
+    updatedAt: makeDate(-1),
+  }
+];
+
 export const mockUsers: MockUser[] = [
   {
     id: 'user-admin',
@@ -230,8 +310,15 @@ export const mockUsers: MockUser[] = [
       firstName: 'Ariana',
       lastName: 'Matau',
       phone: '+64 21 000 0001',
-      address: '12 Karaka Street, Auckland',
+      householdId: 'hh-matau',
+      householdRole: 'Head',
       notes: 'Lead administrator',
+      membershipStatus: 'Member',
+      joinMethod: 'Transfer of Letter',
+      joinDate: makeDate(-365),
+      baptismDate: makeDate(-1000),
+      maritalStatus: 'Married',
+      occupation: 'Church Administrator',
     },
   },
   {
@@ -245,8 +332,18 @@ export const mockUsers: MockUser[] = [
       firstName: 'Sione',
       lastName: 'Latu',
       phone: '+64 21 000 0002',
-      address: '48 Dominion Road, Auckland',
+      householdId: 'hh-latu',
+      householdRole: 'Head',
       notes: 'Worship leader',
+      membershipStatus: 'Member',
+      joinMethod: 'Baptism',
+      joinDate: makeDate(-200),
+      baptismDate: makeDate(-200),
+      maritalStatus: 'Married',
+      skillsAndInterests: ['Music', 'Guitar'],
+      backgroundCheckStatus: 'Approved',
+      backgroundCheckDate: makeDate(-300),
+      onboardingComplete: true,
     },
   },
   {
@@ -260,7 +357,14 @@ export const mockUsers: MockUser[] = [
       firstName: 'Maria',
       lastName: 'Taulagi',
       phone: '+64 21 000 0003',
+      householdId: 'hh-taulagi',
+      householdRole: 'Head',
       notes: 'Soprano',
+      membershipStatus: 'Member',
+      joinMethod: 'New Believer',
+      joinDate: makeDate(-50),
+      baptismDate: makeDate(-50),
+      maritalStatus: 'Single',
     },
   },
   {
@@ -274,7 +378,10 @@ export const mockUsers: MockUser[] = [
       firstName: 'Tomas',
       lastName: 'Perenise',
       phone: '+64 21 000 0004',
+      householdId: 'hh-perenise',
+      householdRole: 'Head',
       notes: 'Sound desk volunteer',
+      membershipStatus: 'Attender',
     },
   },
   {
@@ -287,7 +394,13 @@ export const mockUsers: MockUser[] = [
       firstName: 'Lydia',
       lastName: 'Ngata',
       phone: '+64 21 000 0005',
+      householdId: 'hh-ngata',
+      householdRole: 'Head',
       notes: 'Kids ministry helper',
+      membershipStatus: 'Member',
+      joinMethod: 'Restoration',
+      joinDate: makeDate(-15),
+      backgroundCheckStatus: 'Pending',
     },
   },
 ];

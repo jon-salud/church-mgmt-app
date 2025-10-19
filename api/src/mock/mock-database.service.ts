@@ -27,6 +27,8 @@ import {
   MockAuditLog,
   mockAuditLogs,
   mockChurches,
+  MockHousehold,
+  mockHouseholds,
 } from './mock-data';
 import { AuditLogPersistence } from './audit-log.persistence';
 
@@ -217,6 +219,7 @@ function slugify(value: string) {
 export class MockDatabaseService {
   private readonly logger = new Logger(MockDatabaseService.name);
   private users: MockUser[] = clone(mockUsers);
+  private households: MockHousehold[] = clone(mockHouseholds);
   private roles: MockRole[] = clone(mockRoles);
   private groups: MockGroup[] = clone(mockGroups);
   private events: MockEvent[] = clone(mockEvents);
@@ -227,6 +230,7 @@ export class MockDatabaseService {
   private auditLogs: MockAuditLog[] = clone(mockAuditLogs);
   private sessions: DemoSession[] = clone(mockSessions);
   private oauthAccounts: Array<{ provider: 'google' | 'facebook'; providerUserId: string; userId: string }> = [];
+  private settings: Record<string, any> = {};
 
   constructor(private readonly auditPersistence: AuditLogPersistence) {
     this.hydrateAuditLogSnapshot();
@@ -309,7 +313,41 @@ export class MockDatabaseService {
   private buildUserPayload(user: MockUser) {
     const payload = clone(user) as any;
     payload.roles = user.roles.map(role => this.buildUserRolePayload(role));
+    payload.household = this.households.find(h => h.id === user.profile.householdId) ?? null;
     return payload;
+  }
+
+  listHouseholds(churchId?: string) {
+    const list = this.households
+      .filter(h => !churchId || h.churchId === churchId)
+      .map(h => {
+        const members = this.users
+          .filter(u => u.profile.householdId === h.id)
+          .map(u => ({
+            userId: u.id,
+            firstName: u.profile.firstName,
+            lastName: u.profile.lastName,
+            householdRole: u.profile.householdRole,
+          }));
+        return {
+          ...clone(h),
+          memberCount: members.length,
+          members,
+        };
+      });
+    return list;
+  }
+
+  getHouseholdById(id: string) {
+    const household = this.households.find(h => h.id === id);
+    if (!household) return null;
+    const members = this.users
+      .filter(u => u.profile.householdId === id)
+      .map(u => this.buildUserPayload(u));
+    return {
+      ...clone(household),
+      members,
+    };
   }
 
   private withAssignmentCount(role: MockRole) {
@@ -405,6 +443,17 @@ export class MockDatabaseService {
       churchId,
       roleId: this.resolveRoleId(identifier),
     }));
+
+    const household: MockHousehold = {
+      id: `hh-${randomUUID()}`,
+      churchId,
+      name: `${input.lastName} Family`,
+      address: input.address,
+      createdAt: now,
+      updatedAt: now,
+    };
+    this.households.push(household);
+
     const user: MockUser = {
       id: `user-${randomUUID()}`,
       primaryEmail: input.primaryEmail,
@@ -415,8 +464,9 @@ export class MockDatabaseService {
         firstName: input.firstName,
         lastName: input.lastName,
         phone: input.phone,
-        address: input.address,
         notes: input.notes,
+        householdId: household.id,
+        householdRole: 'Head',
       },
     };
     this.users.push(user);
@@ -476,9 +526,12 @@ export class MockDatabaseService {
       track('profile.phone', user.profile.phone ?? null, input.phone);
       user.profile.phone = input.phone;
     }
-    if (typeof input.address === 'string' && input.address !== user.profile.address) {
-      track('profile.address', user.profile.address ?? null, input.address);
-      user.profile.address = input.address;
+    if (typeof input.address === 'string') {
+      const household = this.households.find(h => h.id === user.profile.householdId);
+      if (household && input.address !== household.address) {
+        track('household.address', household.address ?? null, input.address);
+        household.address = input.address;
+      }
     }
     if (typeof input.notes === 'string' && input.notes !== user.profile.notes) {
       track('profile.notes', user.profile.notes ?? null, input.notes);
@@ -1529,19 +1582,31 @@ export class MockDatabaseService {
     let user = this.getUserByEmail(input.email);
     let created = false;
     if (!user) {
+      const now = new Date().toISOString();
+      const household: MockHousehold = {
+        id: `hh-${randomUUID()}`,
+        churchId,
+        name: `${input.lastName || 'New'} Family`,
+        createdAt: now,
+        updatedAt: now,
+      };
+      this.households.push(household);
+
       const id = `user-${randomUUID()}`;
       const defaultRoleId = this.getDefaultRoleId('member');
       user = {
         id,
         primaryEmail: input.email,
         status: 'active',
-        createdAt: new Date().toISOString(),
-        lastLoginAt: new Date().toISOString(),
+        createdAt: now,
+        lastLoginAt: now,
         roles: [{ churchId, roleId: defaultRoleId }],
         profile: {
           firstName: input.firstName || 'New',
           lastName: input.lastName || 'Member',
           photoUrl: input.picture,
+          householdId: household.id,
+          householdRole: 'Head',
         },
       };
       this.users.push(user);
@@ -1567,5 +1632,14 @@ export class MockDatabaseService {
     }
 
     return { user: this.buildUserPayload(user), created };
+  }
+
+  getSettings(churchId: string) {
+    return this.settings[churchId] ?? {};
+  }
+
+  updateSettings(churchId: string, settings: any) {
+    this.settings[churchId] = settings;
+    return this.settings[churchId];
   }
 }

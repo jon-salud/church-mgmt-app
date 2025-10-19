@@ -12,6 +12,8 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   createUser: resolvedFn(),
   updateUser: resolvedFn(),
   deleteUser: resolvedFn(),
+  listHouseholds: resolvedFn([]),
+  getHouseholdById: resolvedFn(),
   listGroups: resolvedFn(),
   getGroupById: resolvedFn(),
   getGroupMembers: resolvedFn(),

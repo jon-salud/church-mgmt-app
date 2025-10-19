@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Modal } from "../../../components/ui/modal";
 import { updateMemberAction, deleteMemberAction } from "../../actions";
+import { api } from "../../../lib/api";
 
 type MemberDetailClientProps = {
   member: any;
@@ -14,7 +15,20 @@ type MemberDetailClientProps = {
 export function MemberDetailClient({ member, roles }: MemberDetailClientProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
+  const [enabledFields, setEnabledFields] = useState<Record<string, boolean>>({});
   const primaryRoleId = member.roles?.[0]?.roleId ?? roles.find(role => role.slug === "member")?.id ?? roles[0]?.id ?? "";
+
+  useEffect(() => {
+    async function fetchSettings() {
+      const me = await api.currentUser();
+      const churchId = me?.user?.roles[0]?.churchId;
+      if (churchId) {
+        const settings = await api.getSettings(churchId);
+        setEnabledFields(settings.optionalFields ?? {});
+      }
+    }
+    fetchSettings();
+  }, []);
 
   return (
     <section className="space-y-6">
@@ -46,13 +60,13 @@ export function MemberDetailClient({ member, roles }: MemberDetailClientProps) {
       <div className="grid gap-4 md:grid-cols-2">
         <InfoCard title="Contact">
           <p className="text-sm text-slate-200">Phone: {member.profile?.phone || "—"}</p>
-          <p className="text-sm text-slate-200">Address: {member.profile?.address || "—"}</p>
+          <p className="text-sm text-slate-200">Address: {member.household?.address || "—"}</p>
           <p className="text-xs text-slate-500">Joined: {format(new Date(member.createdAt), "d MMM yyyy")}</p>
         </InfoCard>
         <InfoCard title="Roles">
           {member.roles?.length ? (
             <ul className="text-sm text-slate-200">
-              {member.roles.map((role: any) => (
+              {member.roles.map((role: any)_ => (
                 <li key={`${role.churchId}-${role.roleId}`}>
                   <span className="font-medium text-slate-100">{role.role}</span>
                   {role.permissions?.length ? (
@@ -69,6 +83,16 @@ export function MemberDetailClient({ member, roles }: MemberDetailClientProps) {
           )}
         </InfoCard>
       </div>
+
+      <InfoCard title="Details">
+        <div className="grid grid-cols-2 gap-4">
+          {enabledFields.membershipStatus && <p className="text-sm text-slate-200">Membership Status: {member.profile?.membershipStatus || "—"}</p>}
+          {enabledFields.joinMethod && <p className="text-sm text-slate-200">Join Method: {member.profile?.joinMethod || "—"}</p>}
+          {enabledFields.joinDate && <p className="text-sm text-slate-200">Join Date: {member.profile?.joinDate ? format(new Date(member.profile.joinDate), "d MMM yyyy") : "—"}</p>}
+          {enabledFields.baptismDate && <p className="text-sm text-slate-200">Baptism Date: {member.profile?.baptismDate ? format(new Date(member.profile.baptismDate), "d MMM yyyy") : "—"}</p>}
+          {enabledFields.maritalStatus && <p className="text-sm text-slate-200">Marital Status: {member.profile?.maritalStatus || "—"}</p>}
+        </div>
+      </InfoCard>
 
       <InfoCard title="Groups">
         {member.groups?.length ? (
@@ -170,10 +194,34 @@ export function MemberDetailClient({ member, roles }: MemberDetailClientProps) {
             Address
             <input
               name="address"
-              defaultValue={member.profile?.address ?? ""}
+              defaultValue={member.household?.address ?? ""}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
             />
           </label>
+          {enabledFields.membershipStatus && <label className="grid gap-1 text-xs uppercase text-slate-400">
+            Membership Status
+            <input
+              name="membershipStatus"
+              defaultValue={member.profile?.membershipStatus ?? ""}
+              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+            />
+          </label>}
+          {enabledFields.joinMethod && <label className="grid gap-1 text-xs uppercase text-slate-400">
+            Join Method
+            <input
+              name="joinMethod"
+              defaultValue={member.profile?.joinMethod ?? ""}
+              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+            />
+          </label>}
+          {enabledFields.maritalStatus && <label className="grid gap-1 text-xs uppercase text-slate-400">
+            Marital Status
+            <input
+              name="maritalStatus"
+              defaultValue={member.profile?.maritalStatus ?? ""}
+              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+            />
+          </label>}
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             Status
             <select

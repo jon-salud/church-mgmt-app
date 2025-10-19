@@ -192,16 +192,103 @@ export class PrismaDataStore implements DataStore {
     };
   }
 
-  async createUser(input: Parameters<DataStore['createUser']>[0]): Promise<StoreReturn<'createUser'>> {
-    throw new Error('createUser is not yet implemented for Prisma data store');
+  async createUser(input: Parameters<DataStore['createUser']>[0]) {
+    const churchId = await this.getPrimaryChurchId();
+    const household = await this.client.household.create({
+      data: {
+        churchId,
+        name: `${input.lastName} Family`,
+        address: input.address,
+      },
+    });
+    const user = await this.client.user.create({
+      data: {
+        primaryEmail: input.primaryEmail,
+        status: input.status ?? 'active',
+        profile: {
+          create: {
+            firstName: input.firstName,
+            lastName: input.lastName,
+            phone: input.phone,
+            notes: input.notes,
+            householdId: household.id,
+          },
+        },
+        churches: {
+          create: {
+            churchId,
+            role: 'Member',
+          },
+        },
+      },
+    });
+    return this.getUserById(user.id);
   }
 
-  async updateUser(id: string, input: Parameters<DataStore['updateUser']>[1]): Promise<StoreReturn<'updateUser'>> {
-    throw new Error('updateUser is not yet implemented for Prisma data store');
+  async updateUser(id: string, input: Parameters<DataStore['updateUser']>[1]) {
+    const user = await this.client.user.findUnique({ where: { id }, include: { profile: true } });
+    if (!user) return null;
+
+    if (input.address && user.profile) {
+      await this.client.household.update({
+        where: { id: user.profile.householdId },
+        data: { address: input.address },
+      });
+    }
+
+    const updatedUser = await this.client.user.update({
+      where: { id },
+      data: {
+        primaryEmail: input.primaryEmail,
+        status: input.status,
+        profile: {
+          update: {
+            firstName: input.firstName,
+            lastName: input.lastName,
+            phone: input.phone,
+            notes: input.notes,
+          },
+        },
+      },
+    });
+    return this.getUserById(updatedUser.id);
   }
 
   async deleteUser(id: string, input: Parameters<DataStore['deleteUser']>[1]): Promise<StoreReturn<'deleteUser'>> {
     throw new Error('deleteUser is not yet implemented for Prisma data store');
+  }
+
+  async listHouseholds(churchId?: string) {
+    const church = churchId ?? (await this.getPrimaryChurchId());
+    return this.client.household.findMany({
+      where: { churchId: church },
+      include: { profiles: true },
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  async getHouseholdById(id: string) {
+    return this.client.household.findUnique({
+      where: { id },
+      include: { profiles: { include: { user: true } } },
+    });
+  }
+
+  async getSettings(churchId: string) {
+    const settings = await this.client.settings.findUnique({
+      where: { churchId },
+    });
+    return settings ? JSON.parse(settings.optionalFields ?? '{}') : {};
+  }
+
+  async updateSettings(churchId: string, settings: any) {
+    const optionalFields = JSON.stringify(settings.optionalFields);
+    const result = await this.client.settings.upsert({
+      where: { churchId },
+      update: { optionalFields },
+      create: { churchId, optionalFields },
+    });
+    return result ? JSON.parse(result.optionalFields ?? '{}') : {};
   }
 
   async listRoles(): Promise<StoreReturn<'listRoles'>> {
