@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Checkbox } from '../../components/ui/checkbox';
-import { api } from '../../lib/api';
+import { api } from '../../lib/api.client';
 
 const optionalFields = [
   { id: 'membershipStatus', label: 'Membership Status' },

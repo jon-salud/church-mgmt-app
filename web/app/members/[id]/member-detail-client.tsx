@@ -1,34 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Modal } from "../../../components/ui/modal";
 import { updateMemberAction, deleteMemberAction } from "../../actions";
-import { api } from "../../../lib/api";
 
 type MemberDetailClientProps = {
   member: any;
   roles: Array<{ id: string; name: string; slug?: string }>;
+  settings: any;
 };
 
-export function MemberDetailClient({ member, roles }: MemberDetailClientProps) {
+export function MemberDetailClient({ member, roles, settings }: MemberDetailClientProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
-  const [enabledFields, setEnabledFields] = useState<Record<string, boolean>>({});
+  const enabledFields = settings?.optionalFields ?? {};
   const primaryRoleId = member.roles?.[0]?.roleId ?? roles.find(role => role.slug === "member")?.id ?? roles[0]?.id ?? "";
-
-  useEffect(() => {
-    async function fetchSettings() {
-      const me = await api.currentUser();
-      const churchId = me?.user?.roles[0]?.churchId;
-      if (churchId) {
-        const settings = await api.getSettings(churchId);
-        setEnabledFields(settings.optionalFields ?? {});
-      }
-    }
-    fetchSettings();
-  }, []);
 
   return (
     <section className="space-y-6">
@@ -203,6 +191,24 @@ export function MemberDetailClient({ member, roles }: MemberDetailClientProps) {
             <input
               name="membershipStatus"
               defaultValue={member.profile?.membershipStatus ?? ""}
+              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+            />
+          </label>}
+          {enabledFields.joinDate && <label className="grid gap-1 text-xs uppercase text-slate-400">
+            Join Date
+            <input
+              name="joinDate"
+              type="date"
+              defaultValue={member.profile?.joinDate ? format(new Date(member.profile.joinDate), "yyyy-MM-dd") : ""}
+              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+            />
+          </label>}
+          {enabledFields.baptismDate && <label className="grid gap-1 text-xs uppercase text-slate-400">
+            Baptism Date
+            <input
+              name="baptismDate"
+              type="date"
+              defaultValue={member.profile?.baptismDate ? format(new Date(member.profile.baptismDate), "yyyy-MM-dd") : ""}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
             />
           </label>}

@@ -12,5 +12,10 @@ export default async function MemberDetailPage({ params }: MemberDetailProps) {
   if (!member) {
     notFound();
   }
-  return <MemberDetailClient member={member} roles={roles} />;
+
+  const me = await api.currentUser();
+  const churchId = me?.user?.roles[0]?.churchId;
+  const settings = churchId ? await api.getSettings(churchId) : null;
+
+  return <MemberDetailClient member={member} roles={roles} settings={settings} />;
 }

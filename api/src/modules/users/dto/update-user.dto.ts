@@ -1,4 +1,4 @@
-import { ArrayNotEmpty, IsArray, IsEmail, IsIn, IsOptional, IsString, MaxLength } from 'class-validator';
+import { ArrayNotEmpty, IsArray, IsEmail, IsIn, IsOptional, IsString, MaxLength, IsInt, IsBoolean } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { STATUS_VALUES } from './create-user.dto';
 
@@ -118,7 +118,7 @@ export class UpdateUserDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
+  @IsInt()
   graduationYear?: number;
 
   @ApiPropertyOptional({ type: [String] })
@@ -140,7 +140,7 @@ export class UpdateUserDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
+  @IsBoolean()
   onboardingComplete?: boolean;
 
   @ApiPropertyOptional({ maxLength: 100 })
@@ -163,7 +163,7 @@ export class UpdateUserDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  @IsString()
+  @IsBoolean()
   parentalConsentOnFile?: boolean;
 
   @ApiPropertyOptional({ maxLength: 1000 })
