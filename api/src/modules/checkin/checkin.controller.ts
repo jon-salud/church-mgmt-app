@@ -35,8 +35,8 @@ export class CheckinController {
   }
 
   @Post('initiate')
-  initiateCheckin(@Body() initiateCheckinDto: InitiateCheckinDto) {
-    return this.checkinService.initiateCheckin(initiateCheckinDto);
+  initiateCheckin(@Body() initiateCheckinDto: InitiateCheckinDto, @CurrentUser() user: { id: string }) {
+    return this.checkinService.initiateCheckin(initiateCheckinDto, user.id);
   }
 
   @Post('confirm')

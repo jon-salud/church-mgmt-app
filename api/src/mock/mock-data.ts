@@ -186,6 +186,18 @@ export interface MockChurch {
   timezone: string;
 }
 
+export interface MockCheckin {
+  id: string;
+  childId: string;
+  eventId: string;
+  status: 'checked-in' | 'checked-out';
+  checkedInAt: string;
+  checkedOutAt?: string;
+  checkedInByUserId: string;
+  checkedOutByUserId?: string;
+  securityCode: string;
+}
+
 export interface DemoSession {
   token: string;
   userId: string;
@@ -616,6 +628,8 @@ export const mockAuditLogs: MockAuditLog[] = [
     createdAt: makeDate(-2, 12),
   },
 ];
+
+export const mockCheckins: MockCheckin[] = [];
 
 export const mockSessions: DemoSession[] = [
   {

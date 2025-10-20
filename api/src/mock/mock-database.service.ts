@@ -30,6 +30,8 @@ import {
   MockHousehold,
   mockHouseholds,
   MockChild,
+  MockCheckin,
+  mockCheckins,
 } from './mock-data';
 import { AuditLogPersistence } from './audit-log.persistence';
 
@@ -264,6 +266,7 @@ export class MockDatabaseService {
   private users: MockUser[] = clone(mockUsers);
   private households: MockHousehold[] = clone(mockHouseholds);
   private children: MockChild[] = [];
+  private checkins: MockCheckin[] = clone(mockCheckins);
   private roles: MockRole[] = clone(mockRoles);
   private groups: MockGroup[] = clone(mockGroups);
   private events: MockEvent[] = clone(mockEvents);
@@ -1894,5 +1897,55 @@ export class MockDatabaseService {
 
   getChildren(householdId: string) {
     return clone(this.children.filter(child => child.householdId === householdId));
+  }
+
+  createCheckin(data: {
+    childIds: string[];
+    eventId: string;
+    actorUserId: string;
+  }) {
+    const event = this.events.find((e) => e.id === data.eventId);
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    const checkins: MockCheckin[] = [];
+    for (const childId of data.childIds) {
+      const child = this.children.find((c) => c.id === childId);
+      if (!child) {
+        throw new Error(`Child with id ${childId} not found`);
+      }
+
+      const securityCode = Math.random().toString().slice(2, 8);
+      const checkin: MockCheckin = {
+        id: `checkin-${randomUUID()}`,
+        childId,
+        eventId: data.eventId,
+        status: 'checked-in',
+        checkedInAt: new Date().toISOString(),
+        checkedInByUserId: data.actorUserId,
+        securityCode,
+      };
+
+      this.checkins.push(checkin);
+      checkins.push(checkin);
+
+      this.createAuditLog({
+        actorUserId: data.actorUserId,
+        action: 'child.checked_in',
+        entity: 'checkin',
+        entityId: checkin.id,
+        summary: `${this.getUserName(
+          data.actorUserId,
+        )} checked in ${child.fullName} for ${event.title}`,
+        metadata: {
+          childId,
+          eventId: data.eventId,
+          securityCode,
+        },
+      });
+    }
+
+    return clone(checkins);
   }
 }

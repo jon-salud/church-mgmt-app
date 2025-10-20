@@ -212,4 +212,8 @@ export class MockDataStoreAdapter implements DataStore {
   async getChildren(householdId: string) {
     return this.mock.getChildren(householdId);
   }
+
+  async createCheckin(data: Parameters<MockDatabaseService['createCheckin']>[0]) {
+    return this.mock.createCheckin(data);
+  }
 }

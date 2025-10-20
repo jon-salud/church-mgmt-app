@@ -785,4 +785,10 @@ export class PrismaDataStore implements DataStore {
   async getChildren(householdId: string) {
     return this.client.child.findMany({ where: { householdId } });
   }
+
+  async createCheckin(
+    _data: Parameters<DataStore['createCheckin']>[0],
+  ): Promise<any> {
+    throw new Error('Not implemented: createCheckin');
+  }
 }

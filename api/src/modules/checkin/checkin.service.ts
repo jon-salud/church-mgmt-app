@@ -31,8 +31,8 @@ export class CheckinService {
     return this.db.deleteChild(id, { actorUserId });
   }
 
-  async initiateCheckin(data: InitiateCheckinDto) {
-    // Implementation to be added
+  async initiateCheckin(data: InitiateCheckinDto, actorUserId: string) {
+    return this.db.createCheckin({ ...data, actorUserId });
   }
 
   async confirmCheckin(data: ConfirmCheckinDto) {
