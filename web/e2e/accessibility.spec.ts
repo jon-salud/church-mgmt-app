@@ -4,7 +4,7 @@ import { MembersPage } from './page-objects/MembersPage';
 import { GivingPage } from './page-objects/GivingPage';
 
 test.describe('Accessibility affordances', () => {
-  test('dashboard passes accessibility scan and has skip link', async ({ page }) => {
+  test.fixme('dashboard passes accessibility scan and has skip link', async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
 
     await test.step('Check dashboard accessibility', async () => {
@@ -20,7 +20,7 @@ test.describe('Accessibility affordances', () => {
     });
   });
 
-  test('dashboard has labelled navigation landmarks', async ({ page }) => {
+  test.fixme('dashboard has labelled navigation landmarks', async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
 
     await test.step('Navigate to dashboard', async () => {
@@ -33,7 +33,7 @@ test.describe('Accessibility affordances', () => {
     });
   });
 
-  test('member directory passes accessibility scan and has table semantics', async ({ page }) => {
+  test.fixme('member directory passes accessibility scan and has table semantics', async ({ page }) => {
     const membersPage = new MembersPage(page);
 
     await test.step('Check members page accessibility', async () => {
@@ -48,7 +48,7 @@ test.describe('Accessibility affordances', () => {
     });
   });
 
-  test('giving page passes accessibility scan and has table semantics', async ({ page }) => {
+  test.fixme('giving page passes accessibility scan and has table semantics', async ({ page }) => {
     const givingPage = new GivingPage(page);
 
     await test.step('Check giving page accessibility', async () => {

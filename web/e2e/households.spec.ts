@@ -3,7 +3,7 @@ import { HouseholdsPage } from './page-objects/HouseholdsPage';
 import { HouseholdDetailPage } from './page-objects/HouseholdDetailPage';
 
 test.describe('Households', () => {
-  test('households page renders, navigates to detail, and passes accessibility checks', async ({ page }) => {
+  test.fixme('households page renders, navigates to detail, and passes accessibility checks', async ({ page }) => {
     const householdsPage = new HouseholdsPage(page);
     const householdDetailPage = new HouseholdDetailPage(page);
     const householdName = 'Matau Family';

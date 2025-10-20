@@ -29,6 +29,7 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   deleteUser: resolvedFn(),
   listHouseholds: resolvedFn([{ id: 'hh-matau', name: 'Matau Family' }]),
   getHouseholdById: resolvedFn(),
+  getHouseholdMembers: resolvedFn([]),
   listGroups: resolvedFn(),
   getGroupById: resolvedFn(),
   getGroupMembers: resolvedFn(),
@@ -66,6 +67,10 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   updateChild: resolvedFn(),
   deleteChild: resolvedFn(),
   getChildren: resolvedFn([]),
+  getCheckinsByEventId: resolvedFn([]),
+  getCheckinById: resolvedFn(),
+  createCheckin: resolvedFn(),
+  updateCheckin: resolvedFn(),
   createPushSubscription: resolvedFn(),
   getPushSubscriptionsByUserId: resolvedFn([]),
 });

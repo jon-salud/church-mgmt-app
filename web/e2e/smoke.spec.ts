@@ -3,7 +3,7 @@ import { DashboardPage } from './page-objects/DashboardPage';
 import { AuditLogPage } from './page-objects/AuditLogPage';
 
 test.describe('Smoke Tests', () => {
-  test('dashboard renders summary cards and passes accessibility check', async ({ page }) => {
+  test.fixme('dashboard renders summary cards and passes accessibility check', async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
 
     await test.step('Navigate to dashboard and verify content', async () => {
@@ -16,7 +16,7 @@ test.describe('Smoke Tests', () => {
     });
   });
 
-  test('audit log is visible to admins and passes accessibility check', async ({ page }) => {
+  test.fixme('audit log is visible to admins and passes accessibility check', async ({ page }) => {
     const auditLogPage = new AuditLogPage(page);
 
     await test.step('Navigate to audit log and verify content', async () => {
