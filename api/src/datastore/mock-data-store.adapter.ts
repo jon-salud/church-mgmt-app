@@ -50,6 +50,10 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.getHouseholdById(id);
   }
 
+  async getHouseholdMembers(householdId: string) {
+    return this.mock.getHouseholdMembers(householdId);
+  }
+
   async listGroups(churchId?: string) {
     return this.mock.listGroups(churchId);
   }
@@ -211,5 +215,21 @@ export class MockDataStoreAdapter implements DataStore {
 
   async getChildren(householdId: string) {
     return this.mock.getChildren(householdId);
+  }
+
+  async getCheckinsByEventId(eventId: string) {
+    return this.mock.getCheckinsByEventId(eventId);
+  }
+
+  async createCheckin(data: Parameters<MockDatabaseService['createCheckin']>[0]) {
+    return this.mock.createCheckin(data);
+  }
+
+  async updateCheckin(id: string, data: Parameters<MockDatabaseService['updateCheckin']>[1]) {
+    return this.mock.updateCheckin(id, data);
+  }
+
+  async getCheckinById(id: string) {
+    return this.mock.getCheckinById(id);
   }
 }
