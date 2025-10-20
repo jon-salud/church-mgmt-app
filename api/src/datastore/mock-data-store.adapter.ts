@@ -188,4 +188,28 @@ export class MockDataStoreAdapter implements DataStore {
   async updateSettings(churchId: string, settings: any) {
     return this.mock.updateSettings(churchId, settings);
   }
+
+  async createChild(data: Parameters<MockDatabaseService['createChild']>[0]) {
+    return this.mock.createChild(data);
+  }
+
+  async updateChild(id: string, data: Parameters<MockDatabaseService['updateChild']>[1]) {
+    return this.mock.updateChild(id, data);
+  }
+
+  async deleteChild(id: string, input: Parameters<MockDatabaseService['deleteChild']>[1]) {
+    return this.mock.deleteChild(id, input);
+  }
+
+  async createPushSubscription(data: any) {
+    return this.mock.createPushSubscription(data);
+  }
+
+  async getPushSubscriptionsByUserId(userId: string) {
+    return this.mock.getPushSubscriptionsByUserId(userId);
+  }
+
+  async getChildren(householdId: string) {
+    return this.mock.getChildren(householdId);
+  }
 }

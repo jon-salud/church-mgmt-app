@@ -54,7 +54,7 @@ export class AuthService {
     this.allowDemoLogin = (this.config.get<string>('ALLOW_DEMO_LOGIN') ?? 'true').toLowerCase() !== 'false';
   }
 
-  login(email: string, provider: 'google' | 'facebook', role?: string) {
+  login(email: string, provider: 'google' | 'facebook' | 'demo', role?: string) {
     if (!this.allowDemoLogin) {
       throw new UnauthorizedException('Demo credential flow is disabled.');
     }

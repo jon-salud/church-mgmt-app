@@ -757,4 +757,32 @@ export class PrismaDataStore implements DataStore {
     const log = await this.client.auditLog.create({ data: input });
     return { ...log, createdAt: toISO(log.createdAt)! };
   }
+
+  async createChild(data: any) {
+    const child = await this.client.child.create({ data });
+    return child;
+  }
+
+  async updateChild(id: string, data: any) {
+    const child = await this.client.child.update({ where: { id }, data });
+    return child;
+  }
+
+  async deleteChild(id: string) {
+    await this.client.child.delete({ where: { id } });
+    return { success: true };
+  }
+
+  async createPushSubscription(data: any) {
+    const sub = await this.client.pushSubscription.create({ data });
+    return sub;
+  }
+
+  async getPushSubscriptionsByUserId(userId: string) {
+    return this.client.pushSubscription.findMany({ where: { userId } });
+  }
+
+  async getChildren(householdId: string) {
+    return this.client.child.findMany({ where: { householdId } });
+  }
 }

@@ -1,4 +1,5 @@
 import { randomUUID } from 'node:crypto';
+export type { MockChild } from './mock-data/child';
 
 export const DEFAULT_ROLE_SLUGS = ['admin', 'leader', 'member'] as const;
 export type DefaultRoleSlug = (typeof DEFAULT_ROLE_SLUGS)[number];
@@ -189,7 +190,7 @@ export interface DemoSession {
   token: string;
   userId: string;
   createdAt: string;
-  provider: 'google' | 'facebook';
+  provider: 'google' | 'facebook' | 'demo';
 }
 
 const today = new Date();

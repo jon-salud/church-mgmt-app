@@ -30,4 +30,10 @@ export const clientApi = {
             body: JSON.stringify(settings),
         });
     },
+    async subscribeToNotifications(subscription: PushSubscription) {
+        return apiFetch('/notifications/subscribe', {
+            method: 'POST',
+            body: JSON.stringify(subscription),
+        });
+    },
 };
