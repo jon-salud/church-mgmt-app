@@ -1,13 +1,31 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
+import { DashboardPage } from './page-objects/DashboardPage';
+import { AuditLogPage } from './page-objects/AuditLogPage';
 
-test('dashboard renders summary cards', async ({ page }) => {
-  await page.goto('http://localhost:3000/dashboard');
-  await expect(page.getByRole('heading', { name: 'Dashboard' })).toBeVisible();
-  await expect(page.getByTestId('stat-members')).toBeVisible();
-});
+test.describe('Smoke Tests', () => {
+  test('dashboard renders summary cards and passes accessibility check', async ({ page }) => {
+    const dashboardPage = new DashboardPage(page);
 
-test('audit log is visible to admins', async ({ page }) => {
-  await page.goto('http://localhost:3000/audit-log');
-  await expect(page.getByRole('heading', { name: 'Audit Log' })).toBeVisible();
-  await expect(page.getByText('Recent administrative activity', { exact: false })).toBeVisible();
+    await test.step('Navigate to dashboard and verify content', async () => {
+      await dashboardPage.goto();
+      await dashboardPage.verifyDashboard();
+    });
+
+    await test.step('Check for accessibility violations', async () => {
+      await dashboardPage.checkAccessibility();
+    });
+  });
+
+  test('audit log is visible to admins and passes accessibility check', async ({ page }) => {
+    const auditLogPage = new AuditLogPage(page);
+
+    await test.step('Navigate to audit log and verify content', async () => {
+      await auditLogPage.goto();
+      await auditLogPage.verifyAuditLog();
+    });
+
+    await test.step('Check for accessibility violations', async () => {
+      await auditLogPage.checkAccessibility();
+    });
+  });
 });

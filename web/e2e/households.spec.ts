@@ -1,9 +1,23 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
+import { HouseholdsPage } from './page-objects/HouseholdsPage';
+import { HouseholdDetailPage } from './page-objects/HouseholdDetailPage';
 
-test('households page renders and navigates to detail', async ({ page }) => {
-  await page.goto('http://localhost:3000/households');
-  await expect(page.getByRole('heading', { name: 'Households' })).toBeVisible();
-  await page.getByRole('link', { name: 'Matau Family' }).click();
-  await expect(page.getByRole('heading', { name: 'Matau Family' })).toBeVisible();
-  await page.screenshot({ path: 'jules-scratch/verification/verification.png' });
+test.describe('Households', () => {
+  test('households page renders, navigates to detail, and passes accessibility checks', async ({ page }) => {
+    const householdsPage = new HouseholdsPage(page);
+    const householdDetailPage = new HouseholdDetailPage(page);
+    const householdName = 'Matau Family';
+
+    await test.step('Navigate to households page and check accessibility', async () => {
+      await householdsPage.goto();
+      await householdsPage.verifyHouseholdsPage();
+      await householdsPage.checkAccessibility();
+    });
+
+    await test.step('Navigate to household detail page and check accessibility', async () => {
+      await householdsPage.navigateToHousehold(householdName);
+      await householdDetailPage.verifyHouseholdDetailPage(householdName);
+      await householdDetailPage.checkAccessibility();
+    });
+  });
 });
