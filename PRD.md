@@ -138,6 +138,28 @@
 - **As a Pastor**, I can add pastoral notes to a member's profile.
   - AC: Pastoral notes are only visible to authorized staff.
 
+### 3.10 Child Check-In and Safety
+
+- **As a Parent or Guardian**, I can manage my children's information.
+  - AC: Children are linked to a `Household` to allow multiple guardians.
+  - AC: Required child fields: `fullName`, `dateOfBirth`. Optional fields: `allergies`, `medicalNotes`.
+- **As a Parent or Staff Member**, I can check a child into an event.
+  - AC: The system supports a self-check-in flow for parents, which must be confirmed by a staff member.
+  - AC: Staff members can also perform the entire check-in process on behalf of a parent.
+  - AC: The system records the time of check-in and the staff member who confirmed it.
+  - AC: A dedicated "Childcare Volunteer" role has the permissions to manage the check-in and check-out process.
+- **As a Staff Member**, I can view and manage the check-in dashboard.
+  - AC: A dedicated staff UI shows a list of all children currently checked in.
+  - AC: The dashboard displays the child's name, age, allergies, and any medical notes.
+  - AC: Staff can filter the list by check-in status (e.g., "Checked In", "Checked Out").
+- **As a Staff Member**, I can check a child out.
+  - AC: The system records the time of check-out and the staff member who performed the action.
+  - AC: The system initiates a PWA push notification to the parent's device upon checkout.
+- **As a Parent**, I am notified of check-out.
+  - AC: Parents receive a push notification when their child is checked out.
+- **As an Admin or Staff Member**, I can manage visitor check-ins.
+  - AC: A simple, spreadsheet-like interface allows for the rapid entry of visitor information for a single event.
+
 ---
 
 ## 4) Architecture & Tech Choices
@@ -561,12 +583,10 @@ paths:
 ## 16) Roadmap (Post-MVP)
 
 - **Email/SMS** communications (SendGrid/SESV2, Twilio), templates, audiences.
-- **Push Notifications** (Web Push; native later).
 - **Payments/Donations** (Stripe), gift-aid/receipts.
 - **Content Management System (CMS):** A lightweight CMS for churches to manage their own content, such as sermon notes, blog posts, and custom pages.
 - **Google Drive Integration:** Full integration with Google Drive for seamless document management.
 - **Volunteer Management and Scheduling (Rota):** A comprehensive system for managing volunteers, including skills and interests, scheduling, and automated reminders.
-- **Child Check-In and Safety:** A secure check-in system for children's ministries, including security codes, name tags, and allergy tracking.
 - **Rota/Scheduling**, volunteer sign-ups.
 - **Check-in via QR**, attendance kiosks.
 - **Forms** (prayer requests, sign-ups) with workflow.

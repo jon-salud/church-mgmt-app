@@ -23,4 +23,13 @@ export class MembersPage extends BasePage {
   async verifyMemberNotInList(firstName: string, lastName: string) {
     await expect(this.page.getByRole('cell', { name: new RegExp(`${firstName}\\s+${lastName}`) })).toHaveCount(0);
   }
+
+  async getMemberId(firstName: string, lastName: string): Promise<string | null> {
+    const memberLink = this.page.locator(`a:has-text("${firstName} ${lastName}")`);
+    if (await memberLink.count()) {
+      const href = await memberLink.getAttribute('href');
+      return href ? href.split('/').pop()! : null;
+    }
+    return null;
+  }
 }

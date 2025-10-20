@@ -295,6 +295,14 @@ export class PrismaDataStore implements DataStore {
     });
   }
 
+  async getHouseholdMembers(householdId: string) {
+    const profiles = await this.client.profile.findMany({
+      where: { householdId },
+      include: { user: true },
+    });
+    return profiles.map((p: any) => p.user).filter(Boolean);
+  }
+
   async getSettings(churchId: string) {
     const settings = await this.client.settings.findUnique({
       where: { churchId },
@@ -756,5 +764,86 @@ export class PrismaDataStore implements DataStore {
   async createAuditLog(input: Parameters<DataStore['createAuditLog']>[0]) {
     const log = await this.client.auditLog.create({ data: input });
     return { ...log, createdAt: toISO(log.createdAt)! };
+  }
+
+  async createChild(data: any) {
+    const child = await this.client.child.create({ data });
+    return child;
+  }
+
+  async updateChild(id: string, data: any) {
+    const child = await this.client.child.update({ where: { id }, data });
+    return child;
+  }
+
+  async deleteChild(id: string) {
+    await this.client.child.delete({ where: { id } });
+    return { success: true };
+  }
+
+  async createPushSubscription(data: any) {
+    const sub = await this.client.pushSubscription.create({ data });
+    return sub;
+  }
+
+  async getPushSubscriptionsByUserId(userId: string) {
+    return this.client.pushSubscription.findMany({ where: { userId } });
+  }
+
+  async getChildren(householdId: string) {
+    return this.client.child.findMany({ where: { householdId } });
+  }
+
+  async getCheckinsByEventId(eventId: string) {
+    const checkins = await this.client.checkin.findMany({
+      where: { eventId },
+      include: { child: true },
+    });
+    return checkins;
+  }
+
+  async getCheckinById(id: string) {
+    const checkin = await this.client.checkin.findUnique({
+      where: { id },
+      include: { child: true },
+    });
+    return checkin;
+  }
+
+  async createCheckin(data: { eventId: string; childId: string; actorUserId: string }) {
+    const churchId = await this.getPrimaryChurchId();
+    const checkin = await this.client.checkin.create({
+      data: {
+        churchId,
+        eventId: data.eventId,
+        childId: data.childId,
+        status: 'pending',
+      },
+    });
+    return checkin;
+  }
+
+  async updateCheckin(
+    id: string,
+    data: {
+      status?: 'pending' | 'checked-in' | 'checked-out';
+      checkinTime?: string;
+      checkoutTime?: string;
+      checkedInBy?: string;
+      checkedOutBy?: string;
+      actorUserId: string;
+    },
+  ) {
+    const checkin = await this.client.checkin.update({
+      where: { id },
+      data: {
+        status: data.status,
+        checkinTime: data.checkinTime ? new Date(data.checkinTime) : undefined,
+        checkoutTime: data.checkoutTime ? new Date(data.checkoutTime) : undefined,
+        checkedInBy: data.checkedInBy,
+        checkedOutBy: data.checkedOutBy,
+      },
+    });
+    return checkin;
   }
 }

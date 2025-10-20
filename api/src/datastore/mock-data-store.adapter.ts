@@ -50,6 +50,10 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.getHouseholdById(id);
   }
 
+  async getHouseholdMembers(householdId: string) {
+    return this.mock.getHouseholdMembers(householdId);
+  }
+
   async listGroups(churchId?: string) {
     return this.mock.listGroups(churchId);
   }
@@ -187,5 +191,45 @@ export class MockDataStoreAdapter implements DataStore {
 
   async updateSettings(churchId: string, settings: any) {
     return this.mock.updateSettings(churchId, settings);
+  }
+
+  async createChild(data: Parameters<MockDatabaseService['createChild']>[0]) {
+    return this.mock.createChild(data);
+  }
+
+  async updateChild(id: string, data: Parameters<MockDatabaseService['updateChild']>[1]) {
+    return this.mock.updateChild(id, data);
+  }
+
+  async deleteChild(id: string, input: Parameters<MockDatabaseService['deleteChild']>[1]) {
+    return this.mock.deleteChild(id, input);
+  }
+
+  async createPushSubscription(data: any) {
+    return this.mock.createPushSubscription(data);
+  }
+
+  async getPushSubscriptionsByUserId(userId: string) {
+    return this.mock.getPushSubscriptionsByUserId(userId);
+  }
+
+  async getChildren(householdId: string) {
+    return this.mock.getChildren(householdId);
+  }
+
+  async getCheckinsByEventId(eventId: string) {
+    return this.mock.getCheckinsByEventId(eventId);
+  }
+
+  async createCheckin(data: Parameters<MockDatabaseService['createCheckin']>[0]) {
+    return this.mock.createCheckin(data);
+  }
+
+  async updateCheckin(id: string, data: Parameters<MockDatabaseService['updateCheckin']>[1]) {
+    return this.mock.updateCheckin(id, data);
+  }
+
+  async getCheckinById(id: string) {
+    return this.mock.getCheckinById(id);
   }
 }

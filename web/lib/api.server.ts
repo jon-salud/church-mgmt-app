@@ -88,6 +88,12 @@ export const api = {
   async household(id: string) {
     return apiFetch<any>(`/households/${id}`);
   },
+  async getChildren(householdId: string) {
+    return apiFetch<any[]>(`/checkin/households/${householdId}/children`);
+  },
+  async getCheckins(status: 'pending' | 'checked-in') {
+    return apiFetch<any[]>(`/checkin?status=${status}`);
+  },
   async groups() {
     return apiFetch<Array<any>>('/groups');
   },

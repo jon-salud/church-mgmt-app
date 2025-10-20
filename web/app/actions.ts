@@ -406,3 +406,21 @@ export async function demoLoginAction() {
   });
   redirect('/dashboard');
 }
+
+export async function addChildAction(formData: FormData) {
+  const householdId = String(formData.get('householdId'));
+  const fullName = String(formData.get('fullName'));
+  const dateOfBirth = String(formData.get('dateOfBirth'));
+  const allergies = formData.get('allergies') ? String(formData.get('allergies')) : undefined;
+  const medicalNotes = formData.get('medicalNotes') ? String(formData.get('medicalNotes')) : undefined;
+
+  await postToApi('/checkin/children', {
+    householdId,
+    fullName,
+    dateOfBirth,
+    allergies,
+    medicalNotes,
+  });
+
+  revalidatePath(`/members/${String(formData.get('userId'))}`);
+}
