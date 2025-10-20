@@ -11,12 +11,15 @@ export class MembersPage extends BasePage {
     }
 
     async quickAddMember(firstName: string, lastName: string, email: string, phone: string) {
-        const quickAddSection = this.page.locator("section", { has: this.page.getByRole("heading", { name: "Quick Add Member" }) });
-        await quickAddSection.getByLabel("FIRST NAME").fill(firstName);
-        await quickAddSection.getByLabel("LAST NAME").fill(lastName);
-        await quickAddSection.getByLabel("EMAIL").fill(email);
-        await quickAddSection.getByLabel("PHONE").fill(phone);
-        await quickAddSection.getByRole("button", { name: "CREATE MEMBER" }).click();
+        const addMemberButton = this.page.getByRole("button", { name: "Add Member" });
+        await addMemberButton.click();
+        const quickAddSection = this.page.locator("section", { has: this.page.getByRole("heading", { name: "Add Member" }) });
+
+        await quickAddSection.getByLabel("First Name").fill(firstName);
+        await quickAddSection.getByLabel("Last Name").fill(lastName);
+        await quickAddSection.getByLabel("Email").fill(email);
+        await quickAddSection.getByLabel("Phone").fill(phone);
+        await quickAddSection.getByRole("button", { name: "Create Member" }).click();
         await this.page.waitForURL(/\/members\/.+/);
     }
 
