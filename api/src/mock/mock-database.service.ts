@@ -31,7 +31,6 @@ import {
   mockHouseholds,
   MockChild,
   MockCheckin,
-  mockCheckins,
 } from './mock-data';
 import { AuditLogPersistence } from './audit-log.persistence';
 
@@ -266,7 +265,7 @@ export class MockDatabaseService {
   private users: MockUser[] = clone(mockUsers);
   private households: MockHousehold[] = clone(mockHouseholds);
   private children: MockChild[] = [];
-  private checkins: MockCheckin[] = clone(mockCheckins);
+  private checkins: MockCheckin[] = [];
   private roles: MockRole[] = clone(mockRoles);
   private groups: MockGroup[] = clone(mockGroups);
   private events: MockEvent[] = clone(mockEvents);
@@ -370,7 +369,7 @@ export class MockDatabaseService {
       .filter(h => !churchId || h.churchId === churchId)
       .map(h => {
         const members = this.users
-          .filter(u => u.profile.householdId === h.id)
+          .filter(u => u.profile && u.profile.householdId === h.id)
           .map(u => ({
             userId: u.id,
             firstName: u.profile.firstName,
@@ -396,6 +395,10 @@ export class MockDatabaseService {
       ...clone(household),
       members,
     };
+  }
+
+  getHouseholdMembers(householdId: string) {
+    return this.users.filter(u => u.profile.householdId === householdId).map(u => this.buildUserPayload(u));
   }
 
   private withAssignmentCount(role: MockRole) {
@@ -1899,53 +1902,84 @@ export class MockDatabaseService {
     return clone(this.children.filter(child => child.householdId === householdId));
   }
 
-  createCheckin(data: {
-    childIds: string[];
-    eventId: string;
-    actorUserId: string;
-  }) {
-    const event = this.events.find((e) => e.id === data.eventId);
-    if (!event) {
-      throw new Error('Event not found');
+  getCheckinsByEventId(eventId: string) {
+    return clone(this.checkins.filter(checkin => checkin.eventId === eventId));
+  }
+
+  getCheckinById(id: string) {
+    const checkin = this.checkins.find(c => c.id === id);
+    if (!checkin) return null;
+    const child = this.children.find(c => c.id === checkin.childId);
+    return { ...clone(checkin), child: clone(child) };
+  }
+
+  createCheckin(data: { eventId: string; childId: string; actorUserId: string }) {
+    const checkin: MockCheckin = {
+      id: `checkin-${randomUUID()}`,
+      churchId: this.getChurch().id,
+      eventId: data.eventId,
+      childId: data.childId,
+      status: 'pending',
+    };
+    this.checkins.push(checkin);
+    this.createAuditLog({
+      actorUserId: data.actorUserId,
+      action: 'checkin.created',
+      entity: 'checkin',
+      entityId: checkin.id,
+      summary: `${this.getUserName(data.actorUserId)} initiated check-in for a child`,
+      metadata: {
+        eventId: checkin.eventId,
+        childId: checkin.childId,
+      },
+    });
+    return clone(checkin);
+  }
+
+  updateCheckin(id: string, data: Partial<Omit<MockCheckin, 'id' | 'churchId' | 'eventId' | 'childId'>> & { actorUserId: string }) {
+    const checkin = this.checkins.find(c => c.id === id);
+    if (!checkin) {
+      return null;
     }
-
-    const checkins: MockCheckin[] = [];
-    for (const childId of data.childIds) {
-      const child = this.children.find((c) => c.id === childId);
-      if (!child) {
-        throw new Error(`Child with id ${childId} not found`);
+    const diff: Record<string, { previous: unknown; newValue: unknown }> = {};
+    const track = (key: string, previous: unknown, next: unknown) => {
+      if (previous !== next) {
+        diff[key] = { previous, newValue: next };
       }
-
-      const securityCode = Math.random().toString().slice(2, 8);
-      const checkin: MockCheckin = {
-        id: `checkin-${randomUUID()}`,
-        childId,
-        eventId: data.eventId,
-        status: 'checked-in',
-        checkedInAt: new Date().toISOString(),
-        checkedInByUserId: data.actorUserId,
-        securityCode,
-      };
-
-      this.checkins.push(checkin);
-      checkins.push(checkin);
-
+    };
+    if (data.status && data.status !== checkin.status) {
+      track('status', checkin.status, data.status);
+      checkin.status = data.status;
+    }
+    if (data.checkinTime && data.checkinTime !== checkin.checkinTime) {
+      track('checkinTime', checkin.checkinTime, data.checkinTime);
+      checkin.checkinTime = data.checkinTime;
+    }
+    if (data.checkoutTime && data.checkoutTime !== checkin.checkoutTime) {
+      track('checkoutTime', checkin.checkoutTime, data.checkoutTime);
+      checkin.checkoutTime = data.checkoutTime;
+    }
+    if (data.checkedInBy && data.checkedInBy !== checkin.checkedInBy) {
+      track('checkedInBy', checkin.checkedInBy, data.checkedInBy);
+      checkin.checkedInBy = data.checkedInBy;
+    }
+    if (data.checkedOutBy && data.checkedOutBy !== checkin.checkedOutBy) {
+      track('checkedOutBy', checkin.checkedOutBy, data.checkedOutBy);
+      checkin.checkedOutBy = data.checkedOutBy;
+    }
+    if (Object.keys(diff).length > 0) {
       this.createAuditLog({
         actorUserId: data.actorUserId,
-        action: 'child.checked_in',
+        action: 'checkin.updated',
         entity: 'checkin',
         entityId: checkin.id,
-        summary: `${this.getUserName(
-          data.actorUserId,
-        )} checked in ${child.fullName} for ${event.title}`,
+        summary: `${this.getUserName(data.actorUserId)} updated check-in status`,
+        diff,
         metadata: {
-          childId,
-          eventId: data.eventId,
-          securityCode,
+          checkinId: checkin.id,
         },
       });
     }
-
-    return clone(checkins);
+    return clone(checkin);
   }
 }

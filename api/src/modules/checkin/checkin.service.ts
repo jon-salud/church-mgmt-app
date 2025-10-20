@@ -31,19 +31,52 @@ export class CheckinService {
     return this.db.deleteChild(id, { actorUserId });
   }
 
+  async getCheckinsByEventId(eventId: string) {
+    return this.db.getCheckinsByEventId(eventId);
+  }
+
   async initiateCheckin(data: InitiateCheckinDto, actorUserId: string) {
-    return this.db.createCheckin({ ...data, actorUserId });
+    const checkins = await Promise.all(
+      data.childIds.map((childId) =>
+        this.db.createCheckin({
+          eventId: data.eventId,
+          childId,
+          actorUserId,
+        }),
+      ),
+    );
+
+    return checkins;
   }
 
-  async confirmCheckin(data: ConfirmCheckinDto) {
-    // Implementation to be added
+  async confirmCheckin(data: ConfirmCheckinDto, actorUserId: string) {
+    return this.db.updateCheckin(data.checkinId, {
+      status: 'checked-in',
+      checkinTime: new Date().toISOString(),
+      actorUserId,
+    });
   }
 
-  async initiateCheckout(data: InitiateCheckoutDto) {
-    // Implementation to be added
-    this.notificationsService.sendNotification('userId', {
-      title: 'Child Checked Out',
-      body: 'Your child has been checked out. Please confirm.',
+  async initiateCheckout(data: InitiateCheckoutDto, actorUserId: string) {
+    const checkin = await this.db.getCheckinById(data.checkinId);
+
+    if (checkin && checkin.child) {
+      const children = await this.db.getChildren(checkin.child.householdId);
+      const householdMembers = await this.db.getHouseholdMembers(checkin.child.householdId);
+      const usersToNotify = householdMembers.filter((member) =>
+        children.some((child) => child.householdId === member.profile.householdId),
+      );
+      for (const user of usersToNotify) {
+        this.notificationsService.sendNotification(user.id, {
+          title: 'Child Checked Out',
+          body: `${checkin.child.fullName} has been checked out. Please confirm.`,
+        });
+      }
+    }
+    return this.db.updateCheckin(data.checkinId, {
+      status: 'checked-out',
+      checkoutTime: new Date().toISOString(),
+      actorUserId,
     });
   }
 

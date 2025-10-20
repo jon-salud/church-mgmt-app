@@ -295,6 +295,14 @@ export class PrismaDataStore implements DataStore {
     });
   }
 
+  async getHouseholdMembers(householdId: string) {
+    const profiles = await this.client.profile.findMany({
+      where: { householdId },
+      include: { user: true },
+    });
+    return profiles.map((p: any) => p.user).filter(Boolean);
+  }
+
   async getSettings(churchId: string) {
     const settings = await this.client.settings.findUnique({
       where: { churchId },
@@ -786,9 +794,56 @@ export class PrismaDataStore implements DataStore {
     return this.client.child.findMany({ where: { householdId } });
   }
 
-  async createCheckin(
-    _data: Parameters<DataStore['createCheckin']>[0],
-  ): Promise<any> {
-    throw new Error('Not implemented: createCheckin');
+  async getCheckinsByEventId(eventId: string) {
+    const checkins = await this.client.checkin.findMany({
+      where: { eventId },
+      include: { child: true },
+    });
+    return checkins;
+  }
+
+  async getCheckinById(id: string) {
+    const checkin = await this.client.checkin.findUnique({
+      where: { id },
+      include: { child: true },
+    });
+    return checkin;
+  }
+
+  async createCheckin(data: { eventId: string; childId: string; actorUserId: string }) {
+    const churchId = await this.getPrimaryChurchId();
+    const checkin = await this.client.checkin.create({
+      data: {
+        churchId,
+        eventId: data.eventId,
+        childId: data.childId,
+        status: 'pending',
+      },
+    });
+    return checkin;
+  }
+
+  async updateCheckin(
+    id: string,
+    data: {
+      status?: 'pending' | 'checked-in' | 'checked-out';
+      checkinTime?: string;
+      checkoutTime?: string;
+      checkedInBy?: string;
+      checkedOutBy?: string;
+      actorUserId: string;
+    },
+  ) {
+    const checkin = await this.client.checkin.update({
+      where: { id },
+      data: {
+        status: data.status,
+        checkinTime: data.checkinTime ? new Date(data.checkinTime) : undefined,
+        checkoutTime: data.checkoutTime ? new Date(data.checkoutTime) : undefined,
+        checkedInBy: data.checkedInBy,
+        checkedOutBy: data.checkedOutBy,
+      },
+    });
+    return checkin;
   }
 }

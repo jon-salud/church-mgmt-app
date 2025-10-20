@@ -188,14 +188,14 @@ export interface MockChurch {
 
 export interface MockCheckin {
   id: string;
-  childId: string;
+  churchId: string;
   eventId: string;
-  status: 'checked-in' | 'checked-out';
-  checkedInAt: string;
-  checkedOutAt?: string;
-  checkedInByUserId: string;
-  checkedOutByUserId?: string;
-  securityCode: string;
+  childId: string;
+  status: 'pending' | 'checked-in' | 'checked-out';
+  checkinTime?: string;
+  checkoutTime?: string;
+  checkedInBy?: string;
+  checkedOutBy?: string;
 }
 
 export interface DemoSession {
@@ -628,8 +628,6 @@ export const mockAuditLogs: MockAuditLog[] = [
     createdAt: makeDate(-2, 12),
   },
 ];
-
-export const mockCheckins: MockCheckin[] = [];
 
 export const mockSessions: DemoSession[] = [
   {
