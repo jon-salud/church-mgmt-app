@@ -424,3 +424,12 @@ export async function addChildAction(formData: FormData) {
 
   revalidatePath(`/members/${String(formData.get('userId'))}`);
 }
+
+export async function updatePrayerRequestAction(formData: FormData) {
+  const prayerRequestId = String(formData.get('prayerRequestId'));
+  await apiFetch(`/prayer-requests/${prayerRequestId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ status: 'Answered' }),
+  });
+  revalidatePath('/prayer');
+}
