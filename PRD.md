@@ -133,31 +133,31 @@ This feature is designed to provide spiritual support to the congregation throug
 
 #### **3.9.1 Public Prayer Wall**
 
--   **As a User (Member or Anonymous)**, I can submit a prayer request to the public prayer wall.
-    -   AC: The submission form must include a `title` and `description`.
-    -   AC: Users can choose to submit **anonymously**.
-    -   AC: Anonymous submissions generate a secure, unique link/token, allowing the original poster to manage their request later (e.g., mark it as "answered").
-    -   AC: All submitted prayer requests enter a **moderation queue** and are not publicly visible until approved by a staff member.
--   **As an Admin/Pastor**, I can moderate incoming prayer requests.
-    -   AC: A dedicated "Moderation Queue" screen displays all prayer requests with a `PENDING_APPROVAL` status.
-    -   AC: Staff can **approve** or **deny** requests. Approved requests become visible on the public prayer wall.
--   **As a Member**, I can view the public prayer wall and see how I can be praying for my community.
-    -   AC: The prayer wall only displays `APPROVED` prayer requests.
-    -   AC: I can click an "I'm praying" button on a request. The total count of prayers is visible to all, providing encouragement to the original poster.
--   **As the original poster**, I can update the status of my prayer request.
-    -   AC: I can mark my request as "Answered", moving it to an archived view. (Authenticated users can do this from their profile; anonymous users must use their secure link).
+- **As a User (Member or Anonymous)**, I can submit a prayer request to the public prayer wall.
+  - AC: The submission form must include a `title` and `description`.
+  - AC: Users can choose to submit **anonymously**.
+  - AC: Anonymous submissions generate a secure, unique link/token, allowing the original poster to manage their request later (e.g., mark it as "answered").
+  - AC: All submitted prayer requests enter a **moderation queue** and are not publicly visible until approved by a staff member.
+- **As an Admin/Pastor**, I can moderate incoming prayer requests.
+  - AC: A dedicated "Moderation Queue" screen displays all prayer requests with a `PENDING_APPROVAL` status.
+  - AC: Staff can **approve** or **deny** requests. Approved requests become visible on the public prayer wall.
+- **As a Member**, I can view the public prayer wall and see how I can be praying for my community.
+  - AC: The prayer wall only displays `APPROVED` prayer requests.
+  - AC: I can click an "I'm praying" button on a request. The total count of prayers is visible to all, providing encouragement to the original poster.
+- **As the original poster**, I can update the status of my prayer request.
+  - AC: I can mark my request as "Answered", moving it to an archived view. (Authenticated users can do this from their profile; anonymous users must use their secure link).
 
 #### **3.9.2 Confidential Pastoral Care Tickets**
 
--   **As a Member**, I can submit a confidential request for pastoral care.
-    -   AC: The submission form will include `title`, `description`, and an optional `priority` level (e.g., Low, Normal, High, Urgent).
-    -   AC: The form must display a clear, reassuring message stating that the request is **confidential** and will only be seen by the pastoral care team.
-    -   AC: Upon submission, I will receive an **automated confirmation email** letting me know my request has been received.
--   **As an Admin/Pastor**, I can receive and manage pastoral care tickets.
-    -   AC: When a new ticket is submitted, a **notification email** is sent to a designated pastoral staff email address/group.
-    -   AC: A dashboard allows staff to view all tickets, which can be sorted and filtered by `status` (e.g., New, In Progress, Resolved) and `priority`.
-    -   AC: Staff can assign tickets to specific pastors.
-    -   AC: Staff can add private comments to a ticket, creating a threaded conversation for internal case notes and follow-up.
+- **As a Member**, I can submit a confidential request for pastoral care.
+  - AC: The submission form will include `title`, `description`, and an optional `priority` level (e.g., Low, Normal, High, Urgent).
+  - AC: The form must display a clear, reassuring message stating that the request is **confidential** and will only be seen by the pastoral care team.
+  - AC: Upon submission, I will receive an **automated confirmation email** letting me know my request has been received.
+- **As an Admin/Pastor**, I can receive and manage pastoral care tickets.
+  - AC: When a new ticket is submitted, a **notification email** is sent to a designated pastoral staff email address/group.
+  - AC: A dashboard allows staff to view all tickets, which can be sorted and filtered by `status` (e.g., New, In Progress, Resolved) and `priority`.
+  - AC: Staff can assign tickets to specific pastors.
+  - AC: Staff can add private comments to a ticket, creating a threaded conversation for internal case notes and follow-up.
 
 ### 3.10 Child Check-In and Safety
 
@@ -287,17 +287,17 @@ This feature is designed to provide spiritual support to the congregation throug
 
 All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JSON. Pagination: `?page=&pageSize=`, sorting: `?sort=field:asc`, filtering with query params.
 
-### **Auth**
+### **Auth endpoints**
 
 - `POST /auth/oauth/callback` (if self-hosted OAuth) — exchanges code → JWT.
 - `GET /auth/me` → current user + roles per church.
 
-### **Households**
+### **Households endpoints**
 
 - `GET /households` (Admin)
 - `GET /households/:id`
 
-### **Users & Profiles**
+### **Users & Profiles endpoints**
 
 - `GET /users` (Admin) — list; filters: `q, role, groupId`
 - `POST /users` (Admin) — create bare user (invite flow post-MVP)
@@ -306,7 +306,7 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - `GET /profiles/:userId`
 - `PATCH /profiles/:userId`
 
-### **Groups**
+### **Groups endpoints**
 
 - `GET /groups` (Member sees groups they belong to; Admin sees all)
 - `POST /groups` (Admin/Leader for own ministry scope)
@@ -316,7 +316,7 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - `DELETE /groups/:id/members/:userId`
 - `GET /groups/:id/members`
 
-### **Events**
+### **Events endpoints**
 
 - `GET /events?from=&to=&groupId=`
 - `POST /events` (Admin/Leader)
@@ -326,7 +326,7 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - `POST /events/:id/attendance` (bulk upsert: [{userId, status, note}])
 - `GET /events/:id/attendance.csv` (Admin) — export attendance report
 
-### **Announcements**
+### **Announcements endpoints**
 
 - `GET /announcements` (filters: activeOnly=true, groupId)
 - `POST /announcements` (Admin)
@@ -334,7 +334,7 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - `PATCH /announcements/:id`
 - `POST /announcements/:id/read` (Member marks read)
 
-### **Giving (Manual)**
+### **Giving (Manual) endpoints**
 
 - `GET /giving/funds`
 - `POST /giving/funds`
@@ -344,7 +344,7 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - `GET /giving/contributions.csv?memberId=&from=&to=&fundId=` (Admin)
 - `GET /giving/reports/summary` (Admin)
 
-### **Prayer Requests**
+### **Prayer Requests endpoints**
 
 - `GET /prayer-requests` (Public, approved requests)
 - `POST /prayer-requests` (Submit a new request, authenticated or anonymous)
@@ -353,7 +353,7 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - `GET /prayer-requests/pending` (Admin: moderation queue)
 - `PUT /prayer-requests/:id/status` (Admin: approve/deny request)
 
-### **Pastoral Care**
+### **Pastoral Care endpoints**
 
 - `GET /pastoral-care/tickets` (Admin/Pastor or member for own tickets)
 - `POST /pastoral-care/tickets` (Member)
@@ -361,8 +361,7 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - `PATCH /pastoral-care/tickets/:id` (Admin/Pastor: update status, assignee)
 - `POST /pastoral-care/tickets/:id/comments` (Admin/Pastor or member for own ticket)
 
-
-### **Admin & Audit**
+### **Admin & Audit endpoints**
 
 - `GET /roles` (Admin) — list roles + assignment counts
 - `POST /roles` (Admin) — create custom role
