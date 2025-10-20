@@ -369,7 +369,7 @@ export class MockDatabaseService {
       .filter(h => !churchId || h.churchId === churchId)
       .map(h => {
         const members = this.users
-          .filter(u => u.profile.householdId === h.id)
+          .filter(u => u.profile && u.profile.householdId === h.id)
           .map(u => ({
             userId: u.id,
             firstName: u.profile.firstName,
