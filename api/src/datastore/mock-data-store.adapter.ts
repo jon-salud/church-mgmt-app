@@ -232,4 +232,24 @@ export class MockDataStoreAdapter implements DataStore {
   async getCheckinById(id: string) {
     return this.mock.getCheckinById(id);
   }
+
+  async createPastoralCareTicket(input: Parameters<MockDatabaseService['createPastoralCareTicket']>[0]) {
+    return this.mock.createPastoralCareTicket(input);
+  }
+
+  async updatePastoralCareTicket(id: string, input: Parameters<MockDatabaseService['updatePastoralCareTicket']>[1]) {
+    return this.mock.updatePastoralCareTicket(id, input);
+  }
+
+  async createPastoralCareComment(input: Parameters<MockDatabaseService['createPastoralCareComment']>[0]) {
+    return this.mock.createPastoralCareComment(input);
+  }
+
+  async getPastoralCareTicket(id: string) {
+    return this.mock.getPastoralCareTicket(id);
+  }
+
+  async listPastoralCareTickets(churchId: string) {
+    return this.mock.listPastoralCareTickets(churchId);
+  }
 }
