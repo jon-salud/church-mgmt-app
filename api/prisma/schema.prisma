@@ -40,6 +40,8 @@ model User {
   auditLogs    AuditLog[] @relation("ActorLogs")
   sessions     DemoSession[]
   groupMembers GroupMember[]
+  checkins     Checkin[]
+  pushSubscriptions PushSubscription[]
 }
 
 model Household {
@@ -53,6 +55,20 @@ model Household {
   updatedAt   DateTime @updatedAt
   church      Church   @relation(fields: [churchId], references: [id])
   profiles    Profile[]
+  children    Child[]
+}
+
+model Child {
+  id            String    @id @default(cuid())
+  householdId   String
+  fullName      String
+  dateOfBirth   DateTime
+  allergies     String?
+  medicalNotes  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  household     Household @relation(fields: [householdId], references: [id])
+  checkins      Checkin[]
 }
 
 model Profile {
@@ -145,6 +161,7 @@ model Event {
   groupId     String?
   church      Church   @relation(fields: [churchId], references: [id])
   attendances Attendance[]
+  checkins    Checkin[]
 }
 
 model Attendance {
@@ -228,4 +245,28 @@ model Settings {
   churchId       String  @id
   optionalFields String?
   church         Church  @relation(fields: [churchId], references: [id])
+}
+
+model Checkin {
+  id                      String    @id @default(cuid())
+  childId                 String
+  eventId                 String
+  checkinTime             DateTime  @default(now())
+  checkoutTime            DateTime?
+  status                  String
+  confirmedById           String?
+  parentConfirmationTime  DateTime?
+  child                   Child     @relation(fields: [childId], references: [id])
+  event                   Event     @relation(fields: [eventId], references: [id])
+  confirmedBy             User?     @relation(fields: [confirmedById], references: [id])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
 }

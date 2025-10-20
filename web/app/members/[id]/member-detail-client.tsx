@@ -10,11 +10,13 @@ type MemberDetailClientProps = {
   member: any;
   roles: Array<{ id: string; name: string; slug?: string }>;
   settings: any;
+  children: any[];
 };
 
-export function MemberDetailClient({ member, roles, settings }: MemberDetailClientProps) {
+export function MemberDetailClient({ member, roles, settings, children }: MemberDetailClientProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
+  const [isManageChildrenOpen, setIsManageChildrenOpen] = useState(false);
   const enabledFields = settings?.optionalFields ?? {};
   const primaryRoleId = member.roles?.[0]?.roleId ?? roles.find(role => role.slug === "member")?.id ?? roles[0]?.id ?? "";
 
@@ -48,8 +50,25 @@ export function MemberDetailClient({ member, roles, settings }: MemberDetailClie
       <div className="grid gap-4 md:grid-cols-2">
         <InfoCard title="Contact">
           <p className="text-sm text-slate-200">Phone: {member.profile?.phone || "—"}</p>
-          <p className="text-sm text-slate-200">Address: {member.household?.address || "—"}</p>
           <p className="text-xs text-slate-500">Joined: {format(new Date(member.createdAt), "d MMM yyyy")}</p>
+        </InfoCard>
+        <InfoCard title="Household">
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-slate-200">Address: {member.household?.address || "—"}</p>
+            <button
+              type="button"
+              onClick={() => setIsManageChildrenOpen(true)}
+              className="rounded-md bg-slate-700 px-3 py-1 text-xs font-medium text-slate-100 transition hover:bg-slate-600"
+            >
+              Manage Children
+            </button>
+          </div>
+          <div className="mt-4">
+            <h3 className="text-xs uppercase text-slate-400">Children</h3>
+            <ul className="mt-2 space-y-2">
+              <li className="text-sm text-slate-400">No children in this household.</li>
+            </ul>
+          </div>
         </InfoCard>
         <InfoCard title="Roles">
           {member.roles?.length ? (
@@ -317,6 +336,85 @@ export function MemberDetailClient({ member, roles, settings }: MemberDetailClie
           >
             Remove Member
           </button>
+        </form>
+      </Modal>
+
+import { addChildAction } from "../../actions";
+
+// ...
+
+      <Modal
+        open={isManageChildrenOpen}
+        onClose={() => setIsManageChildrenOpen(false)}
+        title="Manage Children"
+      >
+        <form action={addChildAction} className="space-y-4">
+          <input type="hidden" name="householdId" value={member.household?.id} />
+          <input type="hidden" name="userId" value={member.id} />
+          <div>
+            <h3 className="text-lg font-medium text-slate-100">Add a New Child</h3>
+            <div className="mt-4 grid grid-cols-2 gap-4">
+              <label className="grid gap-1 text-xs uppercase text-slate-400">
+                Full Name
+                <input
+                  name="fullName"
+                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                />
+              </label>
+              <label className="grid gap-1 text-xs uppercase text-slate-400">
+                Date of Birth
+                <input
+                  name="dateOfBirth"
+                  type="date"
+                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                />
+              </label>
+              <label className="col-span-2 grid gap-1 text-xs uppercase text-slate-400">
+                Allergies
+                <input
+                  name="allergies"
+                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                />
+              </label>
+              <label className="col-span-2 grid gap-1 text-xs uppercase text-slate-400">
+                Medical Notes
+                <textarea
+                  name="medicalNotes"
+                  rows={3}
+                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                />
+              </label>
+            </div>
+            <div className="mt-4 flex justify-end">
+              <button
+                type="submit"
+                className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
+              >
+                Add Child
+              </button>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-lg font-medium text-slate-100">Existing Children</h3>
+            <ul className="mt-2 space-y-2">
+              {children.length > 0 ? (
+                children.map((child) => (
+                  <li key={child.id} className="flex items-center justify-between rounded-md border border-slate-800 bg-slate-950/60 p-3 text-sm">
+                    <div>
+                      <p className="font-medium text-slate-100">{child.fullName}</p>
+                      <p className="text-xs text-slate-400">Born: {format(new Date(child.dateOfBirth), "d MMM yyyy")}</p>
+                    </div>
+                    <div className="flex gap-2">
+                      <button type="button" className="rounded-md bg-slate-700 px-3 py-1 text-xs font-medium text-slate-100 transition hover:bg-slate-600">Edit</button>
+                      <button type="button" className="rounded-md border border-red-700 px-3 py-1 text-xs font-medium text-red-200 transition hover:bg-red-900/40">Remove</button>
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <li className="text-sm text-slate-400">No children in this household.</li>
+              )}
+            </ul>
+          </div>
         </form>
       </Modal>
     </section>

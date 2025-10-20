@@ -56,6 +56,12 @@ async function main() {
         lastName: 'Ngata',
         roles: ['Member'],
       },
+      {
+        primaryEmail: 'volunteer@example.com',
+        firstName: 'Tevita',
+        lastName: 'Manu',
+        roles: ['Childcare Volunteer'],
+      },
     ].map(async ({ primaryEmail, firstName, lastName, roles }) => {
       const user = await prisma.user.upsert({
         where: { primaryEmail },

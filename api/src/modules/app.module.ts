@@ -13,6 +13,8 @@ import { ObservabilityModule } from './observability/observability.module';
 import { RolesModule } from './roles/roles.module';
 import { HouseholdsModule } from './households/households.module';
 import { SettingsModule } from './settings/settings.module';
+import { CheckinModule } from './checkin/checkin.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -30,6 +32,8 @@ import { SettingsModule } from './settings/settings.module';
     ObservabilityModule,
     RolesModule,
     SettingsModule,
+    CheckinModule,
+    NotificationsModule,
   ],
 })
 export class AppModule {}

@@ -35,6 +35,7 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 
 ### 🔄 In Progress
 
+- Child Check-In and Safety feature
 ### 📝 Backlog / Upcoming
 
 - Documentation refresh once outstanding MVP items land

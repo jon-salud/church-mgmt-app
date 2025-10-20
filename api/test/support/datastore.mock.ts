@@ -2,6 +2,21 @@ import { DataStore } from '../../src/datastore';
 
 const resolvedFn = <T>(value?: T) => jest.fn().mockResolvedValue(value);
 
+const mockSession = {
+  session: {
+    token: 'test-token',
+    userId: 'user-admin',
+    createdAt: new Date().toISOString(),
+    provider: 'demo' as const,
+  },
+  user: {
+    id: 'user-admin',
+    primaryEmail: 'admin@example.com',
+    roles: [{ churchId: 'church-acc', roleId: 'role-admin', role: 'Admin' }],
+    profile: {},
+  } as any,
+};
+
 export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   getChurch: resolvedFn(),
   getDashboardSnapshot: resolvedFn(),
@@ -12,7 +27,7 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   createUser: resolvedFn(),
   updateUser: resolvedFn(),
   deleteUser: resolvedFn(),
-  listHouseholds: resolvedFn([]),
+  listHouseholds: resolvedFn([{ id: 'hh-matau', name: 'Matau Family' }]),
   getHouseholdById: resolvedFn(),
   listGroups: resolvedFn(),
   getGroupById: resolvedFn(),
@@ -20,7 +35,7 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   addGroupMember: resolvedFn(),
   updateGroupMember: resolvedFn(),
   removeGroupMember: resolvedFn(),
-  listEvents: resolvedFn(),
+  listEvents: resolvedFn([{ id: 'event-sunday-service', title: 'Sunday Service' }]),
   getEventById: resolvedFn(),
   createEvent: resolvedFn(),
   updateEvent: resolvedFn(),
@@ -40,11 +55,17 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   createRole: resolvedFn(),
   updateRole: resolvedFn(),
   deleteRole: resolvedFn(),
-  createSession: resolvedFn(),
+  createSession: resolvedFn(mockSession),
   getSessionByToken: resolvedFn(),
   upsertUserFromOAuth: resolvedFn(),
   listAuditLogs: resolvedFn(),
   createAuditLog: resolvedFn(),
   getSettings: resolvedFn({}),
   updateSettings: resolvedFn(),
+  createChild: resolvedFn(),
+  updateChild: resolvedFn(),
+  deleteChild: resolvedFn(),
+  getChildren: resolvedFn([]),
+  createPushSubscription: resolvedFn(),
+  getPushSubscriptionsByUserId: resolvedFn([]),
 });

@@ -29,6 +29,7 @@ import {
   mockChurches,
   MockHousehold,
   mockHouseholds,
+  MockChild,
 } from './mock-data';
 import { AuditLogPersistence } from './audit-log.persistence';
 
@@ -262,6 +263,7 @@ export class MockDatabaseService {
   private readonly logger = new Logger(MockDatabaseService.name);
   private users: MockUser[] = clone(mockUsers);
   private households: MockHousehold[] = clone(mockHouseholds);
+  private children: MockChild[] = [];
   private roles: MockRole[] = clone(mockRoles);
   private groups: MockGroup[] = clone(mockGroups);
   private events: MockEvent[] = clone(mockEvents);
@@ -273,6 +275,7 @@ export class MockDatabaseService {
   private sessions: DemoSession[] = clone(mockSessions);
   private oauthAccounts: Array<{ provider: 'google' | 'facebook'; providerUserId: string; userId: string }> = [];
   private settings: Record<string, any> = {};
+  private pushSubscriptions: any[] = [];
 
   constructor(private readonly auditPersistence: AuditLogPersistence) {
     this.hydrateAuditLogSnapshot();
@@ -1767,5 +1770,129 @@ export class MockDatabaseService {
   updateSettings(churchId: string, settings: any) {
     this.settings[churchId] = settings;
     return this.settings[churchId];
+  }
+
+  createChild(data: {
+    householdId: string;
+    fullName: string;
+    dateOfBirth: string;
+    allergies?: string;
+    medicalNotes?: string;
+    actorUserId: string;
+  }) {
+    const household = this.households.find(h => h.id === data.householdId);
+    if (!household) {
+      throw new Error('Household not found');
+    }
+    const child: MockChild = {
+      id: `child-${randomUUID()}`,
+      householdId: data.householdId,
+      fullName: data.fullName,
+      dateOfBirth: data.dateOfBirth,
+      allergies: data.allergies,
+      medicalNotes: data.medicalNotes,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    this.children.push(child);
+    this.createAuditLog({
+      actorUserId: data.actorUserId,
+      action: 'child.created',
+      entity: 'child',
+      entityId: child.id,
+      summary: `${this.getUserName(data.actorUserId)} added a child to household ${household.name}`,
+      metadata: {
+        householdId: household.id,
+        childId: child.id,
+        fullName: child.fullName,
+      },
+    });
+    return clone(child);
+  }
+
+  updateChild(id: string, data: Partial<Omit<MockChild, 'id' | 'householdId' | 'createdAt' | 'updatedAt'>> & { actorUserId: string }) {
+    const child = this.children.find(c => c.id === id);
+    if (!child) {
+      return null;
+    }
+    const diff: Record<string, { previous: unknown; newValue: unknown }> = {};
+    const track = (key: string, previous: unknown, next: unknown) => {
+      if (previous !== next) {
+        diff[key] = { previous, newValue: next };
+      }
+    };
+    if (data.fullName && data.fullName !== child.fullName) {
+      track('fullName', child.fullName, data.fullName);
+      child.fullName = data.fullName;
+    }
+    if (data.dateOfBirth && data.dateOfBirth !== child.dateOfBirth) {
+      track('dateOfBirth', child.dateOfBirth, data.dateOfBirth);
+      child.dateOfBirth = data.dateOfBirth;
+    }
+    if (data.allergies && data.allergies !== child.allergies) {
+      track('allergies', child.allergies, data.allergies);
+      child.allergies = data.allergies;
+    }
+    if (data.medicalNotes && data.medicalNotes !== child.medicalNotes) {
+      track('medicalNotes', child.medicalNotes, data.medicalNotes);
+      child.medicalNotes = data.medicalNotes;
+    }
+    if (Object.keys(diff).length > 0) {
+      child.updatedAt = new Date().toISOString();
+      this.createAuditLog({
+        actorUserId: data.actorUserId,
+        action: 'child.updated',
+        entity: 'child',
+        entityId: child.id,
+        summary: `${this.getUserName(data.actorUserId)} updated information for child ${child.fullName}`,
+        diff,
+        metadata: {
+          childId: child.id,
+        },
+      });
+    }
+    return clone(child);
+  }
+
+  deleteChild(id: string, { actorUserId }: { actorUserId: string }) {
+    const index = this.children.findIndex(c => c.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    const [removed] = this.children.splice(index, 1);
+    this.createAuditLog({
+      actorUserId,
+      action: 'child.deleted',
+      entity: 'child',
+      entityId: removed.id,
+      summary: `${this.getUserName(actorUserId)} removed child ${removed.fullName} from household`,
+      metadata: {
+        householdId: removed.householdId,
+        childId: removed.id,
+      },
+    });
+    return { success: true };
+  }
+
+  createPushSubscription(data: {
+    endpoint: string;
+    keys: { p256dh: string; auth: string };
+    userId: string;
+  }) {
+    const subscription = {
+      id: `sub-${randomUUID()}`,
+      ...data,
+      createdAt: new Date().toISOString(),
+    };
+    this.pushSubscriptions.push(subscription);
+    return clone(subscription);
+  }
+
+  getPushSubscriptionsByUserId(userId: string) {
+    return clone(this.pushSubscriptions.filter(sub => sub.userId === userId));
+  }
+
+  getChildren(householdId: string) {
+    return clone(this.children.filter(child => child.householdId === householdId));
   }
 }
