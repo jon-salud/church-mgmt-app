@@ -1,13 +1,14 @@
 import { IsString, IsDateString, IsOptional } from 'class-validator';
 
-export class UpdateChildDto {
+export class CreateChildDto {
   @IsString()
-  @IsOptional()
-  fullName?: string;
+  householdId!: string;
+
+  @IsString()
+  fullName!: string;
 
   @IsDateString()
-  @IsOptional()
-  dateOfBirth?: string;
+  dateOfBirth!: string;
 
   @IsString()
   @IsOptional()
@@ -16,7 +17,4 @@ export class UpdateChildDto {
   @IsString()
   @IsOptional()
   medicalNotes?: string;
-
-  @IsString()
-  actorUserId!: string;
 }

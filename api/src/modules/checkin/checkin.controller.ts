@@ -34,28 +34,23 @@ export class CheckinController {
     return this.checkinService.deleteChild(id, user.id);
   }
 
-  @Get()
-  getCheckins(@Query('eventId') eventId: string) {
-    return this.checkinService.getCheckinsByEventId(eventId);
-  }
-
   @Post('initiate')
-  initiateCheckin(@Body() initiateCheckinDto: InitiateCheckinDto, @CurrentUser() user: { id: string }) {
-    return this.checkinService.initiateCheckin(initiateCheckinDto, user.id);
+  initiateCheckin(@Body() initiateCheckinDto: InitiateCheckinDto) {
+    return this.checkinService.initiateCheckin(initiateCheckinDto);
   }
 
   @Post('confirm')
-  confirmCheckin(@Body() confirmCheckinDto: ConfirmCheckinDto, @CurrentUser() user: { id: string }) {
-    return this.checkinService.confirmCheckin(confirmCheckinDto, user.id);
+  confirmCheckin(@Body() confirmCheckinDto: ConfirmCheckinDto) {
+    return this.checkinService.confirmCheckin(confirmCheckinDto);
   }
 
   @Post('checkout/initiate')
-  initiateCheckout(@Body() initiateCheckoutDto: InitiateCheckoutDto, @CurrentUser() user: { id: string }) {
-    return this.checkinService.initiateCheckout(initiateCheckoutDto, user.id);
+  initiateCheckout(@Body() initiateCheckoutDto: InitiateCheckoutDto) {
+    return this.checkinService.initiateCheckout(initiateCheckoutDto);
   }
 
   @Post('checkout/confirm')
-  confirmCheckout(@Body() confirmCheckoutDto: ConfirmCheckoutDto, @CurrentUser() user: { id: string }) {
-    return this.checkinService.confirmCheckout(confirmCheckoutDto, user.id);
+  confirmCheckout(@Body() confirmCheckoutDto: ConfirmCheckoutDto) {
+    return this.checkinService.confirmCheckout(confirmCheckoutDto);
   }
 }

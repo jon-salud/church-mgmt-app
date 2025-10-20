@@ -31,77 +31,23 @@ export class CheckinService {
     return this.db.deleteChild(id, { actorUserId });
   }
 
-  async getCheckinsByEventId(eventId: string) {
-    return this.db.getCheckinsByEventId(eventId);
+  async initiateCheckin(data: InitiateCheckinDto) {
+    // Implementation to be added
   }
 
-  async initiateCheckin(data: InitiateCheckinDto, actorUserId: string) {
-    const checkins = [];
-    for (const childId of data.childIds) {
-      const checkin = await this.db.createCheckin({
-        eventId: data.eventId,
-        childId,
-        actorUserId,
-      });
-      checkins.push(checkin);
-    }
-    return checkins;
+  async confirmCheckin(data: ConfirmCheckinDto) {
+    // Implementation to be added
   }
 
-  async confirmCheckin(data: ConfirmCheckinDto, actorUserId: string) {
-    return this.db.updateCheckin(data.checkinId, {
-      status: 'checked-in',
-      checkinTime: new Date().toISOString(),
-      checkedInBy: actorUserId,
-      actorUserId,
+  async initiateCheckout(data: InitiateCheckoutDto) {
+    // Implementation to be added
+    this.notificationsService.sendNotification('userId', {
+      title: 'Child Checked Out',
+      body: 'Your child has been checked out. Please confirm.',
     });
   }
 
-  async initiateCheckout(data: InitiateCheckoutDto, actorUserId: string) {
-    const checkinRecord = await this.db.getCheckinById(data.checkinId);
-
-    if (!checkinRecord || !checkinRecord.child) {
-      return null;
-    }
-
-    const { child } = checkinRecord;
-    const members = await this.db.getHouseholdMembers(child.householdId);
-    const parents = members.filter((m: any) => m.profile?.householdRole === 'Head');
-
-    for (const parent of parents) {
-      this.notificationsService.sendNotification(parent.id, {
-        title: 'Child Checked Out',
-        body: `${child.fullName} has been checked out.`,
-      });
-    }
-
-    return this.db.updateCheckin(data.checkinId, {
-      status: 'checked-out',
-      checkoutTime: new Date().toISOString(),
-      checkedOutBy: actorUserId,
-      actorUserId,
-    });
-  }
-
-  async confirmCheckout(data: ConfirmCheckoutDto, actorUserId: string) {
-    const checkin = await this.db.getCheckinById(data.checkinId);
-
-    if (!checkin || !checkin.checkedOutBy || !checkin.child) {
-      // Or throw an error, depending on desired behavior
-      return null;
-    }
-
-    // Optional: Add logic here to verify that actorUserId is an authorized guardian.
-
-    const staffMemberId = checkin.checkedOutBy;
-    const parent = await this.db.getUserById(actorUserId);
-    const parentName = parent?.profile ? `${parent.profile.firstName} ${parent.profile.lastName}` : 'A parent';
-
-    this.notificationsService.sendNotification(staffMemberId, {
-      title: 'Checkout Confirmed',
-      body: `${parentName} has confirmed the checkout of ${checkin.child.fullName}.`,
-    });
-
-    return checkin;
+  async confirmCheckout(data: ConfirmCheckoutDto) {
+    // Implementation to be added
   }
 }
