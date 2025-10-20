@@ -32,14 +32,13 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - Observability hardening: structured pino logging, Sentry initialization hooks, and Prometheus-friendly `/api/v1/metrics`
 - OpenAPI schema enhancements documenting core modules (users, groups, events, giving, dashboard, audit, auth)
 - Architect and Implement Household Data Model
-
-### 🔄 In Progress
-
 - **Pastoral Care & Prayer Feature (Public Prayer Wall):**
   - **Frontend (Web):**
     - Implement Prayer Request pages (public wall, submission form, admin moderation UI).
   - **E2E Testing:**
     - Write Playwright E2E tests for the prayer wall user flows (submission, moderation, management).
+
+### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming
 
