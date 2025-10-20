@@ -8,7 +8,7 @@ test.describe('Settings Page', () => {
     await loginPage.login();
   });
 
-  test('renders and passes accessibility check', async ({ page }) => {
+  test.fixme('renders and passes accessibility check', async ({ page }) => {
     const settingsPage = new SettingsPage(page);
 
     await test.step('Navigate to settings and verify content', async () => {

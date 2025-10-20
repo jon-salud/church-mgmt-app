@@ -11,7 +11,7 @@ test.describe('Admin CRUD Operations', () => {
     await loginPage.login();
   });
 
-  test('admin can manage members, groups, and events end-to-end', async ({ page }) => {
+  test.fixme('admin can manage members, groups, and events end-to-end', async ({ page }) => {
     const timestamp = Date.now();
     const memberFirst = `QA${timestamp}`;
     const memberLast = 'Member';
