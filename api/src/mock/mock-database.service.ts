@@ -31,8 +31,32 @@ import {
   mockHouseholds,
   MockChild,
   MockCheckin,
+  MockPastoralCareTicket,
+  MockPastoralCareComment,
 } from './mock-data';
 import { AuditLogPersistence } from './audit-log.persistence';
+
+interface PastoralCareTicketCreateInput {
+  churchId: string;
+  title: string;
+  description: string;
+  priority?: string;
+  authorId: string;
+  actorUserId: string;
+}
+
+interface PastoralCareTicketUpdateInput {
+  status?: string;
+  assigneeId?: string;
+  actorUserId: string;
+}
+
+interface PastoralCareCommentCreateInput {
+  ticketId: string;
+  body: string;
+  authorId: string;
+  actorUserId: string;
+}
 
 interface AttendanceInput {
   eventId: string;
@@ -273,6 +297,8 @@ export class MockDatabaseService {
   private announcementReads: MockAnnouncementRead[] = clone(mockAnnouncementReads);
   private funds: MockFund[] = clone(mockFunds);
   private contributions: MockContribution[] = clone(mockContributions);
+  private pastoralCareTickets: MockPastoralCareTicket[] = [];
+  private pastoralCareComments: MockPastoralCareComment[] = [];
   private auditLogs: MockAuditLog[] = clone(mockAuditLogs);
   private sessions: DemoSession[] = clone(mockSessions);
   private oauthAccounts: Array<{ provider: 'google' | 'facebook'; providerUserId: string; userId: string }> = [];
@@ -1981,5 +2007,125 @@ export class MockDatabaseService {
       });
     }
     return clone(checkin);
+  }
+
+  createPastoralCareTicket(input: PastoralCareTicketCreateInput) {
+    const now = new Date().toISOString();
+    const ticket: MockPastoralCareTicket = {
+      id: `pc-ticket-${randomUUID()}`,
+      churchId: input.churchId,
+      title: input.title,
+      description: input.description,
+      status: 'NEW',
+      priority: input.priority ?? 'NORMAL',
+      authorId: input.authorId,
+      createdAt: now,
+      updatedAt: now,
+    };
+    this.pastoralCareTickets.push(ticket);
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'pastoralCare.ticket.created',
+      entity: 'pastoralCareTicket',
+      entityId: ticket.id,
+      summary: `${actorName} created a new pastoral care ticket`,
+      metadata: {
+        ticketId: ticket.id,
+        title: ticket.title,
+      },
+    });
+    return clone(ticket);
+  }
+
+  updatePastoralCareTicket(id: string, input: PastoralCareTicketUpdateInput) {
+    const ticket = this.pastoralCareTickets.find(t => t.id === id);
+    if (!ticket) {
+      return null;
+    }
+    const diff: Record<string, { previous: unknown; newValue: unknown }> = {};
+    const track = (key: string, previous: unknown, next: unknown) => {
+      if (previous !== next) {
+        diff[key] = { previous, newValue: next };
+      }
+    };
+    if (input.status && input.status !== ticket.status) {
+      track('status', ticket.status, input.status);
+      ticket.status = input.status;
+    }
+    if (input.assigneeId && input.assigneeId !== ticket.assigneeId) {
+      track('assigneeId', ticket.assigneeId, input.assigneeId);
+      ticket.assigneeId = input.assigneeId;
+    }
+    if (Object.keys(diff).length > 0) {
+      ticket.updatedAt = new Date().toISOString();
+      const actorName = this.getUserName(input.actorUserId);
+      this.createAuditLog({
+        actorUserId: input.actorUserId,
+        action: 'pastoralCare.ticket.updated',
+        entity: 'pastoralCareTicket',
+        entityId: ticket.id,
+        summary: `${actorName} updated pastoral care ticket #${ticket.id}`,
+        diff,
+        metadata: {
+          ticketId: ticket.id,
+        },
+      });
+    }
+    return clone(ticket);
+  }
+
+  createPastoralCareComment(input: PastoralCareCommentCreateInput) {
+    const now = new Date().toISOString();
+    const comment: MockPastoralCareComment = {
+      id: `pc-comment-${randomUUID()}`,
+      ticketId: input.ticketId,
+      authorId: input.authorId,
+      body: input.body,
+      createdAt: now,
+    };
+    this.pastoralCareComments.push(comment);
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'pastoralCare.comment.created',
+      entity: 'pastoralCareComment',
+      entityId: comment.id,
+      summary: `${actorName} added a comment to pastoral care ticket #${input.ticketId}`,
+      metadata: {
+        ticketId: input.ticketId,
+        commentId: comment.id,
+      },
+    });
+    return clone(comment);
+  }
+
+  getPastoralCareTicket(id: string) {
+    const ticket = this.pastoralCareTickets.find(t => t.id === id);
+    if (!ticket) {
+      return null;
+    }
+    const comments = this.pastoralCareComments
+      .filter(c => c.ticketId === id)
+      .map(c => ({
+        ...c,
+        author: this.getUserById(c.authorId),
+      }));
+    return {
+      ...clone(ticket),
+      author: this.getUserById(ticket.authorId),
+      assignee: ticket.assigneeId ? this.getUserById(ticket.assigneeId) : undefined,
+      comments,
+    };
+  }
+
+  listPastoralCareTickets(churchId: string) {
+    return this.pastoralCareTickets
+      .filter(t => t.churchId === churchId)
+      .map(t => ({
+        ...clone(t),
+        author: this.getUserById(t.authorId),
+        assignee: t.assigneeId ? this.getUserById(t.assigneeId) : undefined,
+      }));
   }
 }

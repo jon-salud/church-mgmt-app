@@ -1,5 +1,7 @@
 import { randomUUID } from 'node:crypto';
 export type { MockChild } from './mock-data/child';
+export type { MockPastoralCareTicket } from './mock-data/pastoral-care-ticket';
+export type { MockPastoralCareComment } from './mock-data/pastoral-care-comment';
 
 export const DEFAULT_ROLE_SLUGS = ['admin', 'leader', 'member'] as const;
 export type DefaultRoleSlug = (typeof DEFAULT_ROLE_SLUGS)[number];

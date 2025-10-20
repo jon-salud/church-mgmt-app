@@ -846,4 +846,63 @@ export class PrismaDataStore implements DataStore {
     });
     return checkin;
   }
+
+  async createPastoralCareTicket(input: Parameters<DataStore['createPastoralCareTicket']>[0]) {
+    const churchId = await this.getPrimaryChurchId();
+    const ticket = await this.client.pastoralCareTicket.create({
+      data: {
+        churchId,
+        title: input.title,
+        description: input.description,
+        priority: input.priority,
+        authorId: input.authorId,
+      },
+    });
+    return ticket;
+  }
+
+  async updatePastoralCareTicket(id: string, input: Parameters<DataStore['updatePastoralCareTicket']>[1]) {
+    const ticket = await this.client.pastoralCareTicket.update({
+      where: { id },
+      data: {
+        status: input.status,
+        assigneeId: input.assigneeId,
+      },
+    });
+    return ticket;
+  }
+
+  async createPastoralCareComment(input: Parameters<DataStore['createPastoralCareComment']>[0]) {
+    const comment = await this.client.pastoralCareComment.create({
+      data: {
+        ticketId: input.ticketId,
+        authorId: input.authorId,
+        body: input.body,
+      },
+    });
+    return comment;
+  }
+
+  async getPastoralCareTicket(id: string) {
+    const ticket = await this.client.pastoralCareTicket.findUnique({
+      where: { id },
+      include: {
+        author: { include: { profile: true } },
+        assignee: { include: { profile: true } },
+        comments: { include: { author: { include: { profile: true } } } },
+      },
+    });
+    return ticket;
+  }
+
+  async listPastoralCareTickets(churchId: string) {
+    const tickets = await this.client.pastoralCareTicket.findMany({
+      where: { churchId },
+      include: {
+        author: { include: { profile: true } },
+        assignee: { include: { profile: true } },
+      },
+    });
+    return tickets;
+  }
 }
