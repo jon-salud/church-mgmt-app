@@ -186,6 +186,18 @@ export interface MockChurch {
   timezone: string;
 }
 
+export interface MockCheckin {
+  id: string;
+  churchId: string;
+  eventId: string;
+  childId: string;
+  status: 'pending' | 'checked-in' | 'checked-out';
+  checkinTime?: string;
+  checkoutTime?: string;
+  checkedInBy?: string;
+  checkedOutBy?: string;
+}
+
 export interface DemoSession {
   token: string;
   userId: string;

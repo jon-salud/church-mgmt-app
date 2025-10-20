@@ -10,6 +10,7 @@ describe('Checkin (e2e-light)', () => {
   let householdId: string;
   let childId: string;
   let eventId: string;
+  let checkinId: string;
   let mockDbService: MockDatabaseService;
 
   beforeAll(async () => {
@@ -132,6 +133,54 @@ describe('Checkin (e2e-light)', () => {
       },
     });
     expect(res.statusCode).toBe(201);
+    const body = res.json();
+    checkinId = body[0].id;
+  });
+
+  it('should get checkins by eventId', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: `/api/v1/checkin?eventId=${eventId}`,
+      headers: {
+        authorization: `Bearer ${authToken}`,
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body).toHaveLength(1);
+    expect(body[0].id).toBe(checkinId);
+  });
+
+  it('should confirm a check-in', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/v1/checkin/confirm',
+      headers: {
+        authorization: `Bearer ${authToken}`,
+      },
+      payload: {
+        checkinId,
+      },
+    });
+    expect(res.statusCode).toBe(201);
+    const body = res.json();
+    expect(body.status).toBe('checked-in');
+  });
+
+  it('should initiate a check-out', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: '/api/v1/checkin/checkout/initiate',
+      headers: {
+        authorization: `Bearer ${authToken}`,
+      },
+      payload: {
+        checkinId,
+      },
+    });
+    expect(res.statusCode).toBe(201);
+    const body = res.json();
+    expect(body.status).toBe('checked-out');
   });
 
   it('should delete a child', async () => {
