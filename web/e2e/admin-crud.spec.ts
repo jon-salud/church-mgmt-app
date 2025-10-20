@@ -1,10 +1,16 @@
 import { test } from '@playwright/test';
+import { LoginPage } from './page-objects/LoginPage';
 import { MembersPage } from './page-objects/MembersPage';
 import { MemberDetailPage } from './page-objects/MemberDetailPage';
 import { GroupsPage } from './page-objects/GroupsPage';
 import { EventsPage } from './page-objects/EventsPage';
 
 test.describe('Admin CRUD Operations', () => {
+  test.beforeEach(async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.login();
+  });
+
   test('admin can manage members, groups, and events end-to-end', async ({ page }) => {
     const timestamp = Date.now();
     const memberFirst = `QA${timestamp}`;
@@ -21,39 +27,44 @@ test.describe('Admin CRUD Operations', () => {
     const groupsPage = new GroupsPage(page);
     const eventsPage = new EventsPage(page);
 
-    // Member creation
-    await membersPage.goto();
-    await membersPage.checkAccessibility();
-    await membersPage.quickAddMember(memberFirst, memberLast, memberEmail, memberPhone);
-    const memberId = memberDetailPage.getMemberIdFromUrl();
+    await test.step('Create and verify a new member', async () => {
+      await membersPage.goto();
+      await membersPage.checkAccessibility();
+      await membersPage.quickAddMember(memberFirst, memberLast, memberEmail, memberPhone);
+    });
 
-    // Member detail and update
-    await memberDetailPage.verifyMemberName(memberFirst, memberLast);
-    await memberDetailPage.checkAccessibility();
-    await memberDetailPage.updateMemberDetails(updatedMemberPhone, '123 QA Street');
-    await memberDetailPage.verifyMemberRole('Leader');
+    const memberId = await test.step('Get member ID from URL', () => memberDetailPage.getMemberIdFromUrl());
 
-    // Group management
-    await groupsPage.goto(groupName);
-    await groupsPage.checkAccessibility();
-    await groupsPage.addMemberToGroup(memberId, 'Volunteer', 'Active');
-    await groupsPage.verifyMemberInGroup(memberFirst, memberLast);
-    await groupsPage.updateGroupMembership(memberFirst, memberLast, 'Leader', 'Inactive');
-    await groupsPage.verifyGroupMembershipUpdate(memberFirst, memberLast, 'Leader', 'Inactive');
-    await groupsPage.removeMemberFromGroup(memberFirst, memberLast);
-    await groupsPage.verifyMemberNotInGroup(memberFirst, memberLast);
+    await test.step('Update and verify member details', async () => {
+      await memberDetailPage.verifyMemberName(memberFirst, memberLast);
+      await memberDetailPage.checkAccessibility();
+      await memberDetailPage.updateMemberDetails(updatedMemberPhone, '123 QA Street');
+      await memberDetailPage.verifyMemberRole('Leader');
+    });
 
-    // Event management
-    await eventsPage.goto();
-    await eventsPage.checkAccessibility();
-    const startAt = new Date(Date.now() + 60 * 60 * 1000).toISOString().slice(0, 16);
-    const endAt = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString().slice(0, 16);
-    await eventsPage.scheduleNewEvent(eventTitle, 'Main Hall', startAt, endAt, 'QA,Automation');
-    await eventsPage.verifyEventVisible(eventTitle);
-    await eventsPage.updateEvent(eventTitle, updatedEventTitle, 'QA');
-    await eventsPage.verifyEventVisible(updatedEventTitle);
-    await eventsPage.deleteEvent(updatedEventTitle);
-    await eventsPage.verifyEventNotVisible(updatedEventTitle);
+    await test.step('Manage group membership', async () => {
+      await groupsPage.goto(groupName);
+      await groupsPage.checkAccessibility();
+      await groupsPage.addMemberToGroup(memberId, 'Volunteer', 'Active');
+      await groupsPage.verifyMemberInGroup(memberFirst, memberLast);
+      await groupsPage.updateGroupMembership(memberFirst, memberLast, 'Leader', 'Inactive');
+      await groupsPage.verifyGroupMembershipUpdate(memberFirst, memberLast, 'Leader', 'Inactive');
+      await groupsPage.removeMemberFromGroup(memberFirst, memberLast);
+      await groupsPage.verifyMemberNotInGroup(memberFirst, memberLast);
+    });
+
+    await test.step('Manage events', async () => {
+      await eventsPage.goto();
+      await eventsPage.checkAccessibility();
+      const startAt = new Date(Date.now() + 60 * 60 * 1000).toISOString().slice(0, 16);
+      const endAt = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString().slice(0, 16);
+      await eventsPage.scheduleNewEvent(eventTitle, 'Main Hall', startAt, endAt, 'QA,Automation');
+      await eventsPage.verifyEventVisible(eventTitle);
+      await eventsPage.updateEvent(eventTitle, updatedEventTitle, 'QA');
+      await eventsPage.verifyEventVisible(updatedEventTitle);
+      await eventsPage.deleteEvent(updatedEventTitle);
+      await eventsPage.verifyEventNotVisible(updatedEventTitle);
+    });
 
     await test.step('Delete the member', async () => {
       await memberDetailPage.gotoById(memberId);
