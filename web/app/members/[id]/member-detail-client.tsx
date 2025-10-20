@@ -6,14 +6,17 @@ import { format } from "date-fns";
 import { Modal } from "../../../components/ui/modal";
 import { updateMemberAction, deleteMemberAction } from "../../actions";
 
+import { PrayerRequest } from '@/lib/types';
+
 type MemberDetailClientProps = {
   member: any;
   roles: Array<{ id: string; name: string; slug?: string }>;
   settings: any;
   children: any[];
+  prayerRequests: PrayerRequest[];
 };
 
-export function MemberDetailClient({ member, roles, settings, children }: MemberDetailClientProps) {
+export function MemberDetailClient({ member, roles, settings, children, prayerRequests }: MemberDetailClientProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
   const [isManageChildrenOpen, setIsManageChildrenOpen] = useState(false);
@@ -90,6 +93,30 @@ export function MemberDetailClient({ member, roles, settings, children }: Member
           )}
         </InfoCard>
       </div>
+
+      <InfoCard title="My Prayer Requests">
+        {prayerRequests?.length ? (
+          <ul className="grid gap-2 md:grid-cols-2">
+            {prayerRequests.map((request: any) => (
+              <li key={request.id} className="rounded-md border border-slate-800 bg-slate-950/60 p-3 text-sm">
+                <p className="font-medium text-slate-100">{request.title}</p>
+                <p className="text-xs text-slate-400">{request.description}</p>
+                <form action={updatePrayerRequestAction} className="mt-2">
+                  <input type="hidden" name="prayerRequestId" value={request.id} />
+                  <button
+                    type="submit"
+                    className="rounded-md bg-sky-500 px-3 py-1 text-xs font-medium text-slate-950 transition hover:bg-sky-400"
+                  >
+                    Mark as Answered
+                  </button>
+                </form>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-slate-400">No prayer requests submitted.</p>
+        )}
+      </InfoCard>
 
       <InfoCard title="Details">
         <div className="grid grid-cols-2 gap-4">
