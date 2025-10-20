@@ -37,5 +37,15 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 
 ### 📝 Backlog / Upcoming
 
+- **Pastoral Care & Prayer Feature (Phase 2 - API & UI):**
+  - **Backend (API):**
+    - Implement Prayer Request API Endpoints (CRUD, moderation, 'pray' action).
+    - Implement Pastoral Care API Endpoints (CRUD, email notifications, commenting).
+    - Write API integration tests for all new endpoints.
+  - **Frontend (Web):**
+    - Implement Prayer Request pages (public wall, submission form, admin moderation UI).
+    - Implement Pastoral Care pages (ticket submission form with confidentiality notice, staff dashboard, ticket detail view with comments).
+  - **E2E Testing:**
+    - Write Playwright E2E tests for the complete user flows (submission, moderation, management).
 - Documentation refresh once outstanding MVP items land
 - Debug and stabilize the E2E test environment to prevent port conflicts.

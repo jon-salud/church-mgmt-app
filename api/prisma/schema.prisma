@@ -23,6 +23,8 @@ model Church {
   households Household[]
   contributions Contribution[]
   settings  Settings?
+  prayerRequests PrayerRequest[]
+  pastoralCareTickets PastoralCareTicket[]
 }
 
 model User {
@@ -40,6 +42,11 @@ model User {
   auditLogs    AuditLog[] @relation("ActorLogs")
   sessions     DemoSession[]
   groupMembers GroupMember[]
+  prayerRequests PrayerRequest[]
+  prayers Prayer[]
+  authoredPastoralCareTickets PastoralCareTicket[] @relation("AuthoredTickets")
+  assignedPastoralCareTickets PastoralCareTicket[] @relation("AssignedTickets")
+  pastoralCareComments PastoralCareComment[]
 }
 
 model Household {
@@ -228,4 +235,57 @@ model Settings {
   churchId       String  @id
   optionalFields String?
   church         Church  @relation(fields: [churchId], references: [id])
+}
+
+model PrayerRequest {
+  id              String   @id @default(cuid())
+  churchId        String
+  title           String
+  description     String
+  isAnonymous     Boolean  @default(false)
+  authorId        String?
+  managementToken String?  @unique
+  status          String   @default("PENDING_APPROVAL") // PENDING_APPROVAL, APPROVED, ANSWERED
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  church          Church   @relation(fields: [churchId], references: [id])
+  author          User?    @relation(fields: [authorId], references: [id])
+  prayers         Prayer[]
+}
+
+model Prayer {
+  prayerRequestId String
+  userId          String
+  createdAt       DateTime      @default(now())
+  prayerRequest   PrayerRequest @relation(fields: [prayerRequestId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
+
+  @@id([prayerRequestId, userId])
+}
+
+model PastoralCareTicket {
+  id          String   @id @default(cuid())
+  churchId    String
+  title       String
+  description String
+  status      String   @default("NEW") // NEW, ASSIGNED, IN_PROGRESS, RESOLVED
+  priority    String   @default("NORMAL") // LOW, NORMAL, HIGH, URGENT
+  authorId    String
+  assigneeId  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  church      Church   @relation(fields: [churchId], references: [id])
+  author      User     @relation("AuthoredTickets", fields: [authorId], references: [id])
+  assignee    User?    @relation("AssignedTickets", fields: [assigneeId], references: [id])
+  comments    PastoralCareComment[]
+}
+
+model PastoralCareComment {
+  id        String             @id @default(cuid())
+  ticketId  String
+  authorId  String
+  body      String
+  createdAt DateTime           @default(now())
+  ticket    PastoralCareTicket @relation(fields: [ticketId], references: [id])
+  author    User               @relation(fields: [authorId], references: [id])
 }
