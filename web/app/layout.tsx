@@ -38,7 +38,7 @@ const adminNavItems = [
 function NavSection({ title, items }: { title: string; items: { href: string; label: string }[] }) {
   return (
     <div className="space-y-2">
-      <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">{title}</h3>
+      <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-slate-400">{title}</h3>
       {items.map(item => (
         <Link
           key={item.href}
@@ -104,7 +104,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </div>
             </main>
           </div>
-          <footer className="border-t border-slate-800 bg-slate-950/80 px-6 py-4 text-center text-xs text-slate-500">
+          <footer className="border-t border-slate-800 bg-slate-950/80 px-6 py-4 text-center text-xs text-slate-400">
             Demo data only • Install via browser menu for offline-ready dashboard snapshot.
           </footer>
         </div>

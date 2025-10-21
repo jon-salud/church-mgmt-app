@@ -42,7 +42,7 @@ export default function NewPrayerRequestPage() {
             id="title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full border border-gray-300 rounded-md p-2"
+            className="w-full border border-slate-600 rounded-md p-2 bg-slate-800 text-slate-100"
             required
           />
         </div>
@@ -54,7 +54,7 @@ export default function NewPrayerRequestPage() {
             id="description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full border border-gray-300 rounded-md p-2"
+            className="w-full border border-slate-600 rounded-md p-2 bg-slate-800 text-slate-100"
             rows={4}
             required
           />
