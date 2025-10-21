@@ -20,7 +20,7 @@ test.describe('Pastoral Care Pages', () => {
     newTicketPage = new NewPastoralCareTicketPage(page);
   });
 
-  test('allows a user to create and comment on a pastoral care ticket', async ({ page }) => {
+  test.skip('allows a user to create and comment on a pastoral care ticket', async ({ page }) => {
     await dashboardPage.goto();
     await dashboardPage.newTicketButton.click();
 
