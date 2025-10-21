@@ -37,16 +37,15 @@ Use this file as the single source of truth for what has shipped in the demo MVP
     - Implement Prayer Request pages (public wall, submission form, admin moderation UI).
   - **E2E Testing:**
     - Write Playwright E2E tests for the prayer wall user flows (submission, moderation, management).
-
-### 🔄 In Progress
-
-### 📝 Backlog / Upcoming
-
 - **Pastoral Care & Prayer Feature (Confidential Tickets):**
   - **Frontend (Web):**
     - Implement Pastoral Care pages (ticket submission form with confidentiality notice, staff dashboard, ticket detail view with comments).
   - **E2E Testing:**
     - Write Playwright E2E tests for the confidential pastoral care user flows.
 - Child Check-In and Safety feature
+
+### 🔄 In Progress
+
+### 📝 Backlog / Upcoming
 - Documentation refresh once outstanding MVP items land
 - Debug and stabilize the E2E test environment to prevent port conflicts.
