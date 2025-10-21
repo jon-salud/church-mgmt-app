@@ -78,4 +78,5 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   createPastoralCareComment: resolvedFn(),
   getPastoralCareTicket: resolvedFn(),
   listPastoralCareTickets: resolvedFn([]),
+  getPrayerRequests: resolvedFn([]),
 });

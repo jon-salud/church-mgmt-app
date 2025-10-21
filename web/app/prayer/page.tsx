@@ -3,7 +3,7 @@ import { PrayerRequest } from '@/lib/types';
 import { PrayerWallClientPage } from './client-page';
 
 export default async function PrayerWallPage() {
-  const prayerRequests: PrayerRequest[] = await api.get('/prayer-requests');
+  const prayerRequests: PrayerRequest[] = await api.getPrayerRequests();
 
   return (
     <div className="p-4">

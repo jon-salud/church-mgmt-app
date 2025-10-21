@@ -252,4 +252,8 @@ export class MockDataStoreAdapter implements DataStore {
   async listPastoralCareTickets(churchId: string) {
     return this.mock.listPastoralCareTickets(churchId);
   }
+
+  async getPrayerRequests() {
+    return this.mock.getPrayerRequests();
+  }
 }

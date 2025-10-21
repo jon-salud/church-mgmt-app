@@ -32,6 +32,18 @@ export const clientApi = {
             body: JSON.stringify(settings),
         });
     },
+    async post<T>(path: string, body?: any) {
+        return apiFetch<T>(path, {
+            method: 'POST',
+            body: body ? JSON.stringify(body) : undefined,
+        });
+    },
+    async put<T>(path: string, body?: any) {
+        return apiFetch<T>(path, {
+            method: 'PUT',
+            body: body ? JSON.stringify(body) : undefined,
+        });
+    },
     async subscribeToNotifications(subscription: PushSubscription) {
         return apiFetch('/notifications/subscribe', {
             method: 'POST',

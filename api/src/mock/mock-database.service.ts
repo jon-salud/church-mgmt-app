@@ -33,6 +33,8 @@ import {
   MockCheckin,
   MockPastoralCareTicket,
   MockPastoralCareComment,
+  MockPrayerRequest,
+  mockPrayerRequests,
 } from './mock-data';
 import { AuditLogPersistence } from './audit-log.persistence';
 
@@ -299,6 +301,7 @@ export class MockDatabaseService {
   private contributions: MockContribution[] = clone(mockContributions);
   private pastoralCareTickets: MockPastoralCareTicket[] = [];
   private pastoralCareComments: MockPastoralCareComment[] = [];
+  private prayerRequests: MockPrayerRequest[] = clone(mockPrayerRequests);
   private auditLogs: MockAuditLog[] = clone(mockAuditLogs);
   private sessions: DemoSession[] = clone(mockSessions);
   private oauthAccounts: Array<{ provider: 'google' | 'facebook'; providerUserId: string; userId: string }> = [];
@@ -2127,5 +2130,9 @@ export class MockDatabaseService {
         author: this.getUserById(t.authorId),
         assignee: t.assigneeId ? this.getUserById(t.assigneeId) : undefined,
       }));
+  }
+
+  getPrayerRequests() {
+    return clone(this.prayerRequests);
   }
 }

@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { PastoralCareTicket } from './types';
+import { PastoralCareTicket, PrayerRequest } from './types';
 
 const DEFAULT_API_BASE = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api/v1';
 const DEFAULT_TOKEN = process.env.DEMO_DEFAULT_TOKEN || 'demo-admin';
@@ -162,6 +162,29 @@ export const api = {
   },
   async getPastoralCareTicket(id: string) {
     return apiFetch<PastoralCareTicket>(`/pastoral-care/tickets/${id}`);
+  },
+  async getPrayerRequests() {
+    return apiFetch<PrayerRequest[]>('/prayer/requests');
+  },
+  async get<T>(path: string) {
+    return apiFetch<T>(path);
+  },
+  async post<T>(path: string, body: any) {
+    return apiFetch<T>(path, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+  },
+  async put<T>(path: string, body: any) {
+    return apiFetch<T>(path, {
+      method: 'PUT',
+      body: JSON.stringify(body),
+    });
+  },
+  async delete<T>(path: string) {
+    return apiFetch<T>(path, {
+      method: 'DELETE',
+    });
   },
 };
 

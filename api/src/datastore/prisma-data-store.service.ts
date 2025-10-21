@@ -905,4 +905,8 @@ export class PrismaDataStore implements DataStore {
     });
     return tickets;
   }
+
+  async getPrayerRequests() {
+    return [];
+  }
 }

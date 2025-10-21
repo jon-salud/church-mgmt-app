@@ -12,7 +12,7 @@ export function PastoralCareClientPage({ tickets: initialTickets }: { tickets: P
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Pastoral Care Tickets</h1>
-        <Button asChild>
+        <Button>
           <Link href="/pastoral-care/new">New Ticket</Link>
         </Button>
       </div>
