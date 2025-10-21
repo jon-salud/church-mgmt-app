@@ -1,7 +1,9 @@
 import { randomUUID } from 'node:crypto';
+import { MockPrayerRequest } from './mock-data/prayer-request';
 export type { MockChild } from './mock-data/child';
 export type { MockPastoralCareTicket } from './mock-data/pastoral-care-ticket';
 export type { MockPastoralCareComment } from './mock-data/pastoral-care-comment';
+export type { MockPrayerRequest } from './mock-data/prayer-request';
 
 export const DEFAULT_ROLE_SLUGS = ['admin', 'leader', 'member'] as const;
 export type DefaultRoleSlug = (typeof DEFAULT_ROLE_SLUGS)[number];
@@ -223,6 +225,36 @@ export const mockChurches: MockChurch[] = [
     id: churchId,
     name: 'Auckland Community Church',
     timezone: 'Pacific/Auckland',
+  },
+];
+
+export const mockPrayerRequests: MockPrayerRequest[] = [
+  {
+    id: 'prayer-1',
+    churchId,
+    title: 'Healing for my mother',
+    body: 'Please pray for my mother, who is battling a serious illness. Pray for strength, comfort, and complete healing.',
+    authorName: 'John D.',
+    isAnonymous: false,
+    createdAt: makeDate(-5),
+  },
+  {
+    id: 'prayer-2',
+    churchId,
+    title: 'Guidance in career change',
+    body: 'I am considering a career change and feel uncertain about the future. Please pray for clarity and wisdom as I make this decision.',
+    authorName: 'Anonymous',
+    isAnonymous: true,
+    createdAt: makeDate(-3),
+  },
+  {
+    id: 'prayer-3',
+    churchId,
+    title: 'Safe travels for mission trip',
+    body: 'Our youth group is going on a mission trip next week. Please pray for their safety and for the hearts of the people they will be serving.',
+    authorName: 'Sarah L.',
+    isAnonymous: false,
+    createdAt: makeDate(-1),
   },
 ];
 

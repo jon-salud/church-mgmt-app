@@ -19,7 +19,7 @@ export default async function MemberDetailPage({ params }: MemberDetailProps) {
   const children = member.household?.id ? await api.getChildren(member.household.id) : [];
 
   const isOwnProfile = me?.user?.id === params.id;
-  const prayerRequests = isOwnProfile ? await api.get(`/prayer-requests/me`) : [];
+  const prayerRequests = isOwnProfile ? await api.getPrayerRequests() : [];
 
   return <MemberDetailClient member={member} roles={roles} settings={settings} children={children} prayerRequests={prayerRequests} />;
 }

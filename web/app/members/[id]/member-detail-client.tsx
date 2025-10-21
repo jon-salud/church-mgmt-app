@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Modal } from "../../../components/ui/modal";
-import { updateMemberAction, deleteMemberAction } from "../../actions";
+import { updateMemberAction, deleteMemberAction, updatePrayerRequestAction } from "../../actions";
 
 import { PrayerRequest } from '@/lib/types';
 
@@ -366,7 +366,6 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
         </form>
       </Modal>
 
-import { addChildAction } from "../../actions";
 
 // ...
 
@@ -375,7 +374,7 @@ import { addChildAction } from "../../actions";
         onClose={() => setIsManageChildrenOpen(false)}
         title="Manage Children"
       >
-        <form action={addChildAction} className="space-y-4">
+        <form action={""} className="space-y-4">
           <input type="hidden" name="householdId" value={member.household?.id} />
           <input type="hidden" name="userId" value={member.id} />
           <div>
