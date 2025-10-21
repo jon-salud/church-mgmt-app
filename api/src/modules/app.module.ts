@@ -15,6 +15,8 @@ import { HouseholdsModule } from './households/households.module';
 import { SettingsModule } from './settings/settings.module';
 import { CheckinModule } from './checkin/checkin.module';
 import { NotificationsModule } from './notifications/notifications.module';
+import { PastoralCareModule } from './pastoral-care/pastoral-care.module';
+import { PrayerModule } from './prayer/prayer.module';
 
 @Module({
   imports: [
@@ -34,6 +36,8 @@ import { NotificationsModule } from './notifications/notifications.module';
     SettingsModule,
     CheckinModule,
     NotificationsModule,
+    PastoralCareModule,
+    PrayerModule,
   ],
 })
 export class AppModule {}

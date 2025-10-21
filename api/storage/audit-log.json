@@ -75,5 +75,19 @@
       "reassignedCount": 0
     },
     "createdAt": "2025-10-19T04:25:20.672Z"
+  },
+  {
+    "id": "audit-pastoralCareTicket-pc-ticket-ede79a86-4ffd-4705-a5d2-59a673d8a2bd-1761073025800",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "pastoralCare.ticket.created",
+    "entity": "pastoralCareTicket",
+    "entityId": "pc-ticket-ede79a86-4ffd-4705-a5d2-59a673d8a2bd",
+    "summary": "Ariana Matau created a new pastoral care ticket",
+    "metadata": {
+      "ticketId": "pc-ticket-ede79a86-4ffd-4705-a5d2-59a673d8a2bd",
+      "title": "This is important "
+    },
+    "createdAt": "2025-10-21T18:57:05.800Z"
   }
 ]

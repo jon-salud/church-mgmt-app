@@ -15,15 +15,42 @@ export const viewport: Viewport = {
   themeColor: '#0f172a',
 };
 
-const baseNavItems = [
+const memberNavItems = [
   { href: '/dashboard', label: 'Dashboard' },
   { href: '/members', label: 'Members' },
   { href: '/households', label: 'Households' },
   { href: '/groups', label: 'Groups' },
   { href: '/events', label: 'Events' },
   { href: '/announcements', label: 'Announcements' },
-  { href: '/giving', label: 'Giving' },
+  { href: '/prayer', label: 'Prayer Wall' },
 ];
+
+const givingNavItems = [{ href: '/giving', label: 'Giving' }];
+
+const adminNavItems = [
+  { href: '/roles', label: 'Roles' },
+  { href: '/audit-log', label: 'Audit Log' },
+  { href: '/pastoral-care', label: 'Pastoral Care' },
+  { href: '/checkin/dashboard', label: 'Check-In' },
+  { href: '/settings', label: 'Settings' },
+];
+
+function NavSection({ title, items }: { title: string; items: { href: string; label: string }[] }) {
+  return (
+    <div className="space-y-2">
+      <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500">{title}</h3>
+      {items.map(item => (
+        <Link
+          key={item.href}
+          href={item.href}
+          className="block rounded-md px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-800"
+        >
+          {item.label}
+        </Link>
+      ))}
+    </div>
+  );
+}
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const me = await api.currentUser();
@@ -33,16 +60,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const roles = me?.user?.roles ?? [];
   const isAdmin = roles.some((entry: any) => entry?.slug === 'admin' || entry?.role === 'Admin');
   const primaryRole = roles[0]?.role ?? (isAdmin ? 'Admin' : 'Member');
-  const navItems =
-    isAdmin
-      ? [
-          ...baseNavItems.slice(0, 2),
-          { href: '/roles', label: 'Roles' },
-          ...baseNavItems.slice(2),
-          { href: '/audit-log', label: 'Audit Log' },
-          { href: '/settings', label: 'Settings' },
-        ]
-      : baseNavItems;
 
   return (
     <html lang="en" className="bg-slate-900">
@@ -60,17 +77,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 </Link>
                 <p className="text-xs text-slate-400">Role: {primaryRole}</p>
               </div>
-              <nav className="hidden gap-4 text-sm font-medium md:flex" aria-label="Primary navigation">
-                {navItems.map(item => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="rounded-md px-3 py-2 transition hover:bg-slate-800"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </nav>
               <div className="flex items-center gap-3 text-sm text-slate-300">
                 <span className="hidden md:inline">{displayName}</span>
                 <form action={logoutAction}>
@@ -86,16 +92,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               className="border-b border-slate-900 bg-slate-950 px-4 py-4 md:w-64 md:border-b-0 md:border-r"
               aria-label="Secondary navigation"
             >
-              <nav className="grid gap-2" aria-label="Section navigation">
-                {navItems.map(item => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="rounded-md px-3 py-2 text-sm font-medium text-slate-200 transition hover:bg-slate-800"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
+              <nav className="grid gap-4" aria-label="Section navigation">
+                <NavSection title="Member" items={memberNavItems} />
+                <NavSection title="Giving" items={givingNavItems} />
+                {isAdmin && <NavSection title="Admin" items={adminNavItems} />}
               </nav>
             </aside>
             <main id="main-content" className="flex-1 bg-slate-900/60 p-6">

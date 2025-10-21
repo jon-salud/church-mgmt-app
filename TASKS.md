@@ -32,21 +32,23 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - Observability hardening: structured pino logging, Sentry initialization hooks, and Prometheus-friendly `/api/v1/metrics`
 - OpenAPI schema enhancements documenting core modules (users, groups, events, giving, dashboard, audit, auth)
 - Architect and Implement Household Data Model
+- **Pastoral Care & Prayer Feature (Public Prayer Wall):**
+  - **Frontend (Web):**
+    - Implement Prayer Request pages (public wall, submission form, admin moderation UI).
+  - **E2E Testing:**
+    - Write Playwright E2E tests for the prayer wall user flows (submission, moderation, management).
+- **Pastoral Care & Prayer Feature (Confidential Tickets):**
+  - **Frontend (Web):**
+    - Implement Pastoral Care pages (ticket submission form with confidentiality notice, staff dashboard, ticket detail view with comments).
+  - **E2E Testing:**
+    - Write Playwright E2E tests for the confidential pastoral care user flows.
+- Child Check-In and Safety feature
 
 ### 🔄 In Progress
 
-- Child Check-In and Safety feature
+- Consolidate agent knowledge and operating procedures into a single `AGENTS.md` file.
+
 ### 📝 Backlog / Upcoming
 
-- **Pastoral Care & Prayer Feature (Phase 2 - API & UI):**
-  - **Backend (API):**
-    - Implement Prayer Request API Endpoints (CRUD, moderation, 'pray' action).
-    - Implement Pastoral Care API Endpoints (CRUD, email notifications, commenting).
-    - Write API integration tests for all new endpoints.
-  - **Frontend (Web):**
-    - Implement Prayer Request pages (public wall, submission form, admin moderation UI).
-    - Implement Pastoral Care pages (ticket submission form with confidentiality notice, staff dashboard, ticket detail view with comments).
-  - **E2E Testing:**
-    - Write Playwright E2E tests for the complete user flows (submission, moderation, management).
 - Documentation refresh once outstanding MVP items land
 - Debug and stabilize the E2E test environment to prevent port conflicts.
