@@ -45,6 +45,7 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - Child Check-In and Safety feature
 
 ### 🔄 In Progress
+- Consolidate agent knowledge and operating procedures into a single `AGENTS.md` file.
 
 ### 📝 Backlog / Upcoming
 - Documentation refresh once outstanding MVP items land
