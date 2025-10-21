@@ -18,4 +18,11 @@ export class PrayerController {
   listPrayerRequests() {
     return this.prayerService.listPrayerRequests();
   }
+
+  @Get('pending')
+  @ApiOperation({ summary: 'List all pending prayer requests' })
+  @ApiOkResponse(arrayOfObjectsResponse)
+  listPendingPrayerRequests() {
+    return this.prayerService.listPendingPrayerRequests();
+  }
 }

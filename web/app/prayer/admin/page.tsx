@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 };
 
 export default async function PrayerAdminPage() {
-  const prayerRequests: PrayerRequest[] = await api.get('/prayer-requests/pending');
+  const prayerRequests: PrayerRequest[] = await api.get('/prayer/pending');
 
   return (
     <div className="p-4">

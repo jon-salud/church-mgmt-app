@@ -7,4 +7,5 @@ export interface MockPrayerRequest {
   authorName: string;
   isAnonymous: boolean;
   createdAt: string;
+  approvedAt?: string;
 }

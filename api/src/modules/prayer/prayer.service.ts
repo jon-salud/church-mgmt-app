@@ -9,4 +9,9 @@ export class PrayerService {
   async listPrayerRequests() {
     return this.db.getPrayerRequests();
   }
+
+  async listPendingPrayerRequests() {
+    const allRequests = await this.db.getPrayerRequests();
+    return allRequests.filter((request) => !request.approvedAt);
+  }
 }
