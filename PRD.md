@@ -162,45 +162,27 @@ This feature is designed to provide spiritual support to the congregation throug
 ### 3.10 Child Check-In and Safety
 
 - **As a Parent or Guardian**, I can manage my children's information.
-  - AC: Children are linked to a `Household` to allow multiple guardians.
+  - AC: Children are linked to a `Household` so multiple guardians are supported.
   - AC: Required child fields: `fullName`, `dateOfBirth`. Optional fields: `allergies`, `medicalNotes`.
 - **As a Parent or Staff Member**, I can check a child into an event.
-  - AC: The system supports a self-check-in flow for parents, which must be confirmed by a staff member.
-  - AC: Staff members can also perform the entire check-in process on behalf of a parent.
-  - AC: A dedicated "Childcare Volunteer" role has the permissions to manage the check-in and check-out process.
-- **As a Staff Member**, I can confirm a child's arrival.
-  - AC: A dedicated staff UI shows a list of children with a "Pending Confirmation" status.
-  - AC: The system logs which staff member confirmed the check-in and at what time.
+  - AC: Parents may self-check-in via the PWA; self-check-ins create a `PENDING_CONFIRMATION` record that requires staff confirmation.
+  - AC: Staff can perform the complete check-in flow on behalf of a parent and confirm immediately.
+  - AC: The system records the check-in timestamp and the staff member who confirmed it.
+  - AC: A dedicated "Childcare Volunteer" role has permissions to manage check-in and check-out.
+- **As a Staff Member**, I can view and manage check-ins via a staff dashboard.
+  - AC: Dashboard lists children with statuses (Pending Confirmation, Checked In, Checked Out).
+  - AC: Each row shows child's name, computed age, allergies, medical notes, event/group, and check-in/check-out timestamps.
+  - AC: Staff can filter/search by status, event/group, name, or flagged medical/allergy notes and can confirm/override entries.
+  - AC: All confirmations and overrides record actor and timestamp for auditing.
 - **As a Staff Member**, I can check a child out.
+  - AC: The system records the check-out timestamp and the staff member who performed the action.
   - AC: The system initiates a PWA push notification to the parent's device upon checkout.
-- **As a Parent**, I am notified of check-out and must confirm it.
-  - AC: Parents receive a push notification when their child is checked out.
-  - AC: Parents must confirm the checkout via the app.
-  - AC: The system includes a configurable timeout for both staff and parent confirmations to prevent records from getting stuck.
-- **As an Admin or Staff Member**, I can manage visitor check-ins.
-  - AC: A simple, spreadsheet-like interface allows for the rapid entry of visitor information for a single event.
-
-### 3.10 Child Check-In and Safety
-
-- **As a Parent or Guardian**, I can manage my children's information.
-  - AC: Children are linked to a `Household` to allow multiple guardians.
-  - AC: Required child fields: `fullName`, `dateOfBirth`. Optional fields: `allergies`, `medicalNotes`.
-- **As a Parent or Staff Member**, I can check a child into an event.
-  - AC: The system supports a self-check-in flow for parents, which must be confirmed by a staff member.
-  - AC: Staff members can also perform the entire check-in process on behalf of a parent.
-  - AC: The system records the time of check-in and the staff member who confirmed it.
-  - AC: A dedicated "Childcare Volunteer" role has the permissions to manage the check-in and check-out process.
-- **As a Staff Member**, I can view and manage the check-in dashboard.
-  - AC: A dedicated staff UI shows a list of all children currently checked in.
-  - AC: The dashboard displays the child's name, age, allergies, and any medical notes.
-  - AC: Staff can filter the list by check-in status (e.g., "Checked In", "Checked Out").
-- **As a Staff Member**, I can check a child out.
-  - AC: The system records the time of check-out and the staff member who performed the action.
-  - AC: The system initiates a PWA push notification to the parent's device upon checkout.
-- **As a Parent**, I am notified of check-out.
-  - AC: Parents receive a push notification when their child is checked out.
-- **As an Admin or Staff Member**, I can manage visitor check-ins.
-  - AC: A simple, spreadsheet-like interface allows for the rapid entry of visitor information for a single event.
+- **As a Parent**, I am notified of checkout and must confirm it.
+  - AC: Parents receive a push notification when their child is checked out and must confirm the checkout via the app.
+  - AC: A configurable timeout exists for staff and parent confirmations; timed-out items surface in the staff dashboard for follow-up.
+- **As an Admin or Staff Member**, I can manage visitor/child check-ins for events.
+  - AC: Provide a spreadsheet-like rapid-entry interface (and optional CSV import) for quick single-event visitor/child check-ins.
+- AC: All check-in/out and confirmation actions are auditable (actor, action, timestamps, eventId, optional notes).
 
 ---
 
