@@ -35,6 +35,7 @@ api/prisma/client/
 
 # VS Code
 .vscode/
+.codex-agent.md
 
 # Database files
 *.db
