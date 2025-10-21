@@ -1,4 +1,5 @@
 import { cookies } from 'next/headers';
+import { PastoralCareTicket } from './types';
 
 const DEFAULT_API_BASE = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api/v1';
 const DEFAULT_TOKEN = process.env.DEMO_DEFAULT_TOKEN || 'demo-admin';
@@ -155,6 +156,12 @@ export const api = {
       method: 'PUT',
       body: JSON.stringify(settings),
     });
+  },
+  async getPastoralCareTickets() {
+    return apiFetch<PastoralCareTicket[]>('/pastoral-care/tickets');
+  },
+  async getPastoralCareTicket(id: string) {
+    return apiFetch<PastoralCareTicket>(`/pastoral-care/tickets/${id}`);
   },
 };
 

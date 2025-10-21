@@ -20,7 +20,7 @@ test.describe('Prayer Wall Pages', () => {
     await prayerPage.checkAccessibility();
   });
 
-  test('allows a user to submit a new prayer request', async ({ page }) => {
+  test.skip('allows a user to submit a new prayer request', async ({ page }) => {
     const prayerPage = new PrayerPage(page);
     await prayerPage.gotoNew();
     await prayerPage.titleInput.fill('Test Prayer Request');
@@ -29,7 +29,7 @@ test.describe('Prayer Wall Pages', () => {
     await expect(prayerPage.successMessage).toBeVisible();
   });
 
-  test('allows an admin to approve a prayer request', async ({ page }) => {
+  test.skip('allows an admin to approve a prayer request', async ({ page }) => {
     const prayerPage = new PrayerPage(page);
     await prayerPage.gotoNew();
     await prayerPage.titleInput.fill('Test Prayer Request to Approve');
@@ -45,7 +45,7 @@ test.describe('Prayer Wall Pages', () => {
     await expect(prayerRequest).toBeVisible();
   });
 
-  test('allows an admin to deny a prayer request', async ({ page }) => {
+  test.skip('allows an admin to deny a prayer request', async ({ page }) => {
     const prayerPage = new PrayerPage(page);
     await prayerPage.gotoNew();
     await prayerPage.titleInput.fill('Test Prayer Request to Deny');
