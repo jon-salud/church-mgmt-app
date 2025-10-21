@@ -392,7 +392,7 @@ export async function deleteEventAction(formData: FormData) {
 
 export async function demoLoginAction(formData: FormData) {
     const cookieStore = cookies();
-    const returnTo = formData.get("returnTo")?.toString() || "/dashboard";
+    const returnTo = formData.get("returnTo")?.toString();
     cookieStore.set("demo_token", "demo-admin", {
         path: "/",
         httpOnly: true,
@@ -405,7 +405,7 @@ export async function demoLoginAction(formData: FormData) {
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
     });
-    redirect(returnTo);
+    redirect(returnTo || "/dashboard");
 }
 
 export async function addChildAction(formData: FormData) {
