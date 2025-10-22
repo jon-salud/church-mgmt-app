@@ -187,12 +187,20 @@ This feature is designed to provide spiritual support to the congregation throug
 ### 3.11 Unified Request Form
 
 - **As a Member**, I can submit various types of requests through a single, unified form.
-  - AC: The form will include a dropdown to select the request type (e.g., Prayer, Benevolence, Improvement, Suggestion).
+  - AC: The form will include a dropdown to select from a list of available request types.
+  - AC: The list of request types is dynamically populated based on what the church administrator has configured.
   - AC: The form's placeholder text and description will dynamically update based on the selected request type.
   - AC: All submissions will be routed to the Pastoral Care dashboard for review.
+- **As an Admin**, I can configure the available request types for the unified form.
+  - AC: On the settings page, I can view a list of all request types (both built-in and custom).
+  - AC: I can create new custom request types by providing a name.
+  - AC: I can rename existing custom request types.
+  - AC: I can archive (soft-delete) any request type, which will hide it from the public request form but preserve historical data. Archiving is prevented if there are open requests of that type.
+  - AC: I can re-order the request types using a drag-and-drop interface to control their display order on the public form.
 - **As an Admin/Pastor**, I can view all submitted requests in the Pastoral Care dashboard.
   - AC: The dashboard table will include a "Type" column to distinguish between different request types.
   - AC: A "View Details" modal will display the full details of each request.
+  - > _Future Enhancement Note: The ability to sort and filter the dashboard by request type is a planned future enhancement._
 
 ---
 

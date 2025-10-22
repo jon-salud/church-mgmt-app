@@ -32,6 +32,38 @@ export const clientApi = {
             body: JSON.stringify(settings),
         });
     },
+  async createRequestType(churchId: string, name: string, hasConfidentialField: boolean, description?: string) {
+    return apiFetch<any>(`/settings/${churchId}/request-types`, {
+      method: 'POST',
+      body: JSON.stringify({ name, hasConfidentialField, description }),
+    });
+  },
+  async updateRequestType(churchId: string, id: string, name: string) {
+    return apiFetch<any>(`/settings/${churchId}/request-types/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({ name }),
+    });
+  },
+  async getRequestTypes(churchId: string) {
+    return apiFetch<any[]>(`/settings/${churchId}/request-types`);
+  },
+  async archiveRequestType(churchId: string, id: string) {
+    return apiFetch<any>(`/settings/${churchId}/request-types/${id}`, {
+      method: 'DELETE',
+    });
+  },
+  async reorderRequestTypes(churchId: string, ids: string[]) {
+    return apiFetch<any>(`/settings/${churchId}/request-types/reorder`, {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+  async updateRequestTypeStatus(churchId: string, id: string, status: 'active' | 'archived') {
+    return apiFetch<any>(`/settings/${churchId}/request-types/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status }),
+    });
+  },
     async post<T>(path: string, body?: any) {
         return apiFetch<T>(path, {
             method: 'POST',

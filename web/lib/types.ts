@@ -32,3 +32,13 @@ export interface PastoralCareComment {
   };
   createdAt: string;
 }
+
+export interface RequestType {
+  id: string;
+  name: string;
+  description: string;
+  isBuiltIn: boolean;
+  status: 'active' | 'archived';
+  displayOrder: number;
+  hasConfidentialField: boolean;
+}

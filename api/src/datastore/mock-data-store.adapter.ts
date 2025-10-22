@@ -260,4 +260,32 @@ export class MockDataStoreAdapter implements DataStore {
   async getRequests() {
     return this.mock.getRequests();
   }
+
+  async createRequest(input: Parameters<MockDatabaseService['createRequest']>[0], actorUserId: string) {
+    return this.mock.createRequest(input, actorUserId);
+  }
+
+  async listRequestTypes(churchId: string) {
+    return this.mock.listRequestTypes(churchId);
+  }
+
+  async createRequestType(name: string, hasConfidentialField: boolean, actorUserId: string) {
+    return this.mock.createRequestType(name, hasConfidentialField, actorUserId);
+  }
+
+  async updateRequestType(id: string, name: string, actorUserId: string) {
+    return this.mock.updateRequestType(id, name, actorUserId);
+  }
+
+  async archiveRequestType(id: string, actorUserId: string) {
+    return this.mock.archiveRequestType(id, actorUserId);
+  }
+
+  async updateRequestTypeStatus(id: string, status: 'active' | 'archived', actorUserId: string) {
+    return this.mock.updateRequestTypeStatus(id, status, actorUserId);
+  }
+
+  async reorderRequestTypes(ids: string[], actorUserId: string) {
+    return this.mock.reorderRequestTypes(ids, actorUserId);
+  }
 }

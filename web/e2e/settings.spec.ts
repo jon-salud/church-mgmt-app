@@ -20,4 +20,27 @@ test.describe('Settings Page', () => {
       await settingsPage.checkAccessibility();
     });
   });
+
+  test.describe.skip('Request Form Settings', () => {
+    test('allows admin to create, update, and archive request types', async ({ page }) => {
+      const settingsPage = new SettingsPage(page);
+
+      await test.step('Navigate to settings and verify content', async () => {
+        await settingsPage.goto();
+        await settingsPage.verifySettingsPage();
+      });
+
+      await test.step('Create a new request type', async () => {
+        // Implementation to be added by the user
+      });
+
+      await test.step('Update the request type', async () => {
+        // Implementation to be added by the user
+      });
+
+      await test.step('Archive the request type', async () => {
+        // Implementation to be added by the user
+      });
+    });
+  });
 });

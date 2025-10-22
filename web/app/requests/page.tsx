@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '../../components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../components/ui/card';
 import { Label } from '../../components/ui/label';
@@ -10,30 +10,39 @@ import { Textarea } from '../../components/ui/textarea';
 import { Input } from '../../components/ui/input';
 import { clientApi } from '../../lib/api.client';
 import { useRouter } from 'next/navigation';
+import { RequestType } from '../../lib/types';
 
 export default function RequestsPage() {
   const [requestType, setRequestType] = useState('');
+  const [requestTypes, setRequestTypes] = useState<RequestType[]>([]);
   const router = useRouter();
 
-  const getFormDescription = () => {
-    switch (requestType) {
-      case 'PRAYER':
-        return 'Share your prayer requests with the pastoral team. You can choose to share them publicly on the Prayer Wall.';
-      case 'BENEVOLENCE':
-        return 'If you are in need of financial assistance, please describe your situation. This request is confidential.';
-      case 'IMPROVEMENT':
-      case 'SUGGESTION':
-        return 'Have an idea to improve the church or a suggestion for a new activity? We would love to hear it. Please include any proposed solutions.';
-      default:
-        return 'Please select a request type to get started.';
+  useEffect(() => {
+    async function fetchRequestTypes() {
+      const me = await clientApi.currentUser();
+      const churchId = me?.user?.roles[0]?.churchId;
+      if (churchId) {
+        const types = await clientApi.getRequestTypes(churchId);
+        const activeRequestTypes = types.filter(rt => rt.status === 'active');
+        setRequestTypes(activeRequestTypes);
+      }
     }
+    fetchRequestTypes();
+  }, []);
+
+  const getFormDescription = () => {
+    const selectedType = requestTypes.find(rt => rt.id === requestType);
+    if (selectedType) {
+      return selectedType.description;
+    }
+    return 'Please select a request type to get started.';
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const data = {
-      type: formData.get('type'),
+      requestTypeId: formData.get('requestTypeId'),
       title: formData.get('title'),
       body: formData.get('body'),
       isConfidential: formData.get('isConfidential') === 'on',
@@ -44,7 +53,6 @@ export default function RequestsPage() {
       router.push('/pastoral-care');
     } catch (error) {
       console.error('Failed to submit request:', error);
-      // Handle error state here, e.g., show a toast notification
     }
   };
 
@@ -58,15 +66,16 @@ export default function RequestsPage() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="request-type">Request Type</Label>
-            <Select name="type" onValueChange={setRequestType}>
+            <Select name="requestTypeId" onValueChange={setRequestType}>
               <SelectTrigger id="request-type">
                 <SelectValue placeholder="Select a request type..." />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="PRAYER">Prayer Request</SelectItem>
-                <SelectItem value="BENEVOLENCE">Benevolence Request</SelectItem>
-                <SelectItem value="IMPROVEMENT">Improvement</SelectItem>
-                <SelectItem value="SUGGESTION">Suggestion</SelectItem>
+                {requestTypes.map(rt => (
+                  <SelectItem key={rt.id} value={rt.id}>
+                    {rt.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -80,7 +89,7 @@ export default function RequestsPage() {
                 <Label htmlFor="body">Details</Label>
                 <Textarea id="body" name="body" placeholder="Please provide as much detail as possible." required />
               </div>
-              {(requestType === 'PRAYER' || requestType === 'BENEVOLENCE') && (
+              {requestTypes.find(rt => rt.id === requestType)?.hasConfidentialField && (
                 <div className="flex items-center space-x-2">
                   <Input type="checkbox" id="isConfidential" name="isConfidential" />
                   <Label htmlFor="isConfidential">Keep this request confidential (pastoral staff only)</Label>
@@ -90,7 +99,9 @@ export default function RequestsPage() {
           )}
         </CardContent>
         <CardFooter>
-          <Button type="submit" disabled={!requestType}>Submit Request</Button>
+          <Button type="submit" disabled={!requestType}>
+            Submit Request
+          </Button>
         </CardFooter>
       </Card>
     </form>

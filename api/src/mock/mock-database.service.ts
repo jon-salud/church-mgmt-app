@@ -37,6 +37,8 @@ import {
   mockPrayerRequests,
   MockRequest,
   mockRequests,
+  MockRequestType,
+  mockRequestTypes,
 } from './mock-data';
 import { AuditLogPersistence } from './audit-log.persistence';
 
@@ -305,6 +307,7 @@ export class MockDatabaseService {
   private pastoralCareComments: MockPastoralCareComment[] = [];
   private prayerRequests: MockPrayerRequest[] = clone(mockPrayerRequests);
   private requests: MockRequest[] = clone(mockRequests);
+  private requestTypes: MockRequestType[] = clone(mockRequestTypes);
   private auditLogs: MockAuditLog[] = clone(mockAuditLogs);
   private sessions: DemoSession[] = clone(mockSessions);
   private oauthAccounts: Array<{ provider: 'google' | 'facebook'; providerUserId: string; userId: string }> = [];
@@ -2149,27 +2152,136 @@ export class MockDatabaseService {
     });
   }
 
-  createRequest(input: Omit<MockRequest, 'id' | 'createdAt' | 'churchId'>, actorUserId: string) {
+  createRequest(input: Omit<MockRequest, 'id' | 'createdAt' | 'churchId' | 'status'>, actorUserId: string) {
     const now = new Date().toISOString();
     const request: MockRequest = {
       id: `req-${randomUUID()}`,
       churchId: this.getChurch().id,
       ...input,
       createdAt: now,
+      status: 'Pending',
     };
     this.requests.push(request);
     const actorName = this.getUserName(actorUserId);
+    const requestType = this.requestTypes.find((rt) => rt.id === request.requestTypeId);
     this.createAuditLog({
       actorUserId,
       action: 'request.created',
       entity: 'request',
       entityId: request.id,
-      summary: `${actorName} created a new request of type ${request.type}`,
+      summary: `${actorName} created a new request of type ${requestType?.name}`,
       metadata: {
         requestId: request.id,
-        requestType: request.type,
+        requestType: requestType?.name,
       },
     });
     return clone(request);
+  }
+
+  listRequestTypes(churchId: string) {
+    return clone(this.requestTypes.filter((rt) => rt.churchId === churchId));
+  }
+
+  createRequestType(name: string, hasConfidentialField: boolean, actorUserId: string, description: string = '') {
+    const churchId = this.getChurch().id;
+    const newRequestType: MockRequestType = {
+      id: `req-type-${randomUUID()}`,
+      name,
+      description,
+      churchId,
+      status: 'active',
+      isBuiltIn: false,
+      displayOrder: this.requestTypes.length + 1,
+      hasConfidentialField,
+    };
+    this.requestTypes.push(newRequestType);
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'requestType.created',
+      entity: 'requestType',
+      entityId: newRequestType.id,
+      summary: `${actorName} created a new request type: ${name}`,
+    });
+    return clone(newRequestType);
+  }
+
+  updateRequestType(id: string, name: string, actorUserId: string) {
+    const requestType = this.requestTypes.find((rt) => rt.id === id);
+    if (!requestType) {
+      throw new Error('Request type not found');
+    }
+    if (requestType.isBuiltIn) {
+      throw new Error('Cannot edit a built-in request type');
+    }
+    const oldName = requestType.name;
+    requestType.name = name;
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'requestType.updated',
+      entity: 'requestType',
+      entityId: id,
+      summary: `${actorName} renamed request type from "${oldName}" to "${name}"`,
+    });
+    return clone(requestType);
+  }
+
+  archiveRequestType(id: string, actorUserId: string) {
+    const requestType = this.requestTypes.find((rt) => rt.id === id);
+    if (!requestType) {
+      throw new Error('Request type not found');
+    }
+    if (requestType.isBuiltIn) {
+      throw new Error('Cannot archive a built-in request type');
+    }
+    const openRequests = this.requests.filter((r) => r.requestTypeId === id && r.status !== 'Closed');
+    if (openRequests.length > 0) {
+      throw new Error('Cannot archive a request type with open requests');
+    }
+    requestType.status = 'archived';
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'requestType.archived',
+      entity: 'requestType',
+      entityId: id,
+      summary: `${actorName} archived request type "${requestType.name}"`,
+    });
+    return clone(requestType);
+  }
+
+  updateRequestTypeStatus(id: string, status: 'active' | 'archived', actorUserId: string) {
+    const requestType = this.requestTypes.find((rt) => rt.id === id);
+    if (!requestType) {
+      throw new Error('Request type not found');
+    }
+    requestType.status = status;
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'requestType.status.updated',
+      entity: 'requestType',
+      entityId: id,
+      summary: `${actorName} updated status of request type "${requestType.name}" to ${status}`,
+    });
+    return clone(requestType);
+  }
+
+  reorderRequestTypes(ids: string[], actorUserId: string) {
+    ids.forEach((id, index) => {
+      const requestType = this.requestTypes.find((rt) => rt.id === id);
+      if (requestType) {
+        requestType.displayOrder = index;
+      }
+    });
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'requestType.order.updated',
+      entity: 'requestType',
+      summary: `${actorName} updated the order of request types`,
+    });
+    return clone(this.requestTypes);
   }
 }

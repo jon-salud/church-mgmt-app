@@ -1,13 +1,12 @@
 
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEnum, IsString, IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
-import { RequestType } from '../../../mock/mock-data/request';
+import { IsString, IsNotEmpty, IsOptional, IsBoolean } from 'class-validator';
 
 export class CreateRequestDto {
-  @ApiProperty({ enum: RequestType })
-  @IsEnum(RequestType)
+  @ApiProperty()
+  @IsString()
   @IsNotEmpty()
-  type: RequestType = RequestType.Suggestion;
+  requestTypeId: string = '';
 
   @ApiProperty()
   @IsString()

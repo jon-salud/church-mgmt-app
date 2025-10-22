@@ -2,7 +2,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { DATA_STORE, DataStore } from '../../datastore';
 import { CreateRequestDto } from './dto/create-request.dto';
-import { User } from '../../types';
+import { User } from '../auth/current-user.decorator';
 import { randomUUID } from 'node:crypto';
 
 @Injectable()

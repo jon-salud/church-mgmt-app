@@ -913,4 +913,32 @@ export class PrismaDataStore implements DataStore {
   async getRequests() {
     return [];
   }
+
+  async createRequest(input: any, actorUserId: string): Promise<any> {
+    throw new Error('Not implemented: createRequest');
+  }
+
+  async listRequestTypes(churchId: string): Promise<any> {
+    throw new Error('Not implemented: listRequestTypes');
+  }
+
+  async createRequestType(name: string, hasConfidentialField: boolean, actorUserId: string): Promise<any> {
+    throw new Error('Not implemented: createRequestType');
+  }
+
+  async updateRequestType(id: string, name: string, actorUserId: string): Promise<any> {
+    throw new Error('Not implemented: updateRequestType');
+  }
+
+  async archiveRequestType(id: string, actorUserId: string): Promise<any> {
+    throw new Error('Not implemented: archiveRequestType');
+  }
+
+  async updateRequestTypeStatus(id: string, status: 'active' | 'archived', actorUserId: string): Promise<any> {
+    throw new Error('Not implemented: updateRequestTypeStatus');
+  }
+
+  async reorderRequestTypes(ids: string[], actorUserId: string): Promise<any> {
+    throw new Error('Not implemented: reorderRequestTypes');
+  }
 }

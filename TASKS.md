@@ -45,6 +45,8 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - Child Check-In and Safety feature
 - UI Improvements (Theme Switching, Sidebar Navigation, UI Automation IDs)
 - Documentation refresh (AGENTS.md, PRD.md, README.md, SETUP.md, TASKS.md)
+- **Unified Request Form (Phase 2):**
+  - Implement an admin settings page to allow administrators to define and manage custom request types.
 
 ### 🔄 In Progress
 
@@ -55,6 +57,4 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 
 ### 📝 Backlog / Upcoming
 
-- **Unified Request Form (Phase 2):**
-  - Implement an admin settings page to allow administrators to define and manage custom request types.
 - Debug and stabilize the E2E test environment to prevent port conflicts.

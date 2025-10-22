@@ -2,7 +2,6 @@
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../src/modules/app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { RequestType } from '../src/mock/mock-data/request';
 
 describe('Requests (e2e-light)', () => {
   let app: NestFastifyApplication;
@@ -26,7 +25,7 @@ describe('Requests (e2e-light)', () => {
       url: '/api/v1/requests',
       headers: { authorization: 'Bearer demo-admin' },
       payload: {
-        type: RequestType.Suggestion,
+        requestTypeId: 'req-type-4', // Suggestion
         title: 'New Youth Group Activity',
         body: 'We should organize a hiking trip.',
       },

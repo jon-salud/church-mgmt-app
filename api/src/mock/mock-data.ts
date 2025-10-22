@@ -6,6 +6,7 @@ export type { MockPastoralCareTicket } from './mock-data/pastoral-care-ticket';
 export type { MockPastoralCareComment } from './mock-data/pastoral-care-comment';
 export type { MockPrayerRequest } from './mock-data/prayer-request';
 export { mockRequests, MockRequest } from './mock-data/request';
+export { mockRequestTypes, MockRequestType } from './mock-data/request-type';
 
 export const DEFAULT_ROLE_SLUGS = ['admin', 'leader', 'member'] as const;
 export type DefaultRoleSlug = (typeof DEFAULT_ROLE_SLUGS)[number];
