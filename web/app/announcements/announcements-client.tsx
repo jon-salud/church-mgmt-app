@@ -153,7 +153,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
             setCreateAudience("all");
             setIsCreateOpen(true);
           }}
-          className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-sky-400"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
         >
           New announcement
         </button>

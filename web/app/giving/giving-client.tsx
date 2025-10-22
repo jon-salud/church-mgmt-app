@@ -70,7 +70,7 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
       </section>
 
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-        <main className="space-y-4">
+        <div className="space-y-4">
           <div className="rounded-xl border border-border bg-card/60 p-5">
             <h2 className="text-lg font-semibold">Recent contributions</h2>
             <table className="mt-3 min-w-full text-sm" aria-describedby="contributions-caption">
@@ -204,7 +204,7 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
               </button>
             </form>
           </div>
-        </main>
+        </div>
 
         <aside className="space-y-4">
           <div className="rounded-xl border border-border bg-card/60 p-5">
