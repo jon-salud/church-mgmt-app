@@ -12,11 +12,13 @@ export function PastoralCareClientPage({ tickets: initialTickets }: { tickets: P
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Pastoral Care Tickets</h1>
-        <Button asChild>
-          <Link id="new-ticket-button" href="/pastoral-care/new">
-            New Ticket
-          </Link>
-        </Button>
+        <Link
+          id="new-ticket-button"
+          href="/pastoral-care/new"
+          className="inline-flex items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+        >
+          New Ticket
+        </Link>
       </div>
       <Table>
         <TableHeader>

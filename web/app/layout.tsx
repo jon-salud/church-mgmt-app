@@ -18,7 +18,9 @@ export const viewport: Viewport = {
   themeColor: '#0f172a',
 };
 
-const memberNavItems = [
+import { NavItem } from '../components/sidebar-nav';
+
+const memberNavItems: NavItem[] = [
   { href: '/dashboard', label: 'Dashboard', icon: 'Home' },
   { href: '/members', label: 'Members', icon: 'Users' },
   { href: '/households', label: 'Households', icon: 'UsersRound' },
@@ -28,9 +30,9 @@ const memberNavItems = [
   { href: '/prayer', label: 'Prayer Wall', icon: 'HeartHandshake' },
 ];
 
-const givingNavItems = [{ href: '/giving', label: 'Giving', icon: 'DollarSign' }];
+const givingNavItems: NavItem[] = [{ href: '/giving', label: 'Giving', icon: 'DollarSign' }];
 
-const adminNavItems = [
+const adminNavItems: NavItem[] = [
   { href: '/roles', label: 'Roles', icon: 'ShieldCheck' },
   { href: '/audit-log', label: 'Audit Log', icon: 'History' },
   { href: '/pastoral-care', label: 'Pastoral Care', icon: 'HeartPulse' },

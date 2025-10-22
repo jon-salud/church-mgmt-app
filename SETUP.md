@@ -13,6 +13,12 @@ corepack enable
 pnpm install
 ```
 
+## Build
+
+```bash
+pnpm -r build
+```
+
 ## API (mock data)
 
 ```bash

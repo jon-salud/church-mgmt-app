@@ -139,6 +139,7 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 
 | Action | Command |
 | ------ | ------- |
+| Build all packages | `pnpm -r build` |
 | Start API dev server (mock) | `pnpm dev:api:mock` |
 | Build API | `pnpm -C api build` |
 | Run API unit/integration tests | `pnpm -C api test` |

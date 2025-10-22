@@ -44,6 +44,7 @@ This document outlines the standard operating procedures for the AI agent workin
   * The `DataStore` interface is derived from `api/src/mock/mock-database.service.ts`.
   * When updating the `DataStore` interface, changes must be implemented in both `PrismaDataStore` and `MockDataStoreAdapter`.
 * **Testing:**
+  * Build: `pnpm -r build`
   * API tests: `pnpm -C api test`
   * End-to-end tests: `pnpm test:e2e:mock`
   * To run a single E2E test: `pnpm -C web test:e2e <path_to_spec_file>`
