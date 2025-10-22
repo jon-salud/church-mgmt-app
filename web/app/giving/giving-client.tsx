@@ -206,7 +206,7 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
           </div>
         </div>
 
-        <aside className="space-y-4">
+        <div className="space-y-4">
           <div className="rounded-xl border border-border bg-card/60 p-5">
             <h3 className="text-sm font-semibold text-foreground">Giving by fund</h3>
             <ul className="mt-3 space-y-2 text-sm">
@@ -230,7 +230,7 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
               ))}
             </ul>
           </div>
-        </aside>
+        </div>
       </div>
 
       <Modal
