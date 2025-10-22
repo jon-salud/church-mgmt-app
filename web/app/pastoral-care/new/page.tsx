@@ -27,22 +27,34 @@ export default function NewTicketPage() {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
-          <Input id="title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+          <Input id="new-ticket-title-input" value={title} onChange={(e) => setTitle(e.target.value)} required />
         </div>
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
-          <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} required />
+          <Textarea
+            id="new-ticket-description-textarea"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            required
+          />
         </div>
         <div>
           <label htmlFor="priority" className="block text-sm font-medium text-gray-700">Priority</label>
-          <select id="priority" value={priority} onChange={(e) => setPriority(e.target.value)} className="w-full p-2 border rounded-md">
+          <select
+            id="new-ticket-priority-select"
+            value={priority}
+            onChange={(e) => setPriority(e.target.value)}
+            className="w-full p-2 border rounded-md"
+          >
             <option value="LOW">Low</option>
             <option value="NORMAL">Normal</option>
             <option value="HIGH">High</option>
             <option value="URGENT">Urgent</option>
           </select>
         </div>
-        <Button type="submit">Submit</Button>
+        <Button id="new-ticket-submit-button" type="submit">
+          Submit
+        </Button>
       </form>
     </div>
   );

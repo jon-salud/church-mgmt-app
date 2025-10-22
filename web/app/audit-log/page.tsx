@@ -156,6 +156,7 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
         </div>
         <div className="md:col-span-5 flex items-center gap-2">
           <button
+            id="apply-filters-button"
             type="submit"
             className="rounded-md border border-slate-600 px-4 py-2 text-sm font-medium text-slate-100 transition hover:bg-slate-800"
           >
@@ -163,6 +164,7 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
           </button>
           {hasFilters ? (
             <Link
+              id="reset-filters-link"
               href="/audit-log"
               className="text-sm font-medium text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
             >
@@ -242,6 +244,7 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
         <div className="flex items-center gap-3">
           {audit.meta.page > 1 ? (
             <Link
+              id="previous-page-link"
               href={buildHref(audit.meta.page - 1)}
               className="text-sm font-medium text-slate-200 underline-offset-4 hover:underline"
             >
@@ -252,6 +255,7 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
           )}
           {audit.meta.page < totalPages ? (
             <Link
+              id="next-page-link"
               href={buildHref(audit.meta.page + 1)}
               className="text-sm font-medium text-slate-200 underline-offset-4 hover:underline"
             >

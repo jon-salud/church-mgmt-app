@@ -46,6 +46,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
           <h2 className="text-lg font-semibold text-slate-100">Members</h2>
           <button
+            id="add-member-button"
             type="button"
             onClick={() => setIsAddOpen(true)}
             className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
@@ -67,7 +68,11 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
             {group.members?.map((member: any) => (
               <tr key={member.userId}>
                 <td className="py-2">
-                  <Link href={`/members/${member.user.id}`} className="hover:underline">
+                  <Link
+                    id={`member-link-${member.userId}`}
+                    href={`/members/${member.user.id}`}
+                    className="hover:underline"
+                  >
                     {member.user.profile.firstName} {member.user.profile.lastName}
                   </Link>
                 </td>
@@ -76,6 +81,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
                 <td className="py-2 text-slate-400">{format(new Date(member.joinedAt), "d MMM yyyy")}</td>
                 <td className="py-2">
                   <button
+                    id={`manage-member-button-${member.userId}`}
                     type="button"
                     onClick={() =>
                       setMemberModal({
@@ -134,6 +140,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
             <label className="grid gap-1 text-xs uppercase text-slate-400">
               Member
               <select
+                id="add-member-select"
                 name="userId"
                 className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
                 defaultValue=""
@@ -152,6 +159,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
             <label className="grid gap-1 text-xs uppercase text-slate-400">
               Role
               <select
+                id="add-member-role-select"
                 name="role"
                 defaultValue="Member"
                 className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -165,6 +173,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
             <label className="grid gap-1 text-xs uppercase text-slate-400">
               Status
               <select
+                id="add-member-status-select"
                 name="status"
                 defaultValue="Active"
                 className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -175,6 +184,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
             </label>
             <div className="flex justify-end gap-2">
               <button
+                id="add-member-cancel-button"
                 type="button"
                 onClick={() => setIsAddOpen(false)}
                 className="rounded-md border border-slate-700 px-4 py-2 text-sm text-slate-200 transition hover:bg-slate-900"
@@ -182,6 +192,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
                 Cancel
               </button>
               <button
+                id="add-member-submit-button"
                 type="submit"
                 className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
               >
@@ -218,6 +229,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
               <label className="grid gap-1 text-xs uppercase text-slate-400">
                 Role
                 <select
+                  id="manage-member-role-select"
                   name="role"
                   defaultValue={memberModal.role}
                   className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -231,6 +243,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
               <label className="grid gap-1 text-xs uppercase text-slate-400">
                 Status
                 <select
+                  id="manage-member-status-select"
                   name="status"
                   defaultValue={memberModal.status}
                   className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -241,6 +254,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
               </label>
               <div className="md:col-span-2 flex justify-end gap-2">
                 <button
+                  id="manage-member-close-button"
                   type="button"
                   onClick={() => setMemberModal(null)}
                   className="rounded-md border border-slate-700 px-4 py-2 text-sm text-slate-200 transition hover:bg-slate-900"
@@ -248,6 +262,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
                   Close
                 </button>
                 <button
+                  id="manage-member-save-button"
                   type="submit"
                   className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
                 >
@@ -270,7 +285,10 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
                     This only affects membership in {group.name}. Attendance history remains intact.
                   </p>
                 </div>
-                <button className="rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-red-950 transition hover:bg-red-400">
+                <button
+                  id="remove-member-button"
+                  className="rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-red-950 transition hover:bg-red-400"
+                >
                   Remove Member
                 </button>
               </div>

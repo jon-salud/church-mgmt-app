@@ -43,6 +43,8 @@ Use this file as the single source of truth for what has shipped in the demo MVP
   - **E2E Testing:**
     - Write Playwright E2E tests for the confidential pastoral care user flows.
 - Child Check-In and Safety feature
+- UI Improvements (Theme Switching, Sidebar Navigation, UI Automation IDs)
+- Documentation refresh (AGENTS.md, PRD.md, README.md, SETUP.md, TASKS.md)
 
 ### 🔄 In Progress
 
@@ -50,5 +52,4 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 
 ### 📝 Backlog / Upcoming
 
-- Documentation refresh once outstanding MVP items land
 - Debug and stabilize the E2E test environment to prevent port conflicts.

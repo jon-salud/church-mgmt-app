@@ -147,6 +147,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
           ) : null}
         </div>
         <button
+          id="new-announcement-button"
           type="button"
           onClick={() => {
             setCreateAudience("all");
@@ -188,11 +189,15 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
                 </div>
                 <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
                   <form action={markAnnouncementReadAction.bind(null, announcement.id)}>
-                    <button className="rounded-md border border-slate-700 px-3 py-1 text-xs uppercase tracking-wide text-slate-200 transition hover:bg-slate-900">
+                    <button
+                      id={`mark-read-button-${announcement.id}`}
+                      className="rounded-md border border-slate-700 px-3 py-1 text-xs uppercase tracking-wide text-slate-200 transition hover:bg-slate-900"
+                    >
                       Mark read
                     </button>
                   </form>
                   <button
+                    id={`edit-button-${announcement.id}`}
                     type="button"
                     onClick={() => {
                       setEditAudience(announcement.audience);
@@ -235,6 +240,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
           <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
             Title
             <input
+              id="create-title-input"
               name="title"
               required
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -243,6 +249,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
           <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
             Message
             <textarea
+              id="create-body-textarea"
               name="body"
               required
               rows={4}
@@ -252,6 +259,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
           <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
             Audience
             <select
+              id="create-audience-select"
               name="audience"
               value={createAudience}
               onChange={event => setCreateAudience(event.target.value as "all" | "custom")}
@@ -265,6 +273,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
             <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
               Target groups
               <select
+                id="create-groups-select"
                 name="groupIds"
                 multiple
                 className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -281,6 +290,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
             <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
               Publish at
               <input
+                id="create-publish-at-input"
                 type="datetime-local"
                 name="publishAt"
                 defaultValue={formatInputDate(new Date().toISOString())}
@@ -290,13 +300,17 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
             <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
               Expire at (optional)
               <input
+                id="create-expire-at-input"
                 type="datetime-local"
                 name="expireAt"
                 className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
               />
             </label>
           </div>
-          <button className="rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-slate-900">
+          <button
+            id="create-save-button"
+            className="rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-slate-900"
+          >
             Save announcement
           </button>
         </form>
@@ -325,6 +339,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
             <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
               Title
               <input
+                id="edit-title-input"
                 name="title"
                 defaultValue={editModal.title}
                 className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -333,6 +348,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
             <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
               Message
               <textarea
+                id="edit-body-textarea"
                 name="body"
                 defaultValue={editModal.body}
                 rows={4}
@@ -342,6 +358,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
             <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
               Audience
               <select
+                id="edit-audience-select"
                 name="audience"
                 value={editAudience}
                 onChange={event => setEditAudience(event.target.value as "all" | "custom")}
@@ -355,6 +372,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
               <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
                 Target groups
                 <select
+                  id="edit-groups-select"
                   name="groupIds"
                   multiple
                   defaultValue={editModal.groupIds}
@@ -373,6 +391,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
               <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
                 Publish at
                 <input
+                  id="edit-publish-at-input"
                   type="datetime-local"
                   name="publishAt"
                   defaultValue={formatInputDate(editModal.publishAt)}
@@ -382,6 +401,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
               <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
                 Expire at
                 <input
+                  id="edit-expire-at-input"
                   type="datetime-local"
                   name="expireAt"
                   defaultValue={formatInputDate(editModal.expireAt)}
@@ -390,7 +410,10 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
                 <span className="text-[10px] text-slate-500">Clear the value to remove the expiry.</span>
               </label>
             </div>
-            <button className="rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-slate-900">
+            <button
+              id="edit-save-button"
+              className="rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-slate-900"
+            >
               Update announcement
             </button>
           </form>

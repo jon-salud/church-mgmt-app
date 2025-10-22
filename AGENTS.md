@@ -44,6 +44,7 @@ This document outlines the standard operating procedures for the AI agent workin
   * The `DataStore` interface is derived from `api/src/mock/mock-database.service.ts`.
   * When updating the `DataStore` interface, changes must be implemented in both `PrismaDataStore` and `MockDataStoreAdapter`.
 * **Testing:**
+  * Build: `pnpm -r build`
   * API tests: `pnpm -C api test`
   * End-to-end tests: `pnpm test:e2e:mock`
   * To run a single E2E test: `pnpm -C web test:e2e <path_to_spec_file>`
@@ -52,5 +53,11 @@ This document outlines the standard operating procedures for the AI agent workin
   * E2E tests bypass the login UI by setting the `demo_token` cookie to `demo-admin`.
   * The web app requires Auth0 environment variables in `web/.env.local`.
 * **Styling:** Follow the existing theme and styling conventions using Tailwind CSS and shadcn/ui components.
+* **UI Automation:** All interactive elements must have a unique `id` attribute to facilitate end-to-end testing.
+
+## UI Features
+
+*   **Theme Switching:** The application supports light and dark themes. A theme switcher component is available in the main layout.
+*   **Sidebar Navigation:** The sidebar menu uses icons and highlights the active link.
 
 This manual is a living document and should be updated as the project evolves.

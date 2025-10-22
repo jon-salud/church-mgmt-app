@@ -34,8 +34,10 @@ export function TicketDetailClientPage({ ticket: initialTicket }: { ticket: Past
       </div>
       <div className="space-y-2">
         <h2 className="text-xl font-semibold">Add a Comment</h2>
-        <Textarea value={newComment} onChange={(e) => setNewComment(e.target.value)} />
-        <Button onClick={handleAddComment}>Add Comment</Button>
+        <Textarea id="new-comment-textarea" value={newComment} onChange={(e) => setNewComment(e.target.value)} />
+        <Button id="add-comment-button" onClick={handleAddComment}>
+          Add Comment
+        </Button>
       </div>
     </div>
   );

@@ -35,7 +35,12 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
 
             <div className="space-y-3">
                 {oauthLinks.map((link) => (
-                    <a key={link.href} className="block w-full rounded-md bg-slate-100 px-4 py-3 text-center text-sm font-medium text-slate-900 transition hover:bg-white" href={link.href}>
+                    <a
+                        id={`oauth-link-${link.label.toLowerCase().replace(' ', '-')}`}
+                        key={link.href}
+                        className="block w-full rounded-md bg-slate-100 px-4 py-3 text-center text-sm font-medium text-slate-900 transition hover:bg-white"
+                        href={link.href}
+                    >
                         {link.label}
                     </a>
                 ))}
@@ -45,13 +50,16 @@ export default function LoginPage({ searchParams }: LoginPageProps) {
                 <p className="text-xs text-slate-500">Need to demo quickly?</p>
                 <form action={demoLoginAction} className="space-y-1">
                     <input type="hidden" name="returnTo" value={returnTo} />
-                    <button className="w-full rounded-md border border-slate-700 px-4 py-2 text-xs font-medium text-slate-200 transition hover:border-slate-500 hover:text-white">
+                    <button
+                        id="demo-login-button"
+                        className="w-full rounded-md border border-slate-700 px-4 py-2 text-xs font-medium text-slate-200 transition hover:border-slate-500 hover:text-white"
+                    >
                         Explore demo mode (uses seeded admin session)
                     </button>
                 </form>
                 <p className="text-xs text-slate-500">
                     Returning to the console?{" "}
-                    <Link href="/" className="text-sky-400 hover:underline">
+                    <Link id="home-link" href="/" className="text-sky-400 hover:underline">
                         Head back home.
                     </Link>
                 </p>

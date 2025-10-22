@@ -13,6 +13,12 @@ corepack enable
 pnpm install
 ```
 
+## Build
+
+```bash
+pnpm -r build
+```
+
 ## API (mock data)
 
 ```bash
@@ -59,6 +65,12 @@ The login page links to `/auth/google` and `/auth/facebook`. Successful callback
 ## CI (optional)
 
 - See `.github/workflows/ci.yml`
+
+## UI
+
+- **Theming**: The application supports both **light and dark themes**. A theme switcher is located in the header.
+- **Sidebar Navigation**: The main navigation sidebar now includes icons for each item to improve usability. The active page is highlighted.
+- **UI Automation IDs**: All interactive elements have a unique `id` attribute for testability.
 
 ## Notes
 

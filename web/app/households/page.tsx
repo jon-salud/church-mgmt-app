@@ -11,6 +11,7 @@ export default async function HouseholdsPage() {
         <div className="flex flex-col gap-4">
           {households.map((household: any) => (
             <Link
+              id={`household-link-${household.id}`}
               key={household.id}
               href={`/households/${household.id}`}
               className="block rounded-lg border border-slate-700 p-4 transition hover:bg-slate-800"

@@ -99,6 +99,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
           ) : null}
         </div>
         <button
+          id="schedule-event-button"
           type="button"
           onClick={() => setIsCreateOpen(true)}
           className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
@@ -125,12 +126,14 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                     {event.visibility}
                   </span>
                   <a
+                    id={`download-csv-link-${event.id}`}
                     href={event.attendanceCsvUrl}
                     className="rounded-md border border-slate-700 px-3 py-1 text-xs text-slate-200 transition hover:bg-slate-900"
                   >
                     Download CSV
                   </a>
                   <button
+                    id={`edit-event-button-${event.id}`}
                     type="button"
                     onClick={() =>
                       setEventModal({
@@ -177,6 +180,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                     <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-slate-400">
                       Member
                       <select
+                        id={`attendance-member-select-${event.id}`}
                         name="userId"
                         className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
                       >
@@ -190,6 +194,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                     <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-slate-400">
                       Status
                       <select
+                        id={`attendance-status-select-${event.id}`}
                         name="status"
                         className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
                       >
@@ -201,12 +206,16 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                     <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-slate-400">
                       Note (optional)
                       <input
+                        id={`attendance-note-input-${event.id}`}
                         name="note"
                         className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
                         placeholder="Late arrival, family event, etc."
                       />
                     </label>
-                    <button className="rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-slate-900">
+                    <button
+                      id={`attendance-update-button-${event.id}`}
+                      className="rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-slate-900"
+                    >
                       Update
                     </button>
                   </form>
@@ -231,6 +240,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             Title
             <input
+              id="create-title-input"
               name="title"
               required
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -239,6 +249,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             Location
             <input
+              id="create-location-input"
               name="location"
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
             />
@@ -246,6 +257,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             Start
             <input
+              id="create-start-at-input"
               name="startAt"
               type="datetime-local"
               required
@@ -255,6 +267,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             End
             <input
+              id="create-end-at-input"
               name="endAt"
               type="datetime-local"
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -263,6 +276,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             Visibility
             <select
+              id="create-visibility-select"
               name="visibility"
               defaultValue="private"
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -274,6 +288,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             Group (optional)
             <select
+              id="create-group-select"
               name="groupId"
               defaultValue=""
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -289,6 +304,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
           <label className="grid gap-1 text-xs uppercase text-slate-400 md:col-span-2">
             Tags (comma separated)
             <input
+              id="create-tags-input"
               name="tags"
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
               placeholder="Worship, Training"
@@ -297,6 +313,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
           <label className="grid gap-1 text-xs uppercase text-slate-400 md:col-span-2">
             Description
             <textarea
+              id="create-description-textarea"
               name="description"
               rows={3}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -304,6 +321,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
           </label>
           <div className="md:col-span-2 flex justify-end gap-2">
             <button
+              id="create-cancel-button"
               type="button"
               onClick={() => setIsCreateOpen(false)}
               className="rounded-md border border-slate-700 px-4 py-2 text-sm text-slate-200 transition hover:bg-slate-900"
@@ -311,6 +329,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
               Cancel
             </button>
             <button
+              id="create-event-button"
               type="submit"
               className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
             >
@@ -337,6 +356,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
               <label className="grid gap-1 text-xs uppercase text-slate-400">
                 Title
                 <input
+                  id="edit-title-input"
                   name="title"
                   defaultValue={eventModal.title}
                   className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -345,6 +365,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
               <label className="grid gap-1 text-xs uppercase text-slate-400">
                 Location
                 <input
+                  id="edit-location-input"
                   name="location"
                   defaultValue={eventModal.location ?? ""}
                   className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -353,6 +374,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
               <label className="grid gap-1 text-xs uppercase text-slate-400">
                 Start
                 <input
+                  id="edit-start-at-input"
                   name="startAt"
                   type="datetime-local"
                   defaultValue={eventModal.startAt.slice(0, 16)}
@@ -362,6 +384,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
               <label className="grid gap-1 text-xs uppercase text-slate-400">
                 End
                 <input
+                  id="edit-end-at-input"
                   name="endAt"
                   type="datetime-local"
                   defaultValue={eventModal.endAt.slice(0, 16)}
@@ -371,6 +394,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
               <label className="grid gap-1 text-xs uppercase text-slate-400">
                 Visibility
                 <select
+                  id="edit-visibility-select"
                   name="visibility"
                   defaultValue={eventModal.visibility}
                   className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -382,6 +406,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
               <label className="grid gap-1 text-xs uppercase text-slate-400">
                 Group
                 <select
+                  id="edit-group-select"
                   name="groupId"
                   defaultValue={eventModal.groupId ?? ""}
                   className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -397,6 +422,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
               <label className="grid gap-1 text-xs uppercase text-slate-400 md:col-span-2">
                 Tags
                 <input
+                  id="edit-tags-input"
                   name="tags"
                   defaultValue={(eventModal.tags ?? []).join(", ")}
                   className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -405,6 +431,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
               <label className="grid gap-1 text-xs uppercase text-slate-400 md:col-span-2">
                 Description
                 <textarea
+                  id="edit-description-textarea"
                   name="description"
                   rows={3}
                   defaultValue={eventModal.description ?? ""}
@@ -413,6 +440,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
               </label>
               <div className="md:col-span-2 flex justify-end gap-2">
                 <button
+                  id="edit-cancel-button"
                   type="button"
                   onClick={() => setEventModal(null)}
                   className="rounded-md border border-slate-700 px-4 py-2 text-sm text-slate-200 transition hover:bg-slate-900"
@@ -420,6 +448,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                   Cancel
                 </button>
                 <button
+                  id="edit-save-changes-button"
                   type="submit"
                   className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
                 >
@@ -441,7 +470,10 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                     Attendees will no longer see this on the calendar. Attendance logs are discarded.
                   </p>
                 </div>
-                <button className="rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-red-950 transition hover:bg-red-400">
+                <button
+                  id="delete-event-button"
+                  className="rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-red-950 transition hover:bg-red-400"
+                >
                   Delete Event
                 </button>
               </div>
