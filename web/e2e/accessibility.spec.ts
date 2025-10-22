@@ -1,65 +1,87 @@
-import { test, expect } from '@playwright/test';
-import { DashboardPage } from './page-objects/DashboardPage';
-import { MembersPage } from './page-objects/MembersPage';
-import { GivingPage } from './page-objects/GivingPage';
+import { test, expect } from "@playwright/test";
+import { DashboardPage } from "./page-objects/DashboardPage";
+import { MembersPage } from "./page-objects/MembersPage";
+import { HouseholdsPage } from "./page-objects/HouseholdsPage";
+import { GroupsPage } from "./page-objects/GroupsPage";
+import { EventsPage } from "./page-objects/EventsPage";
+import { AnnouncementsPage } from "./page-objects/AnnouncementsPage";
+import { PrayerPage } from "./page-objects/PrayerPage";
+import { GivingPage } from "./page-objects/GivingPage";
+import { RolesPage } from "./page-objects/RolesPage";
+import { AuditLogPage } from "./page-objects/AuditLogPage";
+import { PastoralCarePage } from "./page-objects/PastoralCarePage";
+import { SettingsPage } from "./page-objects/SettingsPage";
 
-test.describe('Accessibility affordances', () => {
-  test.fixme('dashboard passes accessibility scan and has skip link', async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-
-    await test.step('Check dashboard accessibility', async () => {
-      await dashboardPage.goto();
-      await dashboardPage.checkAccessibility();
+test.describe("Accessibility affordances", () => {
+    test("dashboard is accessible", async ({ page }) => {
+        const dashboardPage = new DashboardPage(page);
+        await dashboardPage.goto();
+        await dashboardPage.checkAccessibility();
     });
 
-    await test.step('Verify skip link functionality', async () => {
-      await page.keyboard.press('Tab');
-      const skipLink = page.locator('a.skip-link');
-      await expect(skipLink).toBeVisible();
-      await expect(page.locator('#main-content')).toBeVisible();
-    });
-  });
-
-  test.fixme('dashboard has labelled navigation landmarks', async ({ page }) => {
-    const dashboardPage = new DashboardPage(page);
-
-    await test.step('Navigate to dashboard', async () => {
-      await dashboardPage.goto();
+    test("members page is accessible", async ({ page }) => {
+        const membersPage = new MembersPage(page);
+        await membersPage.goto();
+        await membersPage.checkAccessibility();
     });
 
-    await test.step('Verify navigation landmarks', async () => {
-      await expect(page.locator('nav[aria-label="Primary navigation"]')).toBeVisible();
-      await expect(page.locator('aside[aria-label="Secondary navigation"]')).toBeVisible();
-    });
-  });
-
-  test.fixme('member directory passes accessibility scan and has table semantics', async ({ page }) => {
-    const membersPage = new MembersPage(page);
-
-    await test.step('Check members page accessibility', async () => {
-      await membersPage.goto();
-      await membersPage.checkAccessibility();
+    test("households page is accessible", async ({ page }) => {
+        const householdsPage = new HouseholdsPage(page);
+        await householdsPage.goto();
+        await householdsPage.checkAccessibility();
     });
 
-    await test.step('Verify table semantics', async () => {
-      const table = page.locator('table');
-      await expect(table.locator('caption')).toHaveText(/members matching/i);
-      await expect(table.locator('thead th').first()).toHaveAttribute('scope', 'col');
-    });
-  });
-
-  test.fixme('giving page passes accessibility scan and has table semantics', async ({ page }) => {
-    const givingPage = new GivingPage(page);
-
-    await test.step('Check giving page accessibility', async () => {
-      await givingPage.goto();
-      await givingPage.checkAccessibility();
+    test("groups page is accessible", async ({ page }) => {
+        const groupsPage = new GroupsPage(page);
+        await groupsPage.goto();
+        await groupsPage.checkAccessibility();
     });
 
-    await test.step('Verify table semantics', async () => {
-      const table = page.locator('table').first();
-      await expect(table.locator('caption')).toHaveText(/manual giving/i);
-      await expect(table.locator('thead th').nth(3)).toHaveAttribute('scope', 'col');
+    test("events page is accessible", async ({ page }) => {
+        const eventsPage = new EventsPage(page);
+        await eventsPage.goto();
+        await eventsPage.checkAccessibility();
     });
-  });
+
+    test("announcements page is accessible", async ({ page }) => {
+        const announcementsPage = new AnnouncementsPage(page);
+        await announcementsPage.goto();
+        await announcementsPage.checkAccessibility();
+    });
+
+    test("prayer page is accessible", async ({ page }) => {
+        const prayerPage = new PrayerPage(page);
+        await prayerPage.goto();
+        await prayerPage.checkAccessibility();
+    });
+
+    test("giving page is accessible", async ({ page }) => {
+        const givingPage = new GivingPage(page);
+        await givingPage.goto();
+        await givingPage.checkAccessibility();
+    });
+
+    test("roles page is accessible", async ({ page }) => {
+        const rolesPage = new RolesPage(page);
+        await rolesPage.goto();
+        await rolesPage.checkAccessibility();
+    });
+
+    test("audit log page is accessible", async ({ page }) => {
+        const auditLogPage = new AuditLogPage(page);
+        await auditLogPage.goto();
+        await auditLogPage.checkAccessibility();
+    });
+
+    test("pastoral care page is accessible", async ({ page }) => {
+        const pastoralCarePage = new PastoralCarePage(page);
+        await pastoralCarePage.goto();
+        await pastoralCarePage.checkAccessibility();
+    });
+
+    test("settings page is accessible", async ({ page }) => {
+        const settingsPage = new SettingsPage(page);
+        await settingsPage.goto();
+        await settingsPage.checkAccessibility();
+    });
 });
