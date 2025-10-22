@@ -49,19 +49,21 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
       <header className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
           <h1 className="text-3xl font-semibold">Giving records</h1>
-          <p className="text-sm text-slate-400">Track gifts, edit entries, and export summaries for finance reconciliation.</p>
+          <p className="text-sm text-muted-foreground">
+            Track gifts, edit entries, and export summaries for finance reconciliation.
+          </p>
         </div>
         <a
           id="download-csv-link"
           href={csvUrl}
-          className="rounded-md border border-slate-700 px-4 py-2 text-sm text-slate-200 transition hover:bg-slate-900"
+          className="rounded-md border border-border px-4 py-2 text-sm text-foreground transition hover:bg-muted"
         >
           Download CSV
         </a>
       </header>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <SummaryCard label="Total giving" value={formatCurrency(summary.totals.overall)} tone="bg-slate-950/60" />
+        <SummaryCard label="Total giving" value={formatCurrency(summary.totals.overall)} tone="bg-card/60" />
         <SummaryCard label="Month to date" value={formatCurrency(summary.totals.monthToDate)} tone="bg-emerald-500/10" />
         <SummaryCard label="Previous month" value={formatCurrency(summary.totals.previousMonth)} tone="bg-amber-500/10" />
         <SummaryCard label="Average gift" value={formatCurrency(summary.totals.averageGift || 0)} tone="bg-sky-500/10" />
@@ -69,13 +71,13 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
 
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <div className="space-y-4">
-          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
+          <div className="rounded-xl border border-border bg-card/60 p-5">
             <h2 className="text-lg font-semibold">Recent contributions</h2>
             <table className="mt-3 min-w-full text-sm" aria-describedby="contributions-caption">
-              <caption id="contributions-caption" className="text-left text-xs uppercase text-slate-500">
+              <caption id="contributions-caption" className="text-left text-xs uppercase text-muted-foreground">
                 Latest manual giving entries
               </caption>
-              <thead className="text-left text-xs uppercase text-slate-400">
+              <thead className="text-left text-xs uppercase text-muted-foreground">
                 <tr>
                   <th scope="col" className="py-2">Date</th>
                   <th scope="col" className="py-2">Member</th>
@@ -86,7 +88,7 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
                   <th scope="col" className="py-2" aria-label="Actions" />
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-border">
                 {contributions.map(entry => {
                   const member = memberMap.get(entry.memberId);
                   const fund = entry.fundId ? fundMap.get(entry.fundId) : undefined;
@@ -96,17 +98,17 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
                   return (
                     <tr key={entry.id}>
                       <td className="py-2">{format(new Date(entry.date), 'd MMM yyyy')}</td>
-                      <td className="py-2 text-slate-300">{memberName || entry.memberId}</td>
-                      <td className="py-2 text-slate-400">{fund?.name ?? 'General'}</td>
+                      <td className="py-2 text-foreground">{memberName || entry.memberId}</td>
+                      <td className="py-2 text-muted-foreground">{fund?.name ?? 'General'}</td>
                       <td className="py-2 font-medium">{formatCurrency(entry.amount)}</td>
-                      <td className="py-2 text-slate-400 capitalize">{entry.method.replace('-', ' ')}</td>
-                      <td className="py-2 text-slate-400">{entry.note ?? ''}</td>
+                      <td className="py-2 text-muted-foreground capitalize">{entry.method.replace('-', ' ')}</td>
+                      <td className="py-2 text-muted-foreground">{entry.note ?? ''}</td>
                       <td className="py-2 text-right">
                         <button
                           id={`edit-contribution-button-${entry.id}`}
                           type="button"
                           onClick={() => setEditContribution(entry)}
-                          className="rounded-md border border-slate-700 px-3 py-1 text-xs text-slate-200 transition hover:bg-slate-900"
+                          className="rounded-md border border-border px-3 py-1 text-xs text-foreground transition hover:bg-muted"
                         >
                           Edit
                         </button>
@@ -118,15 +120,15 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
             </table>
           </div>
 
-          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
+          <div className="rounded-xl border border-border bg-card/60 p-5">
             <h2 className="text-lg font-semibold">Record contribution</h2>
             <form action={recordContributionAction} className="mt-3 grid gap-3 text-sm">
-              <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-slate-400">
+              <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                 Member
                 <select
                   id="record-member-select"
                   name="memberId"
-                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm"
                 >
                   {members.map(member => (
                     <option key={member.id} value={member.id}>
@@ -135,7 +137,7 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
                   ))}
                 </select>
               </label>
-              <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-slate-400">
+              <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                 Amount
                 <input
                   id="record-amount-input"
@@ -143,26 +145,26 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
                   type="number"
                   step="0.01"
                   min="0"
-                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm"
                   defaultValue="50"
                 />
               </label>
-              <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-slate-400">
+              <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                 Date
                 <input
                   id="record-date-input"
                   name="date"
                   type="date"
-                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm"
                   defaultValue={new Date().toISOString().slice(0, 10)}
                 />
               </label>
-              <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-slate-400">
+              <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                 Fund
                 <select
                   id="record-fund-select"
                   name="fundId"
-                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm"
                 >
                   <option value="">General</option>
                   {funds.map(fund => (
@@ -172,12 +174,12 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
                   ))}
                 </select>
               </label>
-              <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-slate-400">
+              <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                 Method
                 <select
                   id="record-method-select"
                   name="method"
-                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm"
                 >
                   <option value="cash">Cash</option>
                   <option value="bank-transfer">Bank transfer</option>
@@ -185,18 +187,18 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
                   <option value="other">Other</option>
                 </select>
               </label>
-              <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-slate-400">
+              <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                 Note
                 <input
                   id="record-note-input"
                   name="note"
-                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm"
                   placeholder="Optional"
                 />
               </label>
               <button
                 id="record-save-button"
-                className="rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-slate-900"
+                className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
               >
                 Save record
               </button>
@@ -205,24 +207,24 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
         </div>
 
         <aside className="space-y-4">
-          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
-            <h3 className="text-sm font-semibold text-slate-200">Giving by fund</h3>
+          <div className="rounded-xl border border-border bg-card/60 p-5">
+            <h3 className="text-sm font-semibold text-foreground">Giving by fund</h3>
             <ul className="mt-3 space-y-2 text-sm">
               {summary.byFund.map(entry => (
                 <li key={entry.name} className="flex items-center justify-between">
-                  <span className="text-slate-300">{entry.name}</span>
+                  <span className="text-foreground">{entry.name}</span>
                   <span className="font-medium">{formatCurrency(entry.amount)}</span>
                 </li>
               ))}
             </ul>
           </div>
 
-          <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
-            <h3 className="text-sm font-semibold text-slate-200">Monthly totals</h3>
+          <div className="rounded-xl border border-border bg-card/60 p-5">
+            <h3 className="text-sm font-semibold text-foreground">Monthly totals</h3>
             <ul className="mt-3 space-y-2 text-sm">
               {summary.monthly.map(entry => (
                 <li key={entry.month} className="flex items-center justify-between">
-                  <span className="text-slate-300">{entry.month}</span>
+                  <span className="text-foreground">{entry.month}</span>
                   <span className="font-medium">{formatCurrency(entry.amount)}</span>
                 </li>
               ))}
@@ -239,13 +241,13 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
         {editContribution ? (
           <form action={updateContributionAction} className="grid gap-3 text-sm" onSubmit={() => setEditContribution(null)}>
             <input type="hidden" name="contributionId" value={editContribution.id} />
-            <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+            <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Member
               <select
                 id="edit-member-select"
                 name="memberId"
                 defaultValue={editContribution.memberId}
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm"
               >
                 {members.map(member => (
                   <option key={member.id} value={member.id}>
@@ -255,7 +257,7 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
               </select>
             </label>
             <div className="grid gap-3 md:grid-cols-2">
-              <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+              <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                 Amount
                 <input
                   id="edit-amount-input"
@@ -264,27 +266,27 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
                   step="0.01"
                   min="0"
                   defaultValue={editContribution.amount}
-                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm"
                 />
               </label>
-              <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+              <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                 Date
                 <input
                   id="edit-date-input"
                   name="date"
                   type="date"
                   defaultValue={editContribution.date.slice(0, 10)}
-                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm"
                 />
               </label>
             </div>
-            <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+            <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Fund
               <select
                 id="edit-fund-select"
                 name="fundId"
                 defaultValue={editContribution.fundId ?? ''}
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm"
               >
                 <option value="">General</option>
                 {funds.map(fund => (
@@ -294,13 +296,13 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
                 ))}
               </select>
             </label>
-            <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+            <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Method
               <select
                 id="edit-method-select"
                 name="method"
                 defaultValue={editContribution.method}
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm"
               >
                 <option value="cash">Cash</option>
                 <option value="bank-transfer">Bank transfer</option>
@@ -308,20 +310,20 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
                 <option value="other">Other</option>
               </select>
             </label>
-            <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+            <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Note
               <input
                 id="edit-note-input"
                 name="note"
                 defaultValue={editContribution.note ?? ''}
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm"
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm"
                 placeholder="Optional"
               />
-              <span className="text-[10px] text-slate-500">Leave blank to remove the note.</span>
+              <span className="text-[10px] text-muted-foreground">Leave blank to remove the note.</span>
             </label>
             <button
               id="edit-save-button"
-              className="rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-slate-900"
+              className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
             >
               Update contribution
             </button>
@@ -340,9 +342,9 @@ type SummaryCardProps = {
 
 function SummaryCard({ label, value, tone = "" }: SummaryCardProps) {
   return (
-    <div className={`rounded-xl border border-slate-800 ${tone} p-4`}> 
-      <p className="text-xs uppercase tracking-wide text-slate-400">{label}</p>
-      <p className="mt-2 text-2xl font-semibold text-slate-100">{value}</p>
+    <div className={`rounded-xl border border-border ${tone} p-4`}>
+      <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
+      <p className="mt-2 text-2xl font-semibold text-foreground">{value}</p>
     </div>
   );
 }

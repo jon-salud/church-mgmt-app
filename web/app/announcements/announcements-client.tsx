@@ -56,12 +56,12 @@ const statusBadge = (announcement: Announcement) => {
   const publishAt = new Date(announcement.publishAt).getTime();
   const expireAt = announcement.expireAt ? new Date(announcement.expireAt).getTime() : undefined;
   if (expireAt && expireAt < now) {
-    return { label: "Expired", className: "bg-slate-800 text-slate-200" };
+    return { label: "Expired", className: "bg-muted text-muted-foreground" };
   }
   if (publishAt > now) {
-    return { label: "Scheduled", className: "bg-amber-400 text-slate-900" };
+    return { label: "Scheduled", className: "bg-amber-400 text-amber-900" };
   }
-  return { label: "Published", className: "bg-emerald-400 text-slate-900" };
+  return { label: "Published", className: "bg-emerald-400 text-emerald-900" };
 };
 
 const audienceLabel = (announcement: Announcement, groupMap: Map<string, Group>) => {
@@ -137,7 +137,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
       <header className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="space-y-2">
           <h1 className="text-3xl font-semibold">Announcements</h1>
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             Share updates across the church or target specific groups with scheduling controls.
           </p>
           {isOffline ? (
@@ -153,7 +153,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
             setCreateAudience("all");
             setIsCreateOpen(true);
           }}
-          className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
+          className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-sky-400"
         >
           New announcement
         </button>
@@ -170,12 +170,12 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
           return (
             <article
               key={announcement.id}
-              className="rounded-xl border border-slate-800 bg-slate-950/60 p-5 shadow-lg shadow-slate-950/20"
+              className="rounded-xl border border-border bg-card/60 p-5 shadow-lg shadow-black/5"
             >
               <header className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div className="space-y-2">
-                  <h2 className="text-xl font-semibold text-slate-100">{announcement.title}</h2>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                  <h2 className="text-xl font-semibold text-foreground">{announcement.title}</h2>
+                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                     <span className={`rounded-full px-3 py-1 font-medium ${badge.className}`}>
                       {badge.label}
                     </span>
@@ -191,7 +191,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
                   <form action={markAnnouncementReadAction.bind(null, announcement.id)}>
                     <button
                       id={`mark-read-button-${announcement.id}`}
-                      className="rounded-md border border-slate-700 px-3 py-1 text-xs uppercase tracking-wide text-slate-200 transition hover:bg-slate-900"
+                      className="rounded-md border border-border px-3 py-1 text-xs uppercase tracking-wide text-foreground transition hover:bg-muted"
                     >
                       Mark read
                     </button>
@@ -211,14 +211,14 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
                         expireAt: announcement.expireAt ?? undefined,
                       });
                     }}
-                    className="rounded-md border border-slate-700 px-3 py-1 text-xs text-slate-200 transition hover:bg-slate-900"
+                    className="rounded-md border border-border px-3 py-1 text-xs text-foreground transition hover:bg-muted"
                   >
                     Edit
                   </button>
                 </div>
               </header>
 
-              <p className="mt-3 text-sm leading-relaxed text-slate-200 whitespace-pre-wrap">
+              <p className="mt-3 text-sm leading-relaxed text-foreground whitespace-pre-wrap">
                 {announcement.body}
               </p>
             </article>
@@ -230,53 +230,57 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
         open={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
         title="Create announcement"
-        footer={<p className="text-xs text-slate-500">Schedule publishes ahead of time or leave blank to post immediately.</p>}
+        footer={
+          <p className="text-xs text-muted-foreground">
+            Schedule publishes ahead of time or leave blank to post immediately.
+          </p>
+        }
       >
         <form
           action={createAnnouncementAction}
           className="grid gap-3 text-sm"
           onSubmit={() => setIsCreateOpen(false)}
         >
-          <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+          <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
             Title
             <input
               id="create-title-input"
               name="title"
               required
-              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             />
           </label>
-          <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+          <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
             Message
             <textarea
               id="create-body-textarea"
               name="body"
               required
               rows={4}
-              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             />
           </label>
-          <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+          <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
             Audience
             <select
               id="create-audience-select"
               name="audience"
               value={createAudience}
               onChange={event => setCreateAudience(event.target.value as "all" | "custom")}
-              className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+              className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             >
               <option value="all">Whole church</option>
               <option value="custom">Specific groups</option>
             </select>
           </label>
           {createAudience === "custom" ? (
-            <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+            <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Target groups
               <select
                 id="create-groups-select"
                 name="groupIds"
                 multiple
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
               >
                 {groupState.map(group => (
                   <option key={group.id} value={group.id}>
@@ -287,29 +291,29 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
             </label>
           ) : null}
           <div className="grid gap-3 md:grid-cols-2">
-            <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+            <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Publish at
               <input
                 id="create-publish-at-input"
                 type="datetime-local"
                 name="publishAt"
                 defaultValue={formatInputDate(new Date().toISOString())}
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
               />
             </label>
-            <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+            <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Expire at (optional)
               <input
                 id="create-expire-at-input"
                 type="datetime-local"
                 name="expireAt"
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
               />
             </label>
           </div>
           <button
             id="create-save-button"
-            className="rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-slate-900"
+            className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
           >
             Save announcement
           </button>
@@ -323,7 +327,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
           setEditAudience('all');
         }}
         title={editModal ? `Edit ${editModal.title}` : "Edit announcement"}
-        footer={<p className="text-xs text-slate-500">Leave a field blank to keep the existing value.</p>}
+        footer={<p className="text-xs text-muted-foreground">Leave a field blank to keep the existing value.</p>}
       >
         {editModal ? (
           <form
@@ -336,47 +340,47 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
           >
             <input type="hidden" name="announcementId" value={editModal.id} />
             {editAudience === "custom" ? <input type="hidden" name="groupIdsMarker" value="true" /> : null}
-            <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+            <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Title
               <input
                 id="edit-title-input"
                 name="title"
                 defaultValue={editModal.title}
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
               />
             </label>
-            <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+            <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Message
               <textarea
                 id="edit-body-textarea"
                 name="body"
                 defaultValue={editModal.body}
                 rows={4}
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
               />
             </label>
-            <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+            <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Audience
               <select
                 id="edit-audience-select"
                 name="audience"
                 value={editAudience}
                 onChange={event => setEditAudience(event.target.value as "all" | "custom")}
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
               >
                 <option value="all">Whole church</option>
                 <option value="custom">Specific groups</option>
               </select>
             </label>
             {editAudience === "custom" ? (
-              <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+              <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                 Target groups
                 <select
                   id="edit-groups-select"
                   name="groupIds"
                   multiple
                   defaultValue={editModal.groupIds}
-                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 >
                   {groupState.map(group => (
                     <option key={group.id} value={group.id}>
@@ -384,35 +388,35 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
                     </option>
                   ))}
                 </select>
-                <span className="text-[10px] text-slate-500">Leave empty to remove all targeted groups.</span>
+                <span className="text-[10px] text-muted-foreground">Leave empty to remove all targeted groups.</span>
               </label>
             ) : null}
             <div className="grid gap-3 md:grid-cols-2">
-              <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+              <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                 Publish at
                 <input
                   id="edit-publish-at-input"
                   type="datetime-local"
                   name="publishAt"
                   defaultValue={formatInputDate(editModal.publishAt)}
-                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 />
               </label>
-              <label className="grid gap-1 text-xs uppercase tracking-wide text-slate-400">
+              <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                 Expire at
                 <input
                   id="edit-expire-at-input"
                   type="datetime-local"
                   name="expireAt"
                   defaultValue={formatInputDate(editModal.expireAt)}
-                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 />
-                <span className="text-[10px] text-slate-500">Clear the value to remove the expiry.</span>
+                <span className="text-[10px] text-muted-foreground">Clear the value to remove the expiry.</span>
               </label>
             </div>
             <button
               id="edit-save-button"
-              className="rounded-md bg-slate-100 px-3 py-2 text-sm font-medium text-slate-900"
+              className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
             >
               Update announcement
             </button>

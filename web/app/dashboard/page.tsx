@@ -8,7 +8,7 @@ export default async function DashboardPage() {
         <section className="space-y-8">
             <div>
                 <h1 className="text-3xl font-semibold tracking-tight">Dashboard</h1>
-                <p className="text-sm text-slate-400">Snapshot of community health and activity.</p>
+                <p className="text-sm text-muted-foreground">Snapshot of community health and activity.</p>
             </div>
 
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -21,13 +21,13 @@ export default async function DashboardPage() {
             <div className="grid gap-6 lg:grid-cols-2">
                 <Card title="Next events">
                     {overview.events.length === 0 ? (
-                        <p className="text-sm text-slate-400">No upcoming events yet.</p>
+                        <p className="text-sm text-muted-foreground">No upcoming events yet.</p>
                     ) : (
                         <ul className="space-y-3">
                             {overview.events.map((event) => (
-                                <li key={event.id} className="rounded-md border border-slate-800 bg-slate-950/40 p-3">
+                                <li key={event.id} className="rounded-md border border-border bg-muted/40 p-3">
                                     <p className="font-medium">{event.title}</p>
-                                    <p className="text-xs text-slate-400">
+                                    <p className="text-xs text-muted-foreground">
                                         {format(new Date(event.startAt), "EEE d MMM, h:mma")} · {event.location || "TBA"}
                                     </p>
                                 </li>
@@ -37,13 +37,13 @@ export default async function DashboardPage() {
                 </Card>
                 <Card title="Unread announcements">
                     {overview.announcements.length === 0 ? (
-                        <p className="text-sm text-slate-400">No announcements to show.</p>
+                        <p className="text-sm text-muted-foreground">No announcements to show.</p>
                     ) : (
                         <ul className="space-y-3">
                             {overview.announcements.map((announcement) => (
-                                <li key={announcement.id} className="rounded-md border border-slate-800 bg-slate-950/40 p-3">
+                                <li key={announcement.id} className="rounded-md border border-border bg-muted/40 p-3">
                                     <p className="font-medium">{announcement.title}</p>
-                                    <p className="text-xs text-slate-400">Published {format(new Date(announcement.publishAt), "d MMM, h:mma")}</p>
+                                    <p className="text-xs text-muted-foreground">Published {format(new Date(announcement.publishAt), "d MMM, h:mma")}</p>
                                 </li>
                             ))}
                         </ul>
@@ -53,22 +53,22 @@ export default async function DashboardPage() {
 
             <Card title="Recent contributions">
                 {overview.contributions.length === 0 ? (
-                    <p className="text-sm text-slate-400">No contributions recorded yet.</p>
+                    <p className="text-sm text-muted-foreground">No contributions recorded yet.</p>
                 ) : (
                     <table className="min-w-full text-sm">
-                        <thead className="text-left text-xs uppercase text-slate-400">
+                        <thead className="text-left text-xs uppercase text-muted-foreground">
                             <tr>
                                 <th className="py-2">Date</th>
                                 <th className="py-2">Amount</th>
                                 <th className="py-2">Fund</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-800">
+                        <tbody className="divide-y divide-border">
                             {overview.contributions.map((item) => (
                                 <tr key={item.id}>
                                     <td className="py-2">{format(new Date(item.date), "d MMM yyyy")}</td>
                                     <td className="py-2 font-medium">${item.amount.toFixed(2)}</td>
-                                    <td className="py-2 text-slate-400">{item.fundId || "General"}</td>
+                                    <td className="py-2 text-muted-foreground">{item.fundId || "General"}</td>
                                 </tr>
                             ))}
                         </tbody>
@@ -81,19 +81,19 @@ export default async function DashboardPage() {
 
 function StatCard({ label, value, helper, testId }: { label: string; value: string | number; helper: string; testId?: string }) {
     return (
-        <dl data-testid={testId} className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 shadow-lg shadow-slate-950/40">
-            <dt className="text-xs uppercase tracking-wide text-slate-400">{label}</dt>
-            <dd className="mt-2 text-2xl font-semibold text-slate-100">{value}</dd>
-            <dd className="text-xs text-slate-500">{helper}</dd>
+        <dl data-testid={testId} className="rounded-xl border border-border bg-card p-4 shadow-lg shadow-shadow">
+            <dt className="text-xs uppercase tracking-wide text-muted-foreground">{label}</dt>
+            <dd className="mt-2 text-2xl font-semibold text-foreground">{value}</dd>
+            <dd className="text-xs text-muted-foreground">{helper}</dd>
         </dl>
     );
 }
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
     return (
-        <section className="rounded-xl border border-slate-800 bg-slate-950/60 p-5 shadow-lg shadow-slate-950/40">
-            <h2 className="text-lg font-semibold text-slate-100">{title}</h2>
-            <div className="mt-4 space-y-3 text-sm text-slate-200">{children}</div>
+        <section className="rounded-xl border border-border bg-card p-5 shadow-lg shadow-shadow">
+            <h2 className="text-lg font-semibold text-foreground">{title}</h2>
+            <div className="mt-4 space-y-3 text-sm text-foreground">{children}</div>
         </section>
     );
 }
