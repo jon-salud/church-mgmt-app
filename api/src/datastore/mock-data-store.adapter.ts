@@ -256,4 +256,8 @@ export class MockDataStoreAdapter implements DataStore {
   async getPrayerRequests() {
     return this.mock.getPrayerRequests();
   }
+
+  async getRequests() {
+    return this.mock.getRequests();
+  }
 }

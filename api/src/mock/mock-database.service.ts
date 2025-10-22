@@ -35,6 +35,8 @@ import {
   MockPastoralCareComment,
   MockPrayerRequest,
   mockPrayerRequests,
+  MockRequest,
+  mockRequests,
 } from './mock-data';
 import { AuditLogPersistence } from './audit-log.persistence';
 
@@ -302,6 +304,7 @@ export class MockDatabaseService {
   private pastoralCareTickets: MockPastoralCareTicket[] = [];
   private pastoralCareComments: MockPastoralCareComment[] = [];
   private prayerRequests: MockPrayerRequest[] = clone(mockPrayerRequests);
+  private requests: MockRequest[] = clone(mockRequests);
   private auditLogs: MockAuditLog[] = clone(mockAuditLogs);
   private sessions: DemoSession[] = clone(mockSessions);
   private oauthAccounts: Array<{ provider: 'google' | 'facebook'; providerUserId: string; userId: string }> = [];
@@ -2134,5 +2137,39 @@ export class MockDatabaseService {
 
   getPrayerRequests() {
     return clone(this.prayerRequests);
+  }
+
+  getRequests() {
+    return clone(this.requests).map((request) => {
+      const author = this.getUserById(request.userId);
+      return {
+        ...request,
+        author,
+      };
+    });
+  }
+
+  createRequest(input: Omit<MockRequest, 'id' | 'createdAt' | 'churchId'>, actorUserId: string) {
+    const now = new Date().toISOString();
+    const request: MockRequest = {
+      id: `req-${randomUUID()}`,
+      churchId: this.getChurch().id,
+      ...input,
+      createdAt: now,
+    };
+    this.requests.push(request);
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'request.created',
+      entity: 'request',
+      entityId: request.id,
+      summary: `${actorName} created a new request of type ${request.type}`,
+      metadata: {
+        requestId: request.id,
+        requestType: request.type,
+      },
+    });
+    return clone(request);
   }
 }

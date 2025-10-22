@@ -184,6 +184,16 @@ This feature is designed to provide spiritual support to the congregation throug
   - AC: Provide a spreadsheet-like rapid-entry interface (and optional CSV import) for quick single-event visitor/child check-ins.
 - AC: All check-in/out and confirmation actions are auditable (actor, action, timestamps, eventId, optional notes).
 
+### 3.11 Unified Request Form
+
+- **As a Member**, I can submit various types of requests through a single, unified form.
+  - AC: The form will include a dropdown to select the request type (e.g., Prayer, Benevolence, Improvement, Suggestion).
+  - AC: The form's placeholder text and description will dynamically update based on the selected request type.
+  - AC: All submissions will be routed to the Pastoral Care dashboard for review.
+- **As an Admin/Pastor**, I can view all submitted requests in the Pastoral Care dashboard.
+  - AC: The dashboard table will include a "Type" column to distinguish between different request types.
+  - AC: A "View Details" modal will display the full details of each request.
+
 ---
 
 ## 4) Architecture & Tech Choices
@@ -353,6 +363,11 @@ All endpoints prefixed by `/api/v1`. Auth via Bearer JWT (OIDC). Responses in JS
 - `PATCH /giving/contributions/:id`
 - `GET /giving/contributions.csv?memberId=&from=&to=&fundId=` (Admin)
 - `GET /giving/reports/summary` (Admin)
+
+### **Requests endpoints**
+
+- `GET /requests` (Admin/Pastor)
+- `POST /requests` (Member)
 
 ### **Prayer Requests endpoints**
 

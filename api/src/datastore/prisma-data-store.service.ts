@@ -909,4 +909,8 @@ export class PrismaDataStore implements DataStore {
   async getPrayerRequests() {
     return [];
   }
+
+  async getRequests() {
+    return [];
+  }
 }
