@@ -50,29 +50,29 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const primaryRole = roles[0]?.role ?? (isAdmin ? 'Admin' : 'Member');
 
   return (
-    <html lang="en" className="bg-slate-900" suppressHydrationWarning>
-      <body className="min-h-screen bg-slate-900 text-slate-100">
+    <html lang="en" suppressHydrationWarning>
+      <body className="min-h-screen">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <ServiceWorkerRegister />
           <div className="flex min-h-screen flex-col">
             <a id="skip-to-main-content" href="#main-content" className="skip-link">
               Skip to main content
             </a>
-          <header className="border-b border-slate-800 bg-slate-950/80 backdrop-blur">
+          <header className="border-b border-border bg-background/80 backdrop-blur">
             <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
               <div>
                 <Link id="dashboard-link" href="/dashboard" className="text-xl font-semibold tracking-tight">
                   Auckland Community Church
                 </Link>
-                <p className="text-xs text-slate-400">Role: {primaryRole}</p>
+                <p className="text-xs text-muted-foreground">Role: {primaryRole}</p>
               </div>
-              <div className="flex items-center gap-3 text-sm text-slate-300">
+              <div className="flex items-center gap-3 text-sm text-foreground">
                 <ThemeSwitcher />
                 <span className="hidden md:inline">{displayName}</span>
                 <form action={logoutAction}>
                   <button
                     id="logout-button"
-                    className="rounded-md border border-slate-600 px-3 py-1 text-xs uppercase tracking-wide text-slate-200 transition hover:bg-slate-800"
+                    className="rounded-md border border-border px-3 py-1 text-xs uppercase tracking-wide text-foreground transition hover:bg-muted"
                   >
                     Logout
                   </button>
@@ -98,7 +98,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </div>
             </main>
           </div>
-          <footer className="border-t border-slate-800 bg-slate-950/80 px-6 py-4 text-center text-xs text-slate-400">
+          <footer className="border-t border-border bg-background/80 px-6 py-4 text-center text-xs text-muted-foreground">
             Demo data only • Install via browser menu for offline-ready dashboard snapshot.
           </footer>
         </div>
