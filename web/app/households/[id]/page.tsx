@@ -14,6 +14,7 @@ export default async function HouseholdDetailPage({ params }: { params: { id: st
         <div className="mt-4 flex flex-col gap-4">
           {household.members.map((member: any) => (
             <Link
+              id={`member-link-${member.id}`}
               key={member.id}
               href={`/members/${member.id}`}
               className="block rounded-lg border border-slate-700 p-4 transition hover:bg-slate-800"

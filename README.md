@@ -118,6 +118,7 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 - **Auth** – mock Google/Facebook flows with role assignment.
 - **Households** – household listing and detail views.
 - **PWA** – manifest + service worker pre-cache key routes for offline dashboard snapshots (install via browser menu).
+- **Theming** – switch between light and dark modes.
 
 ---
 
@@ -159,9 +160,10 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 
 ## Styling & UI
 
-- Tailwind CSS is configured globally (`web/app/globals.css`, `tailwind.config.ts`).
-- A starter shadcn-style `<Button />` lives in `web/components/ui/button.tsx`.
-- Mix and match your own component library on top of the Tailwind foundation.
+- **Theming**: The application supports both **light and dark themes**. A theme switcher is located in the header.
+- **Component Library**: UI components are built with Tailwind CSS and follow the conventions of `shadcn/ui`. Core components can be found in `web/components/ui`.
+- **Sidebar Navigation**: The main navigation sidebar now includes icons for each item to improve usability. The active page is highlighted.
+- **UI Automation IDs**: All interactive elements have a unique `id` attribute for testability.
 
 ---
 

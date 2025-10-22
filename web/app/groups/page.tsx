@@ -13,6 +13,7 @@ export default async function GroupsPage() {
       <div className="grid gap-4 md:grid-cols-2">
         {groups.map(group => (
           <Link
+            id={`group-link-${group.id}`}
             href={`/groups/${group.id}`}
             key={group.id}
             className="rounded-xl border border-slate-800 bg-slate-950/60 p-4 transition hover:border-slate-600"

@@ -60,6 +60,12 @@ The login page links to `/auth/google` and `/auth/facebook`. Successful callback
 
 - See `.github/workflows/ci.yml`
 
+## UI
+
+- **Theming**: The application supports both **light and dark themes**. A theme switcher is located in the header.
+- **Sidebar Navigation**: The main navigation sidebar now includes icons for each item to improve usability. The active page is highlighted.
+- **UI Automation IDs**: All interactive elements have a unique `id` attribute for testability.
+
 ## Notes
 
 - OAuth login is now the default. Demo logins remain available and issue JWTs alongside the historical mock tokens.

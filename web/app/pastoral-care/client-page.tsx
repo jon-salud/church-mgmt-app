@@ -12,8 +12,10 @@ export function PastoralCareClientPage({ tickets: initialTickets }: { tickets: P
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Pastoral Care Tickets</h1>
-        <Button>
-          <Link href="/pastoral-care/new">New Ticket</Link>
+        <Button asChild>
+          <Link id="new-ticket-button" href="/pastoral-care/new">
+            New Ticket
+          </Link>
         </Button>
       </div>
       <Table>
@@ -30,7 +32,7 @@ export function PastoralCareClientPage({ tickets: initialTickets }: { tickets: P
           {tickets.map((ticket) => (
             <TableRow key={ticket.id}>
               <TableCell>
-                <Link href={`/pastoral-care/${ticket.id}`} className="hover:underline">
+                <Link id={`view-ticket-link-${ticket.id}`} href={`/pastoral-care/${ticket.id}`} className="hover:underline">
                   {ticket.title}
                 </Link>
               </TableCell>

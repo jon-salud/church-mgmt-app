@@ -22,7 +22,11 @@ export function CheckinDashboardClient({ pending, checkedIn }: CheckinDashboardC
                     <p className="font-medium text-slate-100">{checkin.child.fullName}</p>
                     <p className="text-xs text-slate-400">Checked in at: {format(new Date(checkin.checkinTime), "h:mm a")}</p>
                   </div>
-                  <button type="button" className="rounded-md bg-sky-500 px-3 py-1 text-xs font-medium text-slate-950 transition hover:bg-sky-400">
+                  <button
+                    id={`confirm-checkin-button-${checkin.id}`}
+                    type="button"
+                    className="rounded-md bg-sky-500 px-3 py-1 text-xs font-medium text-slate-950 transition hover:bg-sky-400"
+                  >
                     Confirm
                   </button>
                 </li>
@@ -42,7 +46,11 @@ export function CheckinDashboardClient({ pending, checkedIn }: CheckinDashboardC
                     <p className="font-medium text-slate-100">{checkin.child.fullName}</p>
                     <p className="text-xs text-slate-400">Confirmed at: {format(new Date(checkin.checkinTime), "h:mm a")}</p>
                   </div>
-                  <button type="button" className="rounded-md border border-red-700 px-3 py-1 text-xs font-medium text-red-200 transition hover:bg-red-900/40">
+                  <button
+                    id={`checkout-button-${checkin.id}`}
+                    type="button"
+                    className="rounded-md border border-red-700 px-3 py-1 text-xs font-medium text-red-200 transition hover:bg-red-900/40"
+                  >
                     Check-Out
                   </button>
                 </li>

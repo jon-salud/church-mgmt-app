@@ -34,6 +34,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
         </div>
         <div className="flex gap-2">
           <button
+            id="remove-member-button"
             type="button"
             onClick={() => setIsRemoveOpen(true)}
             className="rounded-md border border-red-700 px-4 py-2 text-sm font-medium text-red-200 transition hover:bg-red-900/40"
@@ -41,6 +42,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
             Remove Member
           </button>
           <button
+            id="edit-profile-button"
             type="button"
             onClick={() => setIsEditOpen(true)}
             className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
@@ -59,6 +61,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           <div className="flex items-center justify-between">
             <p className="text-sm text-slate-200">Address: {member.household?.address || "—"}</p>
             <button
+              id="manage-children-button"
               type="button"
               onClick={() => setIsManageChildrenOpen(true)}
               className="rounded-md bg-slate-700 px-3 py-1 text-xs font-medium text-slate-100 transition hover:bg-slate-600"
@@ -104,6 +107,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
                 <form action={updatePrayerRequestAction} className="mt-2">
                   <input type="hidden" name="prayerRequestId" value={request.id} />
                   <button
+                    id={`mark-as-answered-button-${request.id}`}
                     type="submit"
                     className="rounded-md bg-sky-500 px-3 py-1 text-xs font-medium text-slate-950 transition hover:bg-sky-400"
                   >
@@ -135,7 +139,11 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
               <li key={group.id} className="rounded-md border border-slate-800 bg-slate-950/60 p-3 text-sm">
                 <p className="font-medium text-slate-100">{group.name}</p>
                 <p className="text-xs text-slate-400">Role: {group.role}</p>
-                <Link href={`/groups/${group.id}`} className="mt-2 inline-block text-xs text-sky-400 hover:underline">
+                <Link
+                  id={`view-group-link-${group.id}`}
+                  href={`/groups/${group.id}`}
+                  className="mt-2 inline-block text-xs text-sky-400 hover:underline"
+                >
                   View group
                 </Link>
               </li>
@@ -194,6 +202,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             First Name
             <input
+              id="edit-first-name-input"
               name="firstName"
               defaultValue={member.profile?.firstName ?? ""}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -202,6 +211,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             Last Name
             <input
+              id="edit-last-name-input"
               name="lastName"
               defaultValue={member.profile?.lastName ?? ""}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -210,6 +220,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           <label className="grid gap-1 text-xs uppercase text-slate-400 md:col-span-2">
             Email
             <input
+              id="edit-email-input"
               name="primaryEmail"
               type="email"
               defaultValue={member.primaryEmail}
@@ -219,6 +230,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             Phone
             <input
+              id="edit-phone-input"
               name="phone"
               defaultValue={member.profile?.phone ?? ""}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -227,6 +239,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             Address
             <input
+              id="edit-address-input"
               name="address"
               defaultValue={member.household?.address ?? ""}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -235,6 +248,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           {enabledFields.membershipStatus && <label className="grid gap-1 text-xs uppercase text-slate-400">
             Membership Status
             <input
+              id="edit-membership-status-input"
               name="membershipStatus"
               defaultValue={member.profile?.membershipStatus ?? ""}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -243,6 +257,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           {enabledFields.joinDate && <label className="grid gap-1 text-xs uppercase text-slate-400">
             Join Date
             <input
+              id="edit-join-date-input"
               name="joinDate"
               type="date"
               defaultValue={member.profile?.joinDate ? format(new Date(member.profile.joinDate), "yyyy-MM-dd") : ""}
@@ -252,6 +267,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           {enabledFields.baptismDate && <label className="grid gap-1 text-xs uppercase text-slate-400">
             Baptism Date
             <input
+              id="edit-baptism-date-input"
               name="baptismDate"
               type="date"
               defaultValue={member.profile?.baptismDate ? format(new Date(member.profile.baptismDate), "yyyy-MM-dd") : ""}
@@ -261,6 +277,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           {enabledFields.joinMethod && <label className="grid gap-1 text-xs uppercase text-slate-400">
             Join Method
             <input
+              id="edit-join-method-input"
               name="joinMethod"
               defaultValue={member.profile?.joinMethod ?? ""}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -269,6 +286,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           {enabledFields.maritalStatus && <label className="grid gap-1 text-xs uppercase text-slate-400">
             Marital Status
             <input
+              id="edit-marital-status-input"
               name="maritalStatus"
               defaultValue={member.profile?.maritalStatus ?? ""}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -277,6 +295,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             Status
             <select
+              id="edit-status-select"
               name="status"
               defaultValue={member.status ?? "active"}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -288,6 +307,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           <label className="grid gap-1 text-xs uppercase text-slate-400">
             Role
             <select
+              id="edit-role-select"
               name="roleId"
               defaultValue={primaryRoleId}
               className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100 disabled:opacity-50"
@@ -303,6 +323,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           <label className="grid gap-1 text-xs uppercase text-slate-400 md:col-span-2">
             Notes
             <textarea
+              id="edit-notes-textarea"
               name="notes"
               rows={3}
               defaultValue={member.profile?.notes ?? ""}
@@ -311,6 +332,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           </label>
           <div className="md:col-span-2 flex justify-end gap-2">
             <button
+              id="edit-cancel-button"
               type="button"
               onClick={() => setIsEditOpen(false)}
               className="rounded-md border border-slate-700 px-4 py-2 text-sm text-slate-200 transition hover:bg-slate-900"
@@ -318,6 +340,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
               Cancel
             </button>
             <button
+              id="edit-save-changes-button"
               type="submit"
               className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
             >
@@ -351,6 +374,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
         >
           <input type="hidden" name="userId" value={member.id} />
           <button
+            id="remove-member-cancel-button"
             type="button"
             onClick={() => setIsRemoveOpen(false)}
             className="rounded-md border border-slate-700 px-4 py-2 text-sm text-slate-200 transition hover:bg-slate-900"
@@ -358,6 +382,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
             Cancel
           </button>
           <button
+            id="remove-member-confirm-button"
             type="submit"
             className="rounded-md bg-red-500 px-4 py-2 text-sm font-medium text-red-950 transition hover:bg-red-400"
           >
@@ -383,6 +408,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
               <label className="grid gap-1 text-xs uppercase text-slate-400">
                 Full Name
                 <input
+                  id="add-child-full-name-input"
                   name="fullName"
                   className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
                 />
@@ -390,6 +416,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
               <label className="grid gap-1 text-xs uppercase text-slate-400">
                 Date of Birth
                 <input
+                  id="add-child-dob-input"
                   name="dateOfBirth"
                   type="date"
                   className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -398,6 +425,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
               <label className="col-span-2 grid gap-1 text-xs uppercase text-slate-400">
                 Allergies
                 <input
+                  id="add-child-allergies-input"
                   name="allergies"
                   className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
                 />
@@ -405,6 +433,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
               <label className="col-span-2 grid gap-1 text-xs uppercase text-slate-400">
                 Medical Notes
                 <textarea
+                  id="add-child-medical-notes-textarea"
                   name="medicalNotes"
                   rows={3}
                   className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
@@ -413,6 +442,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
             </div>
             <div className="mt-4 flex justify-end">
               <button
+                id="add-child-button"
                 type="submit"
                 className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
               >
@@ -431,8 +461,20 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
                       <p className="text-xs text-slate-400">Born: {format(new Date(child.dateOfBirth), "d MMM yyyy")}</p>
                     </div>
                     <div className="flex gap-2">
-                      <button type="button" className="rounded-md bg-slate-700 px-3 py-1 text-xs font-medium text-slate-100 transition hover:bg-slate-600">Edit</button>
-                      <button type="button" className="rounded-md border border-red-700 px-3 py-1 text-xs font-medium text-red-200 transition hover:bg-red-900/40">Remove</button>
+                      <button
+                        id={`edit-child-button-${child.id}`}
+                        type="button"
+                        className="rounded-md bg-slate-700 px-3 py-1 text-xs font-medium text-slate-100 transition hover:bg-slate-600"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        id={`remove-child-button-${child.id}`}
+                        type="button"
+                        className="rounded-md border border-red-700 px-3 py-1 text-xs font-medium text-red-200 transition hover:bg-red-900/40"
+                      >
+                        Remove
+                      </button>
                     </div>
                   </li>
                 ))

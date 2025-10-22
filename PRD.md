@@ -218,6 +218,12 @@ This feature is designed to provide spiritual support to the congregation throug
 - **Auth client**: OIDC/OAuth via Auth0 SDK or custom OIDC client.
 - **PWA**: Next PWA plugin, service worker for caching “shell” + key GETs.
 
+### 4.3.1 UI & Theming
+
+- **Theme Switching**: The application supports both light and dark themes, with a toggle available in the user navigation header. The user's preference is persisted in local storage.
+- **Sidebar Navigation**: The main sidebar navigation has been updated to include icons for each menu item, providing a more intuitive user experience. The currently active page is highlighted.
+- **UI Automation IDs**: To ensure testability, all major interactive elements (buttons, links, inputs, etc.) are assigned a unique `id` attribute. This is a strict requirement for all new UI components.
+
 ### 4.4 Testing & Quality
 
 - **Unit/Integration**: **Jest** (backend), **Vitest** (frontend if preferred).
