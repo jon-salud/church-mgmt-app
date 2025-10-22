@@ -237,7 +237,6 @@ export const mockPrayerRequests: MockPrayerRequest[] = [
     authorName: 'John D.',
     isAnonymous: false,
     createdAt: makeDate(-5),
-    approvedAt: makeDate(-4),
   },
   {
     id: 'prayer-2',
@@ -247,7 +246,6 @@ export const mockPrayerRequests: MockPrayerRequest[] = [
     authorName: 'Anonymous',
     isAnonymous: true,
     createdAt: makeDate(-3),
-    approvedAt: makeDate(-2),
   },
   {
     id: 'prayer-3',
