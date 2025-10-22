@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test } from "@playwright/test";
 import { DashboardPage } from "./page-objects/DashboardPage";
 import { MembersPage } from "./page-objects/MembersPage";
 import { HouseholdsPage } from "./page-objects/HouseholdsPage";
@@ -12,76 +12,148 @@ import { AuditLogPage } from "./page-objects/AuditLogPage";
 import { PastoralCarePage } from "./page-objects/PastoralCarePage";
 import { SettingsPage } from "./page-objects/SettingsPage";
 
-test.describe("Accessibility affordances", () => {
+test.describe("Accessibility tests for the pages", () => {
     test("dashboard is accessible", async ({ page }) => {
         const dashboardPage = new DashboardPage(page);
         await dashboardPage.goto();
+        await page.waitForLoadState("load");
+        await dashboardPage.checkAccessibility();
+
+        const themeSwitcherButton = page.locator("#theme-switcher-button");
+        await themeSwitcherButton.dblclick();
+        await page.waitForLoadState("load");
         await dashboardPage.checkAccessibility();
     });
 
     test("members page is accessible", async ({ page }) => {
         const membersPage = new MembersPage(page);
         await membersPage.goto();
+        await page.waitForLoadState("load");
+        await membersPage.checkAccessibility();
+
+        const themeSwitcherButton = page.locator("#theme-switcher-button");
+        await themeSwitcherButton.dblclick();
+        await page.waitForLoadState("load");
         await membersPage.checkAccessibility();
     });
 
     test("households page is accessible", async ({ page }) => {
         const householdsPage = new HouseholdsPage(page);
         await householdsPage.goto();
+        await page.waitForLoadState("load");
+        await householdsPage.checkAccessibility();
+
+        const themeSwitcherButton = page.locator("#theme-switcher-button");
+        await themeSwitcherButton.dblclick();
+        await page.waitForLoadState("load");
         await householdsPage.checkAccessibility();
     });
 
     test("groups page is accessible", async ({ page }) => {
         const groupsPage = new GroupsPage(page);
         await groupsPage.goto();
+        await page.waitForLoadState("load");
+        await groupsPage.checkAccessibility();
+
+        const themeSwitcherButton = page.locator("#theme-switcher-button");
+        await themeSwitcherButton.dblclick();
+        await page.waitForLoadState("load");
         await groupsPage.checkAccessibility();
     });
 
     test("events page is accessible", async ({ page }) => {
         const eventsPage = new EventsPage(page);
         await eventsPage.goto();
+        await page.waitForLoadState("load");
+        await eventsPage.checkAccessibility();
+
+        const themeSwitcherButton = page.locator("#theme-switcher-button");
+        await themeSwitcherButton.dblclick();
+        await page.waitForLoadState("load");
         await eventsPage.checkAccessibility();
     });
 
     test("announcements page is accessible", async ({ page }) => {
         const announcementsPage = new AnnouncementsPage(page);
         await announcementsPage.goto();
+        await page.waitForLoadState("load");
+        await announcementsPage.checkAccessibility();
+
+        const themeSwitcherButton = page.locator("#theme-switcher-button");
+        await themeSwitcherButton.dblclick();
+        await page.waitForLoadState("load");
         await announcementsPage.checkAccessibility();
     });
 
     test("prayer page is accessible", async ({ page }) => {
         const prayerPage = new PrayerPage(page);
         await prayerPage.goto();
+        await page.waitForLoadState("load");
+        await prayerPage.checkAccessibility();
+
+        const themeSwitcherButton = page.locator("#theme-switcher-button");
+        await themeSwitcherButton.dblclick();
+        await page.waitForLoadState("load");
         await prayerPage.checkAccessibility();
     });
 
     test("giving page is accessible", async ({ page }) => {
         const givingPage = new GivingPage(page);
         await givingPage.goto();
+        await page.waitForLoadState("load");
+        await givingPage.checkAccessibility();
+
+        const themeSwitcherButton = page.locator("#theme-switcher-button");
+        await themeSwitcherButton.dblclick();
+        await page.waitForLoadState("load");
         await givingPage.checkAccessibility();
     });
 
     test("roles page is accessible", async ({ page }) => {
         const rolesPage = new RolesPage(page);
         await rolesPage.goto();
+        await page.waitForLoadState("load");
+        await rolesPage.checkAccessibility();
+
+        const themeSwitcherButton = page.locator("#theme-switcher-button");
+        await themeSwitcherButton.dblclick();
+        await page.waitForLoadState("load");
         await rolesPage.checkAccessibility();
     });
 
     test("audit log page is accessible", async ({ page }) => {
         const auditLogPage = new AuditLogPage(page);
         await auditLogPage.goto();
+        await page.waitForLoadState("load");
+        await auditLogPage.checkAccessibility();
+
+        const themeSwitcherButton = page.locator("#theme-switcher-button");
+        await themeSwitcherButton.dblclick();
+        await page.waitForLoadState("load");
         await auditLogPage.checkAccessibility();
     });
 
     test("pastoral care page is accessible", async ({ page }) => {
         const pastoralCarePage = new PastoralCarePage(page);
         await pastoralCarePage.goto();
+        await page.waitForLoadState("load");
+        await pastoralCarePage.checkAccessibility();
+
+        const themeSwitcherButton = page.locator("#theme-switcher-button");
+        await themeSwitcherButton.dblclick();
+        await page.waitForLoadState("load");
         await pastoralCarePage.checkAccessibility();
     });
 
     test("settings page is accessible", async ({ page }) => {
         const settingsPage = new SettingsPage(page);
         await settingsPage.goto();
+        await page.waitForLoadState("load");
+        await settingsPage.checkAccessibility();
+
+        const themeSwitcherButton = page.locator("#theme-switcher-button");
+        await themeSwitcherButton.dblclick();
+        await page.waitForLoadState("load");
         await settingsPage.checkAccessibility();
     });
 });
