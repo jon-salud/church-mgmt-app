@@ -14,10 +14,10 @@ export default async function HouseholdsPage() {
               id={`household-link-${household.id}`}
               key={household.id}
               href={`/households/${household.id}`}
-              className="block rounded-lg border border-slate-700 p-4 transition hover:bg-slate-800"
+              className="block rounded-lg border border-border p-4 transition hover:bg-muted"
             >
               <h2 className="text-lg font-semibold">{household.name}</h2>
-              <p className="text-sm text-slate-400">
+              <p className="text-sm text-muted-foreground">
                 {household.memberCount} member{household.memberCount === 1 ? '' : 's'}
               </p>
             </Link>

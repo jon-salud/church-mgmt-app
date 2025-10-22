@@ -59,8 +59,8 @@ export default function SettingsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold">Optional Fields</h1>
-      <p className="mt-2 text-slate-400">
+      <h1 className="text-2xl font-bold text-foreground">Optional Fields</h1>
+      <p className="mt-2 text-muted-foreground">
         Configure which optional fields are available for member profiles in your church.
       </p>
 
@@ -80,10 +80,10 @@ export default function SettingsPage() {
           ))}
         </div>
 
-        <div className="flex justify-end border-t border-slate-800 pt-6">
+        <div className="flex justify-end border-t border-border pt-6">
           <button
             onClick={handleSaveChanges}
-            className="rounded-md bg-sky-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-500"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
           >
             Save Changes
           </button>

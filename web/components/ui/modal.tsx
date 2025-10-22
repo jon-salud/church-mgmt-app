@@ -39,21 +39,21 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
       aria-modal="true"
       role="dialog"
       aria-labelledby={labelledBy}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 px-4 backdrop-blur"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 px-4 backdrop-blur"
       onMouseDown={onClose}
     >
       <div
-        className="w-full max-w-2xl overflow-hidden rounded-xl border border-slate-800 bg-slate-950 shadow-2xl shadow-slate-950/40"
+        className="w-full max-w-2xl overflow-hidden rounded-xl border border-border bg-card shadow-2xl"
         onMouseDown={event => event.stopPropagation()}
       >
-        <header className="flex items-center justify-between border-b border-slate-800 px-6 py-4">
-          <h2 id={labelledBy} className="text-lg font-semibold text-slate-100">
+        <header className="flex items-center justify-between border-b border-border px-6 py-4">
+          <h2 id={labelledBy} className="text-lg font-semibold text-card-foreground">
             {title}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md border border-transparent px-3 py-1 text-sm text-slate-400 transition hover:border-slate-700 hover:text-slate-200"
+            className="rounded-md border border-transparent px-3 py-1 text-sm text-muted-foreground transition hover:border-primary hover:text-primary"
           >
             Close
           </button>
@@ -62,7 +62,7 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
           {children}
         </div>
         {footer ? (
-          <footer className="border-t border-slate-800 bg-slate-950/60 px-6 py-3">
+          <footer className="border-t border-border bg-muted px-6 py-3">
             {footer}
           </footer>
         ) : null}

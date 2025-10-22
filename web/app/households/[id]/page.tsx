@@ -7,7 +7,7 @@ export default async function HouseholdDetailPage({ params }: { params: { id: st
   return (
     <div>
       <h1 className="text-2xl font-bold">{household.name}</h1>
-      <p className="text-sm text-slate-400">{household.address}</p>
+      <p className="text-sm text-muted-foreground">{household.address}</p>
 
       <div className="mt-8">
         <h2 className="text-xl font-bold">Members</h2>
@@ -17,12 +17,12 @@ export default async function HouseholdDetailPage({ params }: { params: { id: st
               id={`member-link-${member.id}`}
               key={member.id}
               href={`/members/${member.id}`}
-              className="block rounded-lg border border-slate-700 p-4 transition hover:bg-slate-800"
+              className="block rounded-lg border border-border p-4 transition hover:bg-muted"
             >
               <h3 className="text-lg font-semibold">
                 {member.profile.firstName} {member.profile.lastName}
               </h3>
-              <p className="text-sm text-slate-400">{member.profile.householdRole}</p>
+              <p className="text-sm text-muted-foreground">{member.profile.householdRole}</p>
             </Link>
           ))}
         </div>

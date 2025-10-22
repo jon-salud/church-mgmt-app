@@ -88,14 +88,14 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
     <section className="space-y-8">
       <header>
         <h1 className="text-3xl font-semibold tracking-tight">Audit Log</h1>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-muted-foreground">
           Review recent administrative activity across members, groups, events, giving, and announcements.
         </p>
       </header>
 
       <form className="grid gap-4 md:grid-cols-5" method="get">
         <div className="flex flex-col gap-1">
-          <label htmlFor="entity" className="text-xs font-semibold uppercase text-slate-400">
+          <label htmlFor="entity" className="text-xs font-semibold uppercase text-muted-foreground">
             Entity
           </label>
           <input
@@ -103,11 +103,11 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
             name="entity"
             defaultValue={entity ?? ''}
             placeholder="event | contribution"
-            className="rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+            className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="actorUserId" className="text-xs font-semibold uppercase text-slate-400">
+          <label htmlFor="actorUserId" className="text-xs font-semibold uppercase text-muted-foreground">
             Actor ID
           </label>
           <input
@@ -115,11 +115,11 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
             name="actorUserId"
             defaultValue={actorUserId ?? ''}
             placeholder="user-admin"
-            className="rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+            className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="entityId" className="text-xs font-semibold uppercase text-slate-400">
+          <label htmlFor="entityId" className="text-xs font-semibold uppercase text-muted-foreground">
             Entity ID
           </label>
           <input
@@ -127,11 +127,11 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
             name="entityId"
             defaultValue={entityId ?? ''}
             placeholder="event-sunday-service"
-            className="rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+            className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="from" className="text-xs font-semibold uppercase text-slate-400">
+          <label htmlFor="from" className="text-xs font-semibold uppercase text-muted-foreground">
             From
           </label>
           <input
@@ -139,11 +139,11 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
             name="from"
             type="date"
             defaultValue={from ?? ''}
-            className="rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+            className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="to" className="text-xs font-semibold uppercase text-slate-400">
+          <label htmlFor="to" className="text-xs font-semibold uppercase text-muted-foreground">
             To
           </label>
           <input
@@ -151,14 +151,14 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
             name="to"
             type="date"
             defaultValue={to ?? ''}
-            className="rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+            className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
           />
         </div>
         <div className="md:col-span-5 flex items-center gap-2">
           <button
             id="apply-filters-button"
             type="submit"
-            className="rounded-md border border-slate-600 px-4 py-2 text-sm font-medium text-slate-100 transition hover:bg-slate-800"
+            className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground transition hover:bg-muted"
           >
             Apply Filters
           </button>
@@ -166,7 +166,7 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
             <Link
               id="reset-filters-link"
               href="/audit-log"
-              className="text-sm font-medium text-slate-400 underline-offset-4 hover:text-slate-200 hover:underline"
+              className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
             >
               Reset
             </Link>
@@ -174,13 +174,18 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
         </div>
       </form>
 
-      <div className="rounded-xl border border-slate-800 bg-slate-950/60 shadow-lg shadow-slate-950/40">
+      <div className="rounded-xl border border-border bg-card/60 shadow-lg shadow-black/5">
         {audit.items.length === 0 ? (
-          <div className="p-6 text-sm text-slate-400">No audit entries match the current filters.</div>
+          <div className="p-6 text-sm text-muted-foreground">No audit entries match the current filters.</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-800 text-sm">
-              <thead className="text-left text-xs uppercase text-slate-400">
+          <div
+            className="overflow-x-auto"
+            tabIndex={0}
+            role="region"
+            aria-label="Audit log entries"
+          >
+            <table className="min-w-full divide-y divide-border text-sm">
+              <thead className="text-left text-xs uppercase text-muted-foreground">
                 <tr>
                   <th className="px-4 py-3">When</th>
                   <th className="px-4 py-3">Summary</th>
@@ -189,43 +194,43 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
                   <th className="px-4 py-3">Details</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800">
+              <tbody className="divide-y divide-border">
                 {audit.items.map(log => {
                   const actor = log.actor ?? null;
                   const metadataEntries = Object.entries(log.metadata ?? {});
                   const filteredEntries = metadataEntries.filter(([, value]) => value !== undefined);
                   return (
-                    <tr key={log.id} className="hover:bg-slate-900/60">
-                      <td className="px-4 py-3 align-top text-xs text-slate-400">
+                    <tr key={log.id} className="hover:bg-muted/60">
+                      <td className="px-4 py-3 align-top text-xs text-muted-foreground">
                         {format(new Date(log.createdAt), 'd MMM yyyy, h:mma')}
                       </td>
                       <td className="px-4 py-3 align-top">
-                        <p className="font-medium text-slate-100">{log.summary}</p>
-                        <p className="text-xs uppercase tracking-wide text-slate-500">{log.action}</p>
+                        <p className="font-medium text-foreground">{log.summary}</p>
+                        <p className="text-xs uppercase tracking-wide text-muted-foreground">{log.action}</p>
                       </td>
                       <td className="px-4 py-3 align-top">
-                        <p className="font-medium text-slate-100">{formatName(actor ?? undefined)}</p>
-                        <p className="text-xs text-slate-500">{actor?.primaryEmail ?? log.actorUserId}</p>
+                        <p className="font-medium text-foreground">{formatName(actor ?? undefined)}</p>
+                        <p className="text-xs text-muted-foreground">{actor?.primaryEmail ?? log.actorUserId}</p>
                       </td>
                       <td className="px-4 py-3 align-top">
-                        <span className="inline-flex rounded bg-slate-800 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-slate-200">
+                        <span className="inline-flex rounded bg-muted px-2 py-1 text-xs font-semibold uppercase tracking-wide text-foreground">
                           {log.entity}
                         </span>
                         {log.entityId ? (
-                          <p className="mt-1 text-xs text-slate-500">{log.entityId}</p>
+                          <p className="mt-1 text-xs text-muted-foreground">{log.entityId}</p>
                         ) : null}
                       </td>
-                      <td className="px-4 py-3 align-top text-xs text-slate-300">
+                      <td className="px-4 py-3 align-top text-xs text-foreground">
                         {filteredEntries.length > 0 ? (
                           <ul className="space-y-1">
                             {filteredEntries.map(([key, value]) => (
                               <li key={key}>
-                                <span className="text-slate-500">{key}:</span> {formatMetadataValue(value)}
+                                <span className="text-muted-foreground">{key}:</span> {formatMetadataValue(value)}
                               </li>
                             ))}
                           </ul>
                         ) : (
-                          <span className="text-slate-500">—</span>
+                          <span className="text-muted-foreground">—</span>
                         )}
                       </td>
                     </tr>
@@ -238,7 +243,7 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
       </div>
 
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-muted-foreground">
           Showing page {audit.meta.page} of {totalPages} · {audit.meta.total} total entries
         </p>
         <div className="flex items-center gap-3">
@@ -246,23 +251,23 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
             <Link
               id="previous-page-link"
               href={buildHref(audit.meta.page - 1)}
-              className="text-sm font-medium text-slate-200 underline-offset-4 hover:underline"
+              className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
             >
               Previous
             </Link>
           ) : (
-            <span className="text-sm text-slate-600">Previous</span>
+            <span className="text-sm text-muted-foreground">Previous</span>
           )}
           {audit.meta.page < totalPages ? (
             <Link
               id="next-page-link"
               href={buildHref(audit.meta.page + 1)}
-              className="text-sm font-medium text-slate-200 underline-offset-4 hover:underline"
+              className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
             >
               Next
             </Link>
           ) : (
-            <span className="text-sm text-slate-600">Next</span>
+            <span className="text-sm text-muted-foreground">Next</span>
           )}
         </div>
       </div>
