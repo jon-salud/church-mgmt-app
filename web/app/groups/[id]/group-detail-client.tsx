@@ -35,27 +35,27 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
     <section className="space-y-6">
       <div>
         <h1 className="text-3xl font-semibold">{group.name}</h1>
-        <p className="text-sm text-slate-400">{group.description || "No description yet."}</p>
-        <p className="text-xs text-slate-500">
+        <p className="text-sm text-muted-foreground">{group.description || "No description yet."}</p>
+        <p className="text-xs text-muted-foreground">
           Meeting {group.meetingDay || "TBA"} {group.meetingTime && `· ${group.meetingTime}`} • Tags:{" "}
           {group.tags?.join(", ") || "None"}
         </p>
       </div>
 
-      <section className="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
+      <section className="rounded-xl border border-border bg-card p-5">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <h2 className="text-lg font-semibold text-slate-100">Members</h2>
+          <h2 className="text-lg font-semibold text-card-foreground">Members</h2>
           <button
             id="add-member-button"
             type="button"
             onClick={() => setIsAddOpen(true)}
-            className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
           >
             Add member
           </button>
         </div>
         <table className="mt-3 min-w-full text-sm">
-          <thead className="text-left text-xs uppercase text-slate-400">
+          <thead className="text-left text-xs uppercase text-muted-foreground">
             <tr>
               <th className="py-2">Name</th>
               <th className="py-2">Role</th>
@@ -64,7 +64,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
               <th className="py-2">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800">
+          <tbody className="divide-y divide-border">
             {group.members?.map((member: any) => (
               <tr key={member.userId}>
                 <td className="py-2">
@@ -76,9 +76,9 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
                     {member.user.profile.firstName} {member.user.profile.lastName}
                   </Link>
                 </td>
-                <td className="py-2 text-slate-300">{member.role}</td>
-                <td className="py-2 text-slate-400">{member.status}</td>
-                <td className="py-2 text-slate-400">{format(new Date(member.joinedAt), "d MMM yyyy")}</td>
+                <td className="py-2 text-muted-foreground">{member.role}</td>
+                <td className="py-2 text-muted-foreground">{member.status}</td>
+                <td className="py-2 text-muted-foreground">{format(new Date(member.joinedAt), "d MMM yyyy")}</td>
                 <td className="py-2">
                   <button
                     id={`manage-member-button-${member.userId}`}
@@ -91,7 +91,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
                         status: member.status,
                       })
                     }
-                    className="rounded-md border border-slate-700 px-3 py-1 text-xs text-slate-200 transition hover:bg-slate-900"
+                    className="rounded-md border border-border px-3 py-1 text-xs text-foreground transition hover:bg-muted"
                   >
                     Manage
                   </button>
@@ -102,21 +102,21 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
         </table>
       </section>
 
-      <section className="rounded-xl border border-slate-800 bg-slate-950/60 p-5">
+      <section className="rounded-xl border border-border bg-card p-5">
         <h2 className="text-lg font-semibold">Upcoming events</h2>
         {group.events?.length ? (
           <ul className="mt-3 space-y-2 text-sm">
             {group.events.map((event: any) => (
-              <li key={event.id} className="rounded-md border border-slate-800 bg-slate-950/60 p-3">
+              <li key={event.id} className="rounded-md border border-border bg-background p-3">
                 <p className="font-medium">{event.title}</p>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-muted-foreground">
                   {format(new Date(event.startAt), "d MMM yyyy, h:mma")} · {event.location || "TBA"}
                 </p>
               </li>
             ))}
           </ul>
         ) : (
-          <p className="text-sm text-slate-400">No scheduled events yet.</p>
+          <p className="text-sm text-muted-foreground">No scheduled events yet.</p>
         )}
       </section>
 
@@ -125,7 +125,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
         onClose={() => setIsAddOpen(false)}
         title="Add member to group"
         footer={
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-muted-foreground">
             Members can have different roles across groups. Use this dialog to invite them to {group.name}.
           </p>
         }
@@ -137,12 +137,12 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
             onSubmit={() => setIsAddOpen(false)}
           >
             <input type="hidden" name="groupId" value={group.id} />
-            <label className="grid gap-1 text-xs uppercase text-slate-400">
+            <label className="grid gap-1 text-xs uppercase text-muted-foreground">
               Member
               <select
                 id="add-member-select"
                 name="userId"
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 defaultValue=""
                 required
               >
@@ -156,13 +156,13 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
                 ))}
               </select>
             </label>
-            <label className="grid gap-1 text-xs uppercase text-slate-400">
+            <label className="grid gap-1 text-xs uppercase text-muted-foreground">
               Role
               <select
                 id="add-member-role-select"
                 name="role"
                 defaultValue="Member"
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
               >
                 <option value="Member">Member</option>
                 <option value="Leader">Leader</option>
@@ -170,13 +170,13 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
                 <option value="Volunteer">Volunteer</option>
               </select>
             </label>
-            <label className="grid gap-1 text-xs uppercase text-slate-400">
+            <label className="grid gap-1 text-xs uppercase text-muted-foreground">
               Status
               <select
                 id="add-member-status-select"
                 name="status"
                 defaultValue="Active"
-                className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
               >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
@@ -187,21 +187,21 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
                 id="add-member-cancel-button"
                 type="button"
                 onClick={() => setIsAddOpen(false)}
-                className="rounded-md border border-slate-700 px-4 py-2 text-sm text-slate-200 transition hover:bg-slate-900"
+                className="rounded-md border border-border px-4 py-2 text-sm text-foreground transition hover:bg-muted"
               >
                 Cancel
               </button>
               <button
                 id="add-member-submit-button"
                 type="submit"
-                className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
+                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
               >
                 Add Member
               </button>
             </div>
           </form>
         ) : (
-          <p className="text-sm text-slate-300">
+          <p className="text-sm text-foreground">
             All members are already part of this group. Remove someone first to invite them again.
           </p>
         )}
@@ -212,7 +212,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
         onClose={() => setMemberModal(null)}
         title={memberModal ? `Manage ${memberModal.name}` : "Manage member"}
         footer={
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-muted-foreground">
             Changes update the member&apos;s record for this group only and trigger revalidation right away.
           </p>
         }
@@ -226,13 +226,13 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
             >
               <input type="hidden" name="groupId" value={group.id} />
               <input type="hidden" name="userId" value={memberModal.userId} />
-              <label className="grid gap-1 text-xs uppercase text-slate-400">
+              <label className="grid gap-1 text-xs uppercase text-muted-foreground">
                 Role
                 <select
                   id="manage-member-role-select"
                   name="role"
                   defaultValue={memberModal.role}
-                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 >
                   <option value="Member">Member</option>
                   <option value="Leader">Leader</option>
@@ -240,13 +240,13 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
                   <option value="Volunteer">Volunteer</option>
                 </select>
               </label>
-              <label className="grid gap-1 text-xs uppercase text-slate-400">
+              <label className="grid gap-1 text-xs uppercase text-muted-foreground">
                 Status
                 <select
                   id="manage-member-status-select"
                   name="status"
                   defaultValue={memberModal.status}
-                  className="rounded-md border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-100"
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 >
                   <option value="Active">Active</option>
                   <option value="Inactive">Inactive</option>
@@ -257,14 +257,14 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
                   id="manage-member-close-button"
                   type="button"
                   onClick={() => setMemberModal(null)}
-                  className="rounded-md border border-slate-700 px-4 py-2 text-sm text-slate-200 transition hover:bg-slate-900"
+                  className="rounded-md border border-border px-4 py-2 text-sm text-foreground transition hover:bg-muted"
                 >
                   Close
                 </button>
                 <button
                   id="manage-member-save-button"
                   type="submit"
-                  className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-slate-950 transition hover:bg-sky-400"
+                  className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
                 >
                   Save Changes
                 </button>
@@ -273,21 +273,21 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
 
             <form
               action={removeGroupMemberAction}
-              className="rounded-lg border border-red-900/50 bg-red-950/40 px-4 py-3"
+              className="rounded-lg border border-destructive/50 bg-destructive/20 px-4 py-3"
               onSubmit={() => setMemberModal(null)}
             >
               <input type="hidden" name="groupId" value={group.id} />
               <input type="hidden" name="userId" value={memberModal.userId} />
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <h3 className="text-sm font-semibold text-red-200">Remove from group</h3>
-                  <p className="text-xs text-red-200/80">
+                  <h3 className="text-sm font-semibold text-destructive-foreground">Remove from group</h3>
+                  <p className="text-xs text-destructive-foreground/80">
                     This only affects membership in {group.name}. Attendance history remains intact.
                   </p>
                 </div>
                 <button
                   id="remove-member-button"
-                  className="rounded-md bg-red-500 px-3 py-2 text-sm font-medium text-red-950 transition hover:bg-red-400"
+                  className="rounded-md bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground transition hover:bg-destructive/90"
                 >
                   Remove Member
                 </button>
