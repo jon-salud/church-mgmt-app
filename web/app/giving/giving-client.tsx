@@ -63,14 +63,14 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
       </header>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <SummaryCard label="Total giving" value={formatCurrency(summary.totals.overall)} tone="bg-card/60" />
-        <SummaryCard label="Month to date" value={formatCurrency(summary.totals.monthToDate)} tone="bg-emerald-500/10" />
-        <SummaryCard label="Previous month" value={formatCurrency(summary.totals.previousMonth)} tone="bg-amber-500/10" />
-        <SummaryCard label="Average gift" value={formatCurrency(summary.totals.averageGift || 0)} tone="bg-sky-500/10" />
+        <SummaryCard label="Total giving" value={formatCurrency(summary.totals.overall)} variant="default" />
+        <SummaryCard label="Month to date" value={formatCurrency(summary.totals.monthToDate)} variant="emerald" />
+        <SummaryCard label="Previous month" value={formatCurrency(summary.totals.previousMonth)} variant="amber" />
+        <SummaryCard label="Average gift" value={formatCurrency(summary.totals.averageGift || 0)} variant="sky" />
       </section>
 
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
-        <div className="space-y-4">
+        <main className="space-y-4">
           <div className="rounded-xl border border-border bg-card/60 p-5">
             <h2 className="text-lg font-semibold">Recent contributions</h2>
             <table className="mt-3 min-w-full text-sm" aria-describedby="contributions-caption">
@@ -85,7 +85,7 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
                   <th scope="col" className="py-2">Amount</th>
                   <th scope="col" className="py-2">Method</th>
                   <th scope="col" className="py-2">Note</th>
-                  <th scope="col" className="py-2" aria-label="Actions" />
+                  <th scope="col" className="py-2"><span className="sr-only">Actions</span></th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -204,7 +204,7 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
               </button>
             </form>
           </div>
-        </div>
+        </main>
 
         <aside className="space-y-4">
           <div className="rounded-xl border border-border bg-card/60 p-5">
@@ -337,13 +337,33 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
 type SummaryCardProps = {
   label: string;
   value: string;
-  tone?: string;
+  variant?: 'default' | 'emerald' | 'amber' | 'sky';
 };
 
-function SummaryCard({ label, value, tone = "" }: SummaryCardProps) {
+function SummaryCard({ label, value, variant = "default" }: SummaryCardProps) {
+  const variants = {
+    default: {
+      bg: "bg-card/60",
+      labelColor: "text-muted-foreground",
+    },
+    emerald: {
+      bg: "bg-emerald-500/10",
+      labelColor: "text-emerald-800 dark:text-emerald-400",
+    },
+    amber: {
+      bg: "bg-amber-500/10",
+      labelColor: "text-amber-800 dark:text-amber-400",
+    },
+    sky: {
+      bg: "bg-sky-500/10",
+      labelColor: "text-sky-800 dark:text-sky-400",
+    },
+  };
+  const selectedVariant = variants[variant];
+
   return (
-    <div className={`rounded-xl border border-border ${tone} p-4`}>
-      <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
+    <div className={`rounded-xl border border-border ${selectedVariant.bg} p-4`}>
+      <p className={`text-xs uppercase tracking-wide ${selectedVariant.labelColor}`}>{label}</p>
       <p className="mt-2 text-2xl font-semibold text-foreground">{value}</p>
     </div>
   );

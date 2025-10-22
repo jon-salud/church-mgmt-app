@@ -52,7 +52,7 @@ export function RolesClient({ roles }: RolesClientProps) {
         <button
           type="button"
           onClick={() => setCreateOpen(true)}
-          className="self-start rounded-md bg-sky-500 px-3 py-2 text-sm font-medium text-primary-foreground transition hover:bg-sky-400"
+          className="self-start rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
         >
           Create Role
         </button>
@@ -89,7 +89,7 @@ export function RolesClient({ roles }: RolesClientProps) {
                   <div className="flex items-center gap-2">
                     <span>{role.name}</span>
                     {role.slug === "admin" ? (
-                      <span className="rounded-full border border-destructive px-2 py-0.5 text-xs uppercase tracking-wide text-destructive-foreground">
+                      <span className="rounded-full border border-destructive bg-destructive px-2 py-0.5 text-xs uppercase tracking-wide text-destructive-foreground">
                         Admin
                       </span>
                     ) : role.isSystem ? (
@@ -116,7 +116,7 @@ export function RolesClient({ roles }: RolesClientProps) {
                     <button
                       type="button"
                       onClick={() => setDeletingRole(role)}
-                      className="rounded-md border border-destructive px-3 py-1 text-xs font-medium text-destructive-foreground transition hover:bg-destructive/20 disabled:cursor-not-allowed disabled:opacity-40"
+                      className="rounded-md border border-destructive bg-destructive px-3 py-1 text-xs font-medium text-destructive-foreground transition hover:bg-destructive/90 disabled:cursor-not-allowed disabled:opacity-40"
                       disabled={!role.isDeletable || role.slug === "admin"}
                     >
                       Delete
@@ -166,7 +166,7 @@ export function RolesClient({ roles }: RolesClientProps) {
                           type="checkbox"
                           name="permissions"
                           value={permission.key}
-                          className="h-4 w-4 rounded border border-border bg-background text-sky-500 focus:ring-sky-500"
+                          className="h-4 w-4 rounded border border-border bg-background text-primary focus:ring-primary"
                         />
                         <span>{permission.label}</span>
                       </label>
@@ -186,7 +186,7 @@ export function RolesClient({ roles }: RolesClientProps) {
             </button>
             <button
               type="submit"
-              className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-sky-400"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
             >
               Save Role
             </button>
@@ -245,7 +245,7 @@ export function RolesClient({ roles }: RolesClientProps) {
                             name="permissions"
                             value={permission.key}
                             defaultChecked={editingRole.permissions.includes(permission.key)}
-                            className="h-4 w-4 rounded border border-border bg-background text-sky-500 focus:ring-sky-500"
+                            className="h-4 w-4 rounded border border-border bg-background text-primary focus:ring-primary"
                             disabled={editingRole.slug === "admin"}
                           />
                           <span>{permission.label}</span>
@@ -266,7 +266,7 @@ export function RolesClient({ roles }: RolesClientProps) {
               </button>
               <button
                 type="submit"
-                className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-sky-400"
+                className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
               >
                 Save Changes
               </button>

@@ -37,7 +37,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
             id="remove-member-button"
             type="button"
             onClick={() => setIsRemoveOpen(true)}
-            className="rounded-md border border-destructive px-4 py-2 text-sm font-medium text-destructive-foreground transition hover:bg-destructive/90"
+            className="rounded-md border border-destructive bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground transition hover:bg-destructive/90"
           >
             Remove Member
           </button>
@@ -471,7 +471,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
                       <button
                         id={`remove-child-button-${child.id}`}
                         type="button"
-                        className="rounded-md border border-destructive px-3 py-1 text-xs font-medium text-destructive-foreground transition hover:bg-destructive/90"
+                        className="rounded-md border border-destructive bg-destructive px-3 py-1 text-xs font-medium text-destructive-foreground transition hover:bg-destructive/90"
                       >
                         Remove
                       </button>

@@ -50,7 +50,7 @@ export function MembersClient({ members, roles, initialQuery }: MembersClientPro
             id="add-member-button"
             type="button"
             onClick={() => setIsAddOpen(true)}
-            className="rounded-md bg-sky-500 px-3 py-2 text-sm font-medium text-primary-foreground transition hover:bg-sky-400"
+            className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
           >
             Add Member
           </button>
@@ -207,7 +207,7 @@ export function MembersClient({ members, roles, initialQuery }: MembersClientPro
             <button
               id="add-member-create-button"
               type="submit"
-              className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-sky-400"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
             >
               Create Member
             </button>

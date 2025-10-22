@@ -178,7 +178,12 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
         {audit.items.length === 0 ? (
           <div className="p-6 text-sm text-muted-foreground">No audit entries match the current filters.</div>
         ) : (
-          <div className="overflow-x-auto">
+          <div
+            className="overflow-x-auto"
+            tabIndex={0}
+            role="region"
+            aria-label="Audit log entries"
+          >
             <table className="min-w-full divide-y divide-border text-sm">
               <thead className="text-left text-xs uppercase text-muted-foreground">
                 <tr>
@@ -251,7 +256,7 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
               Previous
             </Link>
           ) : (
-            <span className="text-sm text-muted-foreground/60">Previous</span>
+            <span className="text-sm text-muted-foreground">Previous</span>
           )}
           {audit.meta.page < totalPages ? (
             <Link
@@ -262,7 +267,7 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
               Next
             </Link>
           ) : (
-            <span className="text-sm text-muted-foreground/60">Next</span>
+            <span className="text-sm text-muted-foreground">Next</span>
           )}
         </div>
       </div>

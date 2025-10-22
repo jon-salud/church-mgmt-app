@@ -104,7 +104,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
           id="schedule-event-button"
           type="button"
           onClick={() => setIsCreateOpen(true)}
-          className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-sky-400"
+          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
         >
           Schedule event
         </button>
@@ -333,7 +333,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
             <button
               id="create-event-button"
               type="submit"
-              className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-sky-400"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
             >
               Create Event
             </button>
@@ -452,7 +452,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                 <button
                   id="edit-save-changes-button"
                   type="submit"
-                  className="rounded-md bg-sky-500 px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-sky-400"
+                  className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
                 >
                   Save Changes
                 </button>
