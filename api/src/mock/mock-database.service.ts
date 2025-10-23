@@ -35,6 +35,10 @@ import {
   MockPastoralCareComment,
   MockPrayerRequest,
   mockPrayerRequests,
+  MockRequest,
+  mockRequests,
+  MockRequestType,
+  mockRequestTypes,
 } from './mock-data';
 import { AuditLogPersistence } from './audit-log.persistence';
 
@@ -302,6 +306,8 @@ export class MockDatabaseService {
   private pastoralCareTickets: MockPastoralCareTicket[] = [];
   private pastoralCareComments: MockPastoralCareComment[] = [];
   private prayerRequests: MockPrayerRequest[] = clone(mockPrayerRequests);
+  private requests: MockRequest[] = clone(mockRequests);
+  private requestTypes: MockRequestType[] = clone(mockRequestTypes);
   private auditLogs: MockAuditLog[] = clone(mockAuditLogs);
   private sessions: DemoSession[] = clone(mockSessions);
   private oauthAccounts: Array<{ provider: 'google' | 'facebook'; providerUserId: string; userId: string }> = [];
@@ -310,6 +316,10 @@ export class MockDatabaseService {
 
   constructor(private readonly auditPersistence: AuditLogPersistence) {
     this.hydrateAuditLogSnapshot();
+    const churchId = this.getChurch().id;
+    this.requestTypes.forEach((rt) => {
+      rt.churchId = churchId;
+    });
   }
 
   private hydrateAuditLogSnapshot() {
@@ -2134,5 +2144,162 @@ export class MockDatabaseService {
 
   getPrayerRequests() {
     return clone(this.prayerRequests);
+  }
+
+  getRequests() {
+    return clone(this.requests).map((request) => {
+      const author = this.getUserById(request.userId);
+      return {
+        ...request,
+        author,
+      };
+    });
+  }
+
+  createRequest(input: Omit<MockRequest, 'id' | 'createdAt' | 'churchId'>, actorUserId: string) {
+    const now = new Date().toISOString();
+    const request: MockRequest = {
+      id: `req-${randomUUID()}`,
+      churchId: this.getChurch().id,
+      ...input,
+      createdAt: now,
+    };
+    this.requests.push(request);
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'request.created',
+      entity: 'request',
+      entityId: request.id,
+      summary: `${actorName} created a new request`,
+      metadata: {
+        requestId: request.id,
+        requestTypeId: request.requestTypeId,
+      },
+    });
+    return clone(request);
+  }
+
+  listRequestTypes(churchId: string) {
+    return clone(this.requestTypes.filter((rt) => rt.churchId === churchId));
+  }
+
+  createRequestType(name: string, hasConfidentialField: boolean, actorUserId: string, description: string = '') {
+    const churchId = this.getChurch().id;
+    const newRequestType: MockRequestType = {
+      id: `req-type-${randomUUID()}`,
+      name,
+      description,
+      churchId,
+      status: 'active',
+      isBuiltIn: false,
+      displayOrder: this.requestTypes.length + 1,
+      hasConfidentialField,
+    };
+    this.requestTypes.push(newRequestType);
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'requestType.created',
+      entity: 'requestType',
+      entityId: newRequestType.id,
+      summary: `${actorName} created a new request type: ${name}`,
+    });
+    return clone(newRequestType);
+  }
+
+  updateRequestType(id: string, name: string, actorUserId: string) {
+    const requestType = this.requestTypes.find((rt) => rt.id === id);
+    if (!requestType) {
+      throw new Error('Request type not found');
+    }
+    if (requestType.isBuiltIn) {
+      throw new Error('Cannot edit a built-in request type');
+    }
+    const oldName = requestType.name;
+    requestType.name = name;
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'requestType.updated',
+      entity: 'requestType',
+      entityId: id,
+      summary: `${actorName} renamed request type from "${oldName}" to "${name}"`,
+    });
+    return clone(requestType);
+  }
+
+  archiveRequestType(id: string, actorUserId: string) {
+    const requestType = this.requestTypes.find((rt) => rt.id === id);
+    if (!requestType) {
+      throw new Error('Request type not found');
+    }
+    if (requestType.isBuiltIn) {
+      throw new Error('Cannot archive a built-in request type');
+    }
+    const openRequests = this.requests.filter((r) => r.requestTypeId === id && r.status !== 'Closed');
+    if (openRequests.length > 0) {
+      throw new Error('Cannot archive a request type with open requests');
+    }
+    requestType.status = 'archived';
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'requestType.archived',
+      entity: 'requestType',
+      entityId: id,
+      summary: `${actorName} archived request type "${requestType.name}"`,
+    });
+    return clone(requestType);
+  }
+
+  updateRequestTypeStatus(id: string, status: 'active' | 'archived', actorUserId: string) {
+    const requestType = this.requestTypes.find((rt) => rt.id === id);
+    if (!requestType) {
+      throw new Error('Request type not found');
+    }
+    requestType.status = status;
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'requestType.status.updated',
+      entity: 'requestType',
+      entityId: id,
+      summary: `${actorName} updated status of request type "${requestType.name}" to ${status}`,
+    });
+    return clone(requestType);
+  }
+
+  reorderRequestTypes(ids: string[], actorUserId: string) {
+    const idSet = new Set(ids);
+    const reordered: MockRequestType[] = [];
+    const unchanged: MockRequestType[] = [];
+
+    this.requestTypes.forEach(rt => {
+      if (idSet.has(rt.id)) {
+        reordered.push(rt);
+      } else {
+        unchanged.push(rt);
+      }
+    });
+
+    ids.forEach((id, index) => {
+      const rt = reordered.find(rt => rt.id === id);
+      if (rt) {
+        rt.displayOrder = index + 1;
+      }
+    });
+
+    this.requestTypes = [...reordered, ...unchanged].sort((a, b) => a.displayOrder - b.displayOrder);
+
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'requestType.reordered',
+      entity: 'requestType',
+      summary: `${actorName} reordered request types`,
+    });
+
+    return clone(this.requestTypes);
   }
 }

@@ -62,4 +62,25 @@ export const clientApi = {
             body: JSON.stringify(dto),
         });
     },
+    async getRequestTypes(churchId: string) {
+        return apiFetch<any[]>(`/settings/${churchId}/request-types`);
+    },
+    async createRequestType(churchId: string, name: string, hasConfidentialField: boolean, description?: string) {
+        return apiFetch<any>(`/settings/${churchId}/request-types`, {
+            method: 'POST',
+            body: JSON.stringify({ name, hasConfidentialField, description }),
+        });
+    },
+    async reorderRequestTypes(churchId: string, ids: string[]) {
+        return apiFetch<any>(`/settings/${churchId}/request-types/reorder`, {
+            method: 'PUT',
+            body: JSON.stringify({ ids }),
+        });
+    },
+    async updateRequestTypeStatus(churchId: string, id: string, status: 'active' | 'archived') {
+        return apiFetch<any>(`/settings/${churchId}/request-types/${id}/status`, {
+            method: 'PUT',
+            body: JSON.stringify({ status }),
+        });
+    },
 };

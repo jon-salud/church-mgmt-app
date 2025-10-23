@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "nest start --watch",
-    "build": "nest build",
-    "start": "node dist/main.js",
+    "dev": "nest start --watch -e \"node -r tsconfig-paths/register\"",
+    "build": "nest build && tsc-alias",
+    "start": "node -r tsconfig-paths/register dist/main.js",
     "test": "jest --passWithNoTests",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
@@ -51,6 +51,8 @@
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
     "ts-node": "^10.9.2",
+    "tsc-alias": "^1.8.16",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.5.4"
   }
 }

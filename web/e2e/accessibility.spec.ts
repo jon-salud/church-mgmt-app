@@ -6,13 +6,14 @@ import { GroupsPage } from "./page-objects/GroupsPage";
 import { EventsPage } from "./page-objects/EventsPage";
 import { AnnouncementsPage } from "./page-objects/AnnouncementsPage";
 import { PrayerPage } from "./page-objects/PrayerPage";
+import { RequestsPage } from "./page-objects/RequestsPage";
 import { GivingPage } from "./page-objects/GivingPage";
 import { RolesPage } from "./page-objects/RolesPage";
 import { AuditLogPage } from "./page-objects/AuditLogPage";
 import { PastoralCarePage } from "./page-objects/PastoralCarePage";
 import { SettingsPage } from "./page-objects/SettingsPage";
 
-test.describe("Accessibility tests for the pages", () => {
+test.describe("Accessibility tests for all the pages", () => {
     test("dashboard is accessible", async ({ page }) => {
         const dashboardPage = new DashboardPage(page);
         await dashboardPage.goto();
@@ -95,6 +96,18 @@ test.describe("Accessibility tests for the pages", () => {
         await themeSwitcherButton.dblclick();
         await page.waitForLoadState("load");
         await prayerPage.checkAccessibility();
+    });
+
+    test("requests page is accessible", async ({ page }) => {
+        const requestsPage = new RequestsPage(page);
+        await requestsPage.goto();
+        await page.waitForLoadState("load");
+        await requestsPage.checkAccessibility();
+
+        const themeSwitcherButton = page.locator("#theme-switcher-button");
+        await themeSwitcherButton.dblclick();
+        await page.waitForLoadState("load");
+        await requestsPage.checkAccessibility();
     });
 
     test("giving page is accessible", async ({ page }) => {

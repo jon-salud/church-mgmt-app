@@ -4,8 +4,8 @@ import './globals.css';
 import { api } from '../lib/api.server';
 import { ServiceWorkerRegister } from '../components/service-worker-register';
 import { ThemeProvider } from '../components/theme-provider';
-import { ThemeSwitcher } from '../components/theme-switcher';
-import { SidebarNav } from '../components/sidebar-nav';
+import { ThemeSwitcher } from '@/components/theme-switcher';
+import { SidebarNav } from '@/components/sidebar-nav';
 import { logoutAction } from './actions';
 
 export const metadata: Metadata = {
@@ -28,6 +28,7 @@ const memberNavItems: NavItem[] = [
   { href: '/events', label: 'Events', icon: 'Calendar' },
   { href: '/announcements', label: 'Announcements', icon: 'Megaphone' },
   { href: '/prayer', label: 'Prayer Wall', icon: 'HeartHandshake' },
+  { href: '/requests', label: 'Requests', icon: 'HeartHandshake' },
 ];
 
 const givingNavItems: NavItem[] = [{ href: '/giving', label: 'Giving', icon: 'DollarSign' }];
