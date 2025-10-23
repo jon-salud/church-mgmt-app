@@ -17,7 +17,7 @@ async function bootstrap() {
   app.setGlobalPrefix('api/v1');
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalFilters(new HttpErrorFilter(appLogger));
-  app.enableCors({ origin: true });
+  app.enableCors({ origin: 'http://localhost:3000', credentials: true });
 
   if (sentryActive) {
     appLogger.log({ event: 'sentry.initialised' }, 'Bootstrap');

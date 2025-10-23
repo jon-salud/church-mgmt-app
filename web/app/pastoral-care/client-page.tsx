@@ -37,7 +37,7 @@ export function PastoralCareClientPage({ data: initialData }: { data: any[] }) {
           {data.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.title}</TableCell>
-              <TableCell>{item.requestType?.name}</TableCell>
+              <TableCell>{item.type || item.requestType?.name}</TableCell>
               <TableCell>{item.author ? `${item.author.profile.firstName} ${item.author.profile.lastName}`: 'N/A'}</TableCell>
               <TableCell>{item.status || 'Pending'}</TableCell>
               <TableCell>{new Date(item.createdAt).toLocaleDateString()}</TableCell>
