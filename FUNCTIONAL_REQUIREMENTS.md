@@ -235,5 +235,5 @@ This section details the functional requirements for ensuring compliance with da
 ### 10.2. Right to be Forgotten (Admin)
 *   **FR-CMP-004:** The system shall provide a mechanism for Admins to process a member's "right to be forgotten" request.
 *   **FR-CMP-005:** This process shall involve the anonymization of the member's personal data (First Name, Last Name, Email, Phone, Address) in their profile.
-*   **FR-CMP-006:** A record of the anonymization action, including the date and the requesting admin, must be stored for auditing purposes. Financial records (giving history) will be retained for legal reasons but will be disassociated from the anonymized user's personal identity.
+*   **FR-CMP-006:** A record of the anonymization action, including the date and the requesting admin, must be stored for auditing purposes. Historical records (such as giving history, attendance, and group membership) will be retained for legal and statistical purposes but will be disassociated from the anonymized user's personal identity.
 *   **FR-CMP-007:** The anonymization action must be recorded in the audit log.
