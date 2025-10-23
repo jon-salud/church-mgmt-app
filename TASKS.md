@@ -54,6 +54,9 @@ Use this file as the single source of truth for what has shipped in the demo MVP
   - Integrate submissions into the existing Pastoral Care dashboard with a "Type" filter and "View Details" modal.
 - **Unified Request Form (Phase 2):**
   - Implement an admin settings page to allow administrators to define and manage custom request types.
+- **Bug Fixes (Request Types):**
+  - Fixed a bug where the "Request Type" dropdown on the public request form was not working.
+  - Fixed a bug where the Pastoral Care dashboard displayed raw IDs instead of names for request types.
 
 ### 📝 Backlog / Upcoming
 
