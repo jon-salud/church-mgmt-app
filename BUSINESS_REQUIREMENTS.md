@@ -65,6 +65,10 @@ A centralized form that allows members to submit various types of requests, such
 
 The application features a modern and intuitive interface with support for both light and dark themes. The navigation is designed to be user-friendly, with icons and clear labels to help users quickly find the information they need. All interactive elements are designed to be easily identifiable and accessible, ensuring a positive user experience.
 
+### 4.10. Dashboard and Reporting
+
+The application provides a main dashboard for church leadership (Admins) to gain at-a-glance insights into the health and engagement of their congregation. Instead of just presenting raw data, the dashboard uses a series of graphs and charts to visualize key performance indicators, including membership growth, attendance trends, community engagement, financial health, and member demographics. This allows leaders to easily identify trends, make informed decisions, and monitor the impact of their ministry efforts.
+
 ## 5. High-Level Technical Overview
 
 The Church Management Application is built using a modern, robust, and scalable technology stack to ensure a high-quality user experience and long-term maintainability.

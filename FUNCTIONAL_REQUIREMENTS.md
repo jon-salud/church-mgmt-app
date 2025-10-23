@@ -237,3 +237,38 @@ This section details the functional requirements for ensuring compliance with da
 *   **FR-CMP-005:** This process shall involve the anonymization of the member's personal data (First Name, Last Name, Email, Phone, Address) in their profile.
 *   **FR-CMP-006:** A record of the anonymization action, including the date and the requesting admin, must be stored for auditing purposes. Historical records (such as giving history, attendance, and group membership) will be retained for legal and statistical purposes but will be disassociated from the anonymized user's personal identity.
 *   **FR-CMP-007:** The anonymization action must be recorded in the audit log.
+
+## 11. Dashboard and Reporting
+
+This section details the functional requirements for the main Admin dashboard. The dashboard will provide at-a-glance visual insights into key church health metrics.
+
+### 11.1. Membership Growth Graph
+*   **FR-DSH-001:** The dashboard shall display a **Line Chart** titled "Total Members Over Time".
+*   **FR-DSH-002:** The x-axis shall represent the last 12 months.
+*   **FR-DSH-003:** The y-axis shall represent the total number of members.
+*   **FR-DSH-004:** The chart shall plot a point for each month, showing the total member count at the end of that month.
+
+### 11.2. Attendance Trends Graph
+*   **FR-DSH-005:** The dashboard shall display a **Bar Chart** titled "Average Weekly Attendance (Last 6 Months)".
+*   **FR-DSH-006:** The x-axis shall represent the last 6 months.
+*   **FR-DSH-007:** The y-axis shall represent the average number of attendees per week.
+*   **FR-DSH-008:** Each bar shall represent a month, with its height corresponding to the average weekly attendance calculated from all events within that month.
+
+### 11.3. Community Engagement Graph
+*   **FR-DSH-009:** The dashboard shall display a **Donut Chart** titled "Group Membership Breakdown".
+*   **FR-DSH-010:** The chart shall be divided into segments, each representing a different group type (Small Group, Volunteer Team, Service Ministry, etc.).
+*   **FR-DSH-011:** The size of each segment shall represent the percentage of total members who are part of at least one group of that type.
+*   **FR-DSH-012:** Hovering over a segment shall display the group type and the exact percentage.
+
+### 11.4. Financial Health Graph
+*   **FR-DSH-013:** The dashboard shall display a **Combined Bar and Line Chart** titled "Monthly Giving vs. Budget".
+*   **FR-DSH-014:** The x-axis shall represent the last 12 months.
+*   **FR-DSH-015:** The y-axis shall represent the monetary amount in the church client's currency.
+*   **FR-DSH-016:** For each month, a bar shall represent the total giving received.
+*   **FR-DSH-017:** A configurable, straight line representing the monthly budget target shall be overlaid on the chart.
+
+### 11.5. Age Demographics Graph
+*   **FR-DSH-018:** The dashboard shall display a **Horizontal Bar Chart** titled "Member Age Distribution".
+*   **FR-DSH-019:** The y-axis shall list predefined age brackets (e.g., 0-10, 11-18, 19-30, 31-45, 46-60, 60+).
+*   **FR-DSH-020:** The x-axis shall represent the number of members.
+*   **FR-DSH-021:** The length of the bar for each bracket shall correspond to the number of members whose current age falls within that bracket.
