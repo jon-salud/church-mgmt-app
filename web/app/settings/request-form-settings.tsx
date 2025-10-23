@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
@@ -16,6 +17,7 @@ import {
   DialogTitle,
   DialogFooter,
 } from '../../components/ui/dialog';
+import { Textarea } from '../../components/ui/textarea';
 import { RequestType } from '../../lib/types';
 
 function SortableItem({
@@ -59,7 +61,7 @@ function SortableItem({
         onCheckedChange={checked => onToggleActive(requestType.id, checked)}
       />
       {isEditing ? (
-        <Input value={name} onChange={e => setName(e.target.value)} className="flex-grow" />
+        <Input value={name} onChange={(e: React.ChangeEvent<HTMLInputElement>) => setName(e.target.value)} className="flex-grow" />
       ) : (
         <span className="flex-grow">{requestType.name}</span>
       )}
@@ -216,12 +218,12 @@ export default function RequestFormSettings() {
             <Input
               placeholder="Request type name"
               value={newRequestTypeName}
-              onChange={e => setNewRequestTypeName(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewRequestTypeName(e.target.value)}
             />
             <Textarea
               placeholder="Description"
               value={newRequestTypeDescription}
-              onChange={e => setNewRequestTypeDescription(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setNewRequestTypeDescription(e.target.value)}
             />
             <div className="flex items-center space-x-2">
               <Switch
