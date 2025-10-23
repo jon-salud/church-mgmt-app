@@ -11,7 +11,7 @@ This document outlines the database schema for the Church Management SaaS Platfo
 These tables form the foundation of the user and client management system.
 
 ### Table: `churches`
-Stores the information for each church client. This is the top-level table for data isolation.
+Stores the information for each church client.
 - `id` (UUID, Primary Key)
 - `name` (Text, Not Null)
 - `createdAt` (Timestamp, Not Null)
@@ -20,7 +20,7 @@ Stores the information for each church client. This is the top-level table for d
 ---
 
 ### Table: `users`
-Stores the core login identity for each individual across the entire platform. This table contains no church-specific data.
+Stores the core login identity for each individual across the entire platform.
 - `id` (UUID, Primary Key)
 - `email` (Text, Not Null, Unique)
 - `createdAt` (Timestamp, Not Null)
@@ -29,11 +29,11 @@ Stores the core login identity for each individual across the entire platform. T
 ---
 
 ### Table: `profiles`
-Stores the personal, church-specific information related to a user. A single user can have profiles in multiple churches, allowing them to be part of different communities with one login.
+Stores the church-specific profile for a user.
 - `id` (UUID, Primary Key)
-- `userId` (UUID, Foreign Key -> `users.id`, Not Null) - *Links to the core user login.*
-- `churchId` (UUID, Foreign Key -> `churches.id`, Not Null) - *Ensures data is scoped to the correct church.*
-- `householdId` (UUID, Foreign Key -> `households.id`) - *Optional link to a household.*
+- `userId` (UUID, FK -> `users.id`, Not Null)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `householdId` (UUID, FK -> `households.id`) - *Optional link to a household.*
 - `firstName` (Text, Not Null)
 - `lastName` (Text, Not Null)
 - `role` (Enum: 'Admin', 'Leader', 'Member', Not Null)
@@ -45,23 +45,58 @@ Stores the personal, church-specific information related to a user. A single use
 
 ---
 
-## 3. Feature Tables
+## 3. Configuration Tables
 
-### 3.1. Households and Children
+These tables allow administrators to customize the application for their church's specific needs.
+
+### Table: `custom_profile_fields`
+Defines a custom field that can be applied to member profiles.
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `name` (Text, Not Null) - e.g., "Baptism Date"
+- `type` (Enum: 'Text', 'Date', 'Boolean', Not Null)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `custom_profile_field_values`
+Stores the value of a custom field for a specific member profile.
+- `profileId` (UUID, FK -> `profiles.id`, Primary Key)
+- `fieldId` (UUID, FK -> `custom_profile_fields.id`, Primary Key)
+- `value` (Text, Not Null) - *The value is stored as text and cast to the correct type in the application layer.*
+
+### Table: `group_types`
+Stores the admin-configurable types for groups.
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `name` (Text, Not Null) - e.g., "Discipleship Group"
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `checkin_locations`
+Stores the admin-configurable locations for child check-in.
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `name` (Text, Not Null) - e.g., "Nursery (Ages 0-2)"
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+---
+
+## 4. Feature Tables
+
+### 4.1. Households and Children
 
 ### Table: `households`
-Represents a family unit within a church.
 - `id` (UUID, Primary Key)
-- `churchId` (UUID, Foreign Key -> `churches.id`, Not Null)
-- `name` (Text, Not Null) - e.g., "The Smith Family"
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `name` (Text, Not Null)
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
 
 ### Table: `children`
-Stores information about children, linked to a household for parental management.
 - `id` (UUID, Primary Key)
-- `householdId` (UUID, Foreign Key -> `households.id`, Not Null)
-- `churchId` (UUID, Foreign Key -> `churches.id`, Not Null)
+- `householdId` (UUID, FK -> `households.id`, Not Null)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
 - `fullName` (Text, Not Null)
 - `dateOfBirth` (Date)
 - `allergies` (Text)
@@ -69,29 +104,30 @@ Stores information about children, linked to a household for parental management
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
 
-### 3.2. Groups and Ministries
+### 4.2. Groups and Ministries
 
 ### Table: `groups`
 - `id` (UUID, Primary Key)
-- `churchId` (UUID, Foreign Key -> `churches.id`, Not Null)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `groupTypeId` (UUID, FK -> `group_types.id`, Not Null) - *Links to the configurable group type.*
 - `name` (Text, Not Null)
 - `description` (Text)
-- `type` (Enum: 'GeographicalMinistry', 'ServiceMinistry', 'VolunteerTeam', 'SmallGroup', 'Other')
+- `meetingDay` (Enum: 'Sunday', 'Monday', etc.)
+- `meetingTime` (Time)
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
 
 ### Table: `group_members` (Join Table)
-Connects profiles to groups, establishing a many-to-many relationship.
-- `profileId` (UUID, Foreign Key -> `profiles.id`, Primary Key)
-- `groupId` (UUID, Foreign Key -> `groups.id`, Primary Key)
+- `profileId` (UUID, FK -> `profiles.id`, Primary Key)
+- `groupId` (UUID, FK -> `groups.id`, Primary Key)
 - `roleInGroup` (Enum: 'Leader', 'Member', Not Null, Default: 'Member')
 
-### 3.3. Events and Attendance
+### 4.3. Events and Attendance
 
 ### Table: `events`
 - `id` (UUID, Primary Key)
-- `churchId` (UUID, Foreign Key -> `churches.id`, Not Null)
-- `groupId` (UUID, Foreign Key -> `groups.id`) - *Optional link to a specific group.*
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `groupId` (UUID, FK -> `groups.id`) - *Optional link to a specific group.*
 - `title` (Text, Not Null)
 - `description` (Text)
 - `startAt` (Timestamp, Not Null)
@@ -102,19 +138,21 @@ Connects profiles to groups, establishing a many-to-many relationship.
 
 ### Table: `attendance`
 - `id` (UUID, Primary Key)
-- `eventId` (UUID, Foreign Key -> `events.id`, Not Null)
-- `profileId` (UUID, Foreign Key -> `profiles.id`, Not Null)
-- `churchId` (UUID, Foreign Key -> `churches.id`, Not Null)
+- `eventId` (UUID, FK -> `events.id`, Not Null)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `profileId` (UUID, FK -> `profiles.id`) - *Used for adult attendance.*
+- `childId` (UUID, FK -> `children.id`) - *Used for child check-in.*
+- `checkinLocationId` (UUID, FK -> `checkin_locations.id`) - *Optional link to a specific check-in room.*
 - `status` (Enum: 'CheckedIn', 'Absent', 'Excused', Not Null)
 - `note` (Text)
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
 
-### 3.4. Giving and Contributions
+### 4.4. Giving and Contributions
 
 ### Table: `funds`
 - `id` (UUID, Primary Key)
-- `churchId` (UUID, Foreign Key -> `churches.id`, Not Null)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
 - `name` (Text, Not Null)
 - `isArchived` (Boolean, Not Null, Default: false)
 - `createdAt` (Timestamp, Not Null)
@@ -122,9 +160,9 @@ Connects profiles to groups, establishing a many-to-many relationship.
 
 ### Table: `contributions`
 - `id` (UUID, Primary Key)
-- `profileId` (UUID, Foreign Key -> `profiles.id`, Not Null)
-- `fundId` (UUID, Foreign Key -> `funds.id`, Not Null)
-- `churchId` (UUID, Foreign Key -> `churches.id`, Not Null)
+- `profileId` (UUID, FK -> `profiles.id`, Not Null)
+- `fundId` (UUID, FK -> `funds.id`, Not Null)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
 - `amount` (Decimal, Not Null)
 - `date` (Date, Not Null)
 - `method` (Enum: 'Cash', 'BankTransfer', 'Other')
@@ -132,12 +170,12 @@ Connects profiles to groups, establishing a many-to-many relationship.
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
 
-### 3.5. Announcements
+### 4.5. Announcements
 
 ### Table: `announcements`
 - `id` (UUID, Primary Key)
-- `churchId` (UUID, Foreign Key -> `churches.id`, Not Null)
-- `authorProfileId` (UUID, Foreign Key -> `profiles.id`, Not Null)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `authorProfileId` (UUID, FK -> `profiles.id`, Not Null)
 - `title` (Text, Not Null)
 - `body` (Text)
 - `publishAt` (Timestamp, Not Null)
@@ -146,16 +184,14 @@ Connects profiles to groups, establishing a many-to-many relationship.
 - `updatedAt` (Timestamp, Not Null)
 
 ### Table: `announcement_audiences` (Join Table)
-Connects announcements to groups to target specific audiences. If an announcement is for 'All Members', this table would have no entries for that announcement.
-- `announcementId` (UUID, Foreign Key -> `announcements.id`, Primary Key)
-- `groupId` (UUID, Foreign Key -> `groups.id`, Primary Key)
+- `announcementId` (UUID, FK -> `announcements.id`, Primary Key)
+- `groupId` (UUID, FK -> `groups.id`, Primary Key)
 
-### 3.6. Pastoral Care, Prayer, and Requests
+### 4.6. Pastoral Care, Prayer, and Requests
 
 ### Table: `request_types`
-Stores the admin-configurable types for the unified request form.
 - `id` (UUID, Primary Key)
-- `churchId` (UUID, Foreign Key -> `churches.id`, Not Null)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
 - `name` (Text, Not Null)
 - `isBuiltIn` (Boolean, Not Null, Default: false)
 - `isEnabled` (Boolean, Not Null, Default: true)
@@ -164,8 +200,8 @@ Stores the admin-configurable types for the unified request form.
 
 ### Table: `prayer_requests`
 - `id` (UUID, Primary Key)
-- `churchId` (UUID, Foreign Key -> `churches.id`, Not Null)
-- `profileId` (UUID, Foreign Key -> `profiles.id`) - *Null if anonymous.*
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `profileId` (UUID, FK -> `profiles.id`) - *Null if anonymous.*
 - `title` (Text, Not Null)
 - `description` (Text, Not Null)
 - `isAnonymous` (Boolean, Not Null, Default: false)
@@ -175,10 +211,10 @@ Stores the admin-configurable types for the unified request form.
 
 ### Table: `pastoral_care_tickets`
 - `id` (UUID, Primary Key)
-- `churchId` (UUID, Foreign Key -> `churches.id`, Not Null)
-- `requestorProfileId` (UUID, Foreign Key -> `profiles.id`, Not Null)
-- `assigneeProfileId` (UUID, Foreign Key -> `profiles.id`)
-- `requestTypeId` (UUID, Foreign Key -> `request_types.id`)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `requestorProfileId` (UUID, FK -> `profiles.id`, Not Null)
+- `assigneeProfileId` (UUID, FK -> `profiles.id`)
+- `requestTypeId` (UUID, FK -> `request_types.id`)
 - `title` (Text, Not Null)
 - `description` (Text, Not Null)
 - `priority` (Enum: 'Low', 'Normal', 'High', 'Urgent')

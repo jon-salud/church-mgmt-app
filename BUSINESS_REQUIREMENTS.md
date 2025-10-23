@@ -53,6 +53,14 @@ A centralized form that allows members to submit various types of requests, stre
 #### 4.A.9. Leadership Dashboard and Reporting
 The application provides a dashboard for church leadership (Admins) to gain at-a-glance insights into the health of their congregation through graphs and charts visualizing key metrics like membership growth, attendance, and financial health.
 
+#### 4.A.10. Application Configuration
+A key strength of the platform is its flexibility. Church administrators have access to a dedicated settings area where they can customize the application to fit their specific needs and terminology. This includes the ability to define:
+*   **Custom Member Profile Fields:** Create and manage unique data fields to track information that is specific to their members.
+*   **Customizable Group Types:** Define their own categories for groups and ministries.
+*   **Customizable Giving Funds:** Manage the specific funds that members can contribute to.
+*   **Customizable Request Types:** Tailor the unified request form for various administrative and ministry needs.
+*   **Configurable Child Check-In Locations:** Define the specific rooms and locations used for child check-in, matching their building's layout.
+
 ### 4.B: System Administration Features (for the SaaS Owner)
 
 #### 4.B.1. System Owner Dashboard (Observability)
