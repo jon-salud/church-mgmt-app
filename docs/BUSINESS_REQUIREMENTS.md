@@ -24,6 +24,8 @@ The initial release of the platform will focus on the following core functionali
 *   **Prayer Request System:** A moderated module for members to submit prayer requests and for the community to view approved requests.
 *   **General Request Management:** A flexible system for managing various internal requests from members to church staff (e.g., pastoral care, information).
 *   **Event & Service Check-in:** A simple-to-use check-in system for tracking attendance at services, classes, and events.
+*   **Onboarding Wizard:** A guided setup process for new Church Administrators.
+*   **Document Library:** A secure, role-based repository for file sharing.
 *   **Small Group Resource Sharing:** Basic functionality for small groups to share resources via web links.
 *   **Theming:** The user interface will support both light and dark themes for improved accessibility and user preference.
 

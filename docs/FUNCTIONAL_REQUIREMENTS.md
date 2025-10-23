@@ -54,4 +54,48 @@ This feature guides a new Church Administrator through the initial setup of thei
 *   **FR-DOC-009:** Users can download a document by clicking on it. The system must use a secure, time-limited URL for the download.
 
 ---
-*The remaining sections (Member Directory, Groups, Events, Giving, etc.) and Part B (System Administration) are omitted for brevity but are understood to be included in the full document.*
+## A.3. Prayer Wall
+
+### A.3.1. Submit a Prayer Request (Member)
+*   **FR-PRAY-001:** An authenticated member shall be able to navigate to a "Prayer" page.
+*   **FR-PRAY-002:** The page shall contain a form to submit a new prayer request.
+*   **FR-PRAY-003:** The form shall include fields for a `Title` and the `Request Details`.
+*   **FR-PRAY-004:** The form shall include a checkbox labeled "Submit Anonymously". If checked, the user's name will not be attached to the request.
+
+### A.3.2. Moderate Prayer Requests (Admin)
+*   **FR-PRAY-005:** Admins shall have a "Prayer Moderation" dashboard to view all `PendingApproval` prayer requests.
+*   **FR-PRAY-006:** For each pending request, the admin shall have "Approve" and "Deny" actions.
+*   **FR-PRAY-007:** Approving a request shall change its status to `Approved` and make it visible on the public Prayer Wall.
+
+### A.3.3. View Prayer Wall (Member)
+*   **FR-PRAY-008:** The Prayer Wall shall display all `Approved` prayer requests.
+*   **FR-PRAY-009:** If a request was not submitted anonymously, the name of the member who submitted it shall be displayed.
+
+## A.4. General Request Management
+
+### A.4.1. Configure Request Types (Admin)
+*   **FR-REQ-001:** An admin shall be able to access a "Request Types" management page.
+*   **FR-REQ-002:** The admin shall be able to create new request types with a specified `Name`.
+*   **FR-REQ-003:** The admin shall be able to disable a request type. The system must prevent deletion if open requests of that type exist.
+
+### A.4.2. Submit a Request (Member)
+*   **FR-REQ-004:** A member shall be able to navigate to a "Requests" page and click "New Request".
+*   **FR-REQ-005:** The form shall include a dropdown to select from all enabled `Request Types`.
+*   **FR-REQ-006:** The form shall include fields for `Title` and `Description`.
+
+### A.4.3. Manage Requests (Admin)
+*   **FR-REQ-007:** An admin shall have a dashboard to view all submitted requests.
+*   **FR-REQ-008:** An admin can assign a request to a staff member.
+*   **FR-REQ-009:** An admin can update the status of a request between `Pending`, `In Progress`, and `Closed`.
+
+## A.5. Event & Service Check-in
+
+### A.5.1. View Check-in Dashboard (Admin)
+*   **FR-CHK-001:** An admin shall have access to a "Check-in Dashboard".
+*   **FR-CHK-002:** The dashboard shall display a summary of attendance for recent events and services.
+
+### A.5.2. Member Check-in
+*   **FR-CHK-003:** The system shall record attendance when a member is checked into an event.
+
+---
+*The remaining sections and Part B (System Administration) are omitted for brevity but are understood to be included in the full document.*
