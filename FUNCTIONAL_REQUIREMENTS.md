@@ -222,3 +222,18 @@ This section details the functional requirements for the unified request submiss
 *   **FR-REQ-007:** The system shall provide a settings page for Admins to create, edit, archive, and reorder custom request types.
 *   **FR-REQ-008:** Built-in request types can be enabled or disabled by Admins.
 *   **FR-REQ-009:** Admins shall not be able to delete a request type if there are open requests associated with it.
+
+## 10. Data Privacy and Compliance (GDPR)
+
+This section details the functional requirements for ensuring compliance with data privacy regulations.
+
+### 10.1. Data Export (Admin)
+*   **FR-CMP-001:** The system shall provide a mechanism for Admins to export all data associated with a specific member upon request.
+*   **FR-CMP-002:** The data export must include the member's profile information, group memberships, attendance records, and giving history.
+*   **FR-CMP-003:** The export format shall be a machine-readable format, such as CSV or JSON.
+
+### 10.2. Right to be Forgotten (Admin)
+*   **FR-CMP-004:** The system shall provide a mechanism for Admins to process a member's "right to be forgotten" request.
+*   **FR-CMP-005:** This process shall involve the anonymization of the member's personal data (First Name, Last Name, Email, Phone, Address) in their profile.
+*   **FR-CMP-006:** A record of the anonymization action, including the date and the requesting admin, must be stored for auditing purposes. Financial records (giving history) will be retained for legal reasons but will be disassociated from the anonymized user's personal identity.
+*   **FR-CMP-007:** The anonymization action must be recorded in the audit log.
