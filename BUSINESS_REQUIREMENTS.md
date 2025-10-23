@@ -2,7 +2,7 @@
 
 ## 1. Introduction
 
-This document outlines the business requirements for the Church Management Application, a modern, secure, and user-friendly platform designed to streamline church operations and enhance community engagement. The application provides a centralized system for managing member information, organizing groups and events, facilitating communication, and tracking key administrative tasks.
+This document outlines the business requirements for the Church Management Application, a modern, secure, and user-friendly Software-as-a-Service (SaaS) platform designed to streamline church operations and enhance community engagement. The application is capable of hosting multiple church clients, providing each with a centralized system for managing member information, organizing groups and events, facilitating communication, and tracking key administrative tasks.
 
 ## 2. Vision
 
