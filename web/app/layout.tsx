@@ -28,7 +28,7 @@ const memberNavItems: NavItem[] = [
   { href: '/events', label: 'Events', icon: 'Calendar' },
   { href: '/announcements', label: 'Announcements', icon: 'Megaphone' },
   { href: '/prayer', label: 'Prayer Wall', icon: 'HeartHandshake' },
-  { href: '/requests', label: 'Requests', icon: 'ClipboardList' },
+  { href: '/requests', label: 'Requests', icon: 'HeartHandshake' },
 ];
 
 const givingNavItems: NavItem[] = [{ href: '/giving', label: 'Giving', icon: 'DollarSign' }];

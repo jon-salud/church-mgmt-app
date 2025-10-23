@@ -273,7 +273,7 @@ This feature is designed to provide spiritual support to the congregation throug
 - `User` (id, primaryEmail, status, createdAt, lastLoginAt)
 - `Household` (id, churchId, name, address, phone, anniversary)
 - `Profile` (userId FK, firstName, lastName, phone, address, birthday, photoUrl, notes, householdId, householdRole)
-- `OAuthAccount` (userId FK, provider: google|facebook, providerUserId, accessToken*, refreshToken*, expiresAt*) _stored securely or via Auth0_
+- `OAuthAccount` (userId FK, provider: google|facebook, providerUserId, accessToken*, refreshToken*, expiresAt*) *stored securely or via Auth0*
 
 ### **Groups**
 
