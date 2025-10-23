@@ -1,43 +1,76 @@
 # Database Schema
 
 ## 1. Introduction
-This document outlines the database schema for the Church Management SaaS Platform, designed for a multi-church client environment with strict data isolation via a `churchId` on relevant tables.
+This document outlines the database schema for the Church Management SaaS Platform. It is designed for a multi-church client environment with strict data isolation via a `churchId` on all relevant tables.
 
 ---
 
 ## 2. Core Tables
 
 ### Table: `churches`
-- `id` (UUID, PK), `name` (Text), `createdAt`, `updatedAt`
+- `id` (UUID, Primary Key)
+- `name` (Text, Not Null)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
 
 ### Table: `users`
-- `id` (UUID, PK), `email` (Text, Unique), `createdAt`, `updatedAt`
+- `id` (UUID, Primary Key)
+- `email` (Text, Not Null, Unique)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
 
 ### Table: `profiles`
-- `id` (UUID, PK), `userId` (UUID, FK->`users`), `churchId` (UUID, FK->`churches`), `householdId` (UUID, FK->`households`), `firstName`, `lastName`, `role`, `phone`, `address`, `birthday`, `createdAt`, `updatedAt`
+- `id` (UUID, Primary Key)
+- `userId` (UUID, FK -> `users.id`, Not Null)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `householdId` (UUID, FK -> `households.id`)
+- `roleId` (UUID, FK -> `roles.id`, Not Null)
+- `firstName` (Text, Not Null)
+- `lastName` (Text, Not Null)
+- `phone` (Text)
+- `address` (Text)
+- `birthday` (Date)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
 
 ---
 
 ## 3. Configuration Tables
 
-### Table: `custom_profile_fields`
-- `id` (UUID, PK), `churchId` (UUID, FK->`churches`), `name`, `type` (Enum: 'Text', 'Date', 'Boolean')
-
-### Table: `custom_profile_field_values`
-- `profileId` (UUID, FK->`profiles`, PK), `fieldId` (UUID, FK->`custom_profile_fields`, PK), `value` (Text)
-
-### Table: `group_types`
-- `id` (UUID, PK), `churchId` (UUID, FK->`churches`), `name`
-
-### Table: `checkin_locations`
-- `id` (UUID, PK), `churchId` (UUID, FK->`churches`), `name`
-
 ### Table: `roles`
-Stores admin-configurable roles for a church.
-- `id` (UUID, PK)
+- `id` (UUID, Primary Key)
 - `churchId` (UUID, FK -> `churches.id`, Not Null)
 - `name` (Text, Not Null)
-- `isSystemRole` (Boolean, Default: false)
+- `isSystemRole` (Boolean, Not Null, Default: false)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `custom_profile_fields`
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `name` (Text, Not Null)
+- `type` (Enum: 'Text', 'Date', 'Boolean', Not Null)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `custom_profile_field_values`
+- `profileId` (UUID, FK -> `profiles.id`, Primary Key)
+- `fieldId` (UUID, FK -> `custom_profile_fields.id`, Primary Key)
+- `value` (Text, Not Null)
+
+### Table: `group_types`
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `name` (Text, Not Null)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `checkin_locations`
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `name` (Text, Not Null)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
 
 ---
 
@@ -46,53 +79,164 @@ Stores admin-configurable roles for a church.
 ### 4.1. Onboarding and Invitations
 
 ### Table: `invitations`
-Stores pending invitations for new users to join a church.
-- `id` (UUID, PK)
+- `id` (UUID, Primary Key)
 - `churchId` (UUID, FK -> `churches.id`, Not Null)
 - `email` (Text, Not Null)
 - `roleId` (UUID, FK -> `roles.id`, Not Null)
 - `invitationToken` (Text, Unique, Not Null)
 - `expiresAt` (Timestamp, Not Null)
-- `status` (Enum: 'Pending', 'Accepted', 'Expired', Default: 'Pending')
+- `status` (Enum: 'Pending', 'Accepted', 'Expired', Not Null, Default: 'Pending')
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
 
 ### 4.2. Document Library
 
 ### Table: `documents`
-Stores metadata for uploaded files.
-- `id` (UUID, PK)
+- `id` (UUID, Primary Key)
 - `churchId` (UUID, FK -> `churches.id`, Not Null)
 - `uploaderProfileId` (UUID, FK -> `profiles.id`, Not Null)
 - `fileName` (Text, Not Null)
 - `fileType` (Text)
-- `storageKey` (Text, Not Null) - *The unique key for the file in the object storage (e.g., S3 key).*
-- `createdAt`, `updatedAt`
+- `storageKey` (Text, Not Null)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
 
 ### Table: `document_permissions` (Join Table)
-Connects documents to roles to control visibility.
-- `documentId` (UUID, FK -> `documents.id`, PK)
-- `roleId` (UUID, FK -> `roles.id`, PK)
+- `documentId` (UUID, FK -> `documents.id`, Primary Key)
+- `roleId` (UUID, FK -> `roles.id`, Primary Key)
 
 ### 4.3. Households and Children
-- **`households`**: `id` (PK), `churchId`, `name`
-- **`children`**: `id` (PK), `householdId`, `churchId`, `fullName`, `dateOfBirth`, `allergies`, `medicalNotes`
+
+### Table: `households`
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `name` (Text, Not Null)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `children`
+- `id` (UUID, Primary Key)
+- `householdId` (UUID, FK -> `households.id`, Not Null)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `fullName` (Text, Not Null)
+- `dateOfBirth` (Date)
+- `allergies` (Text)
+- `medicalNotes` (Text)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
 
 ### 4.4. Groups and Ministries
-- **`groups`**: `id` (PK), `churchId`, `groupTypeId` (FK->`group_types`), `name`, `description`
-- **`group_members`**: `profileId` (FK->`profiles`, PK), `groupId` (FK->`groups`, PK), `roleInGroup`
+
+### Table: `groups`
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `groupTypeId` (UUID, FK -> `group_types.id`, Not Null)
+- `name` (Text, Not Null)
+- `description` (Text)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `group_members` (Join Table)
+- `profileId` (UUID, FK -> `profiles.id`, Primary Key)
+- `groupId` (UUID, FK -> `groups.id`, Primary Key)
+- `roleInGroup` (Enum: 'Leader', 'Member', Not Null, Default: 'Member')
+- `joinedAt` (Timestamp, Not Null)
 
 ### 4.5. Events and Attendance
-- **`events`**: `id` (PK), `churchId`, `groupId` (FK->`groups`), `title`, `startAt`, `endAt`, `location`
-- **`attendance`**: `id` (PK), `eventId`, `churchId`, `profileId` (FK->`profiles`), `childId` (FK->`children`), `checkinLocationId` (FK->`checkin_locations`), `status`
+
+### Table: `events`
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `groupId` (UUID, FK -> `groups.id`)
+- `title` (Text, Not Null)
+- `description` (Text)
+- `startAt` (Timestamp, Not Null)
+- `endAt` (Timestamp, Not Null)
+- `location` (Text)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `attendance`
+- `id` (UUID, Primary Key)
+- `eventId` (UUID, FK -> `events.id`, Not Null)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `profileId` (UUID, FK -> `profiles.id`)
+- `childId` (UUID, FK -> `children.id`)
+- `checkinLocationId` (UUID, FK -> `checkin_locations.id`)
+- `status` (Enum: 'CheckedIn', 'Absent', 'Excused', Not Null)
+- `note` (Text)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
 
 ### 4.6. Giving and Contributions
-- **`funds`**: `id` (PK), `churchId`, `name`, `isArchived`
-- **`contributions`**: `id` (PK), `profileId` (FK->`profiles`), `fundId` (FK->`funds`), `churchId`, `amount`, `date`, `method`
+
+### Table: `funds`
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `name` (Text, Not Null)
+- `isArchived` (Boolean, Not Null, Default: false)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `contributions`
+- `id` (UUID, Primary Key)
+- `profileId` (UUID, FK -> `profiles.id`, Not Null)
+- `fundId` (UUID, FK -> `funds.id`, Not Null)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `amount` (Decimal, Not Null)
+- `date` (Date, Not Null)
+- `method` (Enum: 'Cash', 'BankTransfer', 'Other')
+- `note` (Text)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
 
 ### 4.7. Announcements
-- **`announcements`**: `id` (PK), `churchId`, `authorProfileId`, `title`, `body`, `publishAt`
-- **`announcement_audiences`**: `announcementId` (FK->`announcements`, PK), `groupId` (FK->`groups`, PK)
+
+### Table: `announcements`
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `authorProfileId` (UUID, FK -> `profiles.id`, Not Null)
+- `title` (Text, Not Null)
+- `body` (Text)
+- `publishAt` (Timestamp, Not Null)
+- `expireAt` (Timestamp)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `announcement_audiences` (Join Table)
+- `announcementId` (UUID, FK -> `announcements.id`, Primary Key)
+- `groupId` (UUID, FK -> `groups.id`, Primary Key)
 
 ### 4.8. Pastoral Care, Prayer, and Requests
-- **`request_types`**: `id` (PK), `churchId`, `name`, `isEnabled`
-- **`prayer_requests`**: `id` (PK), `churchId`, `profileId` (FK->`profiles`), `title`, `isAnonymous`, `status`
-- **`pastoral_care_tickets`**: `id` (PK), `churchId`, `requestorProfileId`, `assigneeProfileId`, `requestTypeId`, `title`, `priority`, `status`
+
+### Table: `request_types`
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `name` (Text, Not Null)
+- `isEnabled` (Boolean, Not Null, Default: true)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `prayer_requests`
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `profileId` (UUID, FK -> `profiles.id`)
+- `title` (Text, Not Null)
+- `description` (Text, Not Null)
+- `isAnonymous` (Boolean, Not Null, Default: false)
+- `status` (Enum: 'PendingApproval', 'Approved', 'Answered', 'Denied')
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `pastoral_care_tickets`
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `requestorProfileId` (UUID, FK -> `profiles.id`, Not Null)
+- `assigneeProfileId` (UUID, FK -> `profiles.id`)
+- `requestTypeId` (UUID, FK -> `request_types.id`)
+- `title` (Text, Not Null)
+- `description` (Text, Not Null)
+- `priority` (Enum: 'Low', 'Normal', 'High', 'Urgent')
+- `status` (Enum: 'New', 'InProgress', 'Resolved')
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
