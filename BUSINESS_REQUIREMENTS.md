@@ -54,12 +54,13 @@ A centralized form that allows members to submit various types of requests, stre
 The application provides a dashboard for church leadership (Admins) to gain at-a-glance insights into the health of their congregation through graphs and charts visualizing key metrics like membership growth, attendance, and financial health.
 
 #### 4.A.10. Application Configuration
-A key strength of the platform is its flexibility. Church administrators have access to a dedicated settings area where they can customize the application to fit their specific needs and terminology. This includes the ability to define:
-*   **Custom Member Profile Fields:** Create and manage unique data fields to track information that is specific to their members.
-*   **Customizable Group Types:** Define their own categories for groups and ministries.
-*   **Customizable Giving Funds:** Manage the specific funds that members can contribute to.
-*   **Customizable Request Types:** Tailor the unified request form for various administrative and ministry needs.
-*   **Configurable Child Check-In Locations:** Define the specific rooms and locations used for child check-in, matching their building's layout.
+A key strength of the platform is its flexibility. Church administrators have access to a dedicated settings area where they can customize the application to fit their specific needs and terminology. This includes the ability to define custom profile fields, group types, giving funds, request types, and child check-in locations.
+
+#### 4.A.11. Onboarding Wizard
+To ensure a smooth setup process for new church clients, the application includes a guided, skippable onboarding wizard for administrators. This wizard helps with initial setup tasks, including church branding, defining roles, inviting the core team, and importing an initial list of member emails to kick-start the community.
+
+#### 4.A.12. Document Library
+The application provides a centralized and secure Document Library for each church client. Administrators can upload important documents (e.g., policy manuals, Bible study notes) and use a role-based permission system to control which documents are visible to which user roles (Admins, Leaders, or all Members).
 
 ### 4.B: System Administration Features (for the SaaS Owner)
 
