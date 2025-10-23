@@ -158,8 +158,8 @@ This section covers endpoints related to prayer requests.
 
 ---
 
-#### GET /prayer/requests
-- **Description:** Retrieves a list of all prayer requests for the church.
+#### GET /prayer-requests
+- **Description:** Retrieves a list of all prayer requests for the church. *(Note: The implemented path is currently `/prayer/requests` but will be updated to align with the standard resource path convention).*
 - **Success Response:**
   - **Code:** `200 OK`
   - **Content:**
