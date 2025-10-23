@@ -1,14 +1,68 @@
 
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { clientApi } from '@/lib/api.client';
+import { RequestType } from '@/lib/types';
 
 export function PastoralCareClientPage({ data: initialData }: { data: any[] }) {
   const [data, setData] = useState(initialData);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [typeFilter, setTypeFilter] = useState<string[]>([]);
+  const [sortOrder, setSortOrder] = useState('newest');
+  const [requestTypes, setRequestTypes] = useState<RequestType[]>([]);
+
+  useEffect(() => {
+    async function fetchRequestTypes() {
+      try {
+        const user = await clientApi.currentUser();
+        if (user) {
+          const types = await clientApi.getRequestTypes(user.user.churchId);
+          setRequestTypes(types);
+          setTypeFilter(types.map((t) => t.id)); // Select all by default
+        }
+      } catch (error) {
+        console.error('Failed to fetch request types:', error);
+      }
+    }
+    fetchRequestTypes();
+  }, []);
+
+  const filteredAndSortedData = useMemo(() => {
+    let result = [...data];
+
+    // Filter by status
+    if (statusFilter !== 'all') {
+      result = result.filter((item) => (item.status || 'Pending').toLowerCase().replace(' ', '-') === statusFilter);
+    }
+
+    // Filter by type
+    if (typeFilter.length > 0) {
+      result = result.filter((item) => typeFilter.includes(item.requestTypeId));
+    }
+
+    // Sort
+    result.sort((a, b) => {
+      const dateA = new Date(a.createdAt).getTime();
+      const dateB = new Date(b.createdAt).getTime();
+      return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+    });
+
+    return result;
+  }, [data, statusFilter, typeFilter, sortOrder]);
 
   return (
     <div className="space-y-4">
@@ -22,6 +76,50 @@ export function PastoralCareClientPage({ data: initialData }: { data: any[] }) {
           New Request
         </Link>
       </div>
+      <div className="flex space-x-4">
+        <Select value={statusFilter} onValueChange={setStatusFilter}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter by status" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All</SelectItem>
+            <SelectItem value="pending">Pending</SelectItem>
+            <SelectItem value="in-progress">In Progress</SelectItem>
+            <SelectItem value="closed">Closed</SelectItem>
+          </SelectContent>
+        </Select>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline">Filter by type</Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>Request Types</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            {requestTypes.map((type) => (
+              <DropdownMenuCheckboxItem
+                key={type.id}
+                checked={typeFilter.includes(type.id)}
+                onCheckedChange={(checked) => {
+                  setTypeFilter(
+                    checked ? [...typeFilter, type.id] : typeFilter.filter((id) => id !== type.id)
+                  );
+                }}
+              >
+                {type.name}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+        <Select value={sortOrder} onValueChange={setSortOrder}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Sort by" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="newest">Newest First</SelectItem>
+            <SelectItem value="oldest">Oldest First</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
       <Table>
         <TableHeader>
           <TableRow>
@@ -34,7 +132,7 @@ export function PastoralCareClientPage({ data: initialData }: { data: any[] }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {data.map((item) => (
+          {filteredAndSortedData.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.title}</TableCell>
               <TableCell>{item.type || item.requestType?.name}</TableCell>
