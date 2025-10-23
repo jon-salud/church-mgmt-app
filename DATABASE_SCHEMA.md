@@ -10,6 +10,8 @@ This document outlines the database schema for the Church Management SaaS Platfo
 ### Table: `churches`
 - `id` (UUID, Primary Key)
 - `name` (Text, Not Null)
+- `logoUrl` (Text)
+- `brandColor` (Text)
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
 
@@ -142,6 +144,15 @@ This document outlines the database schema for the Church Management SaaS Platfo
 - `roleInGroup` (Enum: 'Leader', 'Member', Not Null, Default: 'Member')
 - `joinedAt` (Timestamp, Not Null)
 
+### Table: `group_resources`
+- `id` (UUID, Primary Key)
+- `groupId` (UUID, FK -> `groups.id`, Not Null)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `title` (Text, Not Null)
+- `url` (Text, Not Null)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
 ### 4.5. Events and Attendance
 
 ### Table: `events`
@@ -228,7 +239,7 @@ This document outlines the database schema for the Church Management SaaS Platfo
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
 
-### Table: `pastoral_care_tickets`
+### Table: `requests`
 - `id` (UUID, Primary Key)
 - `churchId` (UUID, FK -> `churches.id`, Not Null)
 - `requestorProfileId` (UUID, FK -> `profiles.id`, Not Null)
@@ -237,6 +248,6 @@ This document outlines the database schema for the Church Management SaaS Platfo
 - `title` (Text, Not Null)
 - `description` (Text, Not Null)
 - `priority` (Enum: 'Low', 'Normal', 'High', 'Urgent')
-- `status` (Enum: 'New', 'InProgress', 'Resolved')
+- `status` (Enum: 'Pending', 'InProgress', 'Closed')
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
