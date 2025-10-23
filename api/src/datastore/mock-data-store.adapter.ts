@@ -269,8 +269,13 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.listRequestTypes(churchId);
   }
 
-  async createRequestType(name: string, hasConfidentialField: boolean, actorUserId: string) {
-    return this.mock.createRequestType(name, hasConfidentialField, actorUserId);
+  async createRequestType(
+    name: string,
+    hasConfidentialField: boolean,
+    actorUserId: string,
+    description?: string,
+  ) {
+    return this.mock.createRequestType(name, hasConfidentialField, actorUserId, description);
   }
 
   async updateRequestType(id: string, name: string, actorUserId: string) {

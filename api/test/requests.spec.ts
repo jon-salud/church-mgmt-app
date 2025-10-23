@@ -25,7 +25,7 @@ describe('Requests (e2e-light)', () => {
       url: '/api/v1/requests',
       headers: { authorization: 'Bearer demo-admin' },
       payload: {
-        requestTypeId: 'req-type-4', // Suggestion
+        requestTypeId: 'req-type-4',
         title: 'New Youth Group Activity',
         body: 'We should organize a hiking trip.',
       },

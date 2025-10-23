@@ -119,8 +119,7 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 - **Households** – household listing and detail views.
 - **PWA** – manifest + service worker pre-cache key routes for offline dashboard snapshots (install via browser menu).
 - **Theming** – switch between light and dark modes.
-- **Requests** – a unified form for members to submit various types of requests. Request types are now fully configurable by administrators in the settings page.
-  - _Future Enhancement: The pastoral care dashboard will be updated to allow sorting and filtering by request type._
+- **Requests** – a unified form for members to submit various types of requests (Prayer, Benevolence, Improvements/Suggestions).
 
 ---
 

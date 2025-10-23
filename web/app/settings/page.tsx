@@ -1,8 +1,15 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Checkbox } from '../../components/ui/checkbox';
-import { clientApi as api } from '../../lib/api.client';
+import { Checkbox } from '@/components/ui/checkbox';
+import { clientApi as api } from '@/lib/api.client';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { RequestType } from '@/lib/types';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const optionalFields = [
   { id: 'membershipStatus', label: 'Membership Status' },
@@ -32,6 +39,10 @@ const optionalFields = [
 export default function SettingsPage() {
   const [enabledFields, setEnabledFields] = useState<Record<string, boolean>>({});
   const [churchId, setChurchId] = useState<string | null>(null);
+  const [requestTypes, setRequestTypes] = useState<RequestType[]>([]);
+  const [newRequestTypeName, setNewRequestTypeName] = useState('');
+  const [newRequestTypeDescription, setNewRequestTypeDescription] = useState('');
+  const [newRequestTypeHasConfidential, setNewRequestTypeHasConfidential] = useState(false);
 
   useEffect(() => {
     async function fetchSettings() {
@@ -41,6 +52,8 @@ export default function SettingsPage() {
         setChurchId(id);
         const settings = await api.getSettings(id);
         setEnabledFields(settings.optionalFields ?? {});
+        const types = await api.getRequestTypes(id);
+        setRequestTypes(types);
       }
     }
     fetchSettings();
@@ -57,38 +70,135 @@ export default function SettingsPage() {
     }
   };
 
+  const handleCreateRequestType = async () => {
+    if (churchId && newRequestTypeName) {
+      const newType = await api.createRequestType(churchId, newRequestTypeName, newRequestTypeHasConfidential, newRequestTypeDescription);
+      setRequestTypes([...requestTypes, newType]);
+      setNewRequestTypeName('');
+      setNewRequestTypeDescription('');
+      setNewRequestTypeHasConfidential(false);
+    }
+  };
+
+  const handleDragEnd = (result: any) => {
+    if (!result.destination) return;
+    const items = Array.from(requestTypes);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    setRequestTypes(items);
+    if (churchId) {
+      api.reorderRequestTypes(churchId, items.map(item => item.id));
+    }
+  };
+
+  const handleStatusChange = (id: string, status: 'active' | 'archived') => {
+    if (churchId) {
+      api.updateRequestTypeStatus(churchId, id, status);
+      setRequestTypes(requestTypes.map(rt => rt.id === id ? { ...rt, status } : rt));
+    }
+  };
+
   return (
-    <div>
-      <h1 className="text-2xl font-bold text-foreground">Optional Fields</h1>
-      <p className="mt-2 text-muted-foreground">
-        Configure which optional fields are available for member profiles in your church.
-      </p>
+    <div className="space-y-8">
+      <Card>
+        <CardHeader>
+          <CardTitle>Optional Fields</CardTitle>
+          <CardDescription>
+            Configure which optional fields are available for member profiles in your church.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {optionalFields.map(field => (
+              <div key={field.id} className="flex items-center gap-3">
+                <Checkbox
+                  id={field.id}
+                  checked={!!enabledFields[field.id]}
+                  onCheckedChange={() => handleFieldToggle(field.id)}
+                />
+                <label htmlFor={field.id} className="text-sm font-medium">
+                  {field.label}
+                </label>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-end border-t border-border pt-6 mt-6">
+            <Button onClick={handleSaveChanges}>Save Changes</Button>
+          </div>
+        </CardContent>
+      </Card>
 
-      <div className="mt-8 space-y-6">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          {optionalFields.map(field => (
-            <div key={field.id} className="flex items-center gap-3">
-              <Checkbox
-                id={field.id}
-                checked={enabledFields[field.id]}
-                onCheckedChange={() => handleFieldToggle(field.id)}
+      <Card>
+        <CardHeader>
+          <CardTitle>Request Form Settings</CardTitle>
+          <CardDescription>
+            Manage the types of requests members can submit.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Create New Request Type</h3>
+            <div className="space-y-2">
+              <Label htmlFor="new-request-type-name">Name</Label>
+              <Input
+                id="new-request-type-name"
+                value={newRequestTypeName}
+                onChange={(e) => setNewRequestTypeName(e.target.value)}
+                placeholder="e.g., Counseling Request"
               />
-              <label htmlFor={field.id} className="text-sm font-medium">
-                {field.label}
-              </label>
             </div>
-          ))}
-        </div>
+            <div className="space-y-2">
+              <Label htmlFor="new-request-type-description">Description</Label>
+              <Input
+                id="new-request-type-description"
+                value={newRequestTypeDescription}
+                onChange={(e) => setNewRequestTypeDescription(e.target.value)}
+                placeholder="A short description for the member form"
+              />
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox
+                id="new-request-type-confidential"
+                checked={newRequestTypeHasConfidential}
+                onCheckedChange={(checked) => setNewRequestTypeHasConfidential(!!checked)}
+              />
+              <Label htmlFor="new-request-type-confidential">Include confidential option</Label>
+            </div>
+            <Button onClick={handleCreateRequestType}>Create Type</Button>
+          </div>
 
-        <div className="flex justify-end border-t border-border pt-6">
-          <button
-            onClick={handleSaveChanges}
-            className="rounded-md bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition hover:bg-primary/90"
-          >
-            Save Changes
-          </button>
-        </div>
-      </div>
+          <div className="mt-8">
+            <h3 className="text-lg font-semibold">Manage Existing Types</h3>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="requestTypes">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {requestTypes.map((type, index) => (
+                      <Draggable key={type.id} draggableId={type.id} index={index}>
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className="flex items-center justify-between p-2 my-2 border rounded"
+                          >
+                            <span>{type.name}</span>
+                            <Checkbox
+                              checked={type.status === 'active'}
+                              onCheckedChange={(checked) => handleStatusChange(type.id, checked ? 'active' : 'archived')}
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

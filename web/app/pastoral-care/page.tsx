@@ -2,26 +2,18 @@
 import { api } from "@/lib/api.server";
 import { PastoralCareClientPage } from "./client-page";
 
-// Define the type inline to avoid invalid cross-workspace import
-interface MockRequest {
-  id: string;
-  churchId: string;
-  userId: string;
-  requestTypeId: string;
-  title: string;
-  body: string;
-  isConfidential: boolean;
-  createdAt: string;
-  status: 'Pending' | 'In Progress' | 'Closed';
-}
+import { Request, RequestType } from "@/lib/types";
 
 export default async function PastoralCareDashboard() {
     const tickets = await api.getPastoralCareTickets();
-    const requests = await api.get<MockRequest[]>('/requests');
+    const requests = await api.get<Request[]>('/requests');
+    const requestTypes = await api.get<RequestType[]>('/settings/1/request-types');
+
+    const requestTypeMap = new Map(requestTypes.map(rt => [rt.id, rt.name]));
 
     const combinedData = [
         ...tickets.map((ticket: any) => ({ ...ticket, type: 'Pastoral Care' })),
-        ...requests.map((request: MockRequest) => ({ ...request, type: request.requestTypeId }))
+        ...requests.map((request: any) => ({ ...request, type: requestTypeMap.get(request.requestTypeId) || request.requestTypeId }))
     ];
 
     return <PastoralCareClientPage data={combinedData} />;

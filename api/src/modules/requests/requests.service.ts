@@ -1,8 +1,8 @@
 
 import { Injectable, Inject } from '@nestjs/common';
-import { DATA_STORE, DataStore } from '../../datastore';
 import { CreateRequestDto } from './dto/create-request.dto';
-import { User } from '../auth/current-user.decorator';
+import { DATA_STORE, DataStore } from '../../datastore';
+import { User } from '../../types';
 import { randomUUID } from 'node:crypto';
 
 @Injectable()

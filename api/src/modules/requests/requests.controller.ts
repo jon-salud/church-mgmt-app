@@ -3,7 +3,8 @@ import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { RequestsService } from './requests.service';
 import { CreateRequestDto } from './dto/create-request.dto';
 import { AuthGuard } from '../auth/auth.guard';
-import { CurrentUser, User } from '../auth/current-user.decorator';
+import { CurrentUser } from '../auth/current-user.decorator';
+import { User } from '../../types';
 import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiTags('requests')

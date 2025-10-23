@@ -60,10 +60,4 @@ This document outlines the standard operating procedures for the AI agent workin
 *   **Theme Switching:** The application supports light and dark themes. A theme switcher component is available in the main layout.
 *   **Sidebar Navigation:** The sidebar menu uses icons and highlights the active link.
 
-## Known Future Enhancements
-
-This section lists features or improvements that have been discussed and are planned for future implementation.
-
-*   **Pastoral Care Dashboard Sorting:** The dashboard at `/pastoral-care` will be updated to allow sorting and filtering by request type.
-
 This manual is a living document and should be updated as the project evolves.

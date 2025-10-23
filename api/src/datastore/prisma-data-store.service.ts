@@ -922,7 +922,7 @@ export class PrismaDataStore implements DataStore {
     throw new Error('Not implemented: listRequestTypes');
   }
 
-  async createRequestType(name: string, hasConfidentialField: boolean, actorUserId: string): Promise<any> {
+  async createRequestType(name: string, hasConfidentialField: boolean, actorUserId: string, description?: string): Promise<any> {
     throw new Error('Not implemented: createRequestType');
   }
 

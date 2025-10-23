@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
-import { Modal } from '@/components/ui/modal';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 export function PastoralCareClientPage({ data: initialData }: { data: any[] }) {
   const [data, setData] = useState(initialData);
@@ -37,32 +37,37 @@ export function PastoralCareClientPage({ data: initialData }: { data: any[] }) {
           {data.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.title}</TableCell>
-              <TableCell>{item.requestTypeId}</TableCell>
+              <TableCell>{item.type}</TableCell>
               <TableCell>{item.author ? `${item.author.profile.firstName} ${item.author.profile.lastName}`: 'N/A'}</TableCell>
               <TableCell>{item.status || 'Pending'}</TableCell>
               <TableCell>{new Date(item.createdAt).toLocaleDateString()}</TableCell>
               <TableCell>
-                <Button variant="outline" onClick={() => setSelectedItem(item)}>View Details</Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button variant="outline" onClick={() => setSelectedItem(item)}>View Details</Button>
+                  </DialogTrigger>
+                </Dialog>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       {selectedItem && (
-        <Modal
-          open={!!selectedItem}
-          onClose={() => setSelectedItem(null)}
-          title={selectedItem.title}
-        >
-          <div className="p-4">
-            <p><strong>Type:</strong> {selectedItem.requestTypeId}</p>
-            <p><strong>Author:</strong> {selectedItem.author ? `${selectedItem.author.profile.firstName} ${selectedItem.author.profile.lastName}`: 'N/A'}</p>
-            <p><strong>Status:</strong> {selectedItem.status || 'Pending'}</p>
-            <p><strong>Created:</strong> {new Date(selectedItem.createdAt).toLocaleString()}</p>
-            <p><strong>Details:</strong></p>
-            <p>{selectedItem.body || selectedItem.description}</p>
-          </div>
-        </Modal>
+        <Dialog open={!!selectedItem} onOpenChange={() => setSelectedItem(null)}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{selectedItem.title}</DialogTitle>
+            </DialogHeader>
+            <div className="p-4">
+              <p><strong>Type:</strong> {selectedItem.type}</p>
+              <p><strong>Author:</strong> {selectedItem.author ? `${selectedItem.author.profile.firstName} ${selectedItem.author.profile.lastName}`: 'N/A'}</p>
+              <p><strong>Status:</strong> {selectedItem.status || 'Pending'}</p>
+              <p><strong>Created:</strong> {new Date(selectedItem.createdAt).toLocaleString()}</p>
+              <p><strong>Details:</strong></p>
+              <p>{selectedItem.body || selectedItem.description}</p>
+            </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

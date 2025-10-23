@@ -2,18 +2,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Button } from '../../components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '../../components/ui/card';
-import { Label } from '../../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { Textarea } from '../../components/ui/textarea';
-import { Input } from '../../components/ui/input';
-import { clientApi } from '../../lib/api.client';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
+import { clientApi } from '@/lib/api.client';
 import { useRouter } from 'next/navigation';
-import { RequestType } from '../../lib/types';
+import { RequestType } from '@/lib/types';
 
 export default function RequestsPage() {
-  const [requestType, setRequestType] = useState('');
+  const [requestTypeId, setRequestTypeId] = useState('');
   const [requestTypes, setRequestTypes] = useState<RequestType[]>([]);
   const router = useRouter();
 
@@ -31,7 +31,7 @@ export default function RequestsPage() {
   }, []);
 
   const getFormDescription = () => {
-    const selectedType = requestTypes.find(rt => rt.id === requestType);
+    const selectedType = requestTypes.find(rt => rt.id === requestTypeId);
     if (selectedType) {
       return selectedType.description;
     }
@@ -66,7 +66,7 @@ export default function RequestsPage() {
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="request-type">Request Type</Label>
-            <Select name="requestTypeId" onValueChange={setRequestType}>
+            <Select name="requestTypeId" onValueChange={setRequestTypeId}>
               <SelectTrigger id="request-type">
                 <SelectValue placeholder="Select a request type..." />
               </SelectTrigger>
@@ -79,7 +79,7 @@ export default function RequestsPage() {
               </SelectContent>
             </Select>
           </div>
-          {requestType && (
+          {requestTypeId && (
             <>
               <div className="space-y-2">
                 <Label htmlFor="title">Title</Label>
@@ -89,7 +89,7 @@ export default function RequestsPage() {
                 <Label htmlFor="body">Details</Label>
                 <Textarea id="body" name="body" placeholder="Please provide as much detail as possible." required />
               </div>
-              {requestTypes.find(rt => rt.id === requestType)?.hasConfidentialField && (
+              {requestTypes.find(rt => rt.id === requestTypeId)?.hasConfidentialField && (
                 <div className="flex items-center space-x-2">
                   <Input type="checkbox" id="isConfidential" name="isConfidential" />
                   <Label htmlFor="isConfidential">Keep this request confidential (pastoral staff only)</Label>
@@ -99,7 +99,7 @@ export default function RequestsPage() {
           )}
         </CardContent>
         <CardFooter>
-          <Button type="submit" disabled={!requestType}>
+          <Button type="submit" disabled={!requestTypeId}>
             Submit Request
           </Button>
         </CardFooter>

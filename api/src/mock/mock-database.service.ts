@@ -316,6 +316,10 @@ export class MockDatabaseService {
 
   constructor(private readonly auditPersistence: AuditLogPersistence) {
     this.hydrateAuditLogSnapshot();
+    const churchId = this.getChurch().id;
+    this.requestTypes.forEach((rt) => {
+      rt.churchId = churchId;
+    });
   }
 
   private hydrateAuditLogSnapshot() {
@@ -2152,27 +2156,25 @@ export class MockDatabaseService {
     });
   }
 
-  createRequest(input: Omit<MockRequest, 'id' | 'createdAt' | 'churchId' | 'status'>, actorUserId: string) {
+  createRequest(input: Omit<MockRequest, 'id' | 'createdAt' | 'churchId'>, actorUserId: string) {
     const now = new Date().toISOString();
     const request: MockRequest = {
       id: `req-${randomUUID()}`,
       churchId: this.getChurch().id,
       ...input,
       createdAt: now,
-      status: 'Pending',
     };
     this.requests.push(request);
     const actorName = this.getUserName(actorUserId);
-    const requestType = this.requestTypes.find((rt) => rt.id === request.requestTypeId);
     this.createAuditLog({
       actorUserId,
       action: 'request.created',
       entity: 'request',
       entityId: request.id,
-      summary: `${actorName} created a new request of type ${requestType?.name}`,
+      summary: `${actorName} created a new request`,
       metadata: {
         requestId: request.id,
-        requestType: requestType?.name,
+        requestTypeId: request.requestTypeId,
       },
     });
     return clone(request);
@@ -2269,19 +2271,35 @@ export class MockDatabaseService {
   }
 
   reorderRequestTypes(ids: string[], actorUserId: string) {
-    ids.forEach((id, index) => {
-      const requestType = this.requestTypes.find((rt) => rt.id === id);
-      if (requestType) {
-        requestType.displayOrder = index;
+    const idSet = new Set(ids);
+    const reordered: MockRequestType[] = [];
+    const unchanged: MockRequestType[] = [];
+
+    this.requestTypes.forEach(rt => {
+      if (idSet.has(rt.id)) {
+        reordered.push(rt);
+      } else {
+        unchanged.push(rt);
       }
     });
+
+    ids.forEach((id, index) => {
+      const rt = reordered.find(rt => rt.id === id);
+      if (rt) {
+        rt.displayOrder = index + 1;
+      }
+    });
+
+    this.requestTypes = [...reordered, ...unchanged].sort((a, b) => a.displayOrder - b.displayOrder);
+
     const actorName = this.getUserName(actorUserId);
     this.createAuditLog({
       actorUserId,
-      action: 'requestType.order.updated',
+      action: 'requestType.reordered',
       entity: 'requestType',
-      summary: `${actorName} updated the order of request types`,
+      summary: `${actorName} reordered request types`,
     });
+
     return clone(this.requestTypes);
   }
 }
