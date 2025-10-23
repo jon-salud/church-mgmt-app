@@ -10,6 +10,7 @@ async function apiFetch<T>(path: string, init?: RequestInit) {
     ...init,
     headers,
     cache: 'no-store',
+    credentials: 'include',
   });
 
   if (!response.ok) {
