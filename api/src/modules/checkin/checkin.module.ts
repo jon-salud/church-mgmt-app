@@ -4,6 +4,6 @@ import { CheckinService } from './checkin.service';
 
 @Module({
   controllers: [CheckinController],
-  providers: [CheckinService]
+  providers: [CheckinService],
 })
 export class CheckinModule {}

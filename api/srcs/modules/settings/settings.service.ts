@@ -1,4 +1,3 @@
-
 import { Injectable } from '@nestjs/common';
 import { MockDatabaseService } from '../../mock/mock-database.service';
 
@@ -10,7 +9,12 @@ export class SettingsService {
     return this.db.listRequestTypes(churchId);
   }
 
-  createRequestType(name: string, hasConfidentialField: boolean, actorUserId: string, description?: string) {
+  createRequestType(
+    name: string,
+    hasConfidentialField: boolean,
+    actorUserId: string,
+    description?: string
+  ) {
     return this.db.createRequestType(name, hasConfidentialField, actorUserId, description);
   }
 

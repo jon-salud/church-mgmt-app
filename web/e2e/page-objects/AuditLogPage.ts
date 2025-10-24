@@ -12,6 +12,8 @@ export class AuditLogPage extends BasePage {
 
   async verifyAuditLog() {
     await expect(this.page.getByRole('heading', { name: 'Audit Log' })).toBeVisible();
-    await expect(this.page.getByText('Recent administrative activity', { exact: false })).toBeVisible();
+    await expect(
+      this.page.getByText('Recent administrative activity', { exact: false })
+    ).toBeVisible();
   }
 }

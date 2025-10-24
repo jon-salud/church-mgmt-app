@@ -40,7 +40,7 @@ describe('GivingService', () => {
         date: '2024-03-01',
         method: 'cash' as const,
       },
-      'admin-user',
+      'admin-user'
     );
 
     expect(store.recordContribution).toHaveBeenCalledWith({
@@ -69,7 +69,7 @@ describe('GivingService', () => {
     const updated = await service.updateContribution(
       'contribution-1',
       { amount: 75, note: '' },
-      'admin-user',
+      'admin-user'
     );
 
     expect(store.updateContribution).toHaveBeenCalledWith('contribution-1', {
@@ -82,7 +82,10 @@ describe('GivingService', () => {
   });
 
   it('exports contributions to csv with filters', async () => {
-    store.exportContributionsCsv.mockResolvedValue({ filename: 'giving.csv', content: 'data' } as any);
+    store.exportContributionsCsv.mockResolvedValue({
+      filename: 'giving.csv',
+      content: 'data',
+    } as any);
 
     const result = await service.exportContributionsCsv({ memberId: 'user-1' });
 

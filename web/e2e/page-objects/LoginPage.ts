@@ -12,7 +12,9 @@ export class LoginPage extends BasePage {
 
   async login() {
     await this.goto();
-    await this.page.getByRole('button', { name: 'Explore demo mode (uses seeded admin session)' }).click();
+    await this.page
+      .getByRole('button', { name: 'Explore demo mode (uses seeded admin session)' })
+      .click();
     await this.page.waitForURL('**/dashboard');
   }
 }

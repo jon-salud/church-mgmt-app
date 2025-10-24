@@ -10,8 +10,16 @@ export class EventsPage extends BasePage {
     await super.goto('http://localhost:3000/events');
   }
 
-  async scheduleNewEvent(title: string, location: string, startAt: string, endAt: string, tags: string) {
-    const scheduleSection = this.page.locator('section', { has: this.page.getByRole('heading', { name: 'Schedule New Event' }) });
+  async scheduleNewEvent(
+    title: string,
+    location: string,
+    startAt: string,
+    endAt: string,
+    tags: string
+  ) {
+    const scheduleSection = this.page.locator('section', {
+      has: this.page.getByRole('heading', { name: 'Schedule New Event' }),
+    });
     await scheduleSection.getByLabel('Title').fill(title);
     await scheduleSection.getByLabel('Location').fill(location);
     await scheduleSection.getByLabel('Start').fill(startAt);
@@ -29,7 +37,9 @@ export class EventsPage extends BasePage {
   async updateEvent(originalTitle: string, updatedTitle: string, updatedTags: string) {
     const eventCard = this.getEventCard(originalTitle);
     await eventCard.getByText('Edit event details').click();
-    const updateEventForm = eventCard.locator('form', { has: this.page.getByRole('button', { name: 'Save Changes' }) });
+    const updateEventForm = eventCard.locator('form', {
+      has: this.page.getByRole('button', { name: 'Save Changes' }),
+    });
     await updateEventForm.getByLabel('Title').fill(updatedTitle);
     await updateEventForm.getByLabel('Tags').fill(updatedTags);
     await updateEventForm.getByRole('button', { name: 'Save Changes' }).click();

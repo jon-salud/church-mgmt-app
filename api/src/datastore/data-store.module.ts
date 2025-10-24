@@ -15,7 +15,11 @@ import { PrismaModule } from '../prisma/prisma.module';
     {
       provide: DATA_STORE,
       inject: [ConfigService, MockDataStoreAdapter, PrismaDataStore],
-      useFactory: (config: ConfigService, mockStore: MockDataStoreAdapter, prismaStore: PrismaDataStore): DataStore => {
+      useFactory: (
+        config: ConfigService,
+        mockStore: MockDataStoreAdapter,
+        prismaStore: PrismaDataStore
+      ): DataStore => {
         const mode = config.get<string>('DATA_MODE', 'mock');
         if (!mode || mode === 'mock') {
           return mockStore;
@@ -23,7 +27,9 @@ import { PrismaModule } from '../prisma/prisma.module';
         if (mode === 'prisma') {
           return prismaStore;
         }
-        throw new Error(`Unsupported DATA_MODE "${mode}". No data store is registered for this mode.`);
+        throw new Error(
+          `Unsupported DATA_MODE "${mode}". No data store is registered for this mode.`
+        );
       },
     },
   ],

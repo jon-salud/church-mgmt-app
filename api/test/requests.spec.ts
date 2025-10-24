@@ -1,4 +1,3 @@
-
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../src/modules/app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';

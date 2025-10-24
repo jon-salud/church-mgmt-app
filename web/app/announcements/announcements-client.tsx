@@ -1,21 +1,21 @@
-"use client";
+'use client';
 
-import { format } from "date-fns";
-import { useEffect, useMemo, useState } from "react";
-import { Modal } from "../../components/ui/modal";
+import { format } from 'date-fns';
+import { useEffect, useMemo, useState } from 'react';
+import { Modal } from '../../components/ui/modal';
 import {
   createAnnouncementAction,
   markAnnouncementReadAction,
   updateAnnouncementAction,
-} from "../actions";
-import { loadOfflineSnapshot, persistOfflineSnapshot } from "../../lib/offline-cache";
-import { useOfflineStatus } from "../../lib/use-offline-status";
+} from '../actions';
+import { loadOfflineSnapshot, persistOfflineSnapshot } from '../../lib/offline-cache';
+import { useOfflineStatus } from '../../lib/use-offline-status';
 
 type Announcement = {
   id: string;
   title: string;
   body: string;
-  audience: "all" | "custom";
+  audience: 'all' | 'custom';
   groupIds?: string[];
   publishAt: string;
   expireAt?: string | null;
@@ -36,17 +36,17 @@ type AnnouncementDraft = {
   id: string;
   title: string;
   body: string;
-  audience: "all" | "custom";
+  audience: 'all' | 'custom';
   groupIds: string[];
   publishAt: string;
   expireAt?: string | null;
 };
 
 const formatInputDate = (iso?: string | null) => {
-  if (!iso) return "";
+  if (!iso) return '';
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) {
-    return "";
+    return '';
   }
   return format(date, "yyyy-MM-dd'T'HH:mm");
 };
@@ -56,24 +56,22 @@ const statusBadge = (announcement: Announcement) => {
   const publishAt = new Date(announcement.publishAt).getTime();
   const expireAt = announcement.expireAt ? new Date(announcement.expireAt).getTime() : undefined;
   if (expireAt && expireAt < now) {
-    return { label: "Expired", className: "bg-muted text-muted-foreground" };
+    return { label: 'Expired', className: 'bg-muted text-muted-foreground' };
   }
   if (publishAt > now) {
-    return { label: "Scheduled", className: "bg-amber-400 text-amber-900" };
+    return { label: 'Scheduled', className: 'bg-amber-400 text-amber-900' };
   }
-  return { label: "Published", className: "bg-emerald-400 text-emerald-900" };
+  return { label: 'Published', className: 'bg-emerald-400 text-emerald-900' };
 };
 
 const audienceLabel = (announcement: Announcement, groupMap: Map<string, Group>) => {
-  if (announcement.audience === "all") {
-    return "Whole church";
+  if (announcement.audience === 'all') {
+    return 'Whole church';
   }
   if (!announcement.groupIds || announcement.groupIds.length === 0) {
-    return "Selected groups (none set)";
+    return 'Selected groups (none set)';
   }
-  return announcement.groupIds
-    .map(id => groupMap.get(id)?.name || id)
-    .join(", ");
+  return announcement.groupIds.map(id => groupMap.get(id)?.name || id).join(', ');
 };
 
 export function AnnouncementsClient({ announcements, groups }: AnnouncementsClientProps) {
@@ -107,9 +105,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
       const offlineAnnouncements = Array.isArray(snapshot.announcements)
         ? (snapshot.announcements as Announcement[])
         : [];
-      const offlineGroups = Array.isArray(snapshot.groups)
-        ? (snapshot.groups as Group[])
-        : [];
+      const offlineGroups = Array.isArray(snapshot.groups) ? (snapshot.groups as Group[]) : [];
       if (offlineAnnouncements.length > 0) {
         setAnnouncementState(offlineAnnouncements);
       }
@@ -123,14 +119,14 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
   const sortedAnnouncements = useMemo(
     () =>
       [...announcementState].sort(
-        (a, b) => new Date(b.publishAt).getTime() - new Date(a.publishAt).getTime(),
+        (a, b) => new Date(b.publishAt).getTime() - new Date(a.publishAt).getTime()
       ),
-    [announcementState],
+    [announcementState]
   );
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [createAudience, setCreateAudience] = useState<"all" | "custom">("all");
+  const [createAudience, setCreateAudience] = useState<'all' | 'custom'>('all');
   const [editModal, setEditModal] = useState<AnnouncementDraft | null>(null);
-  const [editAudience, setEditAudience] = useState<"all" | "custom">("all");
+  const [editAudience, setEditAudience] = useState<'all' | 'custom'>('all');
 
   return (
     <section className="space-y-6">
@@ -150,7 +146,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
           id="new-announcement-button"
           type="button"
           onClick={() => {
-            setCreateAudience("all");
+            setCreateAudience('all');
             setIsCreateOpen(true);
           }}
           className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
@@ -162,9 +158,9 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
       <div className="space-y-4">
         {sortedAnnouncements.map(announcement => {
           const badge = statusBadge(announcement);
-          const publishDisplay = format(new Date(announcement.publishAt), "d MMM yyyy, h:mma");
+          const publishDisplay = format(new Date(announcement.publishAt), 'd MMM yyyy, h:mma');
           const expireDisplay = announcement.expireAt
-            ? format(new Date(announcement.expireAt), "d MMM yyyy, h:mma")
+            ? format(new Date(announcement.expireAt), 'd MMM yyyy, h:mma')
             : null;
           const readCount = announcement.reads?.length ?? 0;
           return (
@@ -181,7 +177,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
                     </span>
                     <span>
                       Publishes {publishDisplay}
-                      {expireDisplay ? ` · Expires ${expireDisplay}` : ""}
+                      {expireDisplay ? ` · Expires ${expireDisplay}` : ''}
                     </span>
                     <span>Audience: {audienceLabel(announcement, groupMap)}</span>
                     <span>Reads: {readCount}</span>
@@ -266,14 +262,14 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
               id="create-audience-select"
               name="audience"
               value={createAudience}
-              onChange={event => setCreateAudience(event.target.value as "all" | "custom")}
+              onChange={event => setCreateAudience(event.target.value as 'all' | 'custom')}
               className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             >
               <option value="all">Whole church</option>
               <option value="custom">Specific groups</option>
             </select>
           </label>
-          {createAudience === "custom" ? (
+          {createAudience === 'custom' ? (
             <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Target groups
               <select
@@ -326,8 +322,12 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
           setEditModal(null);
           setEditAudience('all');
         }}
-        title={editModal ? `Edit ${editModal.title}` : "Edit announcement"}
-        footer={<p className="text-xs text-muted-foreground">Leave a field blank to keep the existing value.</p>}
+        title={editModal ? `Edit ${editModal.title}` : 'Edit announcement'}
+        footer={
+          <p className="text-xs text-muted-foreground">
+            Leave a field blank to keep the existing value.
+          </p>
+        }
       >
         {editModal ? (
           <form
@@ -339,7 +339,9 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
             }}
           >
             <input type="hidden" name="announcementId" value={editModal.id} />
-            {editAudience === "custom" ? <input type="hidden" name="groupIdsMarker" value="true" /> : null}
+            {editAudience === 'custom' ? (
+              <input type="hidden" name="groupIdsMarker" value="true" />
+            ) : null}
             <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Title
               <input
@@ -365,14 +367,14 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
                 id="edit-audience-select"
                 name="audience"
                 value={editAudience}
-                onChange={event => setEditAudience(event.target.value as "all" | "custom")}
+                onChange={event => setEditAudience(event.target.value as 'all' | 'custom')}
                 className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
               >
                 <option value="all">Whole church</option>
                 <option value="custom">Specific groups</option>
               </select>
             </label>
-            {editAudience === "custom" ? (
+            {editAudience === 'custom' ? (
               <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                 Target groups
                 <select
@@ -388,7 +390,9 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
                     </option>
                   ))}
                 </select>
-                <span className="text-[10px] text-muted-foreground">Leave empty to remove all targeted groups.</span>
+                <span className="text-[10px] text-muted-foreground">
+                  Leave empty to remove all targeted groups.
+                </span>
               </label>
             ) : null}
             <div className="grid gap-3 md:grid-cols-2">
@@ -411,7 +415,9 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
                   defaultValue={formatInputDate(editModal.expireAt)}
                   className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 />
-                <span className="text-[10px] text-muted-foreground">Clear the value to remove the expiry.</span>
+                <span className="text-[10px] text-muted-foreground">
+                  Clear the value to remove the expiry.
+                </span>
               </label>
             </div>
             <button

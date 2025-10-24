@@ -1,7 +1,10 @@
 import { cookies } from 'next/headers';
 import { PastoralCareTicket, PrayerRequest } from './types';
 
-const DEFAULT_API_BASE = process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api/v1';
+const DEFAULT_API_BASE =
+  process.env.API_BASE_URL ||
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  'http://localhost:3001/api/v1';
 const DEFAULT_TOKEN = process.env.DEMO_DEFAULT_TOKEN || 'demo-admin';
 
 type AuditLogActor = {
@@ -61,9 +64,13 @@ export async function apiFetch<T>(path: string, init?: RequestInit) {
 
 export const api = {
   async dashboardSummary() {
-    return apiFetch<{ memberCount: number; groupCount: number; upcomingEvents: number; unreadAnnouncements: number; totalGivingLast30: number }>(
-      '/dashboard/summary',
-    );
+    return apiFetch<{
+      memberCount: number;
+      groupCount: number;
+      upcomingEvents: number;
+      unreadAnnouncements: number;
+      totalGivingLast30: number;
+    }>('/dashboard/summary');
   },
   async dashboardOverview() {
     return apiFetch<{

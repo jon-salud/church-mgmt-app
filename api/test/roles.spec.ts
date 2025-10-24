@@ -20,9 +20,9 @@ describe('Roles (e2e-light)', () => {
 
   it('GET /roles should 200', async () => {
     const res = await app.inject({
-        method: 'GET',
-        url: '/api/v1/roles',
-        headers: { authorization: 'Bearer demo-admin' },
+      method: 'GET',
+      url: '/api/v1/roles',
+      headers: { authorization: 'Bearer demo-admin' },
     });
     expect(res.statusCode).toBe(200);
     const body = res.json();

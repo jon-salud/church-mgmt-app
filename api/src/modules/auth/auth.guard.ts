@@ -54,12 +54,14 @@ export class AuthGuard implements CanActivate {
     const result = await this.authService.resolveAuthBearer(token);
     if (!result) {
       throw new UnauthorizedException(
-        'Missing or invalid credentials. Provide a Bearer JWT from the OAuth login flow or an allowed demo token.',
+        'Missing or invalid credentials. Provide a Bearer JWT from the OAuth login flow or an allowed demo token.'
       );
     }
 
     if (result.user.status && result.user.status !== 'active') {
-      throw new ForbiddenException('Account is not active yet. Contact an administrator for access.');
+      throw new ForbiddenException(
+        'Account is not active yet. Contact an administrator for access.'
+      );
     }
 
     request.user = {

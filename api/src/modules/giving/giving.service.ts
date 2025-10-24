@@ -16,8 +16,15 @@ export class GivingService {
   }
 
   recordContribution(
-    input: { memberId: string; amount: number; date: string; fundId?: string; method: ContributionMethod; note?: string },
-    actorUserId?: string,
+    input: {
+      memberId: string;
+      amount: number;
+      date: string;
+      fundId?: string;
+      method: ContributionMethod;
+      note?: string;
+    },
+    actorUserId?: string
   ) {
     return this.db.recordContribution({ ...input, recordedBy: actorUserId });
   }
@@ -38,7 +45,12 @@ export class GivingService {
     return this.db.updateContribution(id, payload as any);
   }
 
-  exportContributionsCsv(filter?: { memberId?: string; fundId?: string; from?: string; to?: string }) {
+  exportContributionsCsv(filter?: {
+    memberId?: string;
+    fundId?: string;
+    from?: string;
+    to?: string;
+  }) {
     return this.db.exportContributionsCsv(filter);
   }
 }

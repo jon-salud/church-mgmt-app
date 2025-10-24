@@ -1,4 +1,3 @@
-
 export interface MockPrayerRequest {
   id: string;
   churchId: string;

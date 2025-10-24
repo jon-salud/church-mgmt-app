@@ -1,5 +1,11 @@
 import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { PastoralCareService } from './pastoral-care.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { CreatePastoralCareTicketDto } from './dto/create-pastoral-care-ticket.dto';
@@ -31,7 +37,11 @@ export class PastoralCareController {
   @Post('tickets/:id/comments')
   @ApiOperation({ summary: 'Add a comment to a pastoral care ticket' })
   @ApiCreatedResponse(objectResponse)
-  createComment(@Param('id') id: string, @Body() dto: CreatePastoralCareCommentDto, @Req() req: any) {
+  createComment(
+    @Param('id') id: string,
+    @Body() dto: CreatePastoralCareCommentDto,
+    @Req() req: any
+  ) {
     return this.pastoralCareService.createComment(id, dto, req.user?.id);
   }
 

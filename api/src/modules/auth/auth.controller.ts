@@ -69,7 +69,12 @@ export class AuthController {
       picture: oauthUser.picture,
     });
     const jwt = this.authService.issueJwt(user, 'google');
-    const redirectUrl = this.authService.buildFrontendRedirect(jwt, 'google', state.redirect, created);
+    const redirectUrl = this.authService.buildFrontendRedirect(
+      jwt,
+      'google',
+      state.redirect,
+      created
+    );
     return reply.redirect(redirectUrl);
   }
 
@@ -99,7 +104,12 @@ export class AuthController {
       picture: oauthUser.picture,
     });
     const jwt = this.authService.issueJwt(user, 'facebook');
-    const redirectUrl = this.authService.buildFrontendRedirect(jwt, 'facebook', state.redirect, created);
+    const redirectUrl = this.authService.buildFrontendRedirect(
+      jwt,
+      'facebook',
+      state.redirect,
+      created
+    );
     return reply.redirect(redirectUrl);
   }
 }

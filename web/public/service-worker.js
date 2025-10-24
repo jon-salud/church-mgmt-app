@@ -13,23 +13,25 @@ self.addEventListener('install', event => {
     (async () => {
       const cache = await caches.open(APP_SHELL_CACHE);
       await Promise.allSettled(
-        OFFLINE_URLS.map(path => cache.add(new Request(path, { credentials: 'include' }))),
+        OFFLINE_URLS.map(path => cache.add(new Request(path, { credentials: 'include' })))
       );
       await caches.open(DATA_CACHE);
       self.skipWaiting();
-    })(),
+    })()
   );
 });
 
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(cacheNames =>
-      Promise.all(
-        cacheNames
-          .filter(name => name !== APP_SHELL_CACHE && name !== DATA_CACHE)
-          .map(name => caches.delete(name)),
-      ),
-    ),
+    caches
+      .keys()
+      .then(cacheNames =>
+        Promise.all(
+          cacheNames
+            .filter(name => name !== APP_SHELL_CACHE && name !== DATA_CACHE)
+            .map(name => caches.delete(name))
+        )
+      )
   );
   self.clients.claim();
 });
@@ -57,12 +59,13 @@ self.addEventListener('fetch', event => {
       caches
         .open(DATA_CACHE)
         .then(cache => cache.match(event.request))
-        .then(response =>
-          response ||
-          new Response(JSON.stringify({ payload: null, timestamp: null }), {
-            headers: { 'Content-Type': 'application/json' },
-          }),
-        ),
+        .then(
+          response =>
+            response ||
+            new Response(JSON.stringify({ payload: null, timestamp: null }), {
+              headers: { 'Content-Type': 'application/json' },
+            })
+        )
     );
     return;
   }
@@ -103,7 +106,7 @@ self.addEventListener('fetch', event => {
         }
 
         return Response.error();
-      }),
+      })
   );
 });
 

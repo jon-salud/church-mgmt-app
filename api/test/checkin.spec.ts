@@ -92,7 +92,7 @@ describe('Checkin (e2e-light)', () => {
         action: 'child.created',
         entity: 'child',
         entityId: childId,
-      }),
+      })
     );
   });
 
@@ -116,7 +116,7 @@ describe('Checkin (e2e-light)', () => {
         action: 'child.updated',
         entity: 'child',
         entityId: childId,
-      }),
+      })
     );
   });
 
@@ -198,7 +198,7 @@ describe('Checkin (e2e-light)', () => {
         action: 'child.deleted',
         entity: 'child',
         entityId: childId,
-      }),
+      })
     );
   });
 });

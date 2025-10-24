@@ -1,4 +1,3 @@
-
 export interface Role {
   churchId: string;
   roleId: string;
@@ -14,7 +13,7 @@ export interface User {
   status: 'active' | 'invited';
   profile: {
     firstName: string;
-    lastName:string;
+    lastName: string;
     [key: string]: any;
   };
   roles: Role[];

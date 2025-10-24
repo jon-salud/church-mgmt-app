@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import Link from "next/link";
-import { format } from "date-fns";
-import { Modal } from "../../../components/ui/modal";
+import { useMemo, useState } from 'react';
+import Link from 'next/link';
+import { format } from 'date-fns';
+import { Modal } from '../../../components/ui/modal';
 import {
   addGroupMemberAction,
   removeGroupMemberAction,
   updateGroupMemberAction,
-} from "../../actions";
+} from '../../actions';
 
 type GroupDetailClientProps = {
   group: any;
@@ -35,10 +35,12 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
     <section className="space-y-6">
       <div>
         <h1 className="text-3xl font-semibold">{group.name}</h1>
-        <p className="text-sm text-muted-foreground">{group.description || "No description yet."}</p>
+        <p className="text-sm text-muted-foreground">
+          {group.description || 'No description yet.'}
+        </p>
         <p className="text-xs text-muted-foreground">
-          Meeting {group.meetingDay || "TBA"} {group.meetingTime && `· ${group.meetingTime}`} • Tags:{" "}
-          {group.tags?.join(", ") || "None"}
+          Meeting {group.meetingDay || 'TBA'} {group.meetingTime && `· ${group.meetingTime}`} •
+          Tags: {group.tags?.join(', ') || 'None'}
         </p>
       </div>
 
@@ -78,7 +80,9 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
                 </td>
                 <td className="py-2 text-muted-foreground">{member.role}</td>
                 <td className="py-2 text-muted-foreground">{member.status}</td>
-                <td className="py-2 text-muted-foreground">{format(new Date(member.joinedAt), "d MMM yyyy")}</td>
+                <td className="py-2 text-muted-foreground">
+                  {format(new Date(member.joinedAt), 'd MMM yyyy')}
+                </td>
                 <td className="py-2">
                   <button
                     id={`manage-member-button-${member.userId}`}
@@ -110,7 +114,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
               <li key={event.id} className="rounded-md border border-border bg-background p-3">
                 <p className="font-medium">{event.title}</p>
                 <p className="text-xs text-muted-foreground">
-                  {format(new Date(event.startAt), "d MMM yyyy, h:mma")} · {event.location || "TBA"}
+                  {format(new Date(event.startAt), 'd MMM yyyy, h:mma')} · {event.location || 'TBA'}
                 </p>
               </li>
             ))}
@@ -126,7 +130,8 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
         title="Add member to group"
         footer={
           <p className="text-xs text-muted-foreground">
-            Members can have different roles across groups. Use this dialog to invite them to {group.name}.
+            Members can have different roles across groups. Use this dialog to invite them to{' '}
+            {group.name}.
           </p>
         }
       >
@@ -210,10 +215,11 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
       <Modal
         open={Boolean(memberModal)}
         onClose={() => setMemberModal(null)}
-        title={memberModal ? `Manage ${memberModal.name}` : "Manage member"}
+        title={memberModal ? `Manage ${memberModal.name}` : 'Manage member'}
         footer={
           <p className="text-xs text-muted-foreground">
-            Changes update the member&apos;s record for this group only and trigger revalidation right away.
+            Changes update the member&apos;s record for this group only and trigger revalidation
+            right away.
           </p>
         }
       >
@@ -280,7 +286,9 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
               <input type="hidden" name="userId" value={memberModal.userId} />
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <h3 className="text-sm font-semibold text-destructive-foreground">Remove from group</h3>
+                  <h3 className="text-sm font-semibold text-destructive-foreground">
+                    Remove from group
+                  </h3>
                   <p className="text-xs text-destructive-foreground/80">
                     This only affects membership in {group.name}. Attendance history remains intact.
                   </p>

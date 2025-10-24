@@ -16,7 +16,9 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const allowDemo = (config.get<string>('ALLOW_DEMO_LOGIN') ?? 'true').toLowerCase() !== 'false';
 
     if (isDemoOnly && !allowDemo) {
-      throw new Error('Missing Google OAuth configuration. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.');
+      throw new Error(
+        'Missing Google OAuth configuration. Set GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET.'
+      );
     }
 
     super({
@@ -28,7 +30,13 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
   }
 
-  async validate(req: any, _accessToken: string, _refreshToken: string, profile: any, done: Function) {
+  async validate(
+    req: any,
+    _accessToken: string,
+    _refreshToken: string,
+    profile: any,
+    done: Function
+  ) {
     const email = profile?.emails?.[0]?.value;
     if (!email) {
       return done(new Error('Google account does not have an email address available.'), false);

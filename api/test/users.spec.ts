@@ -31,9 +31,9 @@ describe('Users (e2e-light)', () => {
 
   afterAll(async () => {
     await app.inject({
-        method: 'DELETE',
-        url: `/api/v1/users/${createdUserId}`,
-        headers: { authorization: 'Bearer demo-admin' },
+      method: 'DELETE',
+      url: `/api/v1/users/${createdUserId}`,
+      headers: { authorization: 'Bearer demo-admin' },
     });
     await app.close();
   });

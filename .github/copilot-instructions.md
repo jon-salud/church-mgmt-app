@@ -1,6 +1,7 @@
 # AI Agent Instructions for Church Management App
 
-This guide helps AI agents understand key patterns and workflows in this church management application.
+This guide helps AI agents understand key patterns and workflows in this church management
+application.
 
 ## Product Overview
 
@@ -167,9 +168,7 @@ pnpm -C web test:e2e <file>    # Run specific test file
    }
 
    // 2. Add to mock-data.ts
-   export const mockYourFeatures = [
-     { id: '1', name: 'Example' }
-   ];
+   export const mockYourFeatures = [{ id: '1', name: 'Example' }];
 
    // 3. Update mock-database.service.ts
    @Injectable()

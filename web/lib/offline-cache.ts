@@ -12,7 +12,7 @@ export type OfflineSnapshotPayloads = {
 
 export async function persistOfflineSnapshot<K extends OfflineSnapshotKey>(
   key: K,
-  payload: OfflineSnapshotPayloads[K],
+  payload: OfflineSnapshotPayloads[K]
 ) {
   if (typeof window === 'undefined') {
     return;
@@ -25,7 +25,7 @@ export async function persistOfflineSnapshot<K extends OfflineSnapshotKey>(
       const cache = await caches.open(DATA_CACHE_NAME);
       await cache.put(
         new Request(`${OFFLINE_DATA_PREFIX}${key}`),
-        new Response(body, { headers: { 'Content-Type': 'application/json' } }),
+        new Response(body, { headers: { 'Content-Type': 'application/json' } })
       );
     } catch (error) {
       console.warn('Failed to persist offline snapshot in cache', error);
@@ -49,7 +49,7 @@ export async function persistOfflineSnapshot<K extends OfflineSnapshotKey>(
 }
 
 export async function loadOfflineSnapshot<K extends OfflineSnapshotKey>(
-  key: K,
+  key: K
 ): Promise<OfflineSnapshotPayloads[K] | null> {
   if (typeof window === 'undefined' || !('caches' in window)) {
     return null;

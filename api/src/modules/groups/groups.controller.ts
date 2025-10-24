@@ -1,5 +1,22 @@
-import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  Delete,
+  ForbiddenException,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GroupsService } from './groups.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { AddGroupMemberDto } from './dto/add-group-member.dto';
@@ -50,7 +67,7 @@ export class GroupsController {
     @Param('groupId') groupId: string,
     @Param('userId') userId: string,
     @Body() dto: UpdateGroupMemberDto,
-    @Req() req: any,
+    @Req() req: any
   ) {
     this.ensureAdmin(req);
     return this.groupsService.updateMember(groupId, userId, dto, req.user.id);
@@ -59,7 +76,11 @@ export class GroupsController {
   @Delete(':groupId/members/:userId')
   @ApiOperation({ summary: 'Remove group member' })
   @ApiOkResponse({ type: SuccessResponseDto })
-  removeMember(@Param('groupId') groupId: string, @Param('userId') userId: string, @Req() req: any) {
+  removeMember(
+    @Param('groupId') groupId: string,
+    @Param('userId') userId: string,
+    @Req() req: any
+  ) {
     this.ensureAdmin(req);
     return this.groupsService.removeMember(groupId, userId, req.user.id);
   }

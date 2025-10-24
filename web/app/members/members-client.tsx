@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { Modal } from "../../components/ui/modal";
-import { createMemberAction } from "../actions";
+import { useState } from 'react';
+import Link from 'next/link';
+import { Modal } from '../../components/ui/modal';
+import { createMemberAction } from '../actions';
 
 type RoleOption = {
   id: string;
@@ -19,7 +19,7 @@ type MembersClientProps = {
 
 export function MembersClient({ members, roles, initialQuery }: MembersClientProps) {
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const defaultRoleId = roles.find(role => role.slug === "member")?.id ?? roles[0]?.id ?? "";
+  const defaultRoleId = roles.find(role => role.slug === 'member')?.id ?? roles[0]?.id ?? '';
 
   return (
     <section className="space-y-6">
@@ -42,7 +42,10 @@ export function MembersClient({ members, roles, initialQuery }: MembersClientPro
               placeholder="Search name or email"
               className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground"
             />
-            <button id="search-button" className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground">
+            <button
+              id="search-button"
+              className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
+            >
               Search
             </button>
           </form>
@@ -59,7 +62,10 @@ export function MembersClient({ members, roles, initialQuery }: MembersClientPro
 
       <div className="overflow-x-auto rounded-xl border border-border bg-card/60">
         <table className="min-w-full text-sm" aria-describedby="members-table-caption">
-          <caption id="members-table-caption" className="px-4 py-2 text-left text-xs uppercase text-muted-foreground">
+          <caption
+            id="members-table-caption"
+            className="px-4 py-2 text-left text-xs uppercase text-muted-foreground"
+          >
             Members matching the current search query
           </caption>
           <thead className="text-left text-xs uppercase tracking-wide text-muted-foreground">
@@ -92,10 +98,10 @@ export function MembersClient({ members, roles, initialQuery }: MembersClientPro
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">{member.primaryEmail}</td>
                 <td className="px-4 py-3 text-foreground">
-                  {member.roles?.map((role: any) => role.role).join(", ") || "Member"}
+                  {member.roles?.map((role: any) => role.role).join(', ') || 'Member'}
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
-                  {member.groups?.map((g: any) => g.name).join(", ") || "—"}
+                  {member.groups?.map((g: any) => g.name).join(', ') || '—'}
                 </td>
               </tr>
             ))}
@@ -109,11 +115,16 @@ export function MembersClient({ members, roles, initialQuery }: MembersClientPro
         title="Add Member"
         footer={
           <p className="text-xs text-muted-foreground">
-            Records are added to the demo datastore instantly. You can edit the profile after creation.
+            Records are added to the demo datastore instantly. You can edit the profile after
+            creation.
           </p>
         }
       >
-        <form action={createMemberAction} className="grid gap-4 md:grid-cols-2" onSubmit={() => setIsAddOpen(false)}>
+        <form
+          action={createMemberAction}
+          className="grid gap-4 md:grid-cols-2"
+          onSubmit={() => setIsAddOpen(false)}
+        >
           <label className="grid gap-1 text-xs uppercase text-muted-foreground">
             First Name
             <input

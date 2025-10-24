@@ -25,7 +25,10 @@ export default function NewPrayerRequestPage() {
     return (
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">Prayer Request Submitted</h1>
-        <p>Thank you for submitting your prayer request. It will be reviewed by our pastoral team shortly.</p>
+        <p>
+          Thank you for submitting your prayer request. It will be reviewed by our pastoral team
+          shortly.
+        </p>
       </div>
     );
   }
@@ -41,7 +44,7 @@ export default function NewPrayerRequestPage() {
           <input
             id="title"
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={e => setTitle(e.target.value)}
             className="w-full border border-slate-600 rounded-md p-2 bg-slate-800 text-slate-100"
             required
           />
@@ -53,14 +56,18 @@ export default function NewPrayerRequestPage() {
           <textarea
             id="description"
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={e => setDescription(e.target.value)}
             className="w-full border border-slate-600 rounded-md p-2 bg-slate-800 text-slate-100"
             rows={4}
             required
           />
         </div>
         <div className="flex items-center">
-          <Checkbox id="isAnonymous" checked={isAnonymous} onCheckedChange={(checked) => setIsAnonymous(Boolean(checked))} />
+          <Checkbox
+            id="isAnonymous"
+            checked={isAnonymous}
+            onCheckedChange={checked => setIsAnonymous(Boolean(checked))}
+          />
           <label htmlFor="isAnonymous" className="ml-2 text-sm">
             Submit anonymously
           </label>

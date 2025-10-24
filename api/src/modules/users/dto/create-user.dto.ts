@@ -1,4 +1,12 @@
-import { ArrayNotEmpty, IsArray, IsEmail, IsIn, IsOptional, IsString, MaxLength } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsEmail,
+  IsIn,
+  IsOptional,
+  IsString,
+  MaxLength,
+} from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export const STATUS_VALUES = ['active', 'invited'] as const;

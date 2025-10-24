@@ -10,7 +10,10 @@ export class LoginDto {
   @IsIn(['google', 'facebook'])
   provider!: 'google' | 'facebook';
 
-  @ApiPropertyOptional({ description: 'Optional role identifier or name to assume for the session', maxLength: 100 })
+  @ApiPropertyOptional({
+    description: 'Optional role identifier or name to assume for the session',
+    maxLength: 100,
+  })
   @IsOptional()
   @IsString()
   @MaxLength(100)

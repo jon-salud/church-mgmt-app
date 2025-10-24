@@ -21,67 +21,72 @@ async function apiFetch<T>(path: string, init?: RequestInit) {
 }
 
 export const clientApi = {
-    async currentUser() {
-        return apiFetch<{ session: { token: string; provider: string }; user: any } | null>('/auth/me');
-    },
-    async getSettings(churchId: string) {
-        return apiFetch<any>(`/settings/${churchId}`);
-    },
-    async updateSettings(churchId: string, settings: any) {
-        return apiFetch<any>(`/settings/${churchId}`, {
-            method: 'PUT',
-            body: JSON.stringify(settings),
-        });
-    },
-    async post<T>(path: string, body?: any) {
-        return apiFetch<T>(path, {
-            method: 'POST',
-            body: body ? JSON.stringify(body) : undefined,
-        });
-    },
-    async put<T>(path: string, body?: any) {
-        return apiFetch<T>(path, {
-            method: 'PUT',
-            body: body ? JSON.stringify(body) : undefined,
-        });
-    },
-    async subscribeToNotifications(subscription: PushSubscription) {
-        return apiFetch('/notifications/subscribe', {
-            method: 'POST',
-            body: JSON.stringify(subscription),
-        });
-    },
-    async createPastoralCareTicket(dto: { title: string; description: string; priority: string }) {
-        return apiFetch<PastoralCareTicket>('/pastoral-care/tickets', {
-            method: 'POST',
-            body: JSON.stringify(dto),
-        });
-    },
-    async createPastoralCareComment(ticketId: string, dto: { body: string }) {
-        return apiFetch<PastoralCareComment>(`/pastoral-care/tickets/${ticketId}/comments`, {
-            method: 'POST',
-            body: JSON.stringify(dto),
-        });
-    },
-    async getRequestTypes(churchId: string) {
-        return apiFetch<any[]>(`/settings/${churchId}/request-types`);
-    },
-    async createRequestType(churchId: string, name: string, hasConfidentialField: boolean, description?: string) {
-        return apiFetch<any>(`/settings/${churchId}/request-types`, {
-            method: 'POST',
-            body: JSON.stringify({ name, hasConfidentialField, description }),
-        });
-    },
-    async reorderRequestTypes(churchId: string, ids: string[]) {
-        return apiFetch<any>(`/settings/${churchId}/request-types/reorder`, {
-            method: 'PUT',
-            body: JSON.stringify({ ids }),
-        });
-    },
-    async updateRequestTypeStatus(churchId: string, id: string, status: 'active' | 'archived') {
-        return apiFetch<any>(`/settings/${churchId}/request-types/${id}/status`, {
-            method: 'PUT',
-            body: JSON.stringify({ status }),
-        });
-    },
+  async currentUser() {
+    return apiFetch<{ session: { token: string; provider: string }; user: any } | null>('/auth/me');
+  },
+  async getSettings(churchId: string) {
+    return apiFetch<any>(`/settings/${churchId}`);
+  },
+  async updateSettings(churchId: string, settings: any) {
+    return apiFetch<any>(`/settings/${churchId}`, {
+      method: 'PUT',
+      body: JSON.stringify(settings),
+    });
+  },
+  async post<T>(path: string, body?: any) {
+    return apiFetch<T>(path, {
+      method: 'POST',
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  },
+  async put<T>(path: string, body?: any) {
+    return apiFetch<T>(path, {
+      method: 'PUT',
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  },
+  async subscribeToNotifications(subscription: PushSubscription) {
+    return apiFetch('/notifications/subscribe', {
+      method: 'POST',
+      body: JSON.stringify(subscription),
+    });
+  },
+  async createPastoralCareTicket(dto: { title: string; description: string; priority: string }) {
+    return apiFetch<PastoralCareTicket>('/pastoral-care/tickets', {
+      method: 'POST',
+      body: JSON.stringify(dto),
+    });
+  },
+  async createPastoralCareComment(ticketId: string, dto: { body: string }) {
+    return apiFetch<PastoralCareComment>(`/pastoral-care/tickets/${ticketId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify(dto),
+    });
+  },
+  async getRequestTypes(churchId: string) {
+    return apiFetch<any[]>(`/settings/${churchId}/request-types`);
+  },
+  async createRequestType(
+    churchId: string,
+    name: string,
+    hasConfidentialField: boolean,
+    description?: string
+  ) {
+    return apiFetch<any>(`/settings/${churchId}/request-types`, {
+      method: 'POST',
+      body: JSON.stringify({ name, hasConfidentialField, description }),
+    });
+  },
+  async reorderRequestTypes(churchId: string, ids: string[]) {
+    return apiFetch<any>(`/settings/${churchId}/request-types/reorder`, {
+      method: 'PUT',
+      body: JSON.stringify({ ids }),
+    });
+  },
+  async updateRequestTypeStatus(churchId: string, id: string, status: 'active' | 'archived') {
+    return apiFetch<any>(`/settings/${churchId}/request-types/${id}/status`, {
+      method: 'PUT',
+      body: JSON.stringify({ status }),
+    });
+  },
 };

@@ -7,7 +7,9 @@ export class MemberDetailPage extends BasePage {
   }
 
   async verifyMemberName(firstName: string, lastName: string) {
-    await expect(this.page.getByRole('heading', { name: `${firstName} ${lastName}` })).toBeVisible();
+    await expect(
+      this.page.getByRole('heading', { name: `${firstName} ${lastName}` })
+    ).toBeVisible();
   }
 
   async updateMemberDetails(phone: string, address: string) {
@@ -20,7 +22,9 @@ export class MemberDetailPage extends BasePage {
   }
 
   async verifyMemberRole(role: string) {
-    const rolesSection = this.page.locator('section', { has: this.page.getByRole('heading', { name: 'Roles' }) });
+    const rolesSection = this.page.locator('section', {
+      has: this.page.getByRole('heading', { name: 'Roles' }),
+    });
     await expect(rolesSection.locator('li', { hasText: new RegExp(role) })).toBeVisible();
   }
 

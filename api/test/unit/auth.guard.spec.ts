@@ -1,7 +1,12 @@
 import { ExecutionContext, ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { AuthGuard } from '../../src/modules/auth/auth.guard';
 
-const createExecutionContext = (requestOverrides: Partial<{ headers: Record<string, string>; cookies: Record<string, string> }> = {}) =>
+const createExecutionContext = (
+  requestOverrides: Partial<{
+    headers: Record<string, string>;
+    cookies: Record<string, string>;
+  }> = {}
+) =>
   ({
     switchToHttp: () => ({
       getRequest: () => ({
@@ -27,7 +32,13 @@ describe('AuthGuard', () => {
     const context = createExecutionContext({ headers: { authorization: 'Bearer token-123' } });
     authService.resolveAuthBearer.mockResolvedValue({
       session: { token: 'token-123' },
-      user: { id: 'user-id', primaryEmail: 'user@example.com', roles: [], profile: {}, status: 'active' },
+      user: {
+        id: 'user-id',
+        primaryEmail: 'user@example.com',
+        roles: [],
+        profile: {},
+        status: 'active',
+      },
     });
 
     const result = await guard.canActivate(context);
@@ -43,7 +54,13 @@ describe('AuthGuard', () => {
     });
     authService.resolveAuthBearer.mockResolvedValue({
       session: { token: 'cookie-token-789' },
-      user: { id: 'user-id', primaryEmail: 'user@example.com', roles: [], profile: {}, status: 'active' },
+      user: {
+        id: 'user-id',
+        primaryEmail: 'user@example.com',
+        roles: [],
+        profile: {},
+        status: 'active',
+      },
     });
 
     await guard.canActivate(context);
@@ -62,7 +79,13 @@ describe('AuthGuard', () => {
     const context = createExecutionContext({ headers: { authorization: 'demo-token' } });
     authService.resolveAuthBearer.mockResolvedValue({
       session: { token: 'demo-token' },
-      user: { id: 'user-id', primaryEmail: 'user@example.com', roles: [], profile: {}, status: 'invited' },
+      user: {
+        id: 'user-id',
+        primaryEmail: 'user@example.com',
+        roles: [],
+        profile: {},
+        status: 'invited',
+      },
     });
 
     await expect(guard.canActivate(context)).rejects.toThrow(ForbiddenException);

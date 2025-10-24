@@ -17,7 +17,13 @@ interface AppLayoutProps {
   adminNavItems: NavItem[];
 }
 
-export function AppLayout({ children, me, memberNavItems, givingNavItems, adminNavItems }: AppLayoutProps) {
+export function AppLayout({
+  children,
+  me,
+  memberNavItems,
+  givingNavItems,
+  adminNavItems,
+}: AppLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const displayName = me?.user?.profile
     ? `${me.user.profile.firstName} ${me.user.profile.lastName ?? ''}`.trim()
@@ -42,7 +48,11 @@ export function AppLayout({ children, me, memberNavItems, givingNavItems, adminN
               <Icon name="Menu" />
             </button>
             <div>
-              <Link id="dashboard-link" href="/dashboard" className="text-xl font-semibold tracking-tight">
+              <Link
+                id="dashboard-link"
+                href="/dashboard"
+                className="text-xl font-semibold tracking-tight"
+              >
                 Auckland Community Church
               </Link>
               <p className="text-xs text-muted-foreground">Role: {primaryRole}</p>

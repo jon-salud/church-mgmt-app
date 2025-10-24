@@ -35,7 +35,12 @@ export class MetricsService {
     });
   }
 
-  recordRequest(method: string, route: string | undefined, status: number, durationSeconds: number) {
+  recordRequest(
+    method: string,
+    route: string | undefined,
+    status: number,
+    durationSeconds: number
+  ) {
     const labels: MetricLabels = {
       method: method.toUpperCase(),
       route: route ?? 'unmapped',

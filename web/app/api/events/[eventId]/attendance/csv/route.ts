@@ -1,24 +1,21 @@
-"use server";
+'use server';
 
-import { cookies } from "next/headers";
+import { cookies } from 'next/headers';
 
 const API_BASE =
   process.env.API_BASE_URL ||
   process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "http://localhost:3001/api/v1";
+  'http://localhost:3001/api/v1';
 
-export async function GET(
-  _request: Request,
-  { params }: { params: { eventId: string } },
-) {
+export async function GET(_request: Request, { params }: { params: { eventId: string } }) {
   const cookieStore = cookies();
   const token =
-    cookieStore.get("session_token")?.value ||
-    cookieStore.get("demo_token")?.value ||
-    (process.env.NODE_ENV !== "production" ? "demo-admin" : "");
+    cookieStore.get('session_token')?.value ||
+    cookieStore.get('demo_token')?.value ||
+    (process.env.NODE_ENV !== 'production' ? 'demo-admin' : '');
 
   if (!token) {
-    return new Response("Missing credentials", { status: 401 });
+    return new Response('Missing credentials', { status: 401 });
   }
 
   const upstream = await fetch(
@@ -27,8 +24,8 @@ export async function GET(
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      cache: "no-store",
-    },
+      cache: 'no-store',
+    }
   );
 
   const payload = await upstream.text();
@@ -37,14 +34,14 @@ export async function GET(
   }
 
   const disposition =
-    upstream.headers.get("content-disposition") ||
+    upstream.headers.get('content-disposition') ||
     `attachment; filename="${params.eventId}-attendance.csv"`;
 
   return new Response(payload, {
     status: 200,
     headers: {
-      "Content-Type": "text/csv; charset=utf-8",
-      "Content-Disposition": disposition,
+      'Content-Type': 'text/csv; charset=utf-8',
+      'Content-Disposition': disposition,
     },
   });
 }

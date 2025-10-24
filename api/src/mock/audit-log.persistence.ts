@@ -41,7 +41,10 @@ export class AuditLogPersistence {
       const deserialised = JSON.parse(payload) as MockAuditLog[];
       return Array.isArray(deserialised) ? deserialised : [];
     } catch (error) {
-      this.logger.error(`Failed to load audit log snapshot from ${this.filePath}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `Failed to load audit log snapshot from ${this.filePath}`,
+        error instanceof Error ? error.stack : undefined
+      );
       return null;
     }
   }
@@ -54,7 +57,10 @@ export class AuditLogPersistence {
       mkdirSync(dirname(this.filePath), { recursive: true });
       writeFileSync(this.filePath, JSON.stringify(logs, null, 2), 'utf-8');
     } catch (error) {
-      this.logger.error(`Failed to persist audit logs to ${this.filePath}`, error instanceof Error ? error.stack : undefined);
+      this.logger.error(
+        `Failed to persist audit logs to ${this.filePath}`,
+        error instanceof Error ? error.stack : undefined
+      );
     }
   }
 }
