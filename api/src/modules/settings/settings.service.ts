@@ -1,32 +1,44 @@
-
-import { Injectable } from '@nestjs/common';
-import { MockDatabaseService } from '../../mock/mock-database.service';
+import { Injectable } from "@nestjs/common";
+import { MockDatabaseService } from "../../mock/mock-database.service";
 
 @Injectable()
 export class SettingsService {
-  constructor(private readonly db: MockDatabaseService) {}
+    constructor(private readonly db: MockDatabaseService) {}
 
-  getRequestTypes(churchId: string) {
-    return this.db.listRequestTypes(churchId);
-  }
+    async getSettings(churchId: string) {
+        // Get or initialize church settings
+        let settings = await this.db.getSettings(churchId);
+        if (!settings) {
+            settings = await this.db.initializeSettings(churchId);
+        }
+        return settings;
+    }
 
-  createRequestType(name: string, hasConfidentialField: boolean, actorUserId: string, description?: string) {
-    return this.db.createRequestType(name, hasConfidentialField, actorUserId, description);
-  }
+    async updateSettings(churchId: string, settings: any) {
+        return this.db.updateSettings(churchId, settings);
+    }
 
-  updateRequestType(id: string, name: string, actorUserId: string) {
-    return this.db.updateRequestType(id, name, actorUserId);
-  }
+    getRequestTypes(churchId: string) {
+        return this.db.listRequestTypes(churchId);
+    }
 
-  archiveRequestType(id: string, actorUserId: string) {
-    return this.db.archiveRequestType(id, actorUserId);
-  }
+    createRequestType(name: string, hasConfidentialField: boolean, actorUserId: string, description?: string) {
+        return this.db.createRequestType(name, hasConfidentialField, actorUserId, description);
+    }
 
-  updateRequestTypeStatus(id: string, status: 'active' | 'archived', actorUserId: string) {
-    return this.db.updateRequestTypeStatus(id, status, actorUserId);
-  }
+    updateRequestType(id: string, name: string, actorUserId: string) {
+        return this.db.updateRequestType(id, name, actorUserId);
+    }
 
-  reorderRequestTypes(ids: string[], actorUserId: string) {
-    return this.db.reorderRequestTypes(ids, actorUserId);
-  }
+    archiveRequestType(id: string, actorUserId: string) {
+        return this.db.archiveRequestType(id, actorUserId);
+    }
+
+    updateRequestTypeStatus(id: string, status: "active" | "archived", actorUserId: string) {
+        return this.db.updateRequestTypeStatus(id, status, actorUserId);
+    }
+
+    reorderRequestTypes(ids: string[], actorUserId: string) {
+        return this.db.reorderRequestTypes(ids, actorUserId);
+    }
 }
