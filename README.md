@@ -16,25 +16,41 @@ This monorepo packages a complete walkthrough of the PRD using mock data only. Y
 For the fastest demo experience, use GitHub Codespaces:
 
 1. Click the **"Code"** button above → **"Create codespace on main"**
-2. Wait for the environment to build (5-10 minutes)
-3. The demo starts automatically with both servers running
+2. Wait for the environment to build (5-10 minutes) - dependencies will be installed automatically
+3. **Start the demo servers** using one of these methods:
+
+   ### Option A: Use the start script (Recommended)
+
+   ```bash
+   ./start-demo.sh
+   ```
+
+   ### Option B: Use VS Code Tasks
+
+   - Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
+   - Type "Tasks: Run Task" and select it
+   - Choose "Start Full Demo"
+
+   ### Option C: Manual startup
+
+   - Open a terminal and run: `cd api && DATA_MODE=mock pnpm start`
+   - Open another terminal and run: `cd web && pnpm dev`
+
 4. **Find the Ports panel**: Look at the bottom of VS Code for a "PORTS" tab (next to TERMINAL,
    OUTPUT, etc.)
 
-### Option A: Automatic Port Forwarding (Recommended)
+   ### Option A: Automatic Port Forwarding (Recommended)
 
-- Click the globe icons (🌐) next to ports 3000 and 3001 to open them in new browser tabs
+   - Click the globe icons (🌐) next to ports 3000 and 3001 to open them in new browser tabs
 
-### Option B: Manual Port Forwarding (if globe icons don't appear)
+   ### Option B: Manual Port Forwarding (if globe icons don't appear)
 
-- Click the **"Forward a Port"** button in the PORTS panel
-- Enter `3000` and press Enter (for the web app)
-- Enter `3001` and press Enter (for the API)
-- Click the globe icons that appear next to the forwarded ports
+   - Click the **"Forward a Port"** button in the PORTS panel
+   - Enter `3000` and press Enter (for the web app)
+   - Enter `3001` and press Enter (for the API)
+   - Click the globe icons that appear next to the forwarded ports
 
-**Start exploring the app!**
-
-**Demo URLs:**
+5. Start exploring the app!**Demo URLs:**
 
 - **Frontend**: <http://localhost:3000>
 - **API**: <http://localhost:3001>

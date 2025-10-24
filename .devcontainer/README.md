@@ -27,15 +27,35 @@ For demo purposes, use the `demo-admin` token which is automatically set for dev
 
 ## Getting Started
 
-1. The servers start automatically when the Codespace opens
-2. Wait for both servers to be ready (check the terminal output)
+1. The Codespace environment is ready - dependencies are installed
+2. **Start the demo servers** using one of these methods:
+
+   ### Option A: Use the start script (Recommended)
+
+   ```bash
+   ./start-demo.sh
+   ```
+
+   ### Option B: Use VS Code Tasks
+
+   - Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
+   - Type "Tasks: Run Task" and select it
+   - Choose "Start Full Demo"
+
+   ### Option C: Manual startup
+
+   - Open a terminal and run: `cd api && DATA_MODE=mock pnpm start`
+   - Open another terminal and run: `cd web && pnpm dev`
+
 3. **Find the Ports panel**: Look at the bottom of VS Code for a "PORTS" tab (next to TERMINAL,
    OUTPUT, etc.)
 
    ### Option A: Automatic Port Forwarding (Recommended)
+
    - Click the globe icons (🌐) next to ports 3000 and 3001 to open them in new browser tabs
 
    ### Option B: Manual Port Forwarding (if globe icons don't appear)
+
    - Click the **"Forward a Port"** button in the PORTS panel
    - Enter `3000` and press Enter (for the web app)
    - Enter `3001` and press Enter (for the API)
