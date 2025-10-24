@@ -18,7 +18,9 @@ For the fastest demo experience, use GitHub Codespaces:
 1. Click the **"Code"** button above → **"Create codespace on main"**
 2. Wait for the environment to build (5-10 minutes)
 3. The demo starts automatically with both servers running
-4. Open the **Ports** panel and click the globe icons for ports 3000 (web) and 3001 (API)
+4. **Find the Ports panel**: Look at the bottom of VS Code for a "PORTS" tab (next to TERMINAL,
+   OUTPUT, etc.)
+5. Click the globe icons (🌐) next to ports 3000 and 3001 to open them in new browser tabs
 
 **Demo URLs:**
 

@@ -29,10 +29,10 @@ For demo purposes, use the `demo-admin` token which is automatically set for dev
 
 1. The servers start automatically when the Codespace opens
 2. Wait for both servers to be ready (check the terminal output)
-3. Open the Ports panel and click the globe icons next to ports 3000 and 3001 to open them in new tabs
-4. Start exploring the app!
-
-## Development
+3. **Find the Ports panel**: Look at the bottom of VS Code for a "PORTS" tab (next to TERMINAL,
+   OUTPUT, etc.)
+4. Click the globe icons (🌐) next to ports 3000 and 3001 to open them in new browser tabs
+5. Start exploring the app!## Development
 
 If you need to restart the servers:
 
@@ -41,4 +41,5 @@ If you need to restart the servers:
 
 ## Mock Data
 
-All data is stored in memory using the mock database service. Changes persist during the session but reset when the Codespace restarts.
+All data is stored in memory using the mock database service. Changes persist during the session but
+reset when the Codespace restarts.
