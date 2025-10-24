@@ -14,7 +14,7 @@ export interface MockRequest {
 export const mockRequests: MockRequest[] = [
   {
     id: 'req-1',
-    churchId: 'church-1',
+    churchId: 'church-acc',
     userId: 'user-member-2',
     requestTypeId: 'req-type-2', // Benevolence
     title: 'Benevolence Request',
@@ -25,7 +25,7 @@ export const mockRequests: MockRequest[] = [
   },
   {
     id: 'req-2',
-    churchId: 'church-1',
+    churchId: 'church-acc',
     userId: 'user-member-3',
     requestTypeId: 'req-type-4', // Suggestion
     title: 'Youth Group Activity Suggestion',

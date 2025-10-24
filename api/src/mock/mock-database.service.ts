@@ -2147,15 +2147,13 @@ export class MockDatabaseService {
   }
 
   getRequests() {
-    return clone(this.requests).map(request => {
+    return clone(this.requests).map((request) => {
       const author = this.getUserById(request.userId);
-      const requestType = this.requestTypes.find(
-        rt => rt.id === request.requestTypeId && rt.churchId === request.churchId,
-      );
+      const requestType = this.requestTypes.find((rt) => rt.id === request.requestTypeId);
       return {
         ...request,
         author,
-        requestType: requestType ?? null,
+        requestType,
       };
     });
   }
