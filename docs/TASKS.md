@@ -44,7 +44,12 @@ Use this file as the single source of truth for what has shipped in the demo MVP
     - Write Playwright E2E tests for the confidential pastoral care user flows.
 - Child Check-In and Safety feature
 - UI Improvements (Theme Switching, Sidebar Navigation, UI Automation IDs)
-- Documentation refresh (AGENTS.md, PRD.md, README.md, SETUP.md, TASKS.md)
+- **Documentation Reconciliation:**
+  - Audited all project documentation (`BRD`, `FRD`, `Architecture`, `API`, `User Manual`, `Coding Standards`) to create a single source of truth.
+  - Reconciled and updated `PRD.md` to serve as a high-level summary, linking to detailed documents.
+  - Updated `NAVIGATION.md` to accurately reflect all application features and routes.
+  - Overhauled `SETUP.md` to provide a clear, structured guide for developers.
+  - Aligned all documentation to ensure consistency and accuracy across the project.
 
 ### 🔄 In Progress
 
