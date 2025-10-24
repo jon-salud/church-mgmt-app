@@ -2,12 +2,12 @@
 
 This monorepo packages a complete walkthrough of the PRD using mock data only. You get:
 
-| Surface | Highlights |
-| ------- | ---------- |
-| **API** | NestJS (Fastify), in-memory mock store, OAuth-style demo login, OpenAPI docs |
-| **Web** | Next.js App Router + React + Tailwind + PWA service worker + shadcn-style UI seeds |
-| **Data** | Members, groups, events, announcements, giving, seeded sessions (no Postgres required) |
-| **Tests** | Jest (API smoke) and Playwright (dashboard e2e) |
+| Surface   | Highlights                                                                             |
+| --------- | -------------------------------------------------------------------------------------- |
+| **API**   | NestJS (Fastify), in-memory mock store, OAuth-style demo login, OpenAPI docs           |
+| **Web**   | Next.js App Router + React + Tailwind + PWA service worker + shadcn-style UI seeds     |
+| **Data**  | Members, groups, events, announcements, giving, seeded sessions (no Postgres required) |
+| **Tests** | Jest (API smoke) and Playwright (dashboard e2e)                                        |
 
 ---
 
@@ -76,7 +76,7 @@ Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/d
 
 The API chooses its backing store via `DATA_MODE`:
 
-- `mock` *(default)* – uses the in-memory `MockDatabaseService`. This is what CI and the Playwright smoke suite run against.
+- `mock` _(default)_ – uses the in-memory `MockDatabaseService`. This is what CI and the Playwright smoke suite run against.
 - Additional modes (e.g. `prisma`) will be wired up as the persistent layer lands. Choosing an unsupported value currently throws a helpful error so you know to keep the flag on `mock`.
 
 Examples:
@@ -98,8 +98,8 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 - **Production flows:** `/auth/google` and `/auth/facebook` perform real OAuth handshakes (Passport strategies) and issue signed JWT access tokens. Configure the providers with:
   - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`
   - `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`, `FACEBOOK_CALLBACK_URL`
-  - `JWT_SECRET`, `JWT_EXPIRES_IN` *(optional, defaults to 1h)*
-  - `WEB_APP_URL` *(used to send users back to the Next.js app on success)*
+  - `JWT_SECRET`, `JWT_EXPIRES_IN` _(optional, defaults to 1h)_
+  - `WEB_APP_URL` _(used to send users back to the Next.js app on success)_
 - **Demo shortcut:** POST `/auth/login` with `{ email, provider, role }` still works for the seeded accounts and returns both the historical mock token and a JWT. The login screen also exposes a “demo mode” button that sets the `demo-admin` session without leaving the app.
 - If no Bearer token is provided and demo mode is enabled, the API falls back to `demo-admin` so unauthenticated users can still explore the UI.
 - The Next.js callback route stores the JWT in an httpOnly `session_token` cookie; a companion `session_provider` cookie (non-HTTP-only) lets the UI surface which path the user took.
@@ -138,18 +138,22 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 
 ## Useful Commands
 
-| Action | Command |
-| ------ | ------- |
-| Build all packages | `pnpm -r build` |
-| Start API dev server (mock) | `pnpm dev:api:mock` |
-| Build API | `pnpm -C api build` |
-| Run API unit/integration tests | `pnpm -C api test` |
-| Run API tests with coverage | `pnpm -C api test -- --coverage` |
-| Start web dev server | `pnpm -C web dev` |
-| Build web for prod | `pnpm -C web build` |
-| Install Playwright browsers | `pnpm -C web exec playwright install` |
-| Run Playwright smoke (mock) | `pnpm test:e2e:mock` |
-| One-shot E2E (boot API/Web + test) | `pnpm test:e2e` |
+| Action                             | Command                               |
+| ---------------------------------- | ------------------------------------- |
+| Build all packages                 | `pnpm -r build`                       |
+| Start API dev server (mock)        | `pnpm dev:api:mock`                   |
+| Build API                          | `pnpm -C api build`                   |
+| Run API unit/integration tests     | `pnpm -C api test`                    |
+| Run API tests with coverage        | `pnpm -C api test -- --coverage`      |
+| Start web dev server               | `pnpm -C web dev`                     |
+| Build web for prod                 | `pnpm -C web build`                   |
+| Install Playwright browsers        | `pnpm -C web exec playwright install` |
+| Run Playwright smoke (mock)        | `pnpm test:e2e:mock`                  |
+| One-shot E2E (boot API/Web + test) | `pnpm test:e2e`                       |
+| Lint code                          | `pnpm lint`                           |
+| Auto-fix linting issues            | `pnpm lint:fix`                       |
+| Format code                        | `pnpm format`                         |
+| Check code formatting              | `pnpm format:check`                   |
 
 ---
 
@@ -212,11 +216,11 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 
 ## Troubleshooting
 
-| Symptom | Fix |
-| ------- | --- |
-| `@fastify/static` missing | Run `pnpm -C api install` (already in `package.json`). |
+| Symptom                            | Fix                                                                                          |
+| ---------------------------------- | -------------------------------------------------------------------------------------------- |
+| `@fastify/static` missing          | Run `pnpm -C api install` (already in `package.json`).                                       |
 | TypeScript packages missing in web | `pnpm -C web install` ensures `@types/node`, `@types/react`, `@types/react-dom` are present. |
-| API shows ESM module errors | Ensure `api/tsconfig.json` still targets `"module": "commonjs"` and rerun `pnpm -C api dev`. |
-| Playwright needs browsers | `pnpm -C web exec playwright install` installs the chromium snapshot. |
+| API shows ESM module errors        | Ensure `api/tsconfig.json` still targets `"module": "commonjs"` and rerun `pnpm -C api dev`. |
+| Playwright needs browsers          | `pnpm -C web exec playwright install` installs the chromium snapshot.                        |
 
 Enjoy the demo, and feel free to swap the mock layer for Prisma + Postgres when you’re ready for production data.

@@ -59,6 +59,12 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - **Bug Fixes (Request Types):**
   - Fixed a bug where the "Request Type" dropdown on the public request form was not working.
   - Fixed a bug where the Pastoral Care dashboard displayed raw IDs instead of names for request types.
+- **Code Quality Setup:**
+  - Implemented ESLint v9 with TypeScript support for consistent code linting across the monorepo
+  - Configured Prettier for automatic code formatting to prevent formatting-related diffs
+  - Added linting and formatting scripts to package.json (lint, lint:fix, format, format:check)
+  - Updated VS Code settings for automatic formatting and linting on save
+  - Updated all project documentation to reflect the new code quality standards
 
 ### 🔄 In Progress
 
