@@ -10,20 +10,15 @@ export default async function SettingsPage() {
     }
 
     const churchId = me.user.roles[0]?.churchId;
-    if (!churchId) {
-        redirect("/");
-    }
-
-    // Get settings data
+    const requestTypes = await api.getRequestTypes(churchId);
     const settings = await api.getSettings(churchId);
-    const requestTypes = settings?.requestTypes || [];
 
     return (
-        <div className="container mx-auto py-6">
+        <main>
             <PageHeader title="Settings" />
-            <div className="grid gap-6">
+            <div className="container mx-auto p-4">
                 <SettingsForm initialRequestTypes={requestTypes} initialSettings={settings} churchId={churchId} />
             </div>
-        </div>
+        </main>
     );
 }

@@ -166,6 +166,9 @@ export const api = {
   async getPrayerRequests() {
     return apiFetch<PrayerRequest[]>('/prayer/requests');
   },
+  async getRequestTypes(churchId: string) {
+    return apiFetch<any[]>(`/settings/${churchId}/request-types`);
+  },
   async get<T>(path: string) {
     return apiFetch<T>(path);
   },

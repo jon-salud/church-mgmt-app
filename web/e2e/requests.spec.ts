@@ -1,15 +1,24 @@
 import { test, expect } from "@playwright/test";
-import { RequestsPage } from "./page-objects/RequestsPage";
+import { BasePage } from "./page-objects/BasePage";
 
-test.describe("Requests Page", () => {
-    test.skip("should allow a member to submit a new request", async ({ page }) => {
-        const requestsPage = new RequestsPage(page);
-        await requestsPage.goto();
+test.describe("Request Form", () => {
+    let basePage: BasePage;
 
-        await requestsPage.selectRequestType("Suggestion");
-        await requestsPage.fillRequestForm("New Youth Group Activity", "We should organize a hiking trip.");
-        await requestsPage.submitRequest();
+    test.beforeEach(async ({ page }) => {
+        basePage = new BasePage(page);
+        // await basePage.loginAs("admin");
+    });
 
-        await expect(page).toHaveURL("/pastoral-care");
+    test.skip("request type dropdown shows all active types", async ({ page }) => {
+        await page.goto("/requests");
+        await page.click("#request-type");
+        await expect(page.getByRole("option")).toHaveCount(4); // Four default types
+    });
+
+    test.skip("confidential checkbox appears only for appropriate request types", async ({ page }) => {
+        await page.goto("/requests");
+        await page.click("#request-type");
+        await page.getByText("Prayer").click();
+        await expect(page.getByLabel(/confidential/i)).toBeVisible();
     });
 });

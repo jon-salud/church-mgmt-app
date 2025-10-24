@@ -1,6 +1,5 @@
-
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
@@ -14,32 +13,16 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { clientApi } from '@/lib/api.client';
 import { RequestType } from '@/lib/types';
 
-export function PastoralCareClientPage({ data: initialData }: { data: any[] }) {
-  const [data, setData] = useState(initialData);
+export function PastoralCareClientPage({ data: initialData, requestTypes: initialRequestTypes }: { data: any[], requestTypes: RequestType[] }) {
+  const [data] = useState(initialData);
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [statusFilter, setStatusFilter] = useState('all');
-  const [typeFilter, setTypeFilter] = useState<string[]>([]);
+  const [typeFilter, setTypeFilter] = useState<string[]>(initialRequestTypes.map((t) => t.id));
   const [sortOrder, setSortOrder] = useState('newest');
-  const [requestTypes, setRequestTypes] = useState<RequestType[]>([]);
-
-  useEffect(() => {
-    async function fetchRequestTypes() {
-      try {
-        const user = await clientApi.currentUser();
-        if (user) {
-          const types = await clientApi.getRequestTypes(user.user.churchId);
-          setRequestTypes(types);
-          setTypeFilter(types.map((t) => t.id)); // Select all by default
-        }
-      } catch (error) {
-        console.error('Failed to fetch request types:', error);
-      }
-    }
-    fetchRequestTypes();
-  }, []);
+  const [requestTypes] = useState<RequestType[]>(initialRequestTypes);
+  const typeMap = useMemo(() => new Map(requestTypes.map(rt => [rt.id, rt.name])), [requestTypes]);
 
   const filteredAndSortedData = useMemo(() => {
     let result = [...data];
@@ -135,7 +118,7 @@ export function PastoralCareClientPage({ data: initialData }: { data: any[] }) {
           {filteredAndSortedData.map((item) => (
             <TableRow key={item.id}>
               <TableCell>{item.title}</TableCell>
-              <TableCell>{item.type || item.requestType?.name}</TableCell>
+              <TableCell>{item.type || typeMap.get(item.requestTypeId)}</TableCell>
               <TableCell>{item.author ? `${item.author.profile.firstName} ${item.author.profile.lastName}`: 'N/A'}</TableCell>
               <TableCell>{item.status || 'Pending'}</TableCell>
               <TableCell>{new Date(item.createdAt).toLocaleDateString()}</TableCell>
@@ -157,7 +140,7 @@ export function PastoralCareClientPage({ data: initialData }: { data: any[] }) {
               <DialogTitle>{selectedItem.title}</DialogTitle>
             </DialogHeader>
             <div className="p-4">
-              <p><strong>Type:</strong> {selectedItem.requestType?.name}</p>
+              <p><strong>Type:</strong> {selectedItem.type || typeMap.get(selectedItem.requestTypeId)}</p>
               <p><strong>Author:</strong> {selectedItem.author ? `${selectedItem.author.profile.firstName} ${selectedItem.author.profile.lastName}`: 'N/A'}</p>
               <p><strong>Status:</strong> {selectedItem.status || 'Pending'}</p>
               <p><strong>Created:</strong> {new Date(selectedItem.createdAt).toLocaleString()}</p>
