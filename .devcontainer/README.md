@@ -33,11 +33,9 @@ For demo purposes, use the `demo-admin` token which is automatically set for dev
    OUTPUT, etc.)
 
    ### Option A: Automatic Port Forwarding (Recommended)
-
    - Click the globe icons (🌐) next to ports 3000 and 3001 to open them in new browser tabs
 
    ### Option B: Manual Port Forwarding (if globe icons don't appear)
-
    - Click the **"Forward a Port"** button in the PORTS panel
    - Enter `3000` and press Enter (for the web app)
    - Enter `3001` and press Enter (for the API)
