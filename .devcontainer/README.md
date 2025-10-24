@@ -37,11 +37,13 @@ For demo purposes, use the `demo-admin` token which is automatically set for dev
    ```
 
    ### Option B: Use VS Code Tasks
+
    - Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
    - Type "Tasks: Run Task" and select it
    - Choose "Start Full Demo"
 
    ### Option C: Manual startup
+
    - Open a terminal and run: `cd api && DATA_MODE=mock pnpm dev`
    - Open another terminal and run: `cd web && pnpm dev`
 
@@ -49,9 +51,11 @@ For demo purposes, use the `demo-admin` token which is automatically set for dev
    OUTPUT, etc.)
 
    ### Option A: Automatic Port Forwarding (Recommended)
+
    - Click the globe icons (🌐) next to ports 3000 and 3001 to open them in new browser tabs
 
    ### Option B: Manual Port Forwarding (if globe icons don't appear)
+
    - Click the **"Forward a Port"** button in the PORTS panel
    - Enter `3000` and press Enter (for the web app)
    - Enter `3001` and press Enter (for the API)
