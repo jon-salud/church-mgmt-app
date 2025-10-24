@@ -12,6 +12,7 @@ import {
   UserRoundCog,
   HeartPulse,
   MonitorCheck,
+  Menu,
   LucideProps,
 } from 'lucide-react';
 
@@ -29,6 +30,7 @@ export const icons = {
   HeartPulse,
   MonitorCheck,
   Settings,
+  Menu,
 };
 
 interface IconProps extends LucideProps {
