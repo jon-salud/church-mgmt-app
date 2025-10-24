@@ -80,7 +80,7 @@ export class CheckinService {
     });
   }
 
-  async confirmCheckout(data: ConfirmCheckoutDto) {
+  async confirmCheckout(_data: ConfirmCheckoutDto) {
     // Implementation to be added
   }
 }

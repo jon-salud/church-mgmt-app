@@ -37,6 +37,31 @@ jobs:
               - 'pnpm-lock.yaml'
               - 'pnpm-workspace.yaml'
 
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9.0.0
+          run_install: false
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Run linting
+        run: pnpm lint
+      - name: Check formatting
+        run: pnpm format:check
+
   test_api:
     name: API tests
     needs: detect_changes

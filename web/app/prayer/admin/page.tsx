@@ -11,7 +11,7 @@ export default async function PrayerAdminPage() {
   let prayerRequests: PrayerRequest[] = [];
   try {
     prayerRequests = await api.get('/prayer-requests/pending');
-  } catch (error) {
+  } catch {
     // If the API fails, we'll just show an empty list.
     // This prevents the page from crashing during tests.
   }

@@ -24,11 +24,11 @@ export class CheckinPage extends BasePage {
     await this.page.getByRole('button', { name: 'Add Child' }).click();
   }
 
-  async checkinChild(fullName: string) {
+  async checkinChild(_fullName: string) {
     // Implementation to be added
   }
 
-  async verifyChildIsCheckedIn(fullName: string) {
+  async verifyChildIsCheckedIn(_fullName: string) {
     // Implementation to be added
   }
 }

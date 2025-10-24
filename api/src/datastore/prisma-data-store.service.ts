@@ -34,7 +34,7 @@ export class PrismaDataStore implements DataStore {
     }
     try {
       return JSON.parse(settings.optionalFields);
-    } catch (error) {
+    } catch {
       return {};
     }
   }
@@ -64,7 +64,7 @@ export class PrismaDataStore implements DataStore {
     }
     try {
       return JSON.parse(result.optionalFields);
-    } catch (error) {
+    } catch {
       return {};
     }
   }
@@ -326,8 +326,8 @@ export class PrismaDataStore implements DataStore {
   }
 
   async deleteUser(
-    id: string,
-    input: Parameters<DataStore['deleteUser']>[1]
+    _id: string,
+    _input: Parameters<DataStore['deleteUser']>[1]
   ): Promise<StoreReturn<'deleteUser'>> {
     throw new Error('deleteUser is not yet implemented for Prisma data store');
   }
@@ -361,21 +361,21 @@ export class PrismaDataStore implements DataStore {
   }
 
   async createRole(
-    input: Parameters<DataStore['createRole']>[0]
+    _input: Parameters<DataStore['createRole']>[0]
   ): Promise<StoreReturn<'createRole'>> {
     throw new Error('Role management is not yet implemented for Prisma data store');
   }
 
   async updateRole(
-    id: string,
-    input: Parameters<DataStore['updateRole']>[1]
+    _id: string,
+    _input: Parameters<DataStore['updateRole']>[1]
   ): Promise<StoreReturn<'updateRole'>> {
     throw new Error('Role management is not yet implemented for Prisma data store');
   }
 
   async deleteRole(
-    id: string,
-    input: Parameters<DataStore['deleteRole']>[1]
+    _id: string,
+    _input: Parameters<DataStore['deleteRole']>[1]
   ): Promise<StoreReturn<'deleteRole'>> {
     throw new Error('Role management is not yet implemented for Prisma data store');
   }
@@ -404,24 +404,24 @@ export class PrismaDataStore implements DataStore {
   }
 
   async addGroupMember(
-    groupId: string,
-    input: Parameters<DataStore['addGroupMember']>[1]
+    _groupId: string,
+    _input: Parameters<DataStore['addGroupMember']>[1]
   ): Promise<StoreReturn<'addGroupMember'>> {
     throw new Error('addGroupMember is not yet implemented for Prisma data store');
   }
 
   async updateGroupMember(
-    groupId: string,
-    userId: string,
-    input: Parameters<DataStore['updateGroupMember']>[2]
+    _groupId: string,
+    _userId: string,
+    _input: Parameters<DataStore['updateGroupMember']>[2]
   ): Promise<StoreReturn<'updateGroupMember'>> {
     throw new Error('updateGroupMember is not yet implemented for Prisma data store');
   }
 
   async removeGroupMember(
-    groupId: string,
-    userId: string,
-    input: Parameters<DataStore['removeGroupMember']>[2]
+    _groupId: string,
+    _userId: string,
+    _input: Parameters<DataStore['removeGroupMember']>[2]
   ): Promise<StoreReturn<'removeGroupMember'>> {
     throw new Error('removeGroupMember is not yet implemented for Prisma data store');
   }
@@ -463,21 +463,21 @@ export class PrismaDataStore implements DataStore {
   }
 
   async createEvent(
-    input: Parameters<DataStore['createEvent']>[0]
+    _input: Parameters<DataStore['createEvent']>[0]
   ): Promise<StoreReturn<'createEvent'>> {
     throw new Error('createEvent is not yet implemented for Prisma data store');
   }
 
   async updateEvent(
-    id: string,
-    input: Parameters<DataStore['updateEvent']>[1]
+    _id: string,
+    _input: Parameters<DataStore['updateEvent']>[1]
   ): Promise<StoreReturn<'updateEvent'>> {
     throw new Error('updateEvent is not yet implemented for Prisma data store');
   }
 
   async deleteEvent(
-    id: string,
-    input: Parameters<DataStore['deleteEvent']>[1]
+    _id: string,
+    _input: Parameters<DataStore['deleteEvent']>[1]
   ): Promise<StoreReturn<'deleteEvent'>> {
     throw new Error('deleteEvent is not yet implemented for Prisma data store');
   }
@@ -995,40 +995,40 @@ export class PrismaDataStore implements DataStore {
     return [];
   }
 
-  async createRequest(input: any, actorUserId: string): Promise<any> {
+  async createRequest(_input: any, _actorUserId: string): Promise<any> {
     throw new Error('Not implemented: createRequest');
   }
 
-  async listRequestTypes(churchId: string): Promise<any> {
+  async listRequestTypes(_churchId: string): Promise<any> {
     throw new Error('Not implemented: listRequestTypes');
   }
 
   async createRequestType(
-    name: string,
-    hasConfidentialField: boolean,
-    actorUserId: string,
-    description?: string
+    _name: string,
+    _hasConfidentialField: boolean,
+    _actorUserId: string,
+    _description?: string
   ): Promise<any> {
     throw new Error('Not implemented: createRequestType');
   }
 
-  async updateRequestType(id: string, name: string, actorUserId: string): Promise<any> {
+  async updateRequestType(_id: string, _name: string, _actorUserId: string): Promise<any> {
     throw new Error('Not implemented: updateRequestType');
   }
 
-  async archiveRequestType(id: string, actorUserId: string): Promise<any> {
+  async archiveRequestType(_id: string, _actorUserId: string): Promise<any> {
     throw new Error('Not implemented: archiveRequestType');
   }
 
   async updateRequestTypeStatus(
-    id: string,
-    status: 'active' | 'archived',
-    actorUserId: string
+    _id: string,
+    _status: 'active' | 'archived',
+    _actorUserId: string
   ): Promise<any> {
     throw new Error('Not implemented: updateRequestTypeStatus');
   }
 
-  async reorderRequestTypes(ids: string[], actorUserId: string): Promise<any> {
+  async reorderRequestTypes(_ids: string[], _actorUserId: string): Promise<any> {
     throw new Error('Not implemented: reorderRequestTypes');
   }
 }
