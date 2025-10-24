@@ -2,14 +2,7 @@
 
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
 import {
   Select,
@@ -29,7 +22,7 @@ interface RequestFormProps {
   churchId: string;
 }
 
-export function RequestForm({ initialRequestTypes, churchId }: RequestFormProps) {
+export function RequestForm({ initialRequestTypes, churchId: _churchId }: RequestFormProps) {
   const [requestTypeId, setRequestTypeId] = useState('');
   const [requestTypes] = useState<RequestType[]>(initialRequestTypes);
   const router = useRouter();

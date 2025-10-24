@@ -3,12 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { api, postToApi, apiFetch } from '../lib/api.server';
-
-const API_BASE =
-  process.env.API_BASE_URL ||
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  'http://localhost:3001/api/v1';
+import { postToApi, apiFetch } from '../lib/api.server';
 
 export async function logoutAction() {
   const cookieStore = cookies();

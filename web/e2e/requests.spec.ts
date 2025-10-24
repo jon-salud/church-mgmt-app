@@ -1,11 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { BasePage } from './page-objects/BasePage';
 
 test.describe('Request Form', () => {
-  let basePage: BasePage;
-
-  test.beforeEach(async ({ page }) => {
-    basePage = new BasePage(page);
+  test.beforeEach(async ({ page: _page }) => {
+    // basePage = new BasePage(page);
     // await basePage.loginAs("admin");
   });
 

@@ -51,7 +51,6 @@ export function PastoralCareClientPage({
   const typeMap = useMemo(() => new Map(requestTypes.map(rt => [rt.id, rt.name])), [requestTypes]);
 
   const allTypesSelected = typeFilter.length === requestTypes.length;
-  const someTypesSelected = typeFilter.length > 0 && !allTypesSelected;
 
   const filteredAndSortedData = useMemo(() => {
     let result = [...data];
