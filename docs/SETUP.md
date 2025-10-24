@@ -1,82 +1,95 @@
-# Setup (Monorepo)
+# Development Environment Setup
 
-## Prereqs
+This document provides instructions for setting up and running the Church Management System for local development.
 
-- Node.js 20+
-- pnpm (`corepack enable`)
-- PostgreSQL (optional – mock data is served in-memory for the MVP demo)
+## 1. Prerequisites
 
-## Install
+Before you begin, ensure you have the following installed on your system:
+*   **Node.js**: Version 20 or higher.
+*   **pnpm**: Enabled via `corepack enable`.
+*   **PostgreSQL**: Optional, as the system is configured to use an in-memory mock datastore for development by default.
 
-```bash
-corepack enable
-pnpm install
-```
+## 2. Initial Installation
 
-## Build
+1.  **Enable pnpm**:
+    ```bash
+    corepack enable
+    ```
+2.  **Install Monorepo Dependencies**:
+    From the root directory of the project, run:
+    ```bash
+    pnpm install
+    ```
 
+## 3. Environment Configuration
+
+The project requires environment variables for both the backend and frontend applications.
+
+### 3.1. Backend API (`api`)
+1.  Navigate to the `api` directory.
+2.  Copy the example environment file:
+    ```bash
+    cp .env.example .env
+    ```
+3.  Review the `.env` file. For standard development using the mock datastore, no changes are required. If you intend to connect to a real PostgreSQL database, you will need to configure the `DATABASE_URL` variable.
+
+### 3.2. Frontend Web App (`web`)
+1.  Navigate to the `web` directory.
+2.  Copy the example environment file:
+    ```bash
+    cp .env.example .env
+    ```
+3.  Review the `.env` file. You will need to populate the Auth0 configuration variables to enable authentication.
+
+## 4. Running the Application
+
+The most common development workflow involves running the backend API and the frontend web application concurrently.
+
+1.  **Start the Backend API (with Mock Data)**:
+    From the root directory, run the following command to start the API in watch mode. The logs will be output to `api_dev.log`.
+    ```bash
+    pnpm dev:api:mock > api_dev.log &
+    ```
+    The API will be available at `http://localhost:3001`.
+
+2.  **Start the Frontend Web App**:
+    From the root directory, run the following command to start the Next.js development server. The logs will be output to `web_dev.log`.
+    ```bash
+    pnpm -C web dev > web_dev.log &
+    ```
+    The web application will be available at `http://localhost:3000`.
+
+### 4.1. Accessing API Documentation
+With the API running, you can access the auto-generated Swagger documentation in your browser at:
+`http://localhost:3001/docs`
+
+## 5. Building for Production
+
+To build all packages in the monorepo, run the following command from the root directory:
 ```bash
 pnpm -r build
 ```
 
-## API (mock data)
+## 6. Running Tests
 
-```bash
-pnpm dev:api:mock
-```
+The project is equipped with a full suite of tests to ensure code quality and prevent regressions.
 
-- Swagger docs live at `http://localhost:3001/docs` (OpenAPI 3.1) for quick endpoint discovery.
-- Metrics endpoint: `http://localhost:3001/api/v1/metrics`.
+*   **Run All Tests**:
+    To run every test across all workspaces, use the following command from the root directory:
+    ```bash
+    pnpm -r test
+    ```
+*   **Run API Tests**:
+    To run only the backend tests (unit and integration), use:
+    ```bash
+    pnpm -C api test
+    ```
+*   **Run End-to-End (E2E) Tests**:
+    The E2E tests use Playwright and require the development servers to be running.
+    1.  Start the API and web servers as described in Section 4.
+    2.  Run the E2E tests:
+        ```bash
+        pnpm -C web test:e2e
+        ```
 
-## Web
-
-```bash
-cp web/.env.example web/.env
-pnpm -C web dev
-```
-
-### OAuth configuration
-
-1. Copy the API env template and populate the secrets:
-
-   ```bash
-   cp api/.env.example api/.env
-   ```
-
-2. Register Google and Facebook apps and fill in:
-
-   - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`
-   - `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`, `FACEBOOK_CALLBACK_URL`
-   - `WEB_APP_URL` (defaults to `http://localhost:3000` for dev)
-   - `JWT_SECRET` *(change from the default before deploying)*
-
-3. Restart the API so the new environment variables are picked up.
-
-The login page links to `/auth/google` and `/auth/facebook`. Successful callbacks redirect to
-`WEB_APP_URL/(auth)/oauth/callback`, which stores the JWT inside an httpOnly `session_token` cookie.
-
-### Observability extras
-
-- `LOG_LEVEL` tunes the structured pino logger (`debug` in dev, `info`+ in prod).
-- Provide `SENTRY_DSN` (and optional `SENTRY_TRACES_SAMPLE_RATE`) to forward 5xx errors and traces to Sentry automatically.
-- Audit entries now persist to disk by default (`storage/audit-log.json`); override with `AUDIT_LOG_FILE` or disable via `AUDIT_LOG_PERSIST=false`.
-- Prometheus scrapers can read metrics from `/api/v1/metrics` (request counts + latency histograms).
-
-## CI (optional)
-
-- See `.github/workflows/ci.yml`
-
-## UI
-
-- **Theming**: The application supports both **light and dark themes**. A theme switcher is located in the header.
-- **Sidebar Navigation**: The main navigation sidebar now includes icons for each item to improve usability. The active page is highlighted.
-- **UI Automation IDs**: All interactive elements have a unique `id` attribute for testability.
-
-## Notes
-
-- OAuth login is now the default. Demo logins remain available and issue JWTs alongside the historical mock tokens.
-- The API honours `DATA_MODE` (`mock` by default). Future persistence work will plug in additional modes without breaking mock demos.
-- Prisma schema remains for future Postgres wiring but is not required for the demo today.
-- Playwright smoke test in `web/e2e` targets the dashboard page.
-- API unit/integration suite: `pnpm -C api test` (append `-- --coverage` for reports).
-- E2E smoke (mock data): `pnpm test:e2e:mock` (boots API+Web automatically).
+> For more details on the project's architecture, data model, and coding conventions, please refer to the relevant documents in the `/docs` directory.
