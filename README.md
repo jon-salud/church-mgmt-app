@@ -50,7 +50,14 @@ For the fastest demo experience, use GitHub Codespaces:
    - Enter `3001` and press Enter (for the API)
    - Click the globe icons that appear next to the forwarded ports
 
-5. Start exploring the app!**Demo URLs:**
+5. Start exploring the app!
+
+**Demo Documentation**: See [docs/DEMO.md](docs/DEMO.md) for a comprehensive guide to all features.
+
+**API Reference**: See [docs/API_REFERENCE.md](docs/API_REFERENCE.md) for complete API
+documentation.
+
+**Demo URLs:**
 
 - **Frontend**: <http://localhost:3000>
 - **API**: <http://localhost:3001>
