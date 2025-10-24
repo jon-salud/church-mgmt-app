@@ -221,7 +221,7 @@ const makeDate = (offsetDays: number, hour = 10): string => {
   return d.toISOString();
 };
 
-const churchId = 'church-1';
+const churchId = 'church-acc';
 
 export const mockChurches: MockChurch[] = [
   {

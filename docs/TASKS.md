@@ -50,9 +50,6 @@ Use this file as the single source of truth for what has shipped in the demo MVP
   - Updated `NAVIGATION.md` to accurately reflect all application features and routes.
   - Overhauled `SETUP.md` to provide a clear, structured guide for developers.
   - Aligned all documentation to ensure consistency and accuracy across the project.
-
-### 🔄 In Progress
-
 - **Unified Request Form (Phase 1):**
   - Implement a centralized form for members to submit various types of requests (Prayer, Benevolence, Improvements/Suggestions).
   - Add a new `/requests` page and navigation link.
@@ -62,6 +59,8 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 - **Bug Fixes (Request Types):**
   - Fixed a bug where the "Request Type" dropdown on the public request form was not working.
   - Fixed a bug where the Pastoral Care dashboard displayed raw IDs instead of names for request types.
+
+### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming
 
