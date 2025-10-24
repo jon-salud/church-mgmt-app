@@ -11,7 +11,24 @@ This monorepo packages a complete walkthrough of the PRD using mock data only. Y
 
 ---
 
-## Prerequisites
+## 🚀 Quick Demo (GitHub Codespaces)
+
+For the fastest demo experience, use GitHub Codespaces:
+
+1. Click the **"Code"** button above → **"Create codespace on main"**
+2. Wait for the environment to build (5-10 minutes)
+3. The demo starts automatically with both servers running
+4. Open the **Ports** panel and click the globe icons for ports 3000 (web) and 3001 (API)
+
+**Demo URLs:**
+
+- **Frontend**: <http://localhost:3000>
+- **API**: <http://localhost:3001>
+- **API Docs**: <http://localhost:3001/docs>
+
+---
+
+## Local Development
 
 - Node.js 20+
 - `pnpm` (recommended via `corepack enable`)

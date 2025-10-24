@@ -1,0 +1,75 @@
+{
+  "name": "Church Management App",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:20",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-typescript-next",
+        "bradlc.vscode-tailwindcss",
+        "ms-playwright.playwright",
+        "ms-vscode.vscode-json",
+        "esbenp.prettier-vscode"
+      ]
+    }
+  },
+  "postCreateCommand": "corepack enable && corepack prepare pnpm@9.0.0 --activate && pnpm install",
+  "postAttachCommand": "echo '🚀 Starting Church Management App Demo...' && echo '📱 Frontend: http://localhost:3000' && echo '🔧 API: http://localhost:3001' && echo '📚 API Docs: http://localhost:3001/docs' && (cd api && DATA_MODE=mock pnpm start &) && (cd web && pnpm dev &)",
+  "portsAttributes": {
+    "3000": {
+      "label": "Frontend (Next.js)",
+      "onAutoForward": "notify"
+    },
+    "3001": {
+      "label": "API (NestJS)",
+      "onAutoForward": "notify"
+    }
+  },
+  "forwardPorts": [3000, 3001],
+  "remoteEnv": {
+    "DATA_MODE": "mock"
+  },
+  "tasks": [
+    {
+      "label": "Start API Server",
+      "type": "shell",
+      "command": "cd api && pnpm start",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Web Server",
+      "type": "shell",
+      "command": "cd web && pnpm dev",
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "isBackground": true,
+      "problemMatcher": []
+    },
+    {
+      "label": "Start Full Demo",
+      "dependsOn": ["Start API Server", "Start Web Server"],
+      "group": "build",
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": true,
+        "panel": "shared"
+      }
+    }
+  ]
+}
