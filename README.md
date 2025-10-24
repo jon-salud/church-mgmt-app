@@ -48,9 +48,9 @@ For the fastest demo experience, use GitHub Codespaces:
 
 5. Start exploring the app!
 
-**Demo Documentation**: See [DEMO.md](DEMO.md) for a comprehensive guide to all features.
+**Demo Documentation**: See [docs/DEMO.md](docs/DEMO.md) for a comprehensive guide to all features.
 
-**API Reference**: See [API_REFERENCE.md](API_REFERENCE.md) for complete API documentation.
+**API Reference**: See [docs/API_REFERENCE.md](docs/API_REFERENCE.md) for complete API documentation.
 
 **Demo URLs:**
 
