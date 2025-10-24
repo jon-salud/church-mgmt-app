@@ -17,10 +17,10 @@ Before beginning any new feature work, you must first ensure that all project do
     *   `docs/ARCHITECTURE.md`
     *   `docs/DATABASE_SCHEMA.md`
     *   `docs/CODING_STANDARDS.md`
+    *   `docs/API_DOCUMENTATION.md`
 
 2.  **Audit and Reconcile All Other Documents:** Systematically review the following documents against the sources of truth and the current state of the codebase. Identify and rectify any inconsistencies, outdated information, or missing details.
     *   `docs/PRD.md`
-    *   `docs/API_DOCUMENTATION.md`
     *   `docs/USER_MANUAL.md`
     *   `docs/NAVIGATION.md`
     *   `docs/SETUP.md`
