@@ -16,27 +16,29 @@ The API is protected and requires an authenticated session. All requests must in
 
 ## 3. API Endpoints
 
-### Member Management
+### Member & User Management
 
-This section covers endpoints related to managing user and member profiles.
+This section covers endpoints related to managing user and member profiles. The API distinguishes between a `User` (the login identity) and a `Profile` (the church-specific member record).
 
 ---
 
 #### GET /users
-- **Description:** Retrieves a list of all users for the church. Can be filtered by a search query.
+- **Description:** Retrieves a list of all member profiles for the church.
 - **Query Parameters:**
-  - `q` (string, optional): A search term to filter users by name or email.
+  - `q` (string, optional): A search term to filter members by name.
 - **Success Response:**
   - **Code:** `200 OK`
   - **Content:**
     ```json
     [
       {
-        "id": "user-uuid-1",
-        "primaryEmail": "member1@example.com",
+        "id": "profile-uuid-1",
+        "userId": "user-uuid-1",
+        "churchId": "church-uuid-1",
+        "roleId": "role-uuid-1",
         "firstName": "John",
         "lastName": "Doe",
-        "status": "active",
+        "email": "member1@example.com",
         "createdAt": "timestamp",
         "updatedAt": "timestamp"
       }
@@ -48,87 +50,92 @@ This section covers endpoints related to managing user and member profiles.
 ---
 
 #### GET /users/:id
-- **Description:** Retrieves a single user profile by their unique ID.
+- **Description:** Retrieves a single member profile by their unique profile ID.
 - **URL Parameters:**
-  - `id` (string, required): The unique identifier of the user.
+  - `id` (string, required): The unique identifier of the member's profile.
 - **Success Response:**
   - **Code:** `200 OK`
   - **Content:**
     ```json
     {
-      "id": "user-uuid-1",
-      "primaryEmail": "member1@example.com",
+      "id": "profile-uuid-1",
+      "userId": "user-uuid-1",
+      "churchId": "church-uuid-1",
+      "householdId": "household-uuid-1",
+      "roleId": "role-uuid-1",
       "firstName": "John",
       "lastName": "Doe",
       "phone": "123-456-7890",
       "address": "123 Main St",
-      "notes": "Some notes about the member.",
-      "status": "active",
-      "roleIds": ["role-uuid-1"],
-      "membershipStatus": "Active Member",
-      "joinDate": "2023-01-15T00:00:00.000Z"
+      "birthday": "1990-01-15",
+      "createdAt": "timestamp",
+      "updatedAt": "timestamp"
     }
     ```
 - **Error Responses:**
   - **Code:** `401 Unauthorized` - If the user is not authenticated.
-  - **Code:** `404 Not Found` - If a user with the specified ID does not exist.
+  - **Code:** `404 Not Found` - If a profile with the specified ID does not exist.
 
 ---
 
 #### POST /users
-- **Description:** Creates a new user. This is an admin-only endpoint.
+- **Description:** Creates a new user and their associated member profile. (Admin only)
 - **Request Body:**
   ```json
   {
-    "primaryEmail": "string (required, email, max: 255)",
-    "firstName": "string (required, max: 100)",
-    "lastName": "string (required, max: 100)",
-    "phone": "string (optional, max: 50)",
-    "address": "string (optional, max: 255)",
-    "notes": "string (optional, max: 500)",
-    "status": "string (optional, enum: 'active', 'invited')",
-    "roleIds": "string[] (optional, array of role UUIDs)"
+    "email": "string (required, email)",
+    "firstName": "string (required)",
+    "lastName": "string (required)",
+    "roleId": "string (required, UUID)",
+    "phone": "string (optional)",
+    "address": "string (optional)",
+    "birthday": "string (optional, YYYY-MM-DD)"
   }
   ```
 - **Success Response:**
   - **Code:** `201 Created`
-  - **Content:** The newly created user object.
+  - **Content:** The newly created profile object.
 - **Error Responses:**
   - **Code:** `400 Bad Request` - If the request body is missing required fields or contains invalid data.
   - **Code:** `401 Unauthorized` - If the user is not authenticated.
+
+---
+### Groups
+
+*(Note: The following endpoints are planned based on the Functional Requirements but are not yet implemented in the API.)*
+
+---
+
+### Events & Check-in
+
+*(Note: The following endpoints are planned based on the Functional Requirements but are not yet implemented in the API.)*
   - **Code:** `403 Forbidden` - If the authenticated user is not an admin.
 
 ---
 
 #### PATCH /users/:id
-- **Description:** Updates an existing user's profile. This is an admin-only endpoint. All fields are optional.
+- **Description:** Updates an existing member's profile. (Admin only)
 - **URL Parameters:**
-  - `id` (string, required): The unique identifier of the user to update.
+  - `id` (string, required): The unique identifier of the profile to update.
 - **Request Body:**
   ```json
   {
-    "primaryEmail": "string (email, max: 255)",
-    "firstName": "string (max: 100)",
-    "lastName": "string (max: 100)",
-    "phone": "string (max: 50)",
-    "address": "string (max: 255)",
-    "notes": "string (max: 500)",
-    "status": "string (enum: 'active', 'invited')",
-    "roleIds": "string[] (array of role UUIDs)",
-    "membershipStatus": "string (max: 50)",
-    "joinMethod": "string (max: 50)",
-    "joinDate": "string (date-time)",
-    "onboardingComplete": "boolean"
+    "firstName": "string",
+    "lastName": "string",
+    "roleId": "string (UUID)",
+    "phone": "string",
+    "address": "string",
+    "birthday": "string (YYYY-MM-DD)"
   }
   ```
 - **Success Response:**
   - **Code:** `200 OK`
-  - **Content:** The updated user object.
+  - **Content:** The updated profile object.
 - **Error Responses:**
   - **Code:** `400 Bad Request` - If the request body contains invalid data.
   - **Code:** `401 Unauthorized` - If the user is not authenticated.
   - **Code:** `403 Forbidden` - If the authenticated user is not an admin.
-  - **Code:** `404 Not Found` - If a user with the specified ID does not exist.
+  - **Code:** `404 Not Found` - If a profile with the specified ID does not exist.
 
 ---
 
@@ -158,8 +165,8 @@ This section covers endpoints related to prayer requests.
 
 ---
 
-#### GET /prayer-requests
-- **Description:** Retrieves a list of all prayer requests for the church. *(Note: The implemented path is currently `/prayer/requests` but will be updated to align with the standard resource path convention).*
+#### GET /prayer/requests
+- **Description:** Retrieves a list of all approved prayer requests for the church. *(Note: The implemented path is `/prayer/requests`. The path `/prayer-requests` is planned for future convention alignment.)*
 - **Success Response:**
   - **Code:** `200 OK`
   - **Content:**
@@ -168,16 +175,52 @@ This section covers endpoints related to prayer requests.
       {
         "id": "prayer-1",
         "churchId": "church-acc",
+        "profileId": "user-profile-uuid",
         "title": "Healing for my mother",
         "description": "Please pray for my mother, who is battling a serious illness. Pray for strength, comfort, and complete healing.",
-        "authorName": "John D.",
         "isAnonymous": false,
+        "status": "Approved",
         "createdAt": "2025-10-18T10:00:00.000Z"
       }
     ]
     ```
 - **Error Responses:**
   - **Code:** `401 Unauthorized` - If the user is not authenticated.
+
+---
+
+#### POST /prayer/requests
+- **Description:** Creates a new prayer request. It will be in a `PendingApproval` state until reviewed by an admin.
+- **Request Body:**
+  ```json
+  {
+    "title": "string (required)",
+    "description": "string (required)",
+    "isAnonymous": "boolean (optional, default: false)"
+  }
+  ```
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** The newly created prayer request object.
+- **Error Responses:**
+  - **Code:** `400 Bad Request` - If the request body is missing required fields or contains invalid data.
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+
+---
+
+### Document Library
+
+*(Note: The following endpoints are planned based on the Functional Requirements but are not yet implemented in the API.)*
+
+---
+
+#### GET /documents
+- **Description:** Retrieves a list of documents the user has permission to view.
+
+---
+
+#### POST /documents
+- **Description:** Uploads a new document. (Admin only)
 
 ---
 
