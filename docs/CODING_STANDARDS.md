@@ -55,7 +55,43 @@ This document outlines the coding standards and best practices for the Church Ma
   * **Client Components (`*-client.tsx`):** Use Client Components for all interactive UI elements that require state, effects, or browser-only APIs. Name them descriptively (e.g., `members-client.tsx`).
   * **Data Flow:** Server Components should fetch data and pass it as props to Client Components. Avoid data fetching directly in Client Components unless absolutely necessary (e.g., for data that changes frequently on the client-side).
 
-### 5.2. Form Handling and State Management
+### 5.2. Date Handling and Server/Client Consistency
+
+* **Date Formatting:**
+  * Use `toISOString().split('T')[0]` for date display to avoid hydration errors
+  * Avoid `toLocaleDateString()` and `toLocaleString()` which can cause server/client mismatches
+  * For localized date formatting, use client-side components or explicit locale settings
+  * Consider using date libraries (like `date-fns`) with explicit locale configuration
+
+* **Server/Client Hydration:**
+  * Ensure server and client render identical output to prevent hydration errors
+  * Use environment-agnostic methods for data formatting
+  * For locale-dependent content, defer formatting to client-side effects
+  * Document any components that must be client-side rendered
+
+### 5.3. Filter and State Management
+
+* **Filter State:**
+  * Initialize filters with meaningful defaults (e.g., show all vs. show none)
+  * Clear visual indication of current filter state
+  * Handle empty state explicitly (e.g., empty array vs. null)
+  * Document filter behavior in comments
+
+* **Multi-Select Filters:**
+  * Use controlled components for filter state
+  * Provide "Select All" option when appropriate
+  * Show clear feedback about selected state
+  * Handle edge cases (no selection, all selected, partial selection)
+  * Consider performance implications for large datasets
+
+* **Filter Logic:**
+  * Keep filter predicates simple and composable
+  * Use early returns for better readability
+  * Consider memoization for complex filters
+  * Document complex filter logic
+  * Test edge cases (empty selection, all selected, invalid values)
+
+### 5.4. Form Handling and State Management
 
 * **Form State:**
   * Use controlled components for form inputs to ensure React is the single source of truth
