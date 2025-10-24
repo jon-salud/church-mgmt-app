@@ -63,8 +63,8 @@ export function SettingsForm({ initialRequestTypes, initialSettings, churchId }:
                     name: newRequestTypeName,
                     description: newRequestTypeDescription,
                     hasConfidentialField: newRequestTypeHasConfidential,
-                    status: "active" as const
-                }
+                    status: "active" as const,
+                },
             });
 
             if (response.requestType) {
@@ -80,14 +80,12 @@ export function SettingsForm({ initialRequestTypes, initialSettings, churchId }:
 
     const handleStatusChange = async (typeId: string, newStatus: "active" | "archived") => {
         try {
-            const updatedTypes = requestTypes.map(type => 
-                type.id === typeId ? { ...type, status: newStatus } : type
-            );
-            
+            const updatedTypes = requestTypes.map((type) => (type.id === typeId ? { ...type, status: newStatus } : type));
+
             await api.updateSettings(churchId, {
-                requestTypes: updatedTypes
+                requestTypes: updatedTypes,
             });
-            
+
             setRequestTypes(updatedTypes);
         } catch (error) {
             console.error("Failed to update request type:", error);
@@ -103,14 +101,14 @@ export function SettingsForm({ initialRequestTypes, initialSettings, churchId }:
 
         const updatedTypes = items.map((type, index) => ({
             ...type,
-            displayOrder: index
+            displayOrder: index,
         }));
 
         setRequestTypes(updatedTypes);
 
         try {
             await api.updateSettings(churchId, {
-                requestTypes: updatedTypes
+                requestTypes: updatedTypes,
             });
         } catch (error) {
             console.error("Failed to update request type order:", error);
@@ -124,7 +122,7 @@ export function SettingsForm({ initialRequestTypes, initialSettings, churchId }:
 
         try {
             await api.updateSettings(churchId, {
-                enabledFields: selectedFields
+                enabledFields: selectedFields,
             });
         } catch (error) {
             console.error("Failed to save settings:", error);
@@ -137,8 +135,8 @@ export function SettingsForm({ initialRequestTypes, initialSettings, churchId }:
         <div className="grid gap-6">
             <Card>
                 <CardHeader>
-                    <CardTitle>Member Profile Fields</CardTitle>
-                    <CardDescription>Configure which optional fields to show in member profiles</CardDescription>
+                    <h2 className="text-2xl font-semibold leading-none tracking-tight">Member Profile Fields</h2>
+                    <p className="text-sm text-muted-foreground">Configure which optional fields to show in member profiles</p>
                 </CardHeader>
                 <CardContent>
                     <div className="grid gap-4">
@@ -148,11 +146,7 @@ export function SettingsForm({ initialRequestTypes, initialSettings, churchId }:
                                     id={field.id}
                                     checked={selectedFields.includes(field.id)}
                                     onCheckedChange={() => {
-                                        setSelectedFields((current) => (
-                                            current.includes(field.id)
-                                                ? current.filter((id) => id !== field.id)
-                                                : [...current, field.id]
-                                        ));
+                                        setSelectedFields((current) => (current.includes(field.id) ? current.filter((id) => id !== field.id) : [...current, field.id]));
                                     }}
                                 />
                                 <Label htmlFor={field.id}>{field.label}</Label>
@@ -179,12 +173,7 @@ export function SettingsForm({ initialRequestTypes, initialSettings, churchId }:
                             <div className="grid gap-4">
                                 <div>
                                     <Label htmlFor="new-request-type-name">Name</Label>
-                                    <Input
-                                        id="new-request-type-name"
-                                        value={newRequestTypeName}
-                                        onChange={(e) => setNewRequestTypeName(e.target.value)}
-                                        placeholder="e.g., Counseling Request"
-                                    />
+                                    <Input id="new-request-type-name" value={newRequestTypeName} onChange={(e) => setNewRequestTypeName(e.target.value)} placeholder="e.g., Counseling Request" />
                                 </div>
                                 <div>
                                     <Label htmlFor="new-request-type-description">Description</Label>
@@ -196,11 +185,7 @@ export function SettingsForm({ initialRequestTypes, initialSettings, churchId }:
                                     />
                                 </div>
                                 <div className="flex items-center space-x-2">
-                                    <Checkbox
-                                        id="new-request-type-confidential"
-                                        checked={newRequestTypeHasConfidential}
-                                        onCheckedChange={(checked) => setNewRequestTypeHasConfidential(!!checked)}
-                                    />
+                                    <Checkbox id="new-request-type-confidential" checked={newRequestTypeHasConfidential} onCheckedChange={(checked) => setNewRequestTypeHasConfidential(!!checked)} />
                                     <Label htmlFor="new-request-type-confidential">Include confidential option</Label>
                                 </div>
                                 <div>
@@ -227,9 +212,7 @@ export function SettingsForm({ initialRequestTypes, initialSettings, churchId }:
                                                             >
                                                                 <div>
                                                                     <div className="font-medium">{type.name}</div>
-                                                                    {type.description && (
-                                                                        <div className="text-sm text-muted-foreground">{type.description}</div>
-                                                                    )}
+                                                                    {type.description && <div className="text-sm text-muted-foreground">{type.description}</div>}
                                                                 </div>
                                                                 <div className="flex items-center gap-4">
                                                                     <div className="flex items-center gap-2">

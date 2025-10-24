@@ -13,11 +13,9 @@ export default async function RequestsPage() {
     const activeRequestTypes = types.filter((rt) => rt.status === "active");
 
     return (
-        <main>
+        <div className="container mx-auto p-4">
             <PageHeader title="Requests" />
-            <div className="container mx-auto p-4">
-                <RequestForm initialRequestTypes={activeRequestTypes} churchId={churchId} />
-            </div>
-        </main>
+            <RequestForm initialRequestTypes={activeRequestTypes} churchId={churchId} />
+        </div>
     );
 }
