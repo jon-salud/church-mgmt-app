@@ -87,9 +87,7 @@ export function RolesClient({ roles }: RolesClientProps) {
                                     <div className="flex items-center gap-2">
                                         <span>{role.name}</span>
                                         {role.slug === "admin" ? (
-                                            <span className="rounded-full border border-destructive bg-destructive/90 px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-background">
-                                                Admin
-                                            </span>
+                                            <span className="rounded-full border-0 bg-destructive px-2 py-0.5 text-xs font-medium uppercase tracking-wide text-destructive-foreground">Admin</span>
                                         ) : role.isSystem ? (
                                             <span className="rounded-full border border-border px-2 py-0.5 text-xs uppercase tracking-wide text-muted-foreground">System</span>
                                         ) : null}
@@ -110,7 +108,7 @@ export function RolesClient({ roles }: RolesClientProps) {
                                         <button
                                             type="button"
                                             onClick={() => setDeletingRole(role)}
-                                            className="rounded-md border border-destructive bg-destructive/90 px-3 py-1 text-xs font-medium text-background transition hover:bg-destructive disabled:cursor-not-allowed disabled:opacity-40"
+                                            className="rounded-md border-0 bg-destructive px-3 py-1 text-xs font-medium text-destructive-foreground transition hover:bg-destructive/90 disabled:cursor-not-allowed disabled:opacity-40"
                                             disabled={!role.isDeletable || role.slug === "admin"}
                                         >
                                             Delete
