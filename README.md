@@ -26,13 +26,11 @@ For the fastest demo experience, use GitHub Codespaces:
    ```
 
    ### Option B: Use VS Code Tasks
-
    - Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on Mac)
    - Type "Tasks: Run Task" and select it
    - Choose "Start Full Demo"
 
    ### Option C: Manual startup
-
    - Open a terminal and run: `cd api && DATA_MODE=mock pnpm dev`
    - Open another terminal and run: `cd web && pnpm dev`
 
@@ -40,17 +38,23 @@ For the fastest demo experience, use GitHub Codespaces:
    OUTPUT, etc.)
 
    ### Option A: Automatic Port Forwarding (Recommended)
-
    - Click the globe icons (🌐) next to ports 3000 and 3001 to open them in new browser tabs
 
    ### Option B: Manual Port Forwarding (if globe icons don't appear)
-
    - Click the **"Forward a Port"** button in the PORTS panel
    - Enter `3000` and press Enter (for the web app)
    - Enter `3001` and press Enter (for the API)
    - Click the globe icons that appear next to the forwarded ports
 
-5. Start exploring the app!**Demo URLs:**
+5. Start exploring the app!
+
+**Demo Documentation**: See [DEMO.md](DEMO.md) for a comprehensive guide to all features.
+
+**API Reference**: See [API_REFERENCE.md](API_REFERENCE.md) for complete API documentation.
+
+**Demo URLs:**
+
+**Demo URLs:**
 
 - **Frontend**: <http://localhost:3000>
 - **API**: <http://localhost:3001>
