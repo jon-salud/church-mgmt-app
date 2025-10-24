@@ -50,7 +50,8 @@ For the fastest demo experience, use GitHub Codespaces:
 
 **Demo Documentation**: See [docs/DEMO.md](docs/DEMO.md) for a comprehensive guide to all features.
 
-**API Reference**: See [docs/API_REFERENCE.md](docs/API_REFERENCE.md) for complete API documentation.
+**API Reference**: See [docs/API_REFERENCE.md](docs/API_REFERENCE.md) for complete API
+documentation.
 
 **Demo URLs:**
 
