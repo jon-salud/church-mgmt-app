@@ -190,3 +190,13 @@ pnpm lint:fix
 pnpm format
 pnpm lint
 ```
+
+### 7.4. CI/CD Integration
+
+All code quality checks are automatically enforced in the CI pipeline:
+
+- **Linting:** ESLint checks run on every push and pull request
+- **Formatting:** Prettier formatting validation runs on every push and pull request
+- **Tests:** API and E2E tests run with coverage reporting
+
+Code that fails these checks will not be merged until the issues are resolved.

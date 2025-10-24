@@ -95,6 +95,12 @@ pnpm install
 pnpm dev:api:mock     # API on port 3001
 pnpm -C web dev       # Web on port 3000
 
+# Code Quality
+pnpm lint             # Check linting issues
+pnpm lint:fix         # Auto-fix linting issues
+pnpm format           # Format code with Prettier
+pnpm format:check     # Check code formatting
+
 # Testing
 pnpm -C api test      # API tests
 pnpm test:e2e:mock    # E2E tests
