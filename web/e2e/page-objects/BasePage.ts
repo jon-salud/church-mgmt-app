@@ -13,6 +13,9 @@ export class BasePage {
     }
 
     async checkAccessibility() {
+        // Add delay for theme transitions to complete
+        await this.page.waitForTimeout(500);
+
         await this.page.addScriptTag({ path: require.resolve("axe-core") });
         const accessibilityScanResults = await this.page.evaluate(() => axe.run());
 
