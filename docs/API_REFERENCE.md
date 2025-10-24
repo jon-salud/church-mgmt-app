@@ -4,7 +4,7 @@ This document provides a quick reference for the Church Management App API endpo
 
 ## Base URL
 
-```
+```text
 http://localhost:3001/api/v1
 ```
 
@@ -118,7 +118,7 @@ The demo uses automatic authentication with the `demo-admin` token. No manual lo
 
 All API responses use JSON format. Request bodies should be JSON for POST/PATCH/PUT operations.
 
-### Common Response Structure
+### Success Response
 
 ```json
 {

@@ -55,8 +55,6 @@ documentation.
 
 **Demo URLs:**
 
-**Demo URLs:**
-
 - **Frontend**: <http://localhost:3000>
 - **API**: <http://localhost:3001>
 - **API Docs**: <http://localhost:3001/docs>
