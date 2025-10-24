@@ -1,4 +1,14 @@
-import { ArrayNotEmpty, IsArray, IsEmail, IsIn, IsOptional, IsString, MaxLength, IsInt, IsBoolean } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsEmail,
+  IsIn,
+  IsOptional,
+  IsString,
+  MaxLength,
+  IsInt,
+  IsBoolean,
+} from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { STATUS_VALUES } from './create-user.dto';
 

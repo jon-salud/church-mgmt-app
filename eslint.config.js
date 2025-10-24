@@ -45,6 +45,33 @@ export default [
         fetch: 'readonly',
         localStorage: 'readonly',
         sessionStorage: 'readonly',
+        URL: 'readonly',
+        URLSearchParams: 'readonly',
+        Request: 'readonly',
+        Response: 'readonly',
+        RequestInit: 'readonly',
+        Headers: 'readonly',
+        FormData: 'readonly',
+        FormDataEntryValue: 'readonly',
+        HTMLButtonElement: 'readonly',
+        HTMLDivElement: 'readonly',
+        HTMLInputElement: 'readonly',
+        HTMLTextAreaElement: 'readonly',
+        HTMLParagraphElement: 'readonly',
+        HTMLHeadingElement: 'readonly',
+        HTMLTableElement: 'readonly',
+        HTMLTableSectionElement: 'readonly',
+        HTMLTableRowElement: 'readonly',
+        HTMLTableCellElement: 'readonly',
+        HTMLTableCaptionElement: 'readonly',
+        HTMLSpanElement: 'readonly',
+        KeyboardEvent: 'readonly',
+        HTMLFormElement: 'readonly',
+        PushSubscription: 'readonly',
+        caches: 'readonly',
+        self: 'readonly',
+        React: 'readonly',
+        NextRequest: 'readonly',
       },
     },
     rules: {
@@ -52,16 +79,36 @@ export default [
     },
   },
   {
-    files: [
-      '*.config.{js,ts}',
-      'next.config.js',
-      'postcss.config.js',
-      'tailwind.config.ts',
-      'playwright.config.ts',
-      'jest.config.cjs',
-    ],
+    files: ['api/**/*.{ts,tsx}'],
+    languageOptions: {
+      globals: {
+        require: 'readonly',
+        global: 'readonly',
+        structuredClone: 'readonly',
+        URL: 'readonly',
+      },
+    },
     rules: {
-      '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-require-imports': 'off', // Allow require() in API
+    },
+  },
+  {
+    files: ['web/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-empty-object-type': 'off', // Allow empty interfaces in UI components
+    },
+  },
+  {
+    files: ['web/**/*.js'],
+    languageOptions: {
+      globals: {
+        self: 'readonly',
+        caches: 'readonly',
+        fetch: 'readonly',
+        Request: 'readonly',
+        Response: 'readonly',
+        URL: 'readonly',
+      },
     },
   },
   {

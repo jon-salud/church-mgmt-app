@@ -33,7 +33,8 @@ test.describe('Admin CRUD Operations', () => {
       await membersPage.quickAddMember(memberFirst, memberLast, memberEmail, memberPhone);
     });
 
-    const memberId = await test.step('Get member ID from URL', () => memberDetailPage.getMemberIdFromUrl());
+    const memberId = await test.step('Get member ID from URL', () =>
+      memberDetailPage.getMemberIdFromUrl());
 
     await test.step('Update and verify member details', async () => {
       await memberDetailPage.verifyMemberName(memberFirst, memberLast);

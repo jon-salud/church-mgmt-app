@@ -12,7 +12,11 @@ type AuditLogSearchParams = {
   page?: string;
 };
 
-function formatName(actor?: { profile?: { firstName?: string; lastName?: string }; primaryEmail?: string; id: string }) {
+function formatName(actor?: {
+  profile?: { firstName?: string; lastName?: string };
+  primaryEmail?: string;
+  id: string;
+}) {
   if (!actor) {
     return 'Unknown user';
   }
@@ -38,7 +42,11 @@ function formatMetadataValue(value: unknown) {
   return JSON.stringify(value);
 }
 
-export default async function AuditLogPage({ searchParams }: { searchParams?: AuditLogSearchParams }) {
+export default async function AuditLogPage({
+  searchParams,
+}: {
+  searchParams?: AuditLogSearchParams;
+}) {
   const params = searchParams ?? {};
   const entity = params.entity?.trim() || undefined;
   const actorUserId = params.actorUserId?.trim() || undefined;
@@ -89,7 +97,8 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
       <header>
         <h1 className="text-3xl font-semibold tracking-tight">Audit Log</h1>
         <p className="text-sm text-muted-foreground">
-          Review recent administrative activity across members, groups, events, giving, and announcements.
+          Review recent administrative activity across members, groups, events, giving, and
+          announcements.
         </p>
       </header>
 
@@ -107,7 +116,10 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="actorUserId" className="text-xs font-semibold uppercase text-muted-foreground">
+          <label
+            htmlFor="actorUserId"
+            className="text-xs font-semibold uppercase text-muted-foreground"
+          >
             Actor ID
           </label>
           <input
@@ -119,7 +131,10 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
           />
         </div>
         <div className="flex flex-col gap-1">
-          <label htmlFor="entityId" className="text-xs font-semibold uppercase text-muted-foreground">
+          <label
+            htmlFor="entityId"
+            className="text-xs font-semibold uppercase text-muted-foreground"
+          >
             Entity ID
           </label>
           <input
@@ -176,7 +191,9 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
 
       <div className="rounded-xl border border-border bg-card/60 shadow-lg shadow-black/5">
         {audit.items.length === 0 ? (
-          <div className="p-6 text-sm text-muted-foreground">No audit entries match the current filters.</div>
+          <div className="p-6 text-sm text-muted-foreground">
+            No audit entries match the current filters.
+          </div>
         ) : (
           <div
             className="overflow-x-auto"
@@ -198,7 +215,9 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
                 {audit.items.map(log => {
                   const actor = log.actor ?? null;
                   const metadataEntries = Object.entries(log.metadata ?? {});
-                  const filteredEntries = metadataEntries.filter(([, value]) => value !== undefined);
+                  const filteredEntries = metadataEntries.filter(
+                    ([, value]) => value !== undefined
+                  );
                   return (
                     <tr key={log.id} className="hover:bg-muted/60">
                       <td className="px-4 py-3 align-top text-xs text-muted-foreground">
@@ -206,11 +225,17 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
                       </td>
                       <td className="px-4 py-3 align-top">
                         <p className="font-medium text-foreground">{log.summary}</p>
-                        <p className="text-xs uppercase tracking-wide text-muted-foreground">{log.action}</p>
+                        <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                          {log.action}
+                        </p>
                       </td>
                       <td className="px-4 py-3 align-top">
-                        <p className="font-medium text-foreground">{formatName(actor ?? undefined)}</p>
-                        <p className="text-xs text-muted-foreground">{actor?.primaryEmail ?? log.actorUserId}</p>
+                        <p className="font-medium text-foreground">
+                          {formatName(actor ?? undefined)}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {actor?.primaryEmail ?? log.actorUserId}
+                        </p>
                       </td>
                       <td className="px-4 py-3 align-top">
                         <span className="inline-flex rounded bg-muted px-2 py-1 text-xs font-semibold uppercase tracking-wide text-foreground">
@@ -225,7 +250,8 @@ export default async function AuditLogPage({ searchParams }: { searchParams?: Au
                           <ul className="space-y-1">
                             {filteredEntries.map(([key, value]) => (
                               <li key={key}>
-                                <span className="text-muted-foreground">{key}:</span> {formatMetadataValue(value)}
+                                <span className="text-muted-foreground">{key}:</span>{' '}
+                                {formatMetadataValue(value)}
                               </li>
                             ))}
                           </ul>

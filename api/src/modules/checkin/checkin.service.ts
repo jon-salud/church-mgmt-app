@@ -12,7 +12,7 @@ import { NotificationsService } from '../notifications/notifications.service';
 export class CheckinService {
   constructor(
     @Inject(DATA_STORE) private readonly db: DataStore,
-    private readonly notificationsService: NotificationsService,
+    private readonly notificationsService: NotificationsService
   ) {}
 
   async createChild(data: CreateChildDto, actorUserId: string) {
@@ -37,13 +37,13 @@ export class CheckinService {
 
   async initiateCheckin(data: InitiateCheckinDto, actorUserId: string) {
     const checkins = await Promise.all(
-      data.childIds.map((childId) =>
+      data.childIds.map(childId =>
         this.db.createCheckin({
           eventId: data.eventId,
           childId,
           actorUserId,
-        }),
-      ),
+        })
+      )
     );
 
     return checkins;
@@ -63,8 +63,8 @@ export class CheckinService {
     if (checkin && checkin.child) {
       const children = await this.db.getChildren(checkin.child.householdId);
       const householdMembers = await this.db.getHouseholdMembers(checkin.child.householdId);
-      const usersToNotify = householdMembers.filter((member) =>
-        children.some((child) => child.householdId === member.profile.householdId),
+      const usersToNotify = householdMembers.filter(member =>
+        children.some(child => child.householdId === member.profile.householdId)
       );
       for (const user of usersToNotify) {
         this.notificationsService.sendNotification(user.id, {

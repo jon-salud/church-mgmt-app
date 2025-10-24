@@ -21,7 +21,9 @@ function NavSection({ title, items }: NavSectionProps) {
 
   return (
     <div className="space-y-1">
-      <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{title}</h3>
+      <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        {title}
+      </h3>
       {items.map(item => {
         const isActive = pathname === item.href;
         return (
@@ -36,7 +38,10 @@ function NavSection({ title, items }: NavSectionProps) {
                 : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800/60'
             )}
           >
-            <Icon name={item.icon} className="mr-3 h-5 w-5 text-slate-500 transition group-hover:text-slate-600 dark:text-slate-400 dark:group-hover:text-slate-300" />
+            <Icon
+              name={item.icon}
+              className="mr-3 h-5 w-5 text-slate-500 transition group-hover:text-slate-600 dark:text-slate-400 dark:group-hover:text-slate-300"
+            />
             <span>{item.label}</span>
           </Link>
         );
@@ -52,7 +57,12 @@ interface SidebarNavProps {
   isAdmin: boolean;
 }
 
-export function SidebarNav({ memberNavItems, givingNavItems, adminNavItems, isAdmin }: SidebarNavProps) {
+export function SidebarNav({
+  memberNavItems,
+  givingNavItems,
+  adminNavItems,
+  isAdmin,
+}: SidebarNavProps) {
   return (
     <nav className="grid gap-4" aria-label="Section navigation">
       <NavSection title="Member" items={memberNavItems} />

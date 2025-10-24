@@ -1,4 +1,3 @@
-
 export interface MockRequestType {
   id: string;
   name: string;
@@ -14,7 +13,8 @@ export const mockRequestTypes: MockRequestType[] = [
   {
     id: 'req-type-1',
     name: 'Prayer',
-    description: 'Share your prayer requests with the pastoral team. You can choose to share them publicly on the Prayer Wall.',
+    description:
+      'Share your prayer requests with the pastoral team. You can choose to share them publicly on the Prayer Wall.',
     churchId: '',
     status: 'active',
     isBuiltIn: true,
@@ -24,7 +24,8 @@ export const mockRequestTypes: MockRequestType[] = [
   {
     id: 'req-type-2',
     name: 'Benevolence',
-    description: 'If you are in need of financial assistance, please describe your situation. This request is confidential.',
+    description:
+      'If you are in need of financial assistance, please describe your situation. This request is confidential.',
     churchId: '',
     status: 'active',
     isBuiltIn: true,

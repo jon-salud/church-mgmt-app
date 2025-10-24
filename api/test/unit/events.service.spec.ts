@@ -40,7 +40,13 @@ describe('EventsService', () => {
   it('records attendance through datastore', async () => {
     store.recordAttendance.mockResolvedValue({ status: 'checkedIn' } as any);
 
-    const result = await service.recordAttendance('event-1', 'user-1', 'checkedIn', 'note', 'actor-1');
+    const result = await service.recordAttendance(
+      'event-1',
+      'user-1',
+      'checkedIn',
+      'note',
+      'actor-1'
+    );
 
     expect(store.recordAttendance).toHaveBeenCalledWith({
       eventId: 'event-1',

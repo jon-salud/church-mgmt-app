@@ -11,7 +11,7 @@ export function TicketDetailClientPage({ ticket: initialTicket }: { ticket: Past
 
   const handleAddComment = async () => {
     const comment = await clientApi.createPastoralCareComment(ticket.id, { body: newComment });
-    setTicket((prevTicket) => ({
+    setTicket(prevTicket => ({
       ...prevTicket,
       comments: [...prevTicket.comments, comment],
     }));
@@ -26,7 +26,9 @@ export function TicketDetailClientPage({ ticket: initialTicket }: { ticket: Past
         <h2 className="text-xl font-semibold">Comments</h2>
         {ticket.comments.map((comment: PastoralCareComment) => (
           <div key={comment.id} className="p-4 border rounded-lg">
-            <p className="font-semibold">{comment.author.profile.firstName} {comment.author.profile.lastName}</p>
+            <p className="font-semibold">
+              {comment.author.profile.firstName} {comment.author.profile.lastName}
+            </p>
             <p>{comment.body}</p>
             <p className="text-sm text-gray-500">{new Date(comment.createdAt).toLocaleString()}</p>
           </div>
@@ -34,7 +36,11 @@ export function TicketDetailClientPage({ ticket: initialTicket }: { ticket: Past
       </div>
       <div className="space-y-2">
         <h2 className="text-xl font-semibold">Add a Comment</h2>
-        <Textarea id="new-comment-textarea" value={newComment} onChange={(e) => setNewComment(e.target.value)} />
+        <Textarea
+          id="new-comment-textarea"
+          value={newComment}
+          onChange={e => setNewComment(e.target.value)}
+        />
         <Button id="add-comment-button" onClick={handleAddComment}>
           Add Comment
         </Button>

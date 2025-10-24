@@ -11,7 +11,9 @@ import { initSentry } from './common/observability/sentry';
 async function bootstrap() {
   const { logger: appLogger, pino } = createAppLogger();
   const adapter = new FastifyAdapter({ logger: pino });
-  const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter, { bufferLogs: true });
+  const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter, {
+    bufferLogs: true,
+  });
   app.useLogger(appLogger);
   const sentryActive = initSentry();
   app.setGlobalPrefix('api/v1');

@@ -1,5 +1,25 @@
-import { Body, Controller, ForbiddenException, Get, Param, Patch, Post, Query, Req, Res, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiProduces, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  Body,
+  Controller,
+  ForbiddenException,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiProduces,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { GivingService } from './giving.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { CreateContributionDto } from './dto/create-contribution.dto';
@@ -32,7 +52,7 @@ export class GivingController {
     @Query('memberId') memberId?: string,
     @Query('fundId') fundId?: string,
     @Query('from') from?: string,
-    @Query('to') to?: string,
+    @Query('to') to?: string
   ) {
     return this.givingService.listContributions({ memberId, fundId, from, to });
   }
@@ -74,10 +94,15 @@ export class GivingController {
     @Query('from') from: string | undefined,
     @Query('to') to: string | undefined,
     @Req() req: any,
-    @Res({ passthrough: true }) res: FastifyReply,
+    @Res({ passthrough: true }) res: FastifyReply
   ) {
     this.ensureAdmin(req);
-    const { content, filename } = await this.givingService.exportContributionsCsv({ memberId, fundId, from, to });
+    const { content, filename } = await this.givingService.exportContributionsCsv({
+      memberId,
+      fundId,
+      from,
+      to,
+    });
     res.header('Content-Type', 'text/csv; charset=utf-8');
     res.header('Content-Disposition', `attachment; filename="${filename}"`);
     return content;

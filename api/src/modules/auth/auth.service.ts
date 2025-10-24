@@ -31,7 +31,10 @@ const DEFAULT_JWT_EXPIRY = '1h';
 const DEMO_TOKENS = new Set(['demo-admin', 'demo-leader', 'demo-member']);
 
 const isJwtTokenError = (error: unknown): boolean =>
-  typeof error === 'object' && error !== null && 'name' in error && error.name === 'JsonWebTokenError';
+  typeof error === 'object' &&
+  error !== null &&
+  'name' in error &&
+  error.name === 'JsonWebTokenError';
 
 @Injectable()
 export class AuthService {
@@ -44,14 +47,17 @@ export class AuthService {
 
   constructor(
     @Inject(DATA_STORE) private readonly db: DataStore,
-    private readonly config: ConfigService,
+    private readonly config: ConfigService
   ) {
     this.jwtSecret = (this.config.get<string>('JWT_SECRET') ?? 'dev-insecure-secret') as Secret;
-    this.jwtExpiresIn = (this.config.get<string>('JWT_EXPIRES_IN') ?? DEFAULT_JWT_EXPIRY) as SignOptions['expiresIn'];
+    this.jwtExpiresIn = (this.config.get<string>('JWT_EXPIRES_IN') ??
+      DEFAULT_JWT_EXPIRY) as SignOptions['expiresIn'];
     this.stateSecret = this.config.get<string>('OAUTH_STATE_SECRET') ?? String(this.jwtSecret);
     this.frontendBaseUrl = this.config.get<string>('WEB_APP_URL') ?? 'http://localhost:3000';
-    this.oauthCallbackPath = this.config.get<string>('OAUTH_REDIRECT_PATH') ?? '/(auth)/oauth/callback';
-    this.allowDemoLogin = (this.config.get<string>('ALLOW_DEMO_LOGIN') ?? 'true').toLowerCase() !== 'false';
+    this.oauthCallbackPath =
+      this.config.get<string>('OAUTH_REDIRECT_PATH') ?? '/(auth)/oauth/callback';
+    this.allowDemoLogin =
+      (this.config.get<string>('ALLOW_DEMO_LOGIN') ?? 'true').toLowerCase() !== 'false';
   }
 
   login(email: string, provider: 'google' | 'facebook' | 'demo', role?: string) {
@@ -73,8 +79,12 @@ export class AuthService {
   }
 
   issueJwt(
-    user: { id: string; primaryEmail: string; roles: Array<{ churchId: string; roleId?: string; role?: string }> },
-    provider: JwtPayload['provider'],
+    user: {
+      id: string;
+      primaryEmail: string;
+      roles: Array<{ churchId: string; roleId?: string; role?: string }>;
+    },
+    provider: JwtPayload['provider']
   ) {
     const payload: JwtPayload = {
       sub: user.id,
@@ -148,7 +158,12 @@ export class AuthService {
     return redirect;
   }
 
-  buildFrontendRedirect(token: string, provider: 'google' | 'facebook', redirectPath: string, created: boolean) {
+  buildFrontendRedirect(
+    token: string,
+    provider: 'google' | 'facebook',
+    redirectPath: string,
+    created: boolean
+  ) {
     const url = new URL(this.oauthCallbackPath, this.frontendBaseUrl);
     url.searchParams.set('token', token);
     url.searchParams.set('provider', provider);

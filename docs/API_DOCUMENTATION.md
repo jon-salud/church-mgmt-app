@@ -4,13 +4,17 @@ This document provides a comprehensive overview of the Church Management System 
 
 ## 1. Overview
 
-The Church Management System API is a RESTful API that provides access to the core features of the platform. It is designed to be used by the frontend web application and any future third-party integrators.
+The Church Management System API is a RESTful API that provides access to the core features of the
+platform. It is designed to be used by the frontend web application and any future third-party
+integrators.
 
 **Base URL:** `/api/v1`
 
 ## 2. Authentication
 
-The API is protected and requires an authenticated session. All requests must include a valid session cookie. The `@CurrentUser` decorator provides the user context, and all data is automatically scoped by the user's `churchId`.
+The API is protected and requires an authenticated session. All requests must include a valid
+session cookie. The `@CurrentUser` decorator provides the user context, and all data is
+automatically scoped by the user's `churchId`.
 
 ---
 
@@ -18,17 +22,20 @@ The API is protected and requires an authenticated session. All requests must in
 
 ### Member & User Management
 
-This section covers endpoints related to managing user and member profiles. The API distinguishes between a `User` (the login identity) and a `Profile` (the church-specific member record).
+This section covers endpoints related to managing user and member profiles. The API distinguishes
+between a `User` (the login identity) and a `Profile` (the church-specific member record).
 
 ---
 
 #### GET /users
+
 - **Description:** Retrieves a list of all member profiles for the church.
 - **Query Parameters:**
   - `q` (string, optional): A search term to filter members by name.
 - **Success Response:**
   - **Code:** `200 OK`
   - **Content:**
+
     ```json
     [
       {
@@ -44,18 +51,21 @@ This section covers endpoints related to managing user and member profiles. The 
       }
     ]
     ```
+
 - **Error Responses:**
   - **Code:** `401 Unauthorized` - If the user is not authenticated.
 
 ---
 
 #### GET /users/:id
+
 - **Description:** Retrieves a single member profile by their unique profile ID.
 - **URL Parameters:**
   - `id` (string, required): The unique identifier of the member's profile.
 - **Success Response:**
   - **Code:** `200 OK`
   - **Content:**
+
     ```json
     {
       "id": "profile-uuid-1",
@@ -72,6 +82,7 @@ This section covers endpoints related to managing user and member profiles. The 
       "updatedAt": "timestamp"
     }
     ```
+
 - **Error Responses:**
   - **Code:** `401 Unauthorized` - If the user is not authenticated.
   - **Code:** `404 Not Found` - If a profile with the specified ID does not exist.
@@ -79,8 +90,10 @@ This section covers endpoints related to managing user and member profiles. The 
 ---
 
 #### POST /users
+
 - **Description:** Creates a new user and their associated member profile. (Admin only)
 - **Request Body:**
+
   ```json
   {
     "email": "string (required, email)",
@@ -92,32 +105,40 @@ This section covers endpoints related to managing user and member profiles. The 
     "birthday": "string (optional, YYYY-MM-DD)"
   }
   ```
+
 - **Success Response:**
   - **Code:** `201 Created`
   - **Content:** The newly created profile object.
 - **Error Responses:**
-  - **Code:** `400 Bad Request` - If the request body is missing required fields or contains invalid data.
+  - **Code:** `400 Bad Request` - If the request body is missing required fields or contains invalid
+    data.
   - **Code:** `401 Unauthorized` - If the user is not authenticated.
 
 ---
+
 ### Groups
 
-*(Note: The following endpoints are planned based on the Functional Requirements but are not yet implemented in the API.)*
+_(Note: The following endpoints are planned based on the Functional Requirements but are not yet
+implemented in the API.)_
 
 ---
 
 ### Events & Check-in
 
-*(Note: The following endpoints are planned based on the Functional Requirements but are not yet implemented in the API.)*
-  - **Code:** `403 Forbidden` - If the authenticated user is not an admin.
+_(Note: The following endpoints are planned based on the Functional Requirements but are not yet
+implemented in the API.)_
+
+- **Code:** `403 Forbidden` - If the authenticated user is not an admin.
 
 ---
 
 #### PATCH /users/:id
+
 - **Description:** Updates an existing member's profile. (Admin only)
 - **URL Parameters:**
   - `id` (string, required): The unique identifier of the profile to update.
 - **Request Body:**
+
   ```json
   {
     "firstName": "string",
@@ -128,6 +149,7 @@ This section covers endpoints related to managing user and member profiles. The 
     "birthday": "string (YYYY-MM-DD)"
   }
   ```
+
 - **Success Response:**
   - **Code:** `200 OK`
   - **Content:** The updated profile object.
@@ -140,18 +162,21 @@ This section covers endpoints related to managing user and member profiles. The 
 ---
 
 #### DELETE /users/:id
+
 - **Description:** Deletes a user. This is an admin-only endpoint.
 - **URL Parameters:**
   - `id` (string, required): The unique identifier of the user to delete.
 - **Success Response:**
   - **Code:** `200 OK`
   - **Content:**
+
     ```json
     {
       "success": true,
       "message": "User deleted successfully"
     }
     ```
+
 - **Error Responses:**
   - **Code:** `401 Unauthorized` - If the user is not authenticated.
   - **Code:** `403 Forbidden` - If the authenticated user is not an admin.
@@ -166,10 +191,14 @@ This section covers endpoints related to prayer requests.
 ---
 
 #### GET /prayer/requests
-- **Description:** Retrieves a list of all approved prayer requests for the church. *(Note: The implemented path is `/prayer/requests`. The path `/prayer-requests` is planned for future convention alignment.)*
+
+- **Description:** Retrieves a list of all approved prayer requests for the church. _(Note: The
+  implemented path is `/prayer/requests`. The path `/prayer-requests` is planned for future
+  convention alignment.)_
 - **Success Response:**
   - **Code:** `200 OK`
   - **Content:**
+
     ```json
     [
       {
@@ -184,14 +213,18 @@ This section covers endpoints related to prayer requests.
       }
     ]
     ```
+
 - **Error Responses:**
   - **Code:** `401 Unauthorized` - If the user is not authenticated.
 
 ---
 
 #### POST /prayer/requests
-- **Description:** Creates a new prayer request. It will be in a `PendingApproval` state until reviewed by an admin.
+
+- **Description:** Creates a new prayer request. It will be in a `PendingApproval` state until
+  reviewed by an admin.
 - **Request Body:**
+
   ```json
   {
     "title": "string (required)",
@@ -199,27 +232,32 @@ This section covers endpoints related to prayer requests.
     "isAnonymous": "boolean (optional, default: false)"
   }
   ```
+
 - **Success Response:**
   - **Code:** `201 Created`
   - **Content:** The newly created prayer request object.
 - **Error Responses:**
-  - **Code:** `400 Bad Request` - If the request body is missing required fields or contains invalid data.
+  - **Code:** `400 Bad Request` - If the request body is missing required fields or contains invalid
+    data.
   - **Code:** `401 Unauthorized` - If the user is not authenticated.
 
 ---
 
 ### Document Library
 
-*(Note: The following endpoints are planned based on the Functional Requirements but are not yet implemented in the API.)*
+_(Note: The following endpoints are planned based on the Functional Requirements but are not yet
+implemented in the API.)_
 
 ---
 
 #### GET /documents
+
 - **Description:** Retrieves a list of documents the user has permission to view.
 
 ---
 
 #### POST /documents
+
 - **Description:** Uploads a new document. (Admin only)
 
 ---
@@ -231,10 +269,12 @@ This section covers endpoints related to general requests.
 ---
 
 #### GET /requests
+
 - **Description:** Retrieves a list of all general requests for the church.
 - **Success Response:**
   - **Code:** `200 OK`
   - **Content:**
+
     ```json
     [
       {
@@ -249,14 +289,17 @@ This section covers endpoints related to general requests.
       }
     ]
     ```
+
 - **Error Responses:**
   - **Code:** `401 Unauthorized` - If the user is not authenticated.
 
 ---
 
 #### POST /requests
+
 - **Description:** Creates a new general request.
 - **Request Body:**
+
   ```json
   {
     "requestTypeId": "string (required)",
@@ -265,9 +308,11 @@ This section covers endpoints related to general requests.
     "isConfidential": "boolean (optional)"
   }
   ```
+
 - **Success Response:**
   - **Code:** `201 Created`
   - **Content:** The newly created request object.
 - **Error Responses:**
-  - **Code:** `400 Bad Request` - If the request body is missing required fields or contains invalid data.
+  - **Code:** `400 Bad Request` - If the request body is missing required fields or contains invalid
+    data.
   - **Code:** `401 Unauthorized` - If the user is not authenticated.

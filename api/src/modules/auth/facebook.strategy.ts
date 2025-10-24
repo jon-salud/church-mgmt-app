@@ -16,7 +16,9 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     const allowDemo = (config.get<string>('ALLOW_DEMO_LOGIN') ?? 'true').toLowerCase() !== 'false';
 
     if (isDemoOnly && !allowDemo) {
-      throw new Error('Missing Facebook OAuth configuration. Set FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET.');
+      throw new Error(
+        'Missing Facebook OAuth configuration. Set FACEBOOK_CLIENT_ID and FACEBOOK_CLIENT_SECRET.'
+      );
     }
 
     super({
@@ -29,7 +31,13 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
     });
   }
 
-  async validate(req: any, _accessToken: string, _refreshToken: string, profile: any, done: Function) {
+  async validate(
+    req: any,
+    _accessToken: string,
+    _refreshToken: string,
+    profile: any,
+    done: Function
+  ) {
     const email = profile?.emails?.[0]?.value;
     if (!email) {
       return done(new Error('Facebook account does not have an email address available.'), false);

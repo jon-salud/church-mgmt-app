@@ -1,16 +1,16 @@
-import { cn } from "@/lib/utils";
+import { cn } from '@/lib/utils';
 
 interface PageHeaderProps {
-    title: string;
-    className?: string;
-    children?: React.ReactNode;
+  title: string;
+  className?: string;
+  children?: React.ReactNode;
 }
 
 export function PageHeader({ title, className, children }: PageHeaderProps) {
-    return (
-        <header className={cn("container mx-auto p-4", className)}>
-            <h1 className="text-3xl font-semibold mb-6">{title}</h1>
-            {children}
-        </header>
-    );
+  return (
+    <header className={cn('container mx-auto p-4', className)}>
+      <h1 className="text-3xl font-semibold mb-6">{title}</h1>
+      {children}
+    </header>
+  );
 }

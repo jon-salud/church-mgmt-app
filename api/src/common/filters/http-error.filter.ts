@@ -1,4 +1,12 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger, LoggerService } from '@nestjs/common';
+import {
+  ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
+  HttpStatus,
+  Logger,
+  LoggerService,
+} from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { captureSentryException, isSentryEnabled } from '../observability/sentry';
 
@@ -19,8 +27,12 @@ export class HttpErrorFilter implements ExceptionFilter {
     const request = ctx.getRequest<FastifyRequest>();
     const response = ctx.getResponse<FastifyReply>();
 
-    const status = exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
-    const responsePayload = exception instanceof HttpException ? (exception.getResponse() as HttpExceptionResponseBody) : undefined;
+    const status =
+      exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+    const responsePayload =
+      exception instanceof HttpException
+        ? (exception.getResponse() as HttpExceptionResponseBody)
+        : undefined;
     const message = this.resolveMessage(responsePayload, exception, status);
     const requestId = this.getRequestId(request);
 
@@ -34,14 +46,23 @@ export class HttpErrorFilter implements ExceptionFilter {
       requestId,
     };
 
-    if (status < HttpStatus.INTERNAL_SERVER_ERROR && responsePayload && typeof responsePayload === 'object') {
+    if (
+      status < HttpStatus.INTERNAL_SERVER_ERROR &&
+      responsePayload &&
+      typeof responsePayload === 'object'
+    ) {
       body.details = responsePayload;
     }
 
     const logContext = `${request.method} ${request.url} [${status}]${requestId ? ` req:${requestId}` : ''}`;
     if (status >= HttpStatus.INTERNAL_SERVER_ERROR) {
       if (isSentryEnabled()) {
-        captureSentryException(exception, { status, path: request.url, method: request.method, requestId });
+        captureSentryException(exception, {
+          status,
+          path: request.url,
+          method: request.method,
+          requestId,
+        });
       }
       this.logger.error(logContext, exception instanceof Error ? exception.stack : undefined);
     } else if (status >= HttpStatus.BAD_REQUEST) {
@@ -53,7 +74,11 @@ export class HttpErrorFilter implements ExceptionFilter {
     response.status(status).send(body);
   }
 
-  private resolveMessage(body: HttpExceptionResponseBody | undefined, exception: unknown, status: number) {
+  private resolveMessage(
+    body: HttpExceptionResponseBody | undefined,
+    exception: unknown,
+    status: number
+  ) {
     if (typeof body === 'string' && body.trim().length > 0) {
       return body;
     }
@@ -66,7 +91,9 @@ export class HttpErrorFilter implements ExceptionFilter {
     if (exception instanceof Error && exception.message) {
       return exception.message;
     }
-    return status >= HttpStatus.INTERNAL_SERVER_ERROR ? DEFAULT_ERROR_MESSAGE : 'Request could not be completed.';
+    return status >= HttpStatus.INTERNAL_SERVER_ERROR
+      ? DEFAULT_ERROR_MESSAGE
+      : 'Request could not be completed.';
   }
 
   private getRequestId(request: FastifyRequest) {

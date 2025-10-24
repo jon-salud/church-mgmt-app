@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useMemo, useState } from "react";
-import { format } from "date-fns";
-import { Modal } from "../../components/ui/modal";
-import { recordContributionAction, updateContributionAction } from "../actions";
+import { useMemo, useState } from 'react';
+import { format } from 'date-fns';
+import { Modal } from '../../components/ui/modal';
+import { recordContributionAction, updateContributionAction } from '../actions';
 
 type Fund = { id: string; name: string };
 type Member = { id: string; profile: { firstName?: string; lastName?: string } };
@@ -31,15 +31,15 @@ type GivingClientProps = {
   csvUrl: string;
 };
 
-export function GivingClient({ funds, members, contributions, summary, csvUrl }: GivingClientProps) {
-  const memberMap = useMemo(
-    () => new Map(members.map(member => [member.id, member])),
-    [members],
-  );
-  const fundMap = useMemo(
-    () => new Map(funds.map(fund => [fund.id, fund])),
-    [funds],
-  );
+export function GivingClient({
+  funds,
+  members,
+  contributions,
+  summary,
+  csvUrl,
+}: GivingClientProps) {
+  const memberMap = useMemo(() => new Map(members.map(member => [member.id, member])), [members]);
+  const fundMap = useMemo(() => new Map(funds.map(fund => [fund.id, fund])), [funds]);
   const [editContribution, setEditContribution] = useState<Contribution | null>(null);
 
   const formatCurrency = (amount: number) => `$${amount.toFixed(2)}`;
@@ -63,10 +63,26 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
       </header>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <SummaryCard label="Total giving" value={formatCurrency(summary.totals.overall)} variant="default" />
-        <SummaryCard label="Month to date" value={formatCurrency(summary.totals.monthToDate)} variant="emerald" />
-        <SummaryCard label="Previous month" value={formatCurrency(summary.totals.previousMonth)} variant="amber" />
-        <SummaryCard label="Average gift" value={formatCurrency(summary.totals.averageGift || 0)} variant="sky" />
+        <SummaryCard
+          label="Total giving"
+          value={formatCurrency(summary.totals.overall)}
+          variant="default"
+        />
+        <SummaryCard
+          label="Month to date"
+          value={formatCurrency(summary.totals.monthToDate)}
+          variant="emerald"
+        />
+        <SummaryCard
+          label="Previous month"
+          value={formatCurrency(summary.totals.previousMonth)}
+          variant="amber"
+        />
+        <SummaryCard
+          label="Average gift"
+          value={formatCurrency(summary.totals.averageGift || 0)}
+          variant="sky"
+        />
       </section>
 
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
@@ -74,18 +90,35 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
           <div className="rounded-xl border border-border bg-card/60 p-5">
             <h2 className="text-lg font-semibold">Recent contributions</h2>
             <table className="mt-3 min-w-full text-sm" aria-describedby="contributions-caption">
-              <caption id="contributions-caption" className="text-left text-xs uppercase text-muted-foreground">
+              <caption
+                id="contributions-caption"
+                className="text-left text-xs uppercase text-muted-foreground"
+              >
                 Latest manual giving entries
               </caption>
               <thead className="text-left text-xs uppercase text-muted-foreground">
                 <tr>
-                  <th scope="col" className="py-2">Date</th>
-                  <th scope="col" className="py-2">Member</th>
-                  <th scope="col" className="py-2">Fund</th>
-                  <th scope="col" className="py-2">Amount</th>
-                  <th scope="col" className="py-2">Method</th>
-                  <th scope="col" className="py-2">Note</th>
-                  <th scope="col" className="py-2"><span className="sr-only">Actions</span></th>
+                  <th scope="col" className="py-2">
+                    Date
+                  </th>
+                  <th scope="col" className="py-2">
+                    Member
+                  </th>
+                  <th scope="col" className="py-2">
+                    Fund
+                  </th>
+                  <th scope="col" className="py-2">
+                    Amount
+                  </th>
+                  <th scope="col" className="py-2">
+                    Method
+                  </th>
+                  <th scope="col" className="py-2">
+                    Note
+                  </th>
+                  <th scope="col" className="py-2">
+                    <span className="sr-only">Actions</span>
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
@@ -101,7 +134,9 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
                       <td className="py-2 text-foreground">{memberName || entry.memberId}</td>
                       <td className="py-2 text-muted-foreground">{fund?.name ?? 'General'}</td>
                       <td className="py-2 font-medium">{formatCurrency(entry.amount)}</td>
-                      <td className="py-2 text-muted-foreground capitalize">{entry.method.replace('-', ' ')}</td>
+                      <td className="py-2 text-muted-foreground capitalize">
+                        {entry.method.replace('-', ' ')}
+                      </td>
                       <td className="py-2 text-muted-foreground">{entry.note ?? ''}</td>
                       <td className="py-2 text-right">
                         <button
@@ -236,10 +271,18 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
       <Modal
         open={Boolean(editContribution)}
         onClose={() => setEditContribution(null)}
-        title={editContribution ? `Edit contribution from ${format(new Date(editContribution.date), 'd MMM yyyy')}` : 'Edit contribution'}
+        title={
+          editContribution
+            ? `Edit contribution from ${format(new Date(editContribution.date), 'd MMM yyyy')}`
+            : 'Edit contribution'
+        }
       >
         {editContribution ? (
-          <form action={updateContributionAction} className="grid gap-3 text-sm" onSubmit={() => setEditContribution(null)}>
+          <form
+            action={updateContributionAction}
+            className="grid gap-3 text-sm"
+            onSubmit={() => setEditContribution(null)}
+          >
             <input type="hidden" name="contributionId" value={editContribution.id} />
             <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Member
@@ -319,7 +362,9 @@ export function GivingClient({ funds, members, contributions, summary, csvUrl }:
                 className="rounded-md border border-border bg-background px-3 py-2 text-sm"
                 placeholder="Optional"
               />
-              <span className="text-[10px] text-muted-foreground">Leave blank to remove the note.</span>
+              <span className="text-[10px] text-muted-foreground">
+                Leave blank to remove the note.
+              </span>
             </label>
             <button
               id="edit-save-button"
@@ -340,23 +385,23 @@ type SummaryCardProps = {
   variant?: 'default' | 'emerald' | 'amber' | 'sky';
 };
 
-function SummaryCard({ label, value, variant = "default" }: SummaryCardProps) {
+function SummaryCard({ label, value, variant = 'default' }: SummaryCardProps) {
   const variants = {
     default: {
-      bg: "bg-card/60",
-      labelColor: "text-muted-foreground",
+      bg: 'bg-card/60',
+      labelColor: 'text-muted-foreground',
     },
     emerald: {
-      bg: "bg-emerald-500/10",
-      labelColor: "text-emerald-800 dark:text-emerald-400",
+      bg: 'bg-emerald-500/10',
+      labelColor: 'text-emerald-800 dark:text-emerald-400',
     },
     amber: {
-      bg: "bg-amber-500/10",
-      labelColor: "text-amber-800 dark:text-amber-400",
+      bg: 'bg-amber-500/10',
+      labelColor: 'text-amber-800 dark:text-amber-400',
     },
     sky: {
-      bg: "bg-sky-500/10",
-      labelColor: "text-sky-800 dark:text-sky-400",
+      bg: 'bg-sky-500/10',
+      labelColor: 'text-sky-800 dark:text-sky-400',
     },
   };
   const selectedVariant = variants[variant];

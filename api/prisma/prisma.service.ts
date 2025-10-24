@@ -7,7 +7,6 @@ const shouldUseStub = mode !== 'prisma' || isTestEnv;
 let PrismaClient: any;
 if (!shouldUseStub) {
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     PrismaClient = require('@prisma/client').PrismaClient;
   } catch {
     PrismaClient = undefined;
@@ -18,9 +17,11 @@ if (!PrismaClient) {
   PrismaClient = class {
     async $connect(): Promise<void> {
       // eslint-disable-next-line no-console
-      console.warn('Prisma client is not generated. Run `pnpm prisma:generate` before using DATA_MODE=prisma.');
+      console.warn(
+        'Prisma client is not generated. Run `pnpm prisma:generate` before using DATA_MODE=prisma.'
+      );
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     $on(_event: string, _cb: (...args: any[]) => unknown): void {}
   };
 }

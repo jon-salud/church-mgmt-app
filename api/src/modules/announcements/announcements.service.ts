@@ -22,7 +22,7 @@ export class AnnouncementsService {
       title: input.title,
       body: input.body,
       audience: input.audience,
-      groupIds: input.audience === 'custom' ? input.groupIds ?? [] : undefined,
+      groupIds: input.audience === 'custom' ? (input.groupIds ?? []) : undefined,
       publishAt,
       expireAt: input.expireAt,
       actorUserId,

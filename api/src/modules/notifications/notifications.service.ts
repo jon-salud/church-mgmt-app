@@ -18,7 +18,7 @@ export class NotificationsService implements OnModuleInit {
     webPush.setVapidDetails(
       'mailto:admin@example.com',
       process.env.VAPID_PUBLIC_KEY,
-      process.env.VAPID_PRIVATE_KEY,
+      process.env.VAPID_PRIVATE_KEY
     );
   }
 

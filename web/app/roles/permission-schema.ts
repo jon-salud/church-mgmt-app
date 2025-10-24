@@ -46,9 +46,7 @@ export const PERMISSION_GROUPS: PermissionGroup[] = [
   {
     module: 'giving',
     label: 'Giving',
-    permissions: [
-      { key: 'giving.manage', label: 'Manage giving records' },
-    ],
+    permissions: [{ key: 'giving.manage', label: 'Manage giving records' }],
   },
   {
     module: 'audit',

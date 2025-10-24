@@ -18,7 +18,8 @@ function deriveGivingSummary(contributions: Contribution[], funds: Fund[]) {
     previousMonth: 0,
     averageGift: 0,
   };
-  const monthKey = (value: Date) => `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}`;
+  const monthKey = (value: Date) =>
+    `${value.getFullYear()}-${String(value.getMonth() + 1).padStart(2, '0')}`;
   const now = new Date();
   const currentMonth = monthKey(now);
   const previousMonth = monthKey(new Date(now.getFullYear(), now.getMonth() - 1, 1));
@@ -43,7 +44,7 @@ function deriveGivingSummary(contributions: Contribution[], funds: Fund[]) {
 
   const byFund = Array.from(fundTotals.entries()).map(([fundId, amount]) => ({
     fundId: fundId === 'general' ? null : fundId,
-    name: fundId === 'general' ? 'General' : fundMap.get(fundId) ?? fundId,
+    name: fundId === 'general' ? 'General' : (fundMap.get(fundId) ?? fundId),
     amount,
   }));
 

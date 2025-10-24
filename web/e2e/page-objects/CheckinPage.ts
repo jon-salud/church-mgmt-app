@@ -2,7 +2,10 @@ import { Page, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class CheckinPage extends BasePage {
-  constructor(page: Page, private memberId: string) {
+  constructor(
+    page: Page,
+    private memberId: string
+  ) {
     super(page);
   }
 

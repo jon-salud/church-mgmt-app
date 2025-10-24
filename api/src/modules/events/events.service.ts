@@ -16,7 +16,13 @@ export class EventsService {
     return this.db.getEventById(id);
   }
 
-  recordAttendance(eventId: string, userId: string, status: AttendanceStatus, note?: string, recordedBy?: string) {
+  recordAttendance(
+    eventId: string,
+    userId: string,
+    status: AttendanceStatus,
+    note?: string,
+    recordedBy?: string
+  ) {
     return this.db.recordAttendance({ eventId, userId, status, note, recordedBy });
   }
 
@@ -47,12 +53,13 @@ export class EventsService {
       members.map(member => [
         member.id,
         {
-          name: `${member.profile?.firstName ?? ''} ${member.profile?.lastName ?? ''}`.trim() ||
+          name:
+            `${member.profile?.firstName ?? ''} ${member.profile?.lastName ?? ''}`.trim() ||
             member.primaryEmail ||
             member.id,
           email: member.primaryEmail,
         },
-      ]),
+      ])
     );
 
     const escape = (value: string | number | null | undefined) => {

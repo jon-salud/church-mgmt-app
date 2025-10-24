@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { ReactNode, useEffect, useId } from "react";
-import { createPortal } from "react-dom";
+import { ReactNode, useEffect, useId } from 'react';
+import { createPortal } from 'react-dom';
 
 type ModalProps = {
   open: boolean;
@@ -17,16 +17,16 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
   useEffect(() => {
     if (!open) return;
     const original = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
+    document.body.style.overflow = 'hidden';
     const handler = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
+      if (event.key === 'Escape') {
         onClose();
       }
     };
-    window.addEventListener("keydown", handler);
+    window.addEventListener('keydown', handler);
     return () => {
       document.body.style.overflow = original;
-      window.removeEventListener("keydown", handler);
+      window.removeEventListener('keydown', handler);
     };
   }, [open, onClose]);
 
@@ -58,16 +58,12 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
             Close
           </button>
         </header>
-        <div className="px-6 py-4">
-          {children}
-        </div>
+        <div className="px-6 py-4">{children}</div>
         {footer ? (
-          <footer className="border-t border-border bg-muted px-6 py-3">
-            {footer}
-          </footer>
+          <footer className="border-t border-border bg-muted px-6 py-3">{footer}</footer>
         ) : null}
       </div>
     </div>,
-    document.body,
+    document.body
   );
 }

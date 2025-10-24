@@ -17,7 +17,9 @@ export class DashboardService {
       this.db.listAnnouncements(church.id),
       this.db.listContributions(),
     ]);
-    const upcomingEvents = events.filter(event => new Date(event.startAt as any) >= new Date()).slice(0, 5);
+    const upcomingEvents = events
+      .filter(event => new Date(event.startAt as any) >= new Date())
+      .slice(0, 5);
     const recentAnnouncements = announcements.slice(0, 5);
     const recentContributions = contributions.slice(-5).reverse();
     return {

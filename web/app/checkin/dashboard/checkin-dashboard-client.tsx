@@ -16,11 +16,16 @@ export function CheckinDashboardClient({ pending, checkedIn }: CheckinDashboardC
           <h2 className="text-xl font-semibold">Pending Confirmation</h2>
           <ul className="mt-4 space-y-2">
             {pending.length > 0 ? (
-              pending.map((checkin) => (
-                <li key={checkin.id} className="flex items-center justify-between rounded-md border border-slate-800 bg-slate-950/60 p-3 text-sm">
+              pending.map(checkin => (
+                <li
+                  key={checkin.id}
+                  className="flex items-center justify-between rounded-md border border-slate-800 bg-slate-950/60 p-3 text-sm"
+                >
                   <div>
                     <p className="font-medium text-slate-100">{checkin.child.fullName}</p>
-                    <p className="text-xs text-slate-400">Checked in at: {format(new Date(checkin.checkinTime), "h:mm a")}</p>
+                    <p className="text-xs text-slate-400">
+                      Checked in at: {format(new Date(checkin.checkinTime), 'h:mm a')}
+                    </p>
                   </div>
                   <button
                     id={`confirm-checkin-button-${checkin.id}`}
@@ -40,11 +45,16 @@ export function CheckinDashboardClient({ pending, checkedIn }: CheckinDashboardC
           <h2 className="text-xl font-semibold">Currently Checked-In</h2>
           <ul className="mt-4 space-y-2">
             {checkedIn.length > 0 ? (
-              checkedIn.map((checkin) => (
-                <li key={checkin.id} className="flex items-center justify-between rounded-md border border-slate-800 bg-slate-950/60 p-3 text-sm">
+              checkedIn.map(checkin => (
+                <li
+                  key={checkin.id}
+                  className="flex items-center justify-between rounded-md border border-slate-800 bg-slate-950/60 p-3 text-sm"
+                >
                   <div>
                     <p className="font-medium text-slate-100">{checkin.child.fullName}</p>
-                    <p className="text-xs text-slate-400">Confirmed at: {format(new Date(checkin.checkinTime), "h:mm a")}</p>
+                    <p className="text-xs text-slate-400">
+                      Confirmed at: {format(new Date(checkin.checkinTime), 'h:mm a')}
+                    </p>
                   </div>
                   <button
                     id={`checkout-button-${checkin.id}`}

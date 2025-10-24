@@ -1,11 +1,10 @@
 import { AuthService } from '../../src/modules/auth/auth.service';
 import { createDataStoreMock } from '../support/datastore.mock';
 
-const createConfigMock = (overrides: Record<string, unknown> = {}) => (
-  {
+const createConfigMock = (overrides: Record<string, unknown> = {}) =>
+  ({
     get: jest.fn((key: string) => overrides[key]),
-  }
-) as any;
+  }) as any;
 
 const createService = () => {
   const store = createDataStoreMock();

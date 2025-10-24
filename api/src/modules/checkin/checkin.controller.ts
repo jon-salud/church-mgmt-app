@@ -1,4 +1,14 @@
-import { Controller, Post, Body, Patch, Param, Delete, Get, UseGuards, Query } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Get,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { CheckinService } from './checkin.service';
 import { CreateChildDto } from './dto/create-child.dto';
 import { AuthGuard } from '../auth/auth.guard';
@@ -25,7 +35,11 @@ export class CheckinController {
   }
 
   @Patch('children/:id')
-  updateChild(@Param('id') id: string, @Body() updateChildDto: UpdateChildDto, @CurrentUser() user: { id: string }) {
+  updateChild(
+    @Param('id') id: string,
+    @Body() updateChildDto: UpdateChildDto,
+    @CurrentUser() user: { id: string }
+  ) {
     return this.checkinService.updateChild(id, updateChildDto, user.id);
   }
 
@@ -35,17 +49,26 @@ export class CheckinController {
   }
 
   @Post('initiate')
-  initiateCheckin(@Body() initiateCheckinDto: InitiateCheckinDto, @CurrentUser() user: { id: string }) {
+  initiateCheckin(
+    @Body() initiateCheckinDto: InitiateCheckinDto,
+    @CurrentUser() user: { id: string }
+  ) {
     return this.checkinService.initiateCheckin(initiateCheckinDto, user.id);
   }
 
   @Post('confirm')
-  confirmCheckin(@Body() confirmCheckinDto: ConfirmCheckinDto, @CurrentUser() user: { id: string }) {
+  confirmCheckin(
+    @Body() confirmCheckinDto: ConfirmCheckinDto,
+    @CurrentUser() user: { id: string }
+  ) {
     return this.checkinService.confirmCheckin(confirmCheckinDto, user.id);
   }
 
   @Post('checkout/initiate')
-  initiateCheckout(@Body() initiateCheckoutDto: InitiateCheckoutDto, @CurrentUser() user: { id: string }) {
+  initiateCheckout(
+    @Body() initiateCheckoutDto: InitiateCheckoutDto,
+    @CurrentUser() user: { id: string }
+  ) {
     return this.checkinService.initiateCheckout(initiateCheckoutDto, user.id);
   }
 

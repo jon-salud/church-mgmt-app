@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { format } from "date-fns";
-import { Modal } from "../../../components/ui/modal";
-import { updateMemberAction, deleteMemberAction, updatePrayerRequestAction } from "../../actions";
+import { useState } from 'react';
+import Link from 'next/link';
+import { format } from 'date-fns';
+import { Modal } from '../../../components/ui/modal';
+import { updateMemberAction, deleteMemberAction, updatePrayerRequestAction } from '../../actions';
 
 import { PrayerRequest } from '@/lib/types';
 
@@ -16,12 +16,22 @@ type MemberDetailClientProps = {
   prayerRequests: PrayerRequest[];
 };
 
-export function MemberDetailClient({ member, roles, settings, children, prayerRequests }: MemberDetailClientProps) {
+export function MemberDetailClient({
+  member,
+  roles,
+  settings,
+  children,
+  prayerRequests,
+}: MemberDetailClientProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
   const [isManageChildrenOpen, setIsManageChildrenOpen] = useState(false);
   const enabledFields = settings?.optionalFields ?? {};
-  const primaryRoleId = member.roles?.[0]?.roleId ?? roles.find(role => role.slug === "member")?.id ?? roles[0]?.id ?? "";
+  const primaryRoleId =
+    member.roles?.[0]?.roleId ??
+    roles.find(role => role.slug === 'member')?.id ??
+    roles[0]?.id ??
+    '';
 
   return (
     <section className="space-y-6">
@@ -51,15 +61,16 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           </button>
         </div>
       </div>
-
       <div className="grid gap-4 md:grid-cols-2">
         <InfoCard title="Contact">
-          <p className="text-sm text-foreground">Phone: {member.profile?.phone || "—"}</p>
-          <p className="text-xs text-muted-foreground">Joined: {format(new Date(member.createdAt), "d MMM yyyy")}</p>
+          <p className="text-sm text-foreground">Phone: {member.profile?.phone || '—'}</p>
+          <p className="text-xs text-muted-foreground">
+            Joined: {format(new Date(member.createdAt), 'd MMM yyyy')}
+          </p>
         </InfoCard>
         <InfoCard title="Household">
           <div className="flex items-center justify-between">
-            <p className="text-sm text-foreground">Address: {member.household?.address || "—"}</p>
+            <p className="text-sm text-foreground">Address: {member.household?.address || '—'}</p>
             <button
               id="manage-children-button"
               type="button"
@@ -84,8 +95,8 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
                   <span className="font-medium text-foreground">{role.role}</span>
                   {role.permissions?.length ? (
                     <span className="block text-xs text-muted-foreground">
-                      Permissions: {role.permissions.slice(0, 4).join(", ")}
-                      {role.permissions.length > 4 ? "…" : ""}
+                      Permissions: {role.permissions.slice(0, 4).join(', ')}
+                      {role.permissions.length > 4 ? '…' : ''}
                     </span>
                   ) : null}
                 </li>
@@ -96,7 +107,6 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           )}
         </InfoCard>
       </div>
-
       <InfoCard title="My Prayer Requests">
         {prayerRequests?.length ? (
           <ul className="grid gap-2 md:grid-cols-2">
@@ -121,17 +131,41 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           <p className="text-sm text-muted-foreground">No prayer requests submitted.</p>
         )}
       </InfoCard>
-
       <InfoCard title="Details">
         <div className="grid grid-cols-2 gap-4">
-          {enabledFields.membershipStatus && <p className="text-sm text-foreground">Membership Status: {member.profile?.membershipStatus || "—"}</p>}
-          {enabledFields.joinMethod && <p className="text-sm text-foreground">Join Method: {member.profile?.joinMethod || "—"}</p>}
-          {enabledFields.joinDate && <p className="text-sm text-foreground">Join Date: {member.profile?.joinDate ? format(new Date(member.profile.joinDate), "d MMM yyyy") : "—"}</p>}
-          {enabledFields.baptismDate && <p className="text-sm text-foreground">Baptism Date: {member.profile?.baptismDate ? format(new Date(member.profile.baptismDate), "d MMM yyyy") : "—"}</p>}
-          {enabledFields.maritalStatus && <p className="text-sm text-foreground">Marital Status: {member.profile?.maritalStatus || "—"}</p>}
+          {enabledFields.membershipStatus && (
+            <p className="text-sm text-foreground">
+              Membership Status: {member.profile?.membershipStatus || '—'}
+            </p>
+          )}
+          {enabledFields.joinMethod && (
+            <p className="text-sm text-foreground">
+              Join Method: {member.profile?.joinMethod || '—'}
+            </p>
+          )}
+          {enabledFields.joinDate && (
+            <p className="text-sm text-foreground">
+              Join Date:{' '}
+              {member.profile?.joinDate
+                ? format(new Date(member.profile.joinDate), 'd MMM yyyy')
+                : '—'}
+            </p>
+          )}
+          {enabledFields.baptismDate && (
+            <p className="text-sm text-foreground">
+              Baptism Date:{' '}
+              {member.profile?.baptismDate
+                ? format(new Date(member.profile.baptismDate), 'd MMM yyyy')
+                : '—'}
+            </p>
+          )}
+          {enabledFields.maritalStatus && (
+            <p className="text-sm text-foreground">
+              Marital Status: {member.profile?.maritalStatus || '—'}
+            </p>
+          )}
         </div>
       </InfoCard>
-
       <InfoCard title="Groups">
         {member.groups?.length ? (
           <ul className="grid gap-2 md:grid-cols-2">
@@ -153,7 +187,6 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           <p className="text-sm text-muted-foreground">No groups assigned.</p>
         )}
       </InfoCard>
-
       <div className="grid gap-4 md:grid-cols-2">
         <InfoCard title="Attendance (recent)">
           {member.attendance?.length ? (
@@ -174,7 +207,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
             <ul className="space-y-2 text-sm">
               {member.contributions.slice(0, 5).map((entry: any) => (
                 <li key={entry.contributionId} className="flex justify-between">
-                  <span>{format(new Date(entry.date), "d MMM")}</span>
+                  <span>{format(new Date(entry.date), 'd MMM')}</span>
                   <span>${entry.amount.toFixed(2)}</span>
                 </li>
               ))}
@@ -184,13 +217,14 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           )}
         </InfoCard>
       </div>
-
       <Modal
         open={isEditOpen}
         onClose={() => setIsEditOpen(false)}
         title="Edit Member Profile"
         footer={
-          <p className="text-xs text-muted-foreground">Saving applies immediately and revalidates any dependent listings.</p>
+          <p className="text-xs text-muted-foreground">
+            Saving applies immediately and revalidates any dependent listings.
+          </p>
         }
       >
         <form
@@ -204,7 +238,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
             <input
               id="edit-first-name-input"
               name="firstName"
-              defaultValue={member.profile?.firstName ?? ""}
+              defaultValue={member.profile?.firstName ?? ''}
               className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             />
           </label>
@@ -213,7 +247,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
             <input
               id="edit-last-name-input"
               name="lastName"
-              defaultValue={member.profile?.lastName ?? ""}
+              defaultValue={member.profile?.lastName ?? ''}
               className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             />
           </label>
@@ -232,7 +266,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
             <input
               id="edit-phone-input"
               name="phone"
-              defaultValue={member.profile?.phone ?? ""}
+              defaultValue={member.profile?.phone ?? ''}
               className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             />
           </label>
@@ -241,63 +275,81 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
             <input
               id="edit-address-input"
               name="address"
-              defaultValue={member.household?.address ?? ""}
+              defaultValue={member.household?.address ?? ''}
               className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             />
           </label>
-          {enabledFields.membershipStatus && <label className="grid gap-1 text-xs uppercase text-muted-foreground">
-            Membership Status
-            <input
-              id="edit-membership-status-input"
-              name="membershipStatus"
-              defaultValue={member.profile?.membershipStatus ?? ""}
-              className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
-            />
-          </label>}
-          {enabledFields.joinDate && <label className="grid gap-1 text-xs uppercase text-muted-foreground">
-            Join Date
-            <input
-              id="edit-join-date-input"
-              name="joinDate"
-              type="date"
-              defaultValue={member.profile?.joinDate ? format(new Date(member.profile.joinDate), "yyyy-MM-dd") : ""}
-              className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
-            />
-          </label>}
-          {enabledFields.baptismDate && <label className="grid gap-1 text-xs uppercase text-muted-foreground">
-            Baptism Date
-            <input
-              id="edit-baptism-date-input"
-              name="baptismDate"
-              type="date"
-              defaultValue={member.profile?.baptismDate ? format(new Date(member.profile.baptismDate), "yyyy-MM-dd") : ""}
-              className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
-            />
-          </label>}
-          {enabledFields.joinMethod && <label className="grid gap-1 text-xs uppercase text-muted-foreground">
-            Join Method
-            <input
-              id="edit-join-method-input"
-              name="joinMethod"
-              defaultValue={member.profile?.joinMethod ?? ""}
-              className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
-            />
-          </label>}
-          {enabledFields.maritalStatus && <label className="grid gap-1 text-xs uppercase text-muted-foreground">
-            Marital Status
-            <input
-              id="edit-marital-status-input"
-              name="maritalStatus"
-              defaultValue={member.profile?.maritalStatus ?? ""}
-              className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
-            />
-          </label>}
+          {enabledFields.membershipStatus && (
+            <label className="grid gap-1 text-xs uppercase text-muted-foreground">
+              Membership Status
+              <input
+                id="edit-membership-status-input"
+                name="membershipStatus"
+                defaultValue={member.profile?.membershipStatus ?? ''}
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+              />
+            </label>
+          )}
+          {enabledFields.joinDate && (
+            <label className="grid gap-1 text-xs uppercase text-muted-foreground">
+              Join Date
+              <input
+                id="edit-join-date-input"
+                name="joinDate"
+                type="date"
+                defaultValue={
+                  member.profile?.joinDate
+                    ? format(new Date(member.profile.joinDate), 'yyyy-MM-dd')
+                    : ''
+                }
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+              />
+            </label>
+          )}
+          {enabledFields.baptismDate && (
+            <label className="grid gap-1 text-xs uppercase text-muted-foreground">
+              Baptism Date
+              <input
+                id="edit-baptism-date-input"
+                name="baptismDate"
+                type="date"
+                defaultValue={
+                  member.profile?.baptismDate
+                    ? format(new Date(member.profile.baptismDate), 'yyyy-MM-dd')
+                    : ''
+                }
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+              />
+            </label>
+          )}
+          {enabledFields.joinMethod && (
+            <label className="grid gap-1 text-xs uppercase text-muted-foreground">
+              Join Method
+              <input
+                id="edit-join-method-input"
+                name="joinMethod"
+                defaultValue={member.profile?.joinMethod ?? ''}
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+              />
+            </label>
+          )}
+          {enabledFields.maritalStatus && (
+            <label className="grid gap-1 text-xs uppercase text-muted-foreground">
+              Marital Status
+              <input
+                id="edit-marital-status-input"
+                name="maritalStatus"
+                defaultValue={member.profile?.maritalStatus ?? ''}
+                className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+              />
+            </label>
+          )}
           <label className="grid gap-1 text-xs uppercase text-muted-foreground">
             Status
             <select
               id="edit-status-select"
               name="status"
-              defaultValue={member.status ?? "active"}
+              defaultValue={member.status ?? 'active'}
               className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             >
               <option value="active">Active</option>
@@ -326,7 +378,7 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
               id="edit-notes-textarea"
               name="notes"
               rows={3}
-              defaultValue={member.profile?.notes ?? ""}
+              defaultValue={member.profile?.notes ?? ''}
               className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
             />
           </label>
@@ -349,22 +401,22 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           </div>
         </form>
       </Modal>
-
       <Modal
         open={isRemoveOpen}
         onClose={() => setIsRemoveOpen(false)}
         title="Remove Member"
         footer={
           <p className="text-xs text-muted-foreground">
-            This removes the member from the demo datastore along with related group memberships and attendance.
+            This removes the member from the demo datastore along with related group memberships and
+            attendance.
           </p>
         }
       >
         <p className="text-sm text-foreground">
-          Are you sure you want to remove{" "}
+          Are you sure you want to remove{' '}
           <span className="font-medium">
             {member.profile?.firstName} {member.profile?.lastName}
-          </span>{" "}
+          </span>{' '}
           from the directory?
         </p>
         <form
@@ -390,16 +442,13 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
           </button>
         </form>
       </Modal>
-
-
-// ...
-
+      // ...
       <Modal
         open={isManageChildrenOpen}
         onClose={() => setIsManageChildrenOpen(false)}
         title="Manage Children"
       >
-        <form action={""} className="space-y-4">
+        <form action={''} className="space-y-4">
           <input type="hidden" name="householdId" value={member.household?.id} />
           <input type="hidden" name="userId" value={member.id} />
           <div>
@@ -454,11 +503,16 @@ export function MemberDetailClient({ member, roles, settings, children, prayerRe
             <h3 className="text-lg font-medium text-foreground">Existing Children</h3>
             <ul className="mt-2 space-y-2">
               {children.length > 0 ? (
-                children.map((child) => (
-                  <li key={child.id} className="flex items-center justify-between rounded-md border border-border bg-card p-3 text-sm">
+                children.map(child => (
+                  <li
+                    key={child.id}
+                    className="flex items-center justify-between rounded-md border border-border bg-card p-3 text-sm"
+                  >
                     <div>
                       <p className="font-medium text-card-foreground">{child.fullName}</p>
-                      <p className="text-xs text-muted-foreground">Born: {format(new Date(child.dateOfBirth), "d MMM yyyy")}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Born: {format(new Date(child.dateOfBirth), 'd MMM yyyy')}
+                      </p>
                     </div>
                     <div className="flex gap-2">
                       <button

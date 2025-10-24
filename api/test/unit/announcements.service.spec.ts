@@ -40,7 +40,7 @@ describe('AnnouncementsService', () => {
         body: 'Join our new teaching series',
         audience: 'all',
       },
-      'user-admin',
+      'user-admin'
     );
 
     expect(store.createAnnouncement).toHaveBeenCalledTimes(1);
@@ -71,7 +71,7 @@ describe('AnnouncementsService', () => {
         audience: 'custom',
         groupIds: ['group-1'],
       },
-      'user-admin',
+      'user-admin'
     );
 
     expect(store.updateAnnouncement).toHaveBeenCalledWith('announcement-1', {

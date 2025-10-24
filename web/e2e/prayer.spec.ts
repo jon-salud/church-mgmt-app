@@ -44,7 +44,9 @@ test.describe.skip('Prayer Wall Pages', () => {
     await prayerPage.approveButton.first().click();
 
     await prayerPage.goto();
-    const prayerRequest = prayerPage.prayerRequestList.filter({ hasText: 'Test Prayer Request to Approve' });
+    const prayerRequest = prayerPage.prayerRequestList.filter({
+      hasText: 'Test Prayer Request to Approve',
+    });
     await expect(prayerRequest).toBeVisible();
   });
 
@@ -60,7 +62,9 @@ test.describe.skip('Prayer Wall Pages', () => {
     await prayerPage.denyButton.first().click();
 
     await prayerPage.goto();
-    const prayerRequest = prayerPage.prayerRequestList.filter({ hasText: 'Test Prayer Request to Deny' });
+    const prayerRequest = prayerPage.prayerRequestList.filter({
+      hasText: 'Test Prayer Request to Deny',
+    });
     await expect(prayerRequest).not.toBeVisible();
   });
 });

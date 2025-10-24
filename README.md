@@ -17,7 +17,8 @@ This monorepo packages a complete walkthrough of the PRD using mock data only. Y
 - `pnpm` (recommended via `corepack enable`)
 - macOS/Linux/WSL (windows works via WSL2)
 
-> The Prisma schema remains in the repo for future Postgres wiring, but the MVP runs entirely from the mock store. You do **not** need a database to demo the product.
+> The Prisma schema remains in the repo for future Postgres wiring, but the MVP runs entirely from
+> the mock store. You do **not** need a database to demo the product.
 
 ---
 
@@ -43,7 +44,8 @@ API runtime toggles:
 
 - `LOG_LEVEL` controls pino structured log verbosity (`debug`, `info`, `warn`, `error`).
 - `SENTRY_DSN` and optional `SENTRY_TRACES_SAMPLE_RATE` enable error reporting to Sentry.
-- `AUDIT_LOG_FILE` overrides the persisted audit trail location (`storage/audit-log.json` by default).
+- `AUDIT_LOG_FILE` overrides the persisted audit trail location (`storage/audit-log.json` by
+  default).
 - `AUDIT_LOG_PERSIST=false` disables audit log writes (automatically disabled during Jest runs).
 
 ---
@@ -60,15 +62,20 @@ pnpm dev:api:mock
 pnpm -C web dev
 ```
 
-Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/docs](http://localhost:3001/docs). The web app lives at [http://localhost:3000](http://localhost:3000).
+Both servers hot-reload. The API serves Swagger docs at
+[http://localhost:3001/docs](http://localhost:3001/docs). The web app lives at
+[http://localhost:3000](http://localhost:3000).
 
 ---
 
 ## API Docs
 
-- Swagger now enumerates every controller (auth, users, households, groups, events, announcements, giving, dashboard, audit).
-- DTOs include type metadata for request/response bodies; try the “Try it out” button on any route at `http://localhost:3001/docs`.
-- Generic schemas are used for nested mock payloads so the docs stay useful even as the backing store swaps between mock and future Prisma modes.
+- Swagger now enumerates every controller (auth, users, households, groups, events, announcements,
+  giving, dashboard, audit).
+- DTOs include type metadata for request/response bodies; try the “Try it out” button on any route
+  at `http://localhost:3001/docs`.
+- Generic schemas are used for nested mock payloads so the docs stay useful even as the backing
+  store swaps between mock and future Prisma modes.
 
 ---
 
@@ -76,8 +83,10 @@ Both servers hot-reload. The API serves Swagger docs at [http://localhost:3001/d
 
 The API chooses its backing store via `DATA_MODE`:
 
-- `mock` _(default)_ – uses the in-memory `MockDatabaseService`. This is what CI and the Playwright smoke suite run against.
-- Additional modes (e.g. `prisma`) will be wired up as the persistent layer lands. Choosing an unsupported value currently throws a helpful error so you know to keep the flag on `mock`.
+- `mock` _(default)_ – uses the in-memory `MockDatabaseService`. This is what CI and the Playwright
+  smoke suite run against.
+- Additional modes (e.g. `prisma`) will be wired up as the persistent layer lands. Choosing an
+  unsupported value currently throws a helpful error so you know to keep the flag on `mock`.
 
 Examples:
 
@@ -95,21 +104,28 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 
 ## Authentication
 
-- **Production flows:** `/auth/google` and `/auth/facebook` perform real OAuth handshakes (Passport strategies) and issue signed JWT access tokens. Configure the providers with:
+- **Production flows:** `/auth/google` and `/auth/facebook` perform real OAuth handshakes (Passport
+  strategies) and issue signed JWT access tokens. Configure the providers with:
   - `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`
   - `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`, `FACEBOOK_CALLBACK_URL`
   - `JWT_SECRET`, `JWT_EXPIRES_IN` _(optional, defaults to 1h)_
   - `WEB_APP_URL` _(used to send users back to the Next.js app on success)_
-- **Demo shortcut:** POST `/auth/login` with `{ email, provider, role }` still works for the seeded accounts and returns both the historical mock token and a JWT. The login screen also exposes a “demo mode” button that sets the `demo-admin` session without leaving the app.
-- If no Bearer token is provided and demo mode is enabled, the API falls back to `demo-admin` so unauthenticated users can still explore the UI.
-- The Next.js callback route stores the JWT in an httpOnly `session_token` cookie; a companion `session_provider` cookie (non-HTTP-only) lets the UI surface which path the user took.
+- **Demo shortcut:** POST `/auth/login` with `{ email, provider, role }` still works for the seeded
+  accounts and returns both the historical mock token and a JWT. The login screen also exposes a
+  “demo mode” button that sets the `demo-admin` session without leaving the app.
+- If no Bearer token is provided and demo mode is enabled, the API falls back to `demo-admin` so
+  unauthenticated users can still explore the UI.
+- The Next.js callback route stores the JWT in an httpOnly `session_token` cookie; a companion
+  `session_provider` cookie (non-HTTP-only) lets the UI surface which path the user took.
 
 ---
 
 ## Feature Walkthrough
 
-- **Dashboard** – snapshot cards (members, groups, events, giving), next events, unread announcements, and recent contributions.
-- **Member Directory** – search by name/email, view profiles with groups, attendance history, giving records.
+- **Dashboard** – snapshot cards (members, groups, events, giving), next events, unread
+  announcements, and recent contributions.
+- **Member Directory** – search by name/email, view profiles with groups, attendance history, giving
+  records.
 - **Groups** – roster, meeting schedule, taxonomy, linked upcoming events.
 - **Events & Attendance** – event list with inline attendance form (writes back to the mock store).
 - **Announcements** – feed with read tracking and basic audience metadata.
@@ -117,9 +133,11 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 - **Audit Log** – admin-only view of recent activity with filters for entity, actor, and date range.
 - **Auth** – mock Google/Facebook flows with role assignment.
 - **Households** – household listing and detail views.
-- **PWA** – manifest + service worker pre-cache key routes for offline dashboard snapshots (install via browser menu).
+- **PWA** – manifest + service worker pre-cache key routes for offline dashboard snapshots (install
+  via browser menu).
 - **Theming** – switch between light and dark modes.
-- **Requests** – a unified form for members to submit various types of requests (Prayer, Benevolence, Improvements/Suggestions).
+- **Requests** – a unified form for members to submit various types of requests (Prayer,
+  Benevolence, Improvements/Suggestions).
 
 ---
 
@@ -160,15 +178,19 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 ## Mock Data Source
 
 - Canonical seed data lives in `api/src/mock/mock-data.ts`.
-- By default (`DATA_MODE=mock`), runtime operations go through the in-memory data store so the app “feels real” without a database.
+- By default (`DATA_MODE=mock`), runtime operations go through the in-memory data store so the app
+  “feels real” without a database.
 
 ---
 
 ## Styling & UI
 
-- **Theming**: The application supports both **light and dark themes**. A theme switcher is located in the header.
-- **Component Library**: UI components are built with Tailwind CSS and follow the conventions of `shadcn/ui`. Core components can be found in `web/components/ui`.
-- **Sidebar Navigation**: The main navigation sidebar now includes icons for each item to improve usability. The active page is highlighted.
+- **Theming**: The application supports both **light and dark themes**. A theme switcher is located
+  in the header.
+- **Component Library**: UI components are built with Tailwind CSS and follow the conventions of
+  `shadcn/ui`. Core components can be found in `web/components/ui`.
+- **Sidebar Navigation**: The main navigation sidebar now includes icons for each item to improve
+  usability. The active page is highlighted.
 - **UI Automation IDs**: All interactive elements have a unique `id` attribute for testability.
 
 ---
@@ -176,10 +198,14 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 ## Observability
 
 - Structured JSON logging via `pino`; adjust verbosity with `LOG_LEVEL`.
-  - Local tail: `pnpm dev:api:mock | pino-pretty` (or any JSON log viewer) to watch request lifecycle and bootstrap events.
-  - Each entry includes `service`, `environment`, and contextual payloads so you can ship logs straight to ELK/Loki.
-- Global HTTP error filter returns consistent payloads and forwards 5xx responses to Sentry when `SENTRY_DSN` is set.
-  - Configure `SENTRY_DSN` (+ optional `SENTRY_TRACES_SAMPLE_RATE`) in `api/.env`, restart the API, and verify by hitting a failing route—the error shows up in Sentry with method/path metadata.
+  - Local tail: `pnpm dev:api:mock | pino-pretty` (or any JSON log viewer) to watch request
+    lifecycle and bootstrap events.
+  - Each entry includes `service`, `environment`, and contextual payloads so you can ship logs
+    straight to ELK/Loki.
+- Global HTTP error filter returns consistent payloads and forwards 5xx responses to Sentry when
+  `SENTRY_DSN` is set.
+  - Configure `SENTRY_DSN` (+ optional `SENTRY_TRACES_SAMPLE_RATE`) in `api/.env`, restart the API,
+    and verify by hitting a failing route—the error shows up in Sentry with method/path metadata.
 - Prometheus-friendly metrics live at `/api/v1/metrics` (request counts and latency histogram).
   - Curl locally: `curl http://localhost:3001/api/v1/metrics`.
   - Prometheus scrape example:
@@ -192,13 +218,16 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
         metrics_path: /api/v1/metrics
     ```
 
-  - Grafana tips: plot `rate(church_app_http_requests_total[5m])` for throughput, and `histogram_quantile(0.95, sum(rate(church_app_http_request_duration_seconds_bucket[5m])) by (le,route))` for latency.
+  - Grafana tips: plot `rate(church_app_http_requests_total[5m])` for throughput, and
+    `histogram_quantile(0.95, sum(rate(church_app_http_request_duration_seconds_bucket[5m])) by (le,route))`
+    for latency.
 
 ---
 
 ## PWA Notes
 
-- Manifest (`web/public/manifest.json`) and service worker (`web/public/service-worker.js`) are included.
+- Manifest (`web/public/manifest.json`) and service worker (`web/public/service-worker.js`) are
+  included.
 - The service worker caches core read screens for offline demos.
 - Install the app via your browser menu to experience the PWA shell.
 
@@ -210,7 +239,8 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 - Primary and secondary navigation landmarks expose descriptive `aria-label`s.
 - Listings tables now ship with captions and scoped column headers for screen readers.
 - Search inputs include associated labels (visually hidden) to satisfy WCAG form requirements.
-- Playwright E2E suite includes automated checks for skip link focus, labelled navigation, and table captions (`pnpm -C web test:e2e`).
+- Playwright E2E suite includes automated checks for skip link focus, labelled navigation, and table
+  captions (`pnpm -C web test:e2e`).
 
 ---
 
@@ -223,4 +253,5 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 | API shows ESM module errors        | Ensure `api/tsconfig.json` still targets `"module": "commonjs"` and rerun `pnpm -C api dev`. |
 | Playwright needs browsers          | `pnpm -C web exec playwright install` installs the chromium snapshot.                        |
 
-Enjoy the demo, and feel free to swap the mock layer for Prisma + Postgres when you’re ready for production data.
+Enjoy the demo, and feel free to swap the mock layer for Prisma + Postgres when you’re ready for
+production data.

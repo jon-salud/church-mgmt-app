@@ -1,6 +1,25 @@
-import { Body, Controller, Delete, ForbiddenException, Get, Param, Patch, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  ForbiddenException,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { FastifyReply } from 'fastify';
-import { ApiBearerAuth, ApiCreatedResponse, ApiOkResponse, ApiOperation, ApiProduces, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiProduces,
+  ApiTags,
+} from '@nestjs/swagger';
 import { EventsService } from './events.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
@@ -33,11 +52,7 @@ export class EventsController {
   @Post(':id/attendance')
   @ApiOperation({ summary: 'Record attendance for an event' })
   @ApiOkResponse(objectResponse)
-  recordAttendance(
-    @Param('id') id: string,
-    @Body() dto: UpdateAttendanceDto,
-    @Req() req: any,
-  ) {
+  recordAttendance(@Param('id') id: string, @Body() dto: UpdateAttendanceDto, @Req() req: any) {
     return this.eventsService.recordAttendance(id, dto.userId, dto.status, dto.note, req.user?.id);
   }
 
@@ -46,7 +61,7 @@ export class EventsController {
   @ApiCreatedResponse(objectResponse)
   create(@Body() dto: CreateEventDto, @Req() req: any) {
     this.ensureAdmin(req);
-  	return this.eventsService.create(dto, req.user.id);
+    return this.eventsService.create(dto, req.user.id);
   }
 
   @Patch(':id')
@@ -72,7 +87,11 @@ export class EventsController {
     description: 'CSV payload',
     schema: { type: 'string', example: 'eventId,userId,status\n' },
   })
-  async exportAttendance(@Param('id') id: string, @Req() req: any, @Res({ passthrough: true }) res: FastifyReply) {
+  async exportAttendance(
+    @Param('id') id: string,
+    @Req() req: any,
+    @Res({ passthrough: true }) res: FastifyReply
+  ) {
     this.ensureAdmin(req);
     const { content, filename } = await this.eventsService.exportAttendanceCsv(id);
     res.header('Content-Type', 'text/csv; charset=utf-8');

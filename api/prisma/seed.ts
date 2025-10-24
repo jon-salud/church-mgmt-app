@@ -84,12 +84,12 @@ async function main() {
             where: { churchId_userId: { churchId, userId: user.id } },
             update: { role: role as any },
             create: { churchId, userId: user.id, role: role as any },
-          }),
-        ),
+          })
+        )
       );
 
       return user;
-    }),
+    })
   );
 
   const userMap = new Map(users.map(user => [user.primaryEmail, user]));
@@ -125,21 +125,39 @@ async function main() {
   });
 
   await prisma.groupMember.upsert({
-    where: { groupId_userId: { groupId: worshipGroup.id, userId: userMap.get('leader@example.com')!.id } },
+    where: {
+      groupId_userId: { groupId: worshipGroup.id, userId: userMap.get('leader@example.com')!.id },
+    },
     update: { role: 'Leader' },
-    create: { groupId: worshipGroup.id, userId: userMap.get('leader@example.com')!.id, role: 'Leader' },
+    create: {
+      groupId: worshipGroup.id,
+      userId: userMap.get('leader@example.com')!.id,
+      role: 'Leader',
+    },
   });
 
   await prisma.groupMember.upsert({
-    where: { groupId_userId: { groupId: worshipGroup.id, userId: userMap.get('member1@example.com')!.id } },
+    where: {
+      groupId_userId: { groupId: worshipGroup.id, userId: userMap.get('member1@example.com')!.id },
+    },
     update: { role: 'Member' },
-    create: { groupId: worshipGroup.id, userId: userMap.get('member1@example.com')!.id, role: 'Member' },
+    create: {
+      groupId: worshipGroup.id,
+      userId: userMap.get('member1@example.com')!.id,
+      role: 'Member',
+    },
   });
 
   await prisma.groupMember.upsert({
-    where: { groupId_userId: { groupId: kidsGroup.id, userId: userMap.get('member3@example.com')!.id } },
+    where: {
+      groupId_userId: { groupId: kidsGroup.id, userId: userMap.get('member3@example.com')!.id },
+    },
     update: { role: 'Leader' },
-    create: { groupId: kidsGroup.id, userId: userMap.get('member3@example.com')!.id, role: 'Leader' },
+    create: {
+      groupId: kidsGroup.id,
+      userId: userMap.get('member3@example.com')!.id,
+      role: 'Leader',
+    },
   });
 
   const sundayService = await prisma.event.upsert({
@@ -159,15 +177,27 @@ async function main() {
   });
 
   await prisma.attendance.upsert({
-    where: { eventId_userId: { eventId: sundayService.id, userId: userMap.get('leader@example.com')!.id } },
+    where: {
+      eventId_userId: { eventId: sundayService.id, userId: userMap.get('leader@example.com')!.id },
+    },
     update: { status: 'checkedIn' },
-    create: { eventId: sundayService.id, userId: userMap.get('leader@example.com')!.id, status: 'checkedIn' },
+    create: {
+      eventId: sundayService.id,
+      userId: userMap.get('leader@example.com')!.id,
+      status: 'checkedIn',
+    },
   });
 
   await prisma.attendance.upsert({
-    where: { eventId_userId: { eventId: sundayService.id, userId: userMap.get('member1@example.com')!.id } },
+    where: {
+      eventId_userId: { eventId: sundayService.id, userId: userMap.get('member1@example.com')!.id },
+    },
     update: { status: 'checkedIn' },
-    create: { eventId: sundayService.id, userId: userMap.get('member1@example.com')!.id, status: 'checkedIn' },
+    create: {
+      eventId: sundayService.id,
+      userId: userMap.get('member1@example.com')!.id,
+      status: 'checkedIn',
+    },
   });
 
   await prisma.event.upsert({

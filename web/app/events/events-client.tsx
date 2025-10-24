@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useEffect, useMemo, useState } from "react";
-import { format } from "date-fns";
-import { Modal } from "../../components/ui/modal";
+import { useEffect, useMemo, useState } from 'react';
+import { format } from 'date-fns';
+import { Modal } from '../../components/ui/modal';
 import {
   createEventAction,
   deleteEventAction,
   recordAttendanceAction,
   updateEventAction,
-} from "../actions";
-import { loadOfflineSnapshot, persistOfflineSnapshot } from "../../lib/offline-cache";
-import { useOfflineStatus } from "../../lib/use-offline-status";
+} from '../actions';
+import { loadOfflineSnapshot, persistOfflineSnapshot } from '../../lib/offline-cache';
+import { useOfflineStatus } from '../../lib/use-offline-status';
 
 type EventsClientProps = {
   events: Array<any>;
@@ -45,7 +45,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
   }, [events, members, groups]);
 
   useEffect(() => {
-    persistOfflineSnapshot("events", {
+    persistOfflineSnapshot('events', {
       events: eventState,
       members: memberState,
       groups: groupState,
@@ -59,12 +59,14 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
     if (eventState.length > 0 || memberState.length > 0 || groupState.length > 0) {
       return;
     }
-    loadOfflineSnapshot<'events'>("events").then(snapshot => {
+    loadOfflineSnapshot<'events'>('events').then(snapshot => {
       if (!snapshot) {
         return;
       }
       const offlineEvents = Array.isArray(snapshot.events) ? (snapshot.events as Array<any>) : [];
-      const offlineMembers = Array.isArray(snapshot.members) ? (snapshot.members as Array<any>) : [];
+      const offlineMembers = Array.isArray(snapshot.members)
+        ? (snapshot.members as Array<any>)
+        : [];
       const offlineGroups = Array.isArray(snapshot.groups) ? (snapshot.groups as Array<any>) : [];
       if (offlineEvents.length > 0) {
         setEventState(offlineEvents);
@@ -80,10 +82,8 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
 
   const sortedEvents = useMemo(
     () =>
-      [...eventState].sort(
-        (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime(),
-      ),
-    [eventState],
+      [...eventState].sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()),
+    [eventState]
   );
 
   return (
@@ -96,7 +96,8 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
           </p>
           {isOffline ? (
             <p className="text-xs text-amber-300">
-              Offline mode: displaying the last synced events, groups, and members available on this device.
+              Offline mode: displaying the last synced events, groups, and members available on this
+              device.
             </p>
           ) : null}
         </div>
@@ -112,15 +113,15 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
 
       <div className="space-y-6">
         {sortedEvents.map(event => {
-          const startDisplay = format(new Date(event.startAt), "EEE d MMM, h:mma");
-          const endDisplay = format(new Date(event.endAt), "h:mma");
+          const startDisplay = format(new Date(event.startAt), 'EEE d MMM, h:mma');
+          const endDisplay = format(new Date(event.endAt), 'h:mma');
           return (
             <article key={event.id} className="rounded-xl border border-border bg-card/60 p-5">
               <header className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
                 <div>
                   <h2 className="text-xl font-semibold text-foreground">{event.title}</h2>
                   <p className="text-xs text-muted-foreground">
-                    {startDisplay} – {endDisplay} · {event.location || "TBA"}
+                    {startDisplay} – {endDisplay} · {event.location || 'TBA'}
                   </p>
                 </div>
                 <div className="flex items-center gap-3">
@@ -147,7 +148,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                         visibility: event.visibility,
                         groupId: event.groupId ?? null,
                         tags: event.tags ?? [],
-                        description: event.description ?? "",
+                        description: event.description ?? '',
                       })
                     }
                     className="rounded-md border border-border px-3 py-1 text-xs text-foreground transition hover:bg-muted"
@@ -167,7 +168,8 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                         className="flex justify-between rounded-md border border-border bg-card/60 px-3 py-2"
                       >
                         <span>
-                          {memberState.find(m => m.id === record.userId)?.profile?.firstName || record.userId}
+                          {memberState.find(m => m.id === record.userId)?.profile?.firstName ||
+                            record.userId}
                         </span>
                         <span className="text-muted-foreground">{record.status}</span>
                       </li>
@@ -232,7 +234,11 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
         open={isCreateOpen}
         onClose={() => setIsCreateOpen(false)}
         title="Schedule event"
-        footer={<p className="text-xs text-muted-foreground">Visibility controls who sees the event invitations.</p>}
+        footer={
+          <p className="text-xs text-muted-foreground">
+            Visibility controls who sees the event invitations.
+          </p>
+        }
       >
         <form
           action={createEventAction}
@@ -344,8 +350,12 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
       <Modal
         open={Boolean(eventModal)}
         onClose={() => setEventModal(null)}
-        title={eventModal ? `Edit ${eventModal.title}` : "Edit event"}
-        footer={<p className="text-xs text-muted-foreground">Deleting an event also clears its attendance records.</p>}
+        title={eventModal ? `Edit ${eventModal.title}` : 'Edit event'}
+        footer={
+          <p className="text-xs text-muted-foreground">
+            Deleting an event also clears its attendance records.
+          </p>
+        }
       >
         {eventModal ? (
           <div className="space-y-6">
@@ -369,7 +379,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                 <input
                   id="edit-location-input"
                   name="location"
-                  defaultValue={eventModal.location ?? ""}
+                  defaultValue={eventModal.location ?? ''}
                   className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 />
               </label>
@@ -410,7 +420,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                 <select
                   id="edit-group-select"
                   name="groupId"
-                  defaultValue={eventModal.groupId ?? ""}
+                  defaultValue={eventModal.groupId ?? ''}
                   className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 >
                   <option value="">No linked group</option>
@@ -426,7 +436,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                 <input
                   id="edit-tags-input"
                   name="tags"
-                  defaultValue={(eventModal.tags ?? []).join(", ")}
+                  defaultValue={(eventModal.tags ?? []).join(', ')}
                   className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 />
               </label>
@@ -436,7 +446,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                   id="edit-description-textarea"
                   name="description"
                   rows={3}
-                  defaultValue={eventModal.description ?? ""}
+                  defaultValue={eventModal.description ?? ''}
                   className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 />
               </label>
@@ -467,9 +477,12 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
               <input type="hidden" name="eventId" value={eventModal.id} />
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
-                  <h3 className="text-sm font-semibold text-destructive-foreground">Delete event</h3>
+                  <h3 className="text-sm font-semibold text-destructive-foreground">
+                    Delete event
+                  </h3>
                   <p className="text-xs text-destructive-foreground/70">
-                    Attendees will no longer see this on the calendar. Attendance logs are discarded.
+                    Attendees will no longer see this on the calendar. Attendance logs are
+                    discarded.
                   </p>
                 </div>
                 <button
