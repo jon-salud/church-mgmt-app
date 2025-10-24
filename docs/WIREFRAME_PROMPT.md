@@ -30,8 +30,9 @@ the better the result will be.
 > **- Page Title:** [Name of the Page or View]
 >
 > **- Layout:** [Describe the overall layout. e.g., "A two-column layout with a fixed sidebar on the
+>
 > > left and a main content area on the right." or "A responsive grid layout with three main >
-> sections."]
+> > sections."]
 >
 > **- Target Device:** [e.g., "Desktop view, 1440px width"]
 >
@@ -49,8 +50,8 @@ the better the result will be.
 > **2. Sidebar / Navigation (if applicable):**
 >
 > - **Elements:** [List the navigation items with icons. e.g., "Vertical list of navigation links: >
->   Dashboard (Home icon), Members (Users icon), Groups (Group icon), Events (Calendar icon), >
->   Settings (Gear icon)."]
+>   > Dashboard (Home icon), Members (Users icon), Groups (Group icon), Events (Calendar icon), > >
+>   > Settings (Gear icon)."]
 > - **State:** [Describe the active state. e.g., "The 'Members' link should be visually highlighted
 >   > as the active page."]
 >
@@ -70,13 +71,14 @@ the better the result will be.
 >     > placeholder data."]
 > - **Section 3: [Name of another section, e.g., "Pagination"]**
 >   - **Layout:** [Describe the layout.]
->   - **Elements:** [List the components. e.g., "Pagination controls centered below the table, >
->     showing 'Previous', page numbers (e.g., '1', '2', '3'), and 'Next' buttons."]
+>   - **Elements:** [List the components. e.g., "Pagination controls centered below the table, > > >
+>     > showing 'Previous', page numbers (e.g., '1', '2', '3'), and 'Next' buttons."]
 >
 > ---
 >
-> **- Interactivity:** [Optional: Add any final notes on overall interactivity or user flow, e.g.,
-> "Clicking the 'Edit' button should open a modal for editing a member's details."]
+> **- Interactivity:** [Optional: Add any final notes on overall interactivity or user flow, e.g., >
+>
+> > "Clicking the 'Edit' button should open a modal for editing a member's details."]
 
 ---
 
