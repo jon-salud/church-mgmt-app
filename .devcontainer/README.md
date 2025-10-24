@@ -31,8 +31,21 @@ For demo purposes, use the `demo-admin` token which is automatically set for dev
 2. Wait for both servers to be ready (check the terminal output)
 3. **Find the Ports panel**: Look at the bottom of VS Code for a "PORTS" tab (next to TERMINAL,
    OUTPUT, etc.)
-4. Click the globe icons (🌐) next to ports 3000 and 3001 to open them in new browser tabs
-5. Start exploring the app!## Development
+
+### Option A: Automatic Port Forwarding (Recommended)
+
+- Click the globe icons (🌐) next to ports 3000 and 3001 to open them in new browser tabs
+
+### Option B: Manual Port Forwarding (if globe icons don't appear)
+
+- Click the **"Forward a Port"** button in the PORTS panel
+- Enter `3000` and press Enter (for the web app)
+- Enter `3001` and press Enter (for the API)
+- Click the globe icons that appear next to the forwarded ports
+
+4. Start exploring the app!
+
+## Development
 
 If you need to restart the servers:
 
