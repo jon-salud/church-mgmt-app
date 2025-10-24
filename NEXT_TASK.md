@@ -42,13 +42,12 @@ Once the documentation is fully aligned, proceed with the next development task.
 
 ---
 
-## Phase 3: Perpetuate This Prompt
+## Phase 3: Finalize Session
 
 ### 3.1. Goal
-As the final action of your work session, you must ensure this protocol is in place for the next session.
+As the final action of your work session, you must update the project's task list and ensure this protocol remains current.
 
 ### 3.2. Procedure
 1.  **Update `TASKS.md`:** Ensure the task list is updated to reflect the work you have just completed.
-2.  **Overwrite this File:** You must overwrite the `NEXT_TASK.md` file with the exact content of this prompt. This is a critical step to ensure the next agent begins with the same initialization protocol.
-
+2.  **Verify Protocol Integrity:** Review the list of "source of truth" documents defined in `Phase 1.2, Step 1` of this protocol. If, and only if, the contents of that specific list were modified during this session, you must overwrite this `NEXT_TASK.md` file with its new, updated content. Otherwise, this file should not be changed.
 ---
