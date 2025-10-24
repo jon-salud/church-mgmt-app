@@ -65,6 +65,8 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 
 ### 📝 Backlog / Upcoming
 
+- **API Documentation:**
+    - **Backend:** Fully document all remaining API endpoints (Groups, Events, Check-in, etc.) in `API_DOCUMENTATION.md`.
 - **Onboarding Wizard:**
   - **Backend:** Create API endpoints to manage branding settings (logo, color), custom roles, and team member invitations.
   - **Frontend:** Build the multi-step, skippable UI flow for the onboarding wizard.
