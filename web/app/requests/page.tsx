@@ -71,11 +71,17 @@ export default function RequestsPage() {
                 <SelectValue placeholder="Select a request type..." />
               </SelectTrigger>
               <SelectContent>
-                {requestTypes.map(rt => (
-                  <SelectItem key={rt.id} value={rt.id}>
-                    {rt.name}
+                {requestTypes.length > 0 ? (
+                  requestTypes.map(rt => (
+                    <SelectItem key={rt.id} value={rt.id}>
+                      {rt.name}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <SelectItem value="no-types" disabled>
+                    No active request types
                   </SelectItem>
-                ))}
+                )}
               </SelectContent>
             </Select>
           </div>
