@@ -8,7 +8,7 @@ echo ""
 
 # Start API server in background
 echo "Starting API server..."
-cd api && DATA_MODE=mock pnpm start &
+cd api && DATA_MODE=mock pnpm dev &
 API_PID=$!
 
 # Wait a moment for API to start

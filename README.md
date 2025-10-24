@@ -33,7 +33,7 @@ For the fastest demo experience, use GitHub Codespaces:
 
    ### Option C: Manual startup
 
-   - Open a terminal and run: `cd api && DATA_MODE=mock pnpm start`
+   - Open a terminal and run: `cd api && DATA_MODE=mock pnpm dev`
    - Open another terminal and run: `cd web && pnpm dev`
 
 4. **Find the Ports panel**: Look at the bottom of VS Code for a "PORTS" tab (next to TERMINAL,

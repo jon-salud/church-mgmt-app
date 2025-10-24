@@ -34,7 +34,7 @@
     {
       "label": "Start API Server",
       "type": "shell",
-      "command": "cd api && pnpm start",
+      "command": "cd api && DATA_MODE=mock pnpm dev",
       "group": "build",
       "presentation": {
         "echo": true,
