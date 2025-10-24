@@ -65,4 +65,21 @@ Use this file as the single source of truth for what has shipped in the demo MVP
 
 ### 📝 Backlog / Upcoming
 
+- **Onboarding Wizard:**
+  - **Backend:** Create API endpoints to manage branding settings (logo, color), custom roles, and team member invitations.
+  - **Frontend:** Build the multi-step, skippable UI flow for the onboarding wizard.
+- **Document Library:**
+  - **Backend:** Develop API endpoints for file uploads (interfacing with a cloud storage service), metadata management, and generating secure, permission-based download URLs.
+  - **Frontend:** Create the UI for uploading, viewing, editing, and managing documents and their role-based permissions.
+- **Admin Experience Enhancements:**
+  - **Backend:** Implement API endpoints for CRUD operations on custom member profile fields.
+  - **Backend:** Add an endpoint to allow assigning a request to a specific staff member.
+  - **Frontend:** Build the settings UI for administrators to create and manage custom profile fields.
+  - **Frontend:** Add UI controls to the requests dashboard to allow assignment of requests.
+- **Small Group Resource Sharing:**
+  - **Backend:** Create CRUD endpoints for managing `group_resources` (title and URL).
+  - **Frontend:** Implement the UI for adding and viewing resource links on the group details page.
+- **System Administration Application (Epic):**
+  - **Backend:** Define and implement the initial set of system-level API endpoints required for platform monitoring (e.g., client usage metrics).
+  - **Frontend:** Scaffold the new `admin` Next.js application and implement the basic layout and an initial observability dashboard.
 - Debug and stabilize the E2E test environment to prevent port conflicts.
