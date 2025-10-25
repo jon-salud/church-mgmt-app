@@ -96,6 +96,10 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - Verified that getDefaultRoleId method exists and functions correctly in mock-database.service.ts
   - Confirmed all API tests pass (67/67) validating the method's functionality
   - Resolved reviewer concern about non-existent method - the method is properly implemented and working
+- **Onboarding Redirect Bug Fix:**
+  - Fixed infinite redirect loop in web/app/layout.tsx where onboarding redirect would trigger on the /onboarding route itself
+  - Added pathname checking logic using Next.js headers to prevent redirecting when already on the onboarding page
+  - Used referer header fallback to determine current path and avoid the loop
 - [x] **Implement Global Authentication Protection:**
   - [x] **Backend:** Update middleware to protect all application routes (not just /pastoral-care) and redirect unauthenticated users to login page.
   - [x] **Frontend:** Modify app layout to properly handle authentication state and redirect when no valid session exists.
