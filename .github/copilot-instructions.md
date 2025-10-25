@@ -1,7 +1,40 @@
-# AI Agent Instructions for Church Management App
+# AI Agent Workflow for Church Management App
 
-This guide helps AI agents understand key patterns and workflows in this church management
-application.
+This guide outlines the standardized workflow for AI agents when handling user prompts in this church management application.
+
+## Workflow Steps
+
+When a user submits a prompt to the AI Agent:
+
+1. **Create a branch from latest main**
+   - Start by creating a new branch from the latest main branch to isolate changes.
+
+2. **AI Agent expands the prompt by coming up with a plan**
+   - Based on the source of truth documents (all files in `docs/source-of-truth/`), develop a detailed plan to attack the task.
+
+3. **AI Agent challenges the plan**
+   - Review the plan for robustness, identifying potential challenges and outlining workarounds and solutions.
+
+4. **AI Agent shows the plan and waits for approval**
+   - Present the plan to the user, highlighting any risks, and wait for explicit approval before proceeding.
+
+5. **AI Agent executes the plan**
+   - Upon approval, implement the plan, including adding additional unit, UI, and API tests when applicable.
+
+6. **AI Agent tests the implementation**
+   - Ensure no build failures and run all tests to validate the changes.
+
+7. **Update TASKS.md**
+   - Mark completed tasks as done in #file:TASKS.md. Add any technical debts to the backlog.
+
+8. **Update source of truth documents**
+   - Propose updates to the source of truth documents, but ask the user to confirm each update to keep them informed.
+
+9. **Review and align USER_MANUAL.md**
+   - Consider reprioritizing the backlog logically based on project knowledge. Review and align #file:USER_MANUAL.md with the latest progress.
+
+10. **Commit and push changes**
+    - Commit and push the changes with a proper title and description.
 
 ## Product Overview
 

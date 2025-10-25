@@ -29,7 +29,7 @@ The primary business goals for this platform are:
   data privacy.
 
 > For a detailed breakdown of the business case, project scope, and user personas, please refer to
-> the **[Business Requirements Document (BRD)](./BUSINESS_REQUIREMENTS.md)**.
+> the **[Business Requirements Document (BRD)](./source-of-truth/BUSINESS_REQUIREMENTS.md)**.
 
 ## 3. Core Features (Initial Release)
 
@@ -49,7 +49,7 @@ The initial release of the platform will focus on the following core functionali
 - **Theming:** The user interface supports both light and dark themes.
 
 > For a complete list of features and their detailed functional requirements, please see the
-> **[Functional Requirements Document (FRD)](./FUNCTIONAL_REQUIREMENTS.md)**. To understand how
+> **[Functional Requirements Document (FRD)](./source-of-truth/FUNCTIONAL_REQUIREMENTS.md)**. To understand how
 > these features are used from an end-user perspective, refer to the
 > **[User Manual](./USER_MANUAL.md)**.
 
@@ -63,7 +63,7 @@ unified NestJS backend API. The database is PostgreSQL, with a multi-client data
 by a `churchId` on all relevant tables.
 
 > For a detailed explanation of the system's structure and a component diagram, please consult the
-> **[Architecture Document](./ARCHITECTURE.md)**.
+> **[Architecture Document](./source-of-truth/ARCHITECTURE.md)**.
 
 ### 4.2. Technology Stack
 
@@ -79,14 +79,14 @@ The database schema is designed to support the core features with a relational s
 ensures data integrity and supports multi-tenancy.
 
 > For a comprehensive view of all tables, columns, and relationships, please refer to the
-> **[Database Schema Document](./DATABASE_SCHEMA.md)**.
+> **[Database Schema Document](./source-of-truth/DATABASE_SCHEMA.md)**.
 
 ### 4.4. API
 
 The system exposes a versioned RESTful API for all frontend communication.
 
 > For detailed information on all available endpoints, request/response schemas, and usage, see the
-> **[API Documentation](./API_DOCUMENTATION.md)**.
+> **[API Documentation](./source-of-truth/API_DOCUMENTATION.md)**.
 
 ### 4.5. Coding Standards
 

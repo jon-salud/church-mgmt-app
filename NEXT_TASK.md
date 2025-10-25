@@ -19,12 +19,12 @@ synchronized and consistent.
 
 1. **Internalize the Sources of Truth:** Thoroughly read and understand the following primary
    documents, as they are the foundation for all other documentation:
-   - `docs/BUSINESS_REQUIREMENTS.md`
-   - `docs/FUNCTIONAL_REQUIREMENTS.md`
-   - `docs/ARCHITECTURE.md`
-   - `docs/DATABASE_SCHEMA.md`
+   - `docs/source-of-truth/BUSINESS_REQUIREMENTS.md`
+   - `docs/source-of-truth/FUNCTIONAL_REQUIREMENTS.md`
+   - `docs/source-of-truth/ARCHITECTURE.md`
+   - `docs/source-of-truth/DATABASE_SCHEMA.md`
    - `docs/CODING_STANDARDS.md`
-   - `docs/API_DOCUMENTATION.md`
+   - `docs/source-of-truth/API_DOCUMENTATION.md`
 
 2. **Audit and Reconcile All Other Documents:** Systematically review the following documents
    against the sources of truth and the current state of the codebase. Identify and rectify any

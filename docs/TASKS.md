@@ -81,6 +81,11 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - Added linting and formatting checks to GitHub Actions CI pipeline
   - Fixed all existing linting and formatting issues across the codebase
   - Ensured all code passes ESLint and Prettier validation before merge
+- **Source of Truth Documentation Organization:**
+  - Created dedicated `docs/source-of-truth/` subfolder to group all authoritative documentation
+  - Moved 6 core source documents (API_DOCUMENTATION.md, API_REFERENCE.md, ARCHITECTURE.md, BUSINESS_REQUIREMENTS.md, DATABASE_SCHEMA.md, FUNCTIONAL_REQUIREMENTS.md) to the new folder
+  - Updated workflow instructions to reference "all files in docs/source-of-truth/" for simplicity
+  - Updated all cross-references in README.md, NEXT_TASK.md, docs/PRD.md, and docs/TASKS.md to point to new locations
 
 ### 🔄 In Progress
 
@@ -88,7 +93,7 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 - **API Documentation:**
   - **Backend:** Fully document all remaining API endpoints (Groups, Events, Check-in, etc.) in
-    `API_DOCUMENTATION.md`.
+    `docs/source-of-truth/API_DOCUMENTATION.md`.
 - **Onboarding Wizard:**
   - **Backend:** Create API endpoints to manage branding settings (logo, color), custom roles, and
     team member invitations.
