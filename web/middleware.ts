@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export async function middleware(request: NextRequest) {
+export default async function middleware(request: NextRequest) {
   const sessionToken = request.cookies.get('session_token')?.value;
   const demoToken = request.cookies.get('demo_token')?.value;
 
@@ -10,23 +10,28 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // If has regular session token but not on Auth0 protected routes, allow access
-  if (sessionToken && !request.nextUrl.pathname.startsWith('/pastoral-care')) {
+  // If has regular session token, allow access
+  if (sessionToken) {
     return NextResponse.next();
   }
 
-  // For pastoral-care routes, check authentication
-  if (request.nextUrl.pathname.startsWith('/pastoral-care')) {
-    if (!sessionToken && !demoToken) {
-      const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('returnTo', request.nextUrl.pathname);
-      return NextResponse.redirect(loginUrl);
-    }
-  }
-
-  return NextResponse.next();
+  // No valid authentication, redirect to login
+  const loginUrl = new URL('/login', request.url);
+  loginUrl.searchParams.set('returnTo', request.nextUrl.pathname);
+  return NextResponse.redirect(loginUrl);
 }
 
 export const config = {
-  matcher: ['/pastoral-care/:path*'],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - login (login page)
+     * - oauth (OAuth callback pages)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico|login|oauth).*)',
+  ],
 };

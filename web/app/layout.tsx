@@ -1,4 +1,6 @@
 import { Metadata, Viewport } from 'next';
+import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import './globals.css';
 import { api } from '../lib/api.server';
 import { ServiceWorkerRegister } from '../components/service-worker-register';
@@ -39,7 +41,6 @@ const adminNavItems: NavItem[] = [
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const me = await api.currentUser();
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen">
