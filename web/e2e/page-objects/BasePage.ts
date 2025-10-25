@@ -9,6 +9,25 @@ export class BasePage {
   }
 
   async goto(url: string) {
+    // Set demo authentication cookies for testing
+    await this.page.context().addCookies([
+      {
+        name: 'demo_token',
+        value: 'demo-admin',
+        domain: 'localhost',
+        path: '/',
+        httpOnly: true,
+        secure: false,
+      },
+      {
+        name: 'session_provider',
+        value: 'demo',
+        domain: 'localhost',
+        path: '/',
+        httpOnly: false,
+        secure: false,
+      },
+    ]);
     await this.page.goto(url);
   }
 

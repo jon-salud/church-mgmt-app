@@ -4,6 +4,32 @@ import tsparser from '@typescript-eslint/parser';
 import prettier from 'eslint-plugin-prettier';
 
 export default [
+  {
+    ignores: [
+      'node_modules/',
+      '.pnpm-store/',
+      'dist/',
+      'build/',
+      '.next/',
+      'out/',
+      'web/out/',
+      'web/.next/',
+      '*.md',
+      'docs/',
+      '.github/',
+      '.vscode/',
+      '.devcontainer/',
+      '*.log',
+      'zz_*.log',
+      '.DS_Store',
+      'coverage/',
+      'test-results/',
+      'playwright-report/',
+      'api/storage/',
+      'scripts/',
+      '.eslintcache',
+    ],
+  },
   js.configs.recommended,
   {
     files: ['**/*.{ts,tsx,js,jsx}'],

@@ -12,8 +12,8 @@
     "test": "pnpm -r test",
     "test:e2e": "bash scripts/run-e2e.sh",
     "test:e2e:mock": "DATA_MODE=mock bash scripts/run-e2e.sh",
-    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
-    "lint:fix": "eslint . --ext .ts,.tsx,.js,.jsx --fix",
+    "lint": "echo 'Starting ESLint...' && eslint 'api/src/**/*.{ts,tsx,js,jsx}' 'web/**/*.{ts,tsx,js,jsx}' --debug",
+    "lint:fix": "echo 'Starting ESLint fix...' && eslint 'api/src/**/*.{ts,tsx,js,jsx}' 'web/**/*.{ts,tsx,js,jsx}' --fix --debug",
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },

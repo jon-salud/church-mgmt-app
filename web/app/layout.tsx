@@ -39,7 +39,6 @@ const adminNavItems: NavItem[] = [
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const me = await api.currentUser();
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen">

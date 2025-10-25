@@ -1,4 +1,6 @@
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
 import { demoLoginAction } from '../../actions';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api/v1';
@@ -9,6 +11,17 @@ type LoginPageProps = {
 };
 
 export default function LoginPage({ searchParams }: LoginPageProps) {
+  // Check if user is already authenticated
+  const cookieStore = cookies();
+  const sessionToken = cookieStore.get('session_token')?.value;
+  const demoToken = cookieStore.get('demo_token')?.value;
+
+  if (
+    sessionToken ||
+    (demoToken && ['demo-admin', 'demo-leader', 'demo-member'].includes(demoToken))
+  ) {
+    redirect(DEFAULT_REDIRECT);
+  }
   const created = searchParams?.created === 'true';
   const error = typeof searchParams?.error === 'string' ? searchParams?.error : undefined;
   const returnTo =
