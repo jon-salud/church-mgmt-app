@@ -2,6 +2,7 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from './page-objects/LoginPage';
 import { OnboardingPage } from './page-objects/OnboardingPage';
 
+// serial run for now
 test.describe.serial('Onboarding Wizard', () => {
   test.beforeEach(async ({ page }) => {
     // Reset onboarding status before each test
