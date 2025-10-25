@@ -22,7 +22,10 @@ export class OnboardingPage extends BasePage {
 
   async getCurrentStepTitle(): Promise<string> {
     // Get the current step title from the step header (not the modal title)
-    const titleElement = this.page.locator('[data-testid="onboarding-modal"] h2').first();
+    // Use a more specific selector to avoid the screen reader only modal title
+    const titleElement = this.page
+      .locator('[data-testid="onboarding-modal"] .text-xl.font-semibold')
+      .first();
     return (await titleElement.textContent()) || '';
   }
 
@@ -56,6 +59,12 @@ export class OnboardingPage extends BasePage {
   }
 
   async fillTeamInvitesStep(email: string): Promise<void> {
+    // First add a team member invite
+    await this.page.click('button:has-text("Add Team Member")');
+
+    // Wait for the email input to appear
+    await this.page.waitForSelector('input[type="email"]');
+
     // Fill the email input for team invites
     await this.page.fill('input[type="email"]', email);
 
@@ -64,8 +73,9 @@ export class OnboardingPage extends BasePage {
   }
 
   async fillMemberImportStep(): Promise<void> {
-    // For member import step, just click complete setup
-    await this.page.click('button:has-text("Complete Setup")');
+    // For member import step, just wait for the step to load (no action needed)
+    // The test will call clickCompleteSetup() separately
+    await this.page.waitForTimeout(500); // Brief wait to ensure step is loaded
   }
 
   async clickCompleteSetup(): Promise<void> {
