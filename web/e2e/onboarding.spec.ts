@@ -2,26 +2,43 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from './page-objects/LoginPage';
 import { OnboardingPage } from './page-objects/OnboardingPage';
 
-test.describe.fixme('Onboarding Wizard', () => {
+test.describe.serial('Onboarding Wizard', () => {
   test.beforeEach(async ({ page }) => {
-    const loginPage = new LoginPage(page);
-    await loginPage.login();
-
-    // If we're redirected to onboarding, continue. If we're on dashboard, navigate to onboarding
-    const currentUrl = page.url();
-    if (!currentUrl.includes('/onboarding')) {
-      // User is already onboarded, navigate to onboarding for testing
-      await page.goto('http://localhost:3000/onboarding');
+    // Reset onboarding status before each test
+    try {
+      const response = await page.request.put(
+        'http://localhost:3001/api/v1/settings/church-onboarding',
+        {
+          data: { onboardingComplete: false },
+          headers: {
+            Cookie: 'demo_token=demo-new-admin; session_provider=demo',
+            'Content-Type': 'application/json',
+          },
+          timeout: 5000, // 5 second timeout
+        }
+      );
+      if (!response.ok()) {
+        throw new Error(
+          `Failed to reset onboarding status: ${response.status()} ${response.statusText()}`
+        );
+      }
+    } catch (error) {
+      console.log('Error resetting onboarding status:', error);
+      // Continue anyway - the test might still work
     }
+
+    const loginPage = new LoginPage(page);
+    await loginPage.login('demo-new-admin');
+
+    // The onboarding modal should appear automatically after login for new users
+    // No need to navigate to a specific page
   });
 
   test('completes full onboarding flow', async ({ page }) => {
     const onboardingPage = new OnboardingPage(page);
 
-    await test.step('Navigate to onboarding and verify wizard appears', async () => {
-      await onboardingPage.goto();
-      // Check if we're still on onboarding page
-      await page.waitForURL('**/onboarding');
+    await test.step('Verify onboarding modal appears after login', async () => {
+      // The modal should appear automatically after login
       await onboardingPage.verifyOnboardingWizardVisible();
     });
 
@@ -29,21 +46,18 @@ test.describe.fixme('Onboarding Wizard', () => {
       expect(await onboardingPage.getCurrentStepTitle()).toBe('Welcome & Branding');
       expect(await onboardingPage.getProgressValue()).toBe('25');
       await onboardingPage.fillBrandingStep('https://example.com/logo.png', '#ff0000');
-      await onboardingPage.clickNext();
     });
 
     await test.step('Complete roles step', async () => {
       expect(await onboardingPage.getCurrentStepTitle()).toBe('Define Roles');
       expect(await onboardingPage.getProgressValue()).toBe('50');
       await onboardingPage.fillRolesStep();
-      await onboardingPage.clickNext();
     });
 
     await test.step('Complete team invites step', async () => {
       expect(await onboardingPage.getCurrentStepTitle()).toBe('Invite Core Team');
       expect(await onboardingPage.getProgressValue()).toBe('75');
       await onboardingPage.fillTeamInvitesStep('team-member@example.com');
-      await onboardingPage.clickNext();
     });
 
     await test.step('Complete member import step and finish onboarding', async () => {
@@ -53,18 +67,18 @@ test.describe.fixme('Onboarding Wizard', () => {
       await onboardingPage.clickCompleteSetup();
     });
 
-    await test.step('Verify onboarding completion and redirect to dashboard', async () => {
+    await test.step('Verify onboarding completion and modal closes', async () => {
       await onboardingPage.waitForCompletion();
-      // Verify we're on the dashboard
-      await page.waitForURL('**/dashboard');
+      // Verify the modal has closed and we're back to the main application
+      const modal = page.locator('[role="dialog"]');
+      await expect(modal).not.toBeVisible();
     });
   });
 
   test('allows skipping onboarding', async ({ page }) => {
     const onboardingPage = new OnboardingPage(page);
 
-    await test.step('Navigate to onboarding', async () => {
-      await onboardingPage.goto();
+    await test.step('Verify onboarding modal appears', async () => {
       await onboardingPage.verifyOnboardingWizardVisible();
     });
 
@@ -72,17 +86,17 @@ test.describe.fixme('Onboarding Wizard', () => {
       await onboardingPage.clickSkip();
     });
 
-    await test.step('Verify redirect to dashboard', async () => {
+    await test.step('Verify modal closes', async () => {
       await onboardingPage.waitForCompletion();
-      await page.waitForURL('**/dashboard');
+      const modal = page.locator('[role="dialog"]');
+      await expect(modal).not.toBeVisible();
     });
   });
 
   test('allows navigation between steps', async ({ page }) => {
     const onboardingPage = new OnboardingPage(page);
 
-    await test.step('Navigate to onboarding', async () => {
-      await onboardingPage.goto();
+    await test.step('Verify onboarding modal appears', async () => {
       await onboardingPage.verifyOnboardingWizardVisible();
     });
 
@@ -90,8 +104,8 @@ test.describe.fixme('Onboarding Wizard', () => {
       // Start at step 1
       expect(await onboardingPage.getCurrentStepTitle()).toBe('Welcome & Branding');
 
-      // Go to step 2
-      await onboardingPage.clickNext();
+      // Complete branding step to go to step 2
+      await onboardingPage.fillBrandingStep();
       expect(await onboardingPage.getCurrentStepTitle()).toBe('Define Roles');
 
       // Go to step 3
@@ -121,8 +135,7 @@ test.describe.fixme('Onboarding Wizard', () => {
   test('shows correct progress indicators', async ({ page }) => {
     const onboardingPage = new OnboardingPage(page);
 
-    await test.step('Navigate to onboarding', async () => {
-      await onboardingPage.goto();
+    await test.step('Verify onboarding modal appears', async () => {
       await onboardingPage.verifyOnboardingWizardVisible();
     });
 
@@ -131,7 +144,8 @@ test.describe.fixme('Onboarding Wizard', () => {
     });
 
     await test.step('Check progress after each step', async () => {
-      await onboardingPage.clickNext();
+      // Complete branding step to go to roles step
+      await onboardingPage.fillBrandingStep();
       expect(await onboardingPage.getProgressValue()).toBe('50');
 
       await onboardingPage.clickNext();

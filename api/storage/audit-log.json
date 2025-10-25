@@ -89,5 +89,20 @@
       "title": "This is important "
     },
     "createdAt": "2025-10-21T18:57:05.800Z"
+  },
+  {
+    "id": "audit-invitation-invitation-32f043d6-e127-40f9-98b1-3b7704a9567a-1761390344936",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "invitation.created",
+    "entity": "invitation",
+    "entityId": "invitation-32f043d6-e127-40f9-98b1-3b7704a9567a",
+    "summary": "Ariana Matau sent a team member invitation to team-member@example.com",
+    "metadata": {
+      "email": "team-member@example.com",
+      "roleId": "member",
+      "type": "team"
+    },
+    "createdAt": "2025-10-25T11:05:44.936Z"
   }
 ]

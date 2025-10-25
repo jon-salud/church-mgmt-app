@@ -43,9 +43,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   // Check if user needs onboarding
   let onboardingRequired = false;
   let settings: Record<string, unknown> = {};
-  if (me?.user?.churchId) {
+  const churchId = me?.user?.roles?.[0]?.churchId;
+  if (churchId) {
     try {
-      settings = await api.getSettings(me.user.churchId);
+      settings = await api.getSettings(churchId);
       onboardingRequired = !settings.onboardingComplete;
     } catch (error) {
       // If settings fetch fails, continue with normal layout
@@ -64,7 +65,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             givingNavItems={givingNavItems}
             adminNavItems={adminNavItems}
             onboardingRequired={onboardingRequired}
-            churchId={me?.user?.churchId}
+            churchId={churchId}
             initialSettings={settings}
           >
             {children}

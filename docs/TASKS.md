@@ -96,13 +96,14 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - Verified that getDefaultRoleId method exists and functions correctly in mock-database.service.ts
   - Confirmed all API tests pass (67/67) validating the method's functionality
   - Resolved reviewer concern about non-existent method - the method is properly implemented and working
-- **Onboarding Redirect Bug Fix:**
-  - Fixed infinite redirect loop in web/app/layout.tsx where onboarding redirect would trigger on the /onboarding route itself
-  - Added pathname checking logic using Next.js headers to prevent redirecting when already on the onboarding page
-  - Used referer header fallback to determine current path and avoid the loop
-- **Onboarding Page Documentation:**
-  - Added explanatory comment in web/app/onboarding/page.tsx about why authentication logic is duplicated here instead of layout
-  - Documents the architectural decision to prevent redirect loops due to root layout redirect issue
+- **Modal-Based Onboarding Implementation:**
+  - Converted page-based onboarding wizard to modal that appears immediately after login for new administrators
+  - Created OnboardingModal component with consistent sizing and internal scrolling
+  - Added progress indicators, skippable steps, and "Get Started" button on welcome step
+  - Updated authentication flow to show modal instead of redirecting to separate page
+  - Ensured responsive design without infinite redirect issues
+  - Updated E2E tests to work with modal selectors instead of page navigation
+  - Fixed test isolation by using separate church ID for onboarding tests to prevent settings conflicts
 - [x] **Implement Global Authentication Protection:**
   - [x] **Backend:** Update middleware to protect all application routes (not just /pastoral-care) and redirect unauthenticated users to login page.
   - [x] **Frontend:** Modify app layout to properly handle authentication state and redirect when no valid session exists.
@@ -120,9 +121,6 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 ### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming
-
-- **Onboarding E2E Tests - Technical Debt:**
-  - **Testing:** Debug and fix Next.js server-side rendering issue preventing onboarding page from displaying React components. The page currently shows JavaScript code instead of the expected UI. Once resolved, uncomment the onboarding E2E test suite in `web/e2e/onboarding.spec.ts`.
 
 ## Phase 1: Complete Core Initial Release Features
 

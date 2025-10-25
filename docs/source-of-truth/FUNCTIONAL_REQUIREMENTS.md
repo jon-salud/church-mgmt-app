@@ -13,40 +13,49 @@ This document details the functional requirements for the Church Management Appl
 ## A.1. Onboarding Wizard
 
 This feature guides a new Church Administrator through the initial setup of their account. It is
-triggered on the first login for a new church client.
+triggered on the first login for a new church client and appears as a modal dialog overlaying the
+main dashboard.
 
-### A.1.1. Wizard Flow
+### A.1.1. Modal Presentation
 
-- **FR-ONB-001:** The wizard shall consist of a series of skippable steps.
-- **FR-ONB-002:** A "Skip for now" link shall be present on every step.
-- **FR-ONB-003:** A setup guide or checklist shall be available on the main dashboard for admins to
+- **FR-ONB-001:** The wizard shall appear as a modal dialog immediately after login for administrators where `onboardingComplete` is `false`.
+- **FR-ONB-002:** The modal shall have consistent sizing (max-width: 4xl, max-height: 90vh) with internal scrolling for content that exceeds the viewport.
+- **FR-ONB-003:** The modal shall include a progress indicator showing completion status across all steps.
+- **FR-ONB-004:** The modal shall be dismissible only by completing the wizard or explicitly skipping all steps.
+
+### A.1.2. Wizard Flow
+
+- **FR-ONB-005:** The wizard shall consist of a series of skippable steps.
+- **FR-ONB-006:** A "Skip for now" link shall be present on every step.
+- **FR-ONB-007:** A setup guide or checklist shall be available on the main dashboard for admins to
   return to incomplete steps.
 
-### A.1.2. Step 1: Welcome & Branding
+### A.1.3. Step 1: Welcome & Branding
 
-- **FR-ONB-004:** The screen shall display a welcome message.
-- **FR-ONB-005:** The admin shall be able to upload a church logo (e.g., JPG, PNG).
-- **FR-ONB-006:** The admin shall be able to select a primary brand color.
+- **FR-ONB-008:** The screen shall display a welcome message.
+- **FR-ONB-009:** The admin shall be able to upload a church logo (e.g., JPG, PNG).
+- **FR-ONB-010:** The admin shall be able to select a primary brand color.
+- **FR-ONB-011:** A "Get Started" button shall advance to the next step after saving branding settings.
 
-### A.1.3. Step 2: Define Roles
+### A.1.4. Step 2: Define Roles
 
-- **FR-ONB-007:** The system shall display the default roles (`Admin`, `Leader`, `Member`).
-- **FR-ONB-008:** The admin shall have an interface to create new, custom roles.
+- **FR-ONB-012:** The system shall display the default roles (`Admin`, `Leader`, `Member`).
+- **FR-ONB-013:** The admin shall have an interface to create new, custom roles.
 
-### A.1.4. Step 3: Invite Core Team
+### A.1.5. Step 3: Invite Core Team
 
-- **FR-ONB-009:** The system shall provide a form to add team members with fields for `Name`,
+- **FR-ONB-014:** The system shall provide a form to add team members with fields for `Name`,
   `Email`, and `Role` (using the roles from Step 2).
-- **FR-ONB-010:** Upon completion of the wizard, the system shall send an email invitation to each
+- **FR-ONB-015:** Upon completion of the wizard, the system shall send an email invitation to each
   person added in this step.
 
-### A.1.5. Step 4: Import Member Emails
+### A.1.6. Step 4: Import Member Emails
 
-- **FR-ONB-011:** The system shall provide two methods for bulk-adding members: a text box for
+- **FR-ONB-016:** The system shall provide two methods for bulk-adding members: a text box for
   pasting emails and a CSV file upload.
-- **FR-ONB-012:** Upon completion of the wizard, the system shall send an email to each imported
+- **FR-ONB-017:** Upon completion of the wizard, the system shall send an email to each imported
   email address with a unique link to a registration form.
-- **FR-ONB-013:** The registration form shall allow the new member to fill in their profile details
+- **FR-ONB-018:** The registration form shall allow the new member to fill in their profile details
   and create an account using either a password or a social login (Google/Facebook).
 
 ## A.2. Document Library

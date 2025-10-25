@@ -19,7 +19,10 @@ export default async function middleware(request: NextRequest) {
   }
 
   // If has demo token, allow access
-  if (demoToken && ['demo-admin', 'demo-leader', 'demo-member'].includes(demoToken)) {
+  if (
+    demoToken &&
+    ['demo-admin', 'demo-leader', 'demo-member', 'demo-new-admin'].includes(demoToken)
+  ) {
     return NextResponse.next();
   }
 

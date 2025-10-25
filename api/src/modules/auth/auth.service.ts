@@ -28,7 +28,7 @@ const DEFAULT_REDIRECT = '/dashboard';
 
 const DEFAULT_JWT_EXPIRY = '1h';
 
-const DEMO_TOKENS = new Set(['demo-admin', 'demo-leader', 'demo-member']);
+const DEMO_TOKENS = new Set(['demo-admin', 'demo-leader', 'demo-member', 'demo-new-admin']);
 
 const SYSTEM_ACTOR_ID = 'system';
 
