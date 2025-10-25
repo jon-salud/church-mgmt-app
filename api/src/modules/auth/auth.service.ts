@@ -30,6 +30,8 @@ const DEFAULT_JWT_EXPIRY = '1h';
 
 const DEMO_TOKENS = new Set(['demo-admin', 'demo-leader', 'demo-member']);
 
+const SYSTEM_ACTOR_ID = 'system';
+
 const isJwtTokenError = (error: unknown): boolean =>
   typeof error === 'object' &&
   error !== null &&
@@ -203,7 +205,7 @@ export class AuthService {
       primaryEmail: invitation.email,
       firstName: input.firstName,
       lastName: input.lastName,
-      actorUserId: 'system', // System actor for registration
+      actorUserId: SYSTEM_ACTOR_ID, // System actor for registration
       onboardingComplete: true, // Mark as complete since they're registering via invitation
     };
 
