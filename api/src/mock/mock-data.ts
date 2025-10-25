@@ -369,6 +369,13 @@ export const mockHouseholds: MockHousehold[] = [
     createdAt: makeDate(-10),
     updatedAt: makeDate(-1),
   },
+  {
+    id: 'hh-new-admin',
+    churchId,
+    name: 'New Admin Family',
+    createdAt: makeDate(-1),
+    updatedAt: makeDate(-1),
+  },
 ];
 
 export const mockUsers: MockUser[] = [
@@ -474,6 +481,27 @@ export const mockUsers: MockUser[] = [
       joinMethod: 'Restoration',
       joinDate: makeDate(-15),
       backgroundCheckStatus: 'Pending',
+    },
+  },
+  {
+    id: 'user-new-admin',
+    primaryEmail: 'newadmin@example.com',
+    status: 'active',
+    createdAt: makeDate(-1),
+    lastLoginAt: makeDate(-1),
+    roles: [{ churchId: 'church-onboarding', roleId: 'role-admin' }],
+    profile: {
+      firstName: 'New',
+      lastName: 'Admin',
+      phone: '+64 21 000 0004',
+      householdId: 'hh-new-admin',
+      householdRole: 'Head',
+      notes: 'New church administrator - onboarding not complete',
+      membershipStatus: 'Member',
+      joinMethod: 'New Believer',
+      joinDate: makeDate(-1),
+      maritalStatus: 'Single',
+      occupation: 'Church Administrator',
     },
   },
 ];
@@ -705,6 +733,12 @@ export const mockSessions: DemoSession[] = [
   {
     token: 'demo-member',
     userId: 'user-member-1',
+    createdAt: makeDate(-1),
+    provider: 'google',
+  },
+  {
+    token: 'demo-new-admin',
+    userId: 'user-new-admin',
     createdAt: makeDate(-1),
     provider: 'google',
   },

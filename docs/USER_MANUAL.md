@@ -18,7 +18,18 @@ To access the Church Management System, you must first authenticate using one of
 
 Once authenticated, you will be redirected to the main dashboard. If you were trying to access a specific page before logging in, you will be automatically redirected there after authentication.
 
-### 2.2. Main Dashboard
+### 2.2. First-Time Setup (New Administrators)
+
+If you are logging in as a new church administrator for the first time, you will see an onboarding wizard modal that guides you through the initial setup of your church management system. This modal includes:
+
+- **Welcome & Branding:** Set up your church logo and brand colors
+- **Define Roles:** Configure roles for your church members
+- **Invite Core Team:** Add your key team members
+- **Import Members:** Bulk import your church members
+
+You can skip any step by clicking "Skip for now" or complete the entire setup process. The wizard will only appear once - after completion, `onboardingComplete` is set to `true` and won't show again.
+
+### 2.3. Main Dashboard
 
 When you log in for the first time, you will be greeted by the main dashboard, which provides a
 quick overview of key church activities. The main navigation menu on the left side of the screen is

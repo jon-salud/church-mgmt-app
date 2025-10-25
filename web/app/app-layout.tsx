@@ -8,6 +8,7 @@ import { logoutAction } from './actions';
 import { NavItem } from '../components/sidebar-nav';
 import { Icon } from '@/components/icon';
 import { cn } from '@/lib/utils';
+import { OnboardingModal } from '@/components/onboarding-modal';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -15,6 +16,9 @@ interface AppLayoutProps {
   memberNavItems: NavItem[];
   givingNavItems: NavItem[];
   adminNavItems: NavItem[];
+  onboardingRequired?: boolean;
+  churchId?: string;
+  initialSettings?: Record<string, unknown>;
 }
 
 export function AppLayout({
@@ -23,8 +27,12 @@ export function AppLayout({
   memberNavItems,
   givingNavItems,
   adminNavItems,
+  onboardingRequired = false,
+  churchId,
+  initialSettings = {},
 }: AppLayoutProps) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isOnboardingModalOpen, setIsOnboardingModalOpen] = useState(onboardingRequired);
   const displayName = me?.user?.profile
     ? `${me.user.profile.firstName} ${me.user.profile.lastName ?? ''}`.trim()
     : me?.user?.primaryEmail || 'Demo Admin';
@@ -97,6 +105,14 @@ export function AppLayout({
       <footer className="border-t border-border bg-background/80 px-6 py-4 text-center text-xs text-muted-foreground">
         Demo data only • Install via browser menu for offline-ready dashboard snapshot.
       </footer>
+      {churchId && (
+        <OnboardingModal
+          isOpen={isOnboardingModalOpen}
+          onClose={() => setIsOnboardingModalOpen(false)}
+          churchId={churchId}
+          initialSettings={initialSettings}
+        />
+      )}
     </div>
   );
 }

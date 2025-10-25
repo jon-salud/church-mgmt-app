@@ -28,6 +28,21 @@ export class BasePage {
         secure: false,
       },
     ]);
+
+    // Ensure onboarding is complete for non-onboarding tests
+    try {
+      await this.page.request.put('http://localhost:3001/api/v1/settings/church-acc', {
+        data: { onboardingComplete: true },
+        headers: {
+          Cookie: 'demo_token=demo-admin; session_provider=demo',
+          'Content-Type': 'application/json',
+        },
+        timeout: 5000,
+      });
+    } catch {
+      // Ignore errors - onboarding status might already be set
+    }
+
     await this.page.goto(url);
   }
 

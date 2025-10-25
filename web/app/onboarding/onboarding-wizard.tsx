@@ -37,9 +37,16 @@ const STEPS = [
 interface OnboardingWizardProps {
   churchId: string;
   initialSettings: Record<string, unknown>;
+  onComplete?: () => void;
+  isModal?: boolean;
 }
 
-export function OnboardingWizard({ churchId, initialSettings }: OnboardingWizardProps) {
+export function OnboardingWizard({
+  churchId,
+  initialSettings,
+  onComplete,
+  isModal = false,
+}: OnboardingWizardProps) {
   const [currentStep, setCurrentStep] = useState(0);
   const [settings, setSettings] = useState(initialSettings);
   const [isLoading, setIsLoading] = useState(false);
@@ -70,7 +77,11 @@ export function OnboardingWizard({ churchId, initialSettings }: OnboardingWizard
     setIsLoading(true);
     try {
       await api.updateSettings(churchId, { ...settings, onboardingComplete: true });
-      router.push('/dashboard');
+      if (isModal && onComplete) {
+        onComplete();
+      } else {
+        router.push('/dashboard');
+      }
     } catch (error) {
       console.error('Failed to complete onboarding:', error);
     } finally {
@@ -85,7 +96,9 @@ export function OnboardingWizard({ churchId, initialSettings }: OnboardingWizard
   const renderCurrentStep = () => {
     switch (currentStep) {
       case 0:
-        return <BrandingStep settings={settings} onUpdate={updateSettings} />;
+        return (
+          <BrandingStep settings={settings} onUpdate={updateSettings} onGetStarted={handleNext} />
+        );
       case 1:
         return <RolesStep settings={settings} onUpdate={updateSettings} />;
       case 2:

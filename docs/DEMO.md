@@ -9,6 +9,8 @@ understand how the application works.
 2. **Demo Login**: Click "Explore demo mode" on the login page to access with admin privileges
 3. **Explore Freely**: All features work with realistic mock data
 
+> **Note:** The demo uses an existing administrator account that has already completed the onboarding process. New administrators would see an onboarding modal wizard on their first login to set up church branding, roles, and initial team members.
+
 ## 📊 Dashboard Overview
 
 The main dashboard provides a comprehensive overview of your church:
