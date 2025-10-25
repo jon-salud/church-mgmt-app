@@ -113,6 +113,9 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - [x] **Backend:** Create API endpoints to manage branding settings (logo, color), custom roles, and team member invitations.
   - [x] **Frontend:** Build the multi-step, skippable UI flow for the onboarding wizard.
   - [x] **Testing:** Create comprehensive E2E tests for the onboarding wizard user flows and API unit tests for settings management.
+- [x] **Modal-Based Onboarding Wizard:**
+  - [x] **Frontend:** Convert the existing page-based onboarding wizard to a modal that appears immediately after login for new administrators (onboardingComplete: false), featuring a "Get Started" button on the welcome step, consistent modal sizing with internal scrolling, progress indicators, skippable steps, and completion setting onboardingComplete to true.
+  - [x] **Implementation:** Created OnboardingModal component, updated OnboardingWizard with modal-specific props, modified login flow to show modal instead of redirecting, added "Get Started" button to branding step, and ensured responsive design without infinite redirects.
 
 ### 🔄 In Progress
 

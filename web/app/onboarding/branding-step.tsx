@@ -9,9 +9,10 @@ import { Card, CardContent } from '@/components/ui/card';
 interface BrandingStepProps {
   settings: Record<string, unknown>;
   onUpdate: (updates: Record<string, unknown>) => void;
+  onGetStarted?: () => void;
 }
 
-export function BrandingStep({ settings, onUpdate }: BrandingStepProps) {
+export function BrandingStep({ settings, onUpdate, onGetStarted }: BrandingStepProps) {
   const [logoUrl, setLogoUrl] = useState((settings.logoUrl as string) || '');
   const [brandColor, setBrandColor] = useState((settings.brandColor as string) || '#3b82f6');
 
@@ -73,9 +74,20 @@ export function BrandingStep({ settings, onUpdate }: BrandingStepProps) {
           </div>
 
           <div className="flex justify-center">
-            <Button onClick={handleSave} className="w-full max-w-xs">
+            <Button onClick={handleSave} className="w-full max-w-xs mr-4">
               Save Branding
             </Button>
+            {onGetStarted && (
+              <Button
+                onClick={() => {
+                  handleSave();
+                  onGetStarted();
+                }}
+                className="px-8 py-3 text-lg font-semibold"
+              >
+                Get Started
+              </Button>
+            )}
           </div>
         </div>
       </CardContent>

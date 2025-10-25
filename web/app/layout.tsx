@@ -5,8 +5,6 @@ import { ServiceWorkerRegister } from '../components/service-worker-register';
 import { ThemeProvider } from '../components/theme-provider';
 import { AppLayout } from './app-layout';
 import { NavItem } from '../components/sidebar-nav';
-import { redirect } from 'next/navigation';
-import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Church Management Console',
@@ -43,22 +41,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const me = await api.currentUser();
 
   // Check if user needs onboarding
+  let onboardingRequired = false;
+  let settings: Record<string, unknown> = {};
   if (me?.user?.churchId) {
     try {
-      const settings = await api.getSettings(me.user.churchId);
-      if (!settings.onboardingComplete) {
-        // Check current path to avoid infinite redirect loop
-        const headersList = headers();
-        const pathname =
-          headersList.get('x-pathname') ||
-          (headersList.get('referer') ? new URL(headersList.get('referer')!).pathname : '');
-
-        // Only redirect if not already on onboarding page
-        if (!pathname.includes('/onboarding')) {
-          // Redirect to onboarding
-          redirect('/onboarding');
-        }
-      }
+      settings = await api.getSettings(me.user.churchId);
+      onboardingRequired = !settings.onboardingComplete;
     } catch (error) {
       // If settings fetch fails, continue with normal layout
       console.error('Failed to fetch settings:', error);
@@ -75,6 +63,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             memberNavItems={memberNavItems}
             givingNavItems={givingNavItems}
             adminNavItems={adminNavItems}
+            onboardingRequired={onboardingRequired}
+            churchId={me?.user?.churchId}
+            initialSettings={settings}
           >
             {children}
           </AppLayout>
