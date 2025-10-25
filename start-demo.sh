@@ -16,7 +16,7 @@ sleep 3
 
 # Start web server in background
 echo "Starting web server..."
-cd ../web && pnpm dev &
+pnpm -C web dev &
 WEB_PID=$!
 
 echo ""
