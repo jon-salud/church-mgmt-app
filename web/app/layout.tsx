@@ -5,6 +5,8 @@ import { ServiceWorkerRegister } from '../components/service-worker-register';
 import { ThemeProvider } from '../components/theme-provider';
 import { AppLayout } from './app-layout';
 import { NavItem } from '../components/sidebar-nav';
+import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Church Management Console',
@@ -39,6 +41,30 @@ const adminNavItems: NavItem[] = [
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const me = await api.currentUser();
+
+  // Check if user needs onboarding
+  if (me?.user?.churchId) {
+    try {
+      const settings = await api.getSettings(me.user.churchId);
+      if (!settings.onboardingComplete) {
+        // Check current path to avoid infinite redirect loop
+        const headersList = headers();
+        const pathname =
+          headersList.get('x-pathname') ||
+          (headersList.get('referer') ? new URL(headersList.get('referer')!).pathname : '');
+
+        // Only redirect if not already on onboarding page
+        if (!pathname.includes('/onboarding')) {
+          // Redirect to onboarding
+          redirect('/onboarding');
+        }
+      }
+    } catch (error) {
+      // If settings fetch fails, continue with normal layout
+      console.error('Failed to fetch settings:', error);
+    }
+  }
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen">

@@ -72,6 +72,14 @@ export class UsersController {
     return this.usersService.delete(id, req.user.id);
   }
 
+  @Post('bulk-import')
+  @ApiOperation({ summary: 'Bulk import members by sending invitations' })
+  @ApiCreatedResponse(objectResponse)
+  bulkImport(@Body() dto: { emails: string[] }, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.usersService.bulkImport(dto.emails, req.user.id);
+  }
+
   private ensureAdmin(req: any) {
     const roles: Array<{ churchId: string; role: string }> = req.user?.roles ?? [];
     const isAdmin = roles.some(role => role.role === 'Admin');

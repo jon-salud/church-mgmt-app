@@ -30,6 +30,8 @@ const DEFAULT_JWT_EXPIRY = '1h';
 
 const DEMO_TOKENS = new Set(['demo-admin', 'demo-leader', 'demo-member']);
 
+const SYSTEM_ACTOR_ID = 'system';
+
 const isJwtTokenError = (error: unknown): boolean =>
   typeof error === 'object' &&
   error !== null &&
@@ -174,6 +176,61 @@ export class AuthService {
 
   async upsertUserFromOAuth(profile: OAuthProfile) {
     return this.db.upsertUserFromOAuth(profile);
+  }
+
+  async registerWithInvitation(input: {
+    token: string;
+    firstName: string;
+    lastName: string;
+    password?: string;
+    provider?: 'google' | 'facebook';
+  }) {
+    // Get invitation details
+    const invitation = await this.db.getInvitationByToken(input.token);
+    if (!invitation) {
+      throw new UnauthorizedException('Invalid invitation token');
+    }
+
+    if (invitation.status !== 'pending') {
+      throw new UnauthorizedException('Invitation has already been used or expired');
+    }
+
+    // Check if invitation has expired
+    if (new Date(invitation.expiresAt) < new Date()) {
+      throw new UnauthorizedException('Invitation has expired');
+    }
+
+    // Create user account
+    const userInput = {
+      primaryEmail: invitation.email,
+      firstName: input.firstName,
+      lastName: input.lastName,
+      actorUserId: SYSTEM_ACTOR_ID, // System actor for registration
+      onboardingComplete: true, // Mark as complete since they're registering via invitation
+    };
+
+    const user = await this.db.createUser(userInput);
+
+    // Accept the invitation (this will assign the appropriate role)
+    const accepted = await this.db.acceptInvitation(input.token, user.id);
+    if (!accepted) {
+      throw new UnauthorizedException('Failed to accept invitation');
+    }
+
+    // Create session
+    const { session } = await this.db.createSession(
+      invitation.email,
+      input.provider || 'demo',
+      'member'
+    );
+    const jwt = this.issueJwt(user, input.provider || 'demo');
+
+    return {
+      session,
+      user,
+      jwt,
+      provider: input.provider || 'demo',
+    };
   }
 
   async resolveAuthBearer(token?: string) {

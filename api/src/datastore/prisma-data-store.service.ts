@@ -1031,4 +1031,36 @@ export class PrismaDataStore implements DataStore {
   async reorderRequestTypes(_ids: string[], _actorUserId: string): Promise<any> {
     throw new Error('Not implemented: reorderRequestTypes');
   }
+
+  async createInvitation(
+    _churchId: string,
+    _email: string,
+    _roleId: string | undefined,
+    _actorUserId: string,
+    _type?: 'team' | 'member'
+  ): Promise<any> {
+    throw new Error('Not implemented: createInvitation');
+  }
+
+  async getInvitationByToken(_token: string): Promise<any> {
+    throw new Error('Not implemented: getInvitationByToken');
+  }
+
+  async acceptInvitation(_token: string, _userId: string): Promise<any> {
+    throw new Error('Not implemented: acceptInvitation');
+  }
+
+  async listInvitations(_churchId: string): Promise<any> {
+    throw new Error('Not implemented: listInvitations');
+  }
+
+  async bulkCreateInvitations(
+    _churchId: string,
+    _emails: string[],
+    _roleId: string | undefined,
+    _actorUserId: string,
+    _type?: 'team' | 'member'
+  ): Promise<any> {
+    throw new Error('Not implemented: bulkCreateInvitations');
+  }
 }

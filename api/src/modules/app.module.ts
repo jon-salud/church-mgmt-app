@@ -18,6 +18,7 @@ import { NotificationsModule } from './notifications/notifications.module';
 import { PastoralCareModule } from './pastoral-care/pastoral-care.module';
 import { PrayerModule } from './prayer/prayer.module';
 import { RequestsModule } from './requests/requests.module';
+import { InvitationsModule } from './invitations/invitations.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { RequestsModule } from './requests/requests.module';
     PastoralCareModule,
     PrayerModule,
     RequestsModule,
+    InvitationsModule,
   ],
 })
 export class AppModule {}
