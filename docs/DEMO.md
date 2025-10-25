@@ -6,7 +6,7 @@ understand how the application works.
 ## 🚀 Quick Start
 
 1. **Access the Demo**: Visit <http://localhost:3000> in your browser
-2. **No Login Required**: The app uses demo authentication automatically
+2. **Demo Login**: Click "Explore demo mode" on the login page to access with admin privileges
 3. **Explore Freely**: All features work with realistic mock data
 
 ## 📊 Dashboard Overview

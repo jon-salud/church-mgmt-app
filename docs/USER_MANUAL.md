@@ -9,6 +9,17 @@ streamline church operations and enhance your ministry.
 
 ## 2. Getting Started
 
+### 2.1. Logging In
+
+To access the Church Management System, you must first authenticate using one of the available login methods:
+
+- **OAuth Login:** Click "Continue with Google" or "Continue with Facebook" to sign in using your existing social media accounts. This is the recommended method for production use.
+- **Demo Mode:** For testing and exploration, click the "Explore demo mode" button to access the system with a pre-configured administrator account.
+
+Once authenticated, you will be redirected to the main dashboard. If you were trying to access a specific page before logging in, you will be automatically redirected there after authentication.
+
+### 2.2. Main Dashboard
+
 When you log in for the first time, you will be greeted by the main dashboard, which provides a
 quick overview of key church activities. The main navigation menu on the left side of the screen is
 your primary tool for accessing all the features described in this manual.

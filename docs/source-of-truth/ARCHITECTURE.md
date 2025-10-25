@@ -32,6 +32,9 @@ church clients and the system owner.
 - **Users:** Church Admins, Leaders, Members.
 - **Scope:** Contains all features related to member management, groups, events, giving, pastoral
   care, etc.
+- **Authentication:** Uses Next.js middleware to enforce route-level protection. All application
+  routes require authentication, with unauthenticated users automatically redirected to the login
+  page. Session management is handled via HTTP-only cookies for security.
 
 ### 2.2. System Administration Application (`admin`)
 
