@@ -6,6 +6,7 @@ import { ThemeProvider } from '../components/theme-provider';
 import { AppLayout } from './app-layout';
 import { NavItem } from '../components/sidebar-nav';
 import { redirect } from 'next/navigation';
+import { headers } from 'next/headers';
 
 export const metadata: Metadata = {
   title: 'Church Management Console',
@@ -46,8 +47,17 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     try {
       const settings = await api.getSettings(me.user.churchId);
       if (!settings.onboardingComplete) {
-        // Redirect to onboarding
-        redirect('/onboarding');
+        // Check current path to avoid infinite redirect loop
+        const headersList = headers();
+        const pathname =
+          headersList.get('x-pathname') ||
+          (headersList.get('referer') ? new URL(headersList.get('referer')!).pathname : '');
+
+        // Only redirect if not already on onboarding page
+        if (!pathname.includes('/onboarding')) {
+          // Redirect to onboarding
+          redirect('/onboarding');
+        }
       }
     } catch (error) {
       // If settings fetch fails, continue with normal layout

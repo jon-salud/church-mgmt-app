@@ -2491,7 +2491,8 @@ export class MockDatabaseService {
       inv =>
         inv.email.toLowerCase() === email.toLowerCase() &&
         inv.churchId === churchId &&
-        inv.type === type
+        inv.type === type &&
+        inv.status === 'pending'
     );
     if (existing) {
       throw new Error('An invitation has already been sent to this email address');
