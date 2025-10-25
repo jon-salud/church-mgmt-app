@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main
+      - make-static-pages
   workflow_dispatch:
 
 permissions:
