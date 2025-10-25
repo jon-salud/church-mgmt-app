@@ -89,4 +89,35 @@ export const clientApi = {
       body: JSON.stringify({ status }),
     });
   },
+  async createInvitation(
+    churchId: string,
+    email: string,
+    roleId?: string,
+    type?: 'team' | 'member'
+  ) {
+    return apiFetch<any>(`/invitations/${churchId}`, {
+      method: 'POST',
+      body: JSON.stringify({ email, roleId, type }),
+    });
+  },
+  async bulkCreateInvitations(
+    churchId: string,
+    emails: string[],
+    roleId?: string,
+    type?: 'team' | 'member'
+  ) {
+    return apiFetch<any>(`/invitations/${churchId}/bulk`, {
+      method: 'POST',
+      body: JSON.stringify({ emails, roleId, type }),
+    });
+  },
+  async listInvitations(churchId: string) {
+    return apiFetch<any[]>(`/invitations/${churchId}`);
+  },
+  async bulkImportMembers(emails: string[]) {
+    return apiFetch<any>('/users/bulk-import', {
+      method: 'POST',
+      body: JSON.stringify({ emails }),
+    });
+  },
 };

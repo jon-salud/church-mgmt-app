@@ -1941,6 +1941,7 @@ export class MockDatabaseService {
       churchId,
       logoUrl: undefined,
       brandColor: undefined,
+      onboardingComplete: false,
       enabledFields: [],
       requestTypes: [],
       createdAt: new Date().toISOString(),

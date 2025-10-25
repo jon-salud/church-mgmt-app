@@ -3,6 +3,7 @@ export interface MockSettings {
   churchId: string;
   logoUrl?: string;
   brandColor?: string;
+  onboardingComplete?: boolean;
   enabledFields: string[];
   requestTypes: string[];
   createdAt: string;

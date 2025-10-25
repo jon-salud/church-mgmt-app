@@ -92,16 +92,19 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - [x] **Testing:** Ensure login page appears for all protected routes and authentication flow works correctly.
 - [x] **Update E2E Tests for Global Authentication:**
   - [x] **Testing:** Update Playwright tests to handle new authentication flow - either by setting demo cookies or using proper login flow for tests that need to access protected routes.
+- [x] **Onboarding Wizard:**
+  - [x] **Backend:** Create API endpoints to manage branding settings (logo, color), custom roles, and team member invitations.
+  - [x] **Frontend:** Build the multi-step, skippable UI flow for the onboarding wizard.
+  - [x] **Testing:** Create comprehensive E2E tests for the onboarding wizard user flows and API unit tests for settings management.
 
 ### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming
 
-## Phase 1: Complete Core Initial Release Features
+- **Onboarding E2E Tests - Technical Debt:**
+  - **Testing:** Debug and fix Next.js server-side rendering issue preventing onboarding page from displaying React components. The page currently shows JavaScript code instead of the expected UI. Once resolved, uncomment the onboarding E2E test suite in `web/e2e/onboarding.spec.ts`.
 
-- **Onboarding Wizard:**
-  - **Backend:** Create API endpoints to manage branding settings (logo, color), custom roles, and team member invitations.
-  - **Frontend:** Build the multi-step, skippable UI flow for the onboarding wizard.
+## Phase 1: Complete Core Initial Release Features
 
 - **Document Library:**
   - **Backend:** Develop API endpoints for file uploads (interfacing with a cloud storage service), metadata management, and generating secure, permission-based download URLs.

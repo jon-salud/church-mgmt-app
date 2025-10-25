@@ -26,4 +26,15 @@ export class UsersService {
   delete(id: string, actorUserId: string) {
     return this.db.deleteUser(id, { actorUserId });
   }
+
+  async bulkImport(emails: string[], actorUserId: string) {
+    // Get the user's church ID
+    const user = await this.db.getUserProfile(actorUserId);
+    if (!user.churchId) {
+      throw new Error('User must be associated with a church');
+    }
+
+    // Use the invitations service to send bulk invitations
+    return this.db.bulkCreateInvitations(user.churchId, emails, undefined, actorUserId, 'member');
+  }
 }
