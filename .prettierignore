@@ -1,0 +1,5 @@
+# Ignore markdown files from Prettier formatting
+*.md
+docs/*.md
+.devcontainer/*.md
+.github/*.md
