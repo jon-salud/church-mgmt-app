@@ -2,7 +2,6 @@ import { Body, Controller, Get, Headers, Post, Req, Res, UseGuards } from '@nest
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
 import { AuthGuard } from './auth.guard';
 import { GoogleOAuthStartGuard } from './google-oauth-start.guard';
 import { GoogleOAuthCallbackGuard } from './google-oauth-callback.guard';
@@ -15,16 +14,24 @@ import { objectResponse } from '../../common/openapi/schemas';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('login')
-  @ApiOperation({ summary: 'Issue demo session token' })
+  @Post('register')
+  @ApiOperation({ summary: 'Register a new user with invitation token' })
   @ApiOkResponse(objectResponse)
-  async login(@Body() dto: LoginDto) {
-    const { session, user } = await this.authService.login(dto.email, dto.provider, dto.role);
-    const jwt = this.authService.issueJwt(user, 'demo');
+  async register(
+    @Body()
+    dto: {
+      token: string;
+      firstName: string;
+      lastName: string;
+      password?: string;
+      provider?: 'google' | 'facebook';
+    }
+  ) {
+    const { session, user, jwt, provider } = await this.authService.registerWithInvitation(dto);
     return {
       token: session.token,
       jwt,
-      provider: session.provider,
+      provider,
       user,
     };
   }

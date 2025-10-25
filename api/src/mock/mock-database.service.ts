@@ -30,6 +30,8 @@ import {
   MockHousehold,
   MockSettings,
   mockSettings,
+  MockInvitation,
+  mockInvitations,
   mockHouseholds,
   MockChild,
   MockCheckin,
@@ -318,6 +320,7 @@ export class MockDatabaseService {
     userId: string;
   }> = [];
   private settings: MockSettings[] = clone(mockSettings);
+  private invitations: MockInvitation[] = clone(mockInvitations);
   private pushSubscriptions: any[] = [];
 
   constructor(private readonly auditPersistence: AuditLogPersistence) {
@@ -1936,6 +1939,8 @@ export class MockDatabaseService {
     const settings: MockSettings = {
       id: randomUUID(),
       churchId,
+      logoUrl: undefined,
+      brandColor: undefined,
       enabledFields: [],
       requestTypes: [],
       createdAt: new Date().toISOString(),
@@ -2471,5 +2476,131 @@ export class MockDatabaseService {
     });
 
     return clone(this.requestTypes);
+  }
+
+  // Invitation methods
+  createInvitation(
+    churchId: string,
+    email: string,
+    roleId: string | undefined,
+    actorUserId: string,
+    type: 'team' | 'member' = 'team'
+  ): MockInvitation {
+    const existing = this.invitations.find(
+      inv =>
+        inv.email.toLowerCase() === email.toLowerCase() &&
+        inv.churchId === churchId &&
+        inv.type === type
+    );
+    if (existing) {
+      throw new Error('An invitation has already been sent to this email address');
+    }
+
+    const invitation: MockInvitation = {
+      id: `invitation-${randomUUID()}`,
+      churchId,
+      email: email.toLowerCase(),
+      roleId,
+      invitationToken: randomUUID(),
+      type,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    this.invitations.push(invitation);
+
+    const actorName = this.getUserName(actorUserId);
+    const inviteType = type === 'team' ? 'team member' : 'member registration';
+    this.createAuditLog({
+      actorUserId,
+      action: 'invitation.created',
+      entity: 'invitation',
+      entityId: invitation.id,
+      summary: `${actorName} sent a ${inviteType} invitation to ${email}`,
+      metadata: {
+        email,
+        roleId,
+        type,
+      },
+    });
+
+    return clone(invitation);
+  }
+
+  getInvitationByToken(token: string): MockInvitation | null {
+    return clone(this.invitations.find(inv => inv.invitationToken === token)) ?? null;
+  }
+
+  acceptInvitation(token: string, userId: string): boolean {
+    const invitation = this.invitations.find(inv => inv.invitationToken === token);
+    if (!invitation || invitation.status !== 'pending') {
+      return false;
+    }
+
+    // Check if invitation has expired
+    if (new Date(invitation.expiresAt) < new Date()) {
+      invitation.status = 'expired';
+      return false;
+    }
+
+    invitation.status = 'accepted';
+    invitation.updatedAt = new Date().toISOString();
+
+    // Add the role to the user
+    const user = this.users.find(u => u.id === userId);
+    if (user) {
+      const churchId = invitation.churchId;
+      const roleIdToAssign = invitation.roleId || this.getDefaultRoleId('member');
+      if (!user.roles.some(r => r.roleId === roleIdToAssign && r.churchId === churchId)) {
+        user.roles.push({ churchId, roleId: roleIdToAssign });
+      }
+
+      const userName = this.getUserName(userId);
+      this.createAuditLog({
+        actorUserId: userId,
+        action: 'invitation.accepted',
+        entity: 'invitation',
+        entityId: invitation.id,
+        summary: `${userName} accepted invitation to join the church`,
+        metadata: {
+          email: invitation.email,
+          roleId: invitation.roleId,
+        },
+      });
+    }
+
+    return true;
+  }
+
+  listInvitations(churchId: string): MockInvitation[] {
+    return clone(this.invitations.filter(inv => inv.churchId === churchId));
+  }
+
+  bulkCreateInvitations(
+    churchId: string,
+    emails: string[],
+    roleId: string | undefined,
+    actorUserId: string,
+    type: 'team' | 'member' = 'team'
+  ): MockInvitation[] {
+    const invitations: MockInvitation[] = [];
+    const errors: string[] = [];
+
+    for (const email of emails) {
+      try {
+        const invitation = this.createInvitation(churchId, email, roleId, actorUserId, type);
+        invitations.push(invitation);
+      } catch (error) {
+        errors.push(`${email}: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      }
+    }
+
+    if (errors.length > 0) {
+      throw new Error(`Some invitations failed to create: ${errors.join(', ')}`);
+    }
+
+    return invitations;
   }
 }

@@ -7,6 +7,8 @@ export type { MockChild } from './mock-data/child';
 export interface MockSettings {
   id: string;
   churchId: string;
+  logoUrl?: string;
+  brandColor?: string;
   enabledFields: string[];
   requestTypes: string[];
   createdAt: string;
@@ -14,6 +16,8 @@ export interface MockSettings {
 }
 
 export const mockSettings: MockSettings[] = [];
+export type { MockInvitation } from './mock-data/invitations';
+export { mockInvitations } from './mock-data/invitations';
 export type { MockPastoralCareTicket } from './mock-data/pastoral-care-ticket';
 export type { MockPastoralCareComment } from './mock-data/pastoral-care-comment';
 export type { MockPrayerRequest } from './mock-data/prayer-request';

@@ -318,4 +318,36 @@ export class MockDataStoreAdapter implements DataStore {
   async reorderRequestTypes(ids: string[], actorUserId: string) {
     return this.mock.reorderRequestTypes(ids, actorUserId);
   }
+
+  async createInvitation(
+    churchId: string,
+    email: string,
+    roleId: string | undefined,
+    actorUserId: string,
+    type?: 'team' | 'member'
+  ) {
+    return this.mock.createInvitation(churchId, email, roleId, actorUserId, type);
+  }
+
+  async getInvitationByToken(token: string) {
+    return this.mock.getInvitationByToken(token);
+  }
+
+  async acceptInvitation(token: string, userId: string) {
+    return this.mock.acceptInvitation(token, userId);
+  }
+
+  async listInvitations(churchId: string) {
+    return this.mock.listInvitations(churchId);
+  }
+
+  async bulkCreateInvitations(
+    churchId: string,
+    emails: string[],
+    roleId: string | undefined,
+    actorUserId: string,
+    type?: 'team' | 'member'
+  ) {
+    return this.mock.bulkCreateInvitations(churchId, emails, roleId, actorUserId, type);
+  }
 }
