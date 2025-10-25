@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Button from '../ui/Button';
+import { Button } from '@/components/ui/button';
 
 type BrandingSettings = {
   name?: string;
@@ -20,7 +20,7 @@ export function BrandingStep({ settings, onUpdate, onGetStarted }: BrandingStepP
     const updated = { ...local };
     // Support both sync and async onUpdate handlers:
     const result = onUpdate?.(updated);
-    if (result && typeof (result as any).then === 'function') {
+    if (result && result instanceof Promise) {
       await result;
     }
   }
@@ -29,10 +29,13 @@ export function BrandingStep({ settings, onUpdate, onGetStarted }: BrandingStepP
     <div className="space-y-6">
       {/* Branding inputs */}
       <div>
-        <label className="block text-sm font-medium text-gray-700">Church name</label>
+        <label htmlFor="church-name" className="block text-sm font-medium text-gray-700">
+          Church name
+        </label>
         <input
+          id="church-name"
           value={local.name || ''}
-          onChange={(e) => setLocal({ ...local, name: e.target.value })}
+          onChange={e => setLocal({ ...local, name: e.target.value })}
           className="mt-1 block w-full border rounded-md p-2"
         />
       </div>

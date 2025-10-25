@@ -1,16 +1,22 @@
 import React from 'react';
-import Modal from '../ui/Modal';
+import { Modal } from '@/components/ui/modal';
 
 type OnboardingModalProps = {
   isOpen: boolean;
   onClose: () => void;
   children?: React.ReactNode;
+  title?: string;
   // ...other props
 };
 
-export default function OnboardingModal({ isOpen, onClose, children }: OnboardingModalProps) {
+export default function OnboardingModal({
+  isOpen,
+  onClose,
+  children,
+  title = 'Onboarding',
+}: OnboardingModalProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal open={isOpen} onClose={onClose} title={title}>
       {/* Added stable test id for E2E tests */}
       <div
         data-testid="onboarding-modal"
