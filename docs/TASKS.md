@@ -79,6 +79,8 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - Updated all project documentation to reflect the new code quality standards
 - **Audit System Improvements:**
   - Replaced hardcoded 'system' string with SYSTEM_ACTOR_ID constant in auth service to improve code maintainability and avoid magic strings
+- **E2E Testing Documentation:**
+  - Improved comment in LoginPage.ts explaining Playwright server action limitations and providing reference to Next.js GitHub issue
 - **CI/CD Linting Integration:**
   - Added linting and formatting checks to GitHub Actions CI pipeline
   - Fixed all existing linting and formatting issues across the codebase
