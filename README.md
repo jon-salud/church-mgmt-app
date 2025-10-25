@@ -166,7 +166,10 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
   - `WEB_APP_URL` _(used to send users back to the Next.js app on success)_
 - **Demo shortcut:** POST `/auth/login` with `{ email, provider, role }` still works for the seeded
   accounts and returns both the historical mock token and a JWT. The login screen also exposes a
-  “demo mode” button that sets the `demo-admin` session without leaving the app.
+  "demo mode" button that sets the `demo-admin` session without leaving the app.
+- **Route Protection:** All application routes require authentication. Unauthenticated users are
+  automatically redirected to the login page. The middleware protects all routes except API endpoints,
+  static files, and authentication pages.
 - If no Bearer token is provided and demo mode is enabled, the API falls back to `demo-admin` so
   unauthenticated users can still explore the UI.
 - The Next.js callback route stores the JWT in an httpOnly `session_token` cookie; a companion

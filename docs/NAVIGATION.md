@@ -3,6 +3,12 @@
 This document outlines the primary navigation paths for the client-facing `web` application, based
 on the features defined in the project's requirements.
 
+## Authentication
+
+All routes in the application require user authentication. Unauthenticated users are automatically
+redirected to the login page (`/login`). The login page provides options for OAuth authentication
+(Google/Facebook) and a demo mode for testing purposes.
+
 ## Core Features
 
 ### Member & Community

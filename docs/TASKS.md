@@ -86,6 +86,10 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - Moved 6 core source documents (API_DOCUMENTATION.md, API_REFERENCE.md, ARCHITECTURE.md, BUSINESS_REQUIREMENTS.md, DATABASE_SCHEMA.md, FUNCTIONAL_REQUIREMENTS.md) to the new folder
   - Updated workflow instructions to reference "all files in docs/source-of-truth/" for simplicity
   - Updated all cross-references in README.md, NEXT_TASK.md, docs/PRD.md, and docs/TASKS.md to point to new locations
+- **Implement Global Authentication Protection:**
+  - **Backend:** Update middleware to protect all application routes (not just /pastoral-care) and redirect unauthenticated users to login page.
+  - **Frontend:** Modify app layout to properly handle authentication state and redirect when no valid session exists.
+  - **Testing:** Ensure login page appears for all protected routes and authentication flow works correctly.
 
 ### 🔄 In Progress
 
@@ -94,10 +98,13 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 - **API Documentation:**
   - **Backend:** Fully document all remaining API endpoints (Groups, Events, Check-in, etc.) in
     `docs/source-of-truth/API_DOCUMENTATION.md`.
+- **Update E2E Tests for Global Authentication:**
+  - **Testing:** Update Playwright tests to handle new authentication flow - either by setting demo cookies or using proper login flow for tests that need to access protected routes.
 - **Onboarding Wizard:**
   - **Backend:** Create API endpoints to manage branding settings (logo, color), custom roles, and
     team member invitations.
   - **Frontend:** Build the multi-step, skippable UI flow for the onboarding wizard.
+
 - **Document Library:**
   - **Backend:** Develop API endpoints for file uploads (interfacing with a cloud storage service),
     metadata management, and generating secure, permission-based download URLs.

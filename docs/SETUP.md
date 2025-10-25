@@ -53,7 +53,8 @@ The project requires environment variables for both the backend and frontend app
    ```
 
 3. Review the `.env` file: You will need to populate the Auth0 configuration variables to enable
-   authentication.
+   authentication. The application uses Next.js middleware to protect all routes - unauthenticated
+   users are automatically redirected to the login page.
 
 ## 4. Running the Application
 
