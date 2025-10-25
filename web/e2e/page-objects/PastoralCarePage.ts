@@ -12,11 +12,7 @@ export class PastoralCarePage extends BasePage {
   }
 
   async goto() {
-    await this.page.goto('http://localhost:3000/pastoral-care');
-    // const pastoralCareMenu = this.page.locator("#nav-link-pastoral-care");
-    // await pastoralCareMenu.waitFor({ state: "visible" });
-    // await pastoralCareMenu.click();
-    // await this.page.waitForURL("**/pastoral-care");
+    await super.goto('http://localhost:3000/pastoral-care');
   }
 }
 

@@ -2,16 +2,24 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export default async function middleware(request: NextRequest) {
-  const sessionToken = request.cookies.get('session_token')?.value;
-  const demoToken = request.cookies.get('demo_token')?.value;
-
-  // If using demo mode, allow access
-  if (demoToken && ['demo-admin', 'demo-leader', 'demo-member'].includes(demoToken)) {
+  // Skip middleware for auth-related routes
+  if (
+    request.nextUrl.pathname.startsWith('/login') ||
+    request.nextUrl.pathname.startsWith('/oauth')
+  ) {
     return NextResponse.next();
   }
 
+  const sessionToken = request.cookies.get('session_token')?.value;
+  const demoToken = request.cookies.get('demo_token')?.value;
+
   // If has regular session token, allow access
   if (sessionToken) {
+    return NextResponse.next();
+  }
+
+  // If has demo token, allow access
+  if (demoToken && ['demo-admin', 'demo-leader', 'demo-member'].includes(demoToken)) {
     return NextResponse.next();
   }
 
