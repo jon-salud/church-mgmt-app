@@ -100,6 +100,9 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - Fixed infinite redirect loop in web/app/layout.tsx where onboarding redirect would trigger on the /onboarding route itself
   - Added pathname checking logic using Next.js headers to prevent redirecting when already on the onboarding page
   - Used referer header fallback to determine current path and avoid the loop
+- **Onboarding Page Documentation:**
+  - Added explanatory comment in web/app/onboarding/page.tsx about why authentication logic is duplicated here instead of layout
+  - Documents the architectural decision to prevent redirect loops due to root layout redirect issue
 - [x] **Implement Global Authentication Protection:**
   - [x] **Backend:** Update middleware to protect all application routes (not just /pastoral-care) and redirect unauthenticated users to login page.
   - [x] **Frontend:** Modify app layout to properly handle authentication state and redirect when no valid session exists.

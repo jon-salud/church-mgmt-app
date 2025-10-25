@@ -2,6 +2,9 @@ import { api } from '../../lib/api.server';
 import { OnboardingWizard } from './onboarding-wizard';
 
 export default async function OnboardingPage() {
+  // NOTE: This authentication check duplicates logic that could be in the layout.
+  // However, due to a redirect issue in the root layout (see project docs),
+  // this duplication is intentional to prevent redirect loops.
   const me = await api.currentUser();
 
   if (!me?.user?.churchId) {
