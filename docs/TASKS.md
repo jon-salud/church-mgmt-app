@@ -97,31 +97,56 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ### 📝 Backlog / Upcoming
 
-- **API Documentation:**
-  - **Backend:** Fully document all remaining API endpoints (Groups, Events, Check-in, etc.) in
-    `docs/source-of-truth/API_DOCUMENTATION.md`.
+## Phase 1: Complete Core Initial Release Features
+
 - **Onboarding Wizard:**
-  - **Backend:** Create API endpoints to manage branding settings (logo, color), custom roles, and
-    team member invitations.
+  - **Backend:** Create API endpoints to manage branding settings (logo, color), custom roles, and team member invitations.
   - **Frontend:** Build the multi-step, skippable UI flow for the onboarding wizard.
 
 - **Document Library:**
-  - **Backend:** Develop API endpoints for file uploads (interfacing with a cloud storage service),
-    metadata management, and generating secure, permission-based download URLs.
-  - **Frontend:** Create the UI for uploading, viewing, editing, and managing documents and their
-    role-based permissions.
-- **Admin Experience Enhancements:**
-  - **Backend:** Implement API endpoints for CRUD operations on custom member profile fields.
-  - **Backend:** Add an endpoint to allow assigning a request to a specific staff member.
-  - **Frontend:** Build the settings UI for administrators to create and manage custom profile
-    fields.
-  - **Frontend:** Add UI controls to the requests dashboard to allow assignment of requests.
+  - **Backend:** Develop API endpoints for file uploads (interfacing with a cloud storage service), metadata management, and generating secure, permission-based download URLs.
+  - **Frontend:** Create the UI for uploading, viewing, editing, and managing documents and their role-based permissions.
+
 - **Small Group Resource Sharing:**
   - **Backend:** Create CRUD endpoints for managing `group_resources` (title and URL).
   - **Frontend:** Implement the UI for adding and viewing resource links on the group details page.
+
+## Phase 2: Admin Experience & Polish
+
+- **Admin Experience Enhancements:**
+  - **Backend:** Implement API endpoints for CRUD operations on custom member profile fields.
+  - **Backend:** Add an endpoint to allow assigning a request to a specific staff member.
+  - **Frontend:** Build the settings UI for administrators to create and manage custom profile fields.
+  - **Frontend:** Add UI controls to the requests dashboard to allow assignment of requests.
+
+- **Complete Custom Profile Fields Implementation:**
+  - **Backend:** Full CRUD operations for church-specific member profile fields with proper validation.
+  - **Frontend:** Admin interface for defining and managing custom fields (text, date, boolean types).
+
+- **Check-in Location Management:**
+  - **Backend:** CRUD endpoints for managing check-in locations.
+  - **Frontend:** Admin interface for creating and managing check-in locations used in attendance tracking.
+
+## Phase 3: Developer Experience & Infrastructure
+
+- **API Documentation:**
+  - **Backend:** Fully document all remaining API endpoints (Groups, Events, Check-in, etc.) in `docs/source-of-truth/API_DOCUMENTATION.md`.
+
+- **Debug and stabilize E2E test environment:** Fix port conflicts and improve test reliability.
+
+## Technical Debt & Compliance
+
+- **Complete CRUD Operations for All Entities:**
+  - **Backend:** Implement full Create, Read, Update, Delete operations for all database entities (users, profiles, groups, events, announcements, funds, contributions, households, children, etc.).
+  - **Soft Delete Implementation:** Replace hard deletes with soft deletes (add `deletedAt` timestamp) across all entities to maintain data integrity and audit trails.
+
+- **GDPR Compliance Implementation:**
+  - **Backend:** Implement data retention policies, right to erasure (soft delete), data portability, and consent management.
+  - **Frontend:** Add privacy settings UI, data export functionality, and consent management interfaces.
+  - **Audit:** Ensure all personal data handling complies with GDPR requirements including lawful basis for processing.
+
+## Post-MVP (Future Releases)
+
 - **System Administration Application (Epic):**
-  - **Backend:** Define and implement the initial set of system-level API endpoints required for
-    platform monitoring (e.g., client usage metrics).
-  - **Frontend:** Scaffold the new `admin` Next.js application and implement the basic layout and an
-    initial observability dashboard.
-- Debug and stabilize the E2E test environment to prevent port conflicts.
+  - **Backend:** Define and implement the initial set of system-level API endpoints required for platform monitoring (e.g., client usage metrics).
+  - **Frontend:** Scaffold the new `admin` Next.js application and implement the basic layout and an initial observability dashboard.
