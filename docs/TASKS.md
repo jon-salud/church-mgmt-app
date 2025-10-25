@@ -81,6 +81,8 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - Replaced hardcoded 'system' string with SYSTEM_ACTOR_ID constant in auth service to improve code maintainability and avoid magic strings
 - **E2E Testing Documentation:**
   - Improved comment in LoginPage.ts explaining Playwright server action limitations and providing reference to Next.js GitHub issue
+- **Invitation System Improvements:**
+  - Fixed duplicate invitation check to allow re-invitations for expired or accepted invitations by only considering pending invitations as duplicates
 - **CI/CD Linting Integration:**
   - Added linting and formatting checks to GitHub Actions CI pipeline
   - Fixed all existing linting and formatting issues across the codebase
