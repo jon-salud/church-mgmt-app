@@ -3,11 +3,6 @@
 import { format } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';
 import { Modal } from '../../components/ui/modal';
-import {
-  createAnnouncementAction,
-  markAnnouncementReadAction,
-  updateAnnouncementAction,
-} from '../actions';
 import { loadOfflineSnapshot, persistOfflineSnapshot } from '../../lib/offline-cache';
 import { useOfflineStatus } from '../../lib/use-offline-status';
 
@@ -184,14 +179,14 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
                   </div>
                 </div>
                 <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
-                  <form action={markAnnouncementReadAction.bind(null, announcement.id)}>
-                    <button
-                      id={`mark-read-button-${announcement.id}`}
-                      className="rounded-md border border-border px-3 py-1 text-xs uppercase tracking-wide text-foreground transition hover:bg-muted"
-                    >
-                      Mark read
-                    </button>
-                  </form>
+                  <button
+                    id={`mark-read-button-${announcement.id}`}
+                    className="rounded-md border border-border px-3 py-1 text-xs uppercase tracking-wide text-muted-foreground cursor-not-allowed"
+                    disabled
+                    title="Mark as read not available in static version"
+                  >
+                    Mark Read
+                  </button>
                   <button
                     id={`edit-button-${announcement.id}`}
                     type="button"
@@ -232,11 +227,7 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
           </p>
         }
       >
-        <form
-          action={createAnnouncementAction}
-          className="grid gap-3 text-sm"
-          onSubmit={() => setIsCreateOpen(false)}
-        >
+        <form className="grid gap-3 text-sm" onSubmit={() => setIsCreateOpen(false)}>
           <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
             Title
             <input
@@ -331,7 +322,6 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
       >
         {editModal ? (
           <form
-            action={updateAnnouncementAction}
             className="grid gap-3 text-sm"
             onSubmit={() => {
               setEditModal(null);

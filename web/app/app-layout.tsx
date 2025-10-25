@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { SidebarNav } from '@/components/sidebar-nav';
-import { logoutAction } from './actions';
+// import { logoutAction } from './actions'; // Disabled for static export
 import { NavItem } from '../components/sidebar-nav';
 import { Icon } from '@/components/icon';
 import { cn } from '@/lib/utils';
@@ -61,14 +61,14 @@ export function AppLayout({
           <div className="flex items-center gap-3 text-sm text-foreground">
             <ThemeSwitcher />
             <span className="hidden md:inline">{displayName}</span>
-            <form action={logoutAction}>
-              <button
-                id="logout-button"
-                className="rounded-md border border-border px-3 py-1 text-xs uppercase tracking-wide text-foreground transition hover:bg-muted"
-              >
-                Logout
-              </button>
-            </form>
+            <button
+              id="logout-button"
+              className="rounded-md border border-border px-3 py-1 text-xs uppercase tracking-wide text-muted-foreground cursor-not-allowed"
+              disabled
+              title="Logout not available in static version"
+            >
+              Logout
+            </button>
           </div>
         </div>
       </header>

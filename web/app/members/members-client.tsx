@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Modal } from '../../components/ui/modal';
-import { createMemberAction } from '../actions';
 
 type RoleOption = {
   id: string;
@@ -120,11 +119,7 @@ export function MembersClient({ members, roles, initialQuery }: MembersClientPro
           </p>
         }
       >
-        <form
-          action={createMemberAction}
-          className="grid gap-4 md:grid-cols-2"
-          onSubmit={() => setIsAddOpen(false)}
-        >
+        <form className="grid gap-4 md:grid-cols-2" onSubmit={() => setIsAddOpen(false)}>
           <label className="grid gap-1 text-xs uppercase text-muted-foreground">
             First Name
             <input

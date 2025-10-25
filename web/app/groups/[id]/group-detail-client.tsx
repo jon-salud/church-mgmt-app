@@ -4,11 +4,6 @@ import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { Modal } from '../../../components/ui/modal';
-import {
-  addGroupMemberAction,
-  removeGroupMemberAction,
-  updateGroupMemberAction,
-} from '../../actions';
 
 type GroupDetailClientProps = {
   group: any;
@@ -136,11 +131,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
         }
       >
         {availableMembers.length ? (
-          <form
-            action={addGroupMemberAction}
-            className="grid gap-4"
-            onSubmit={() => setIsAddOpen(false)}
-          >
+          <form className="grid gap-4" onSubmit={() => setIsAddOpen(false)}>
             <input type="hidden" name="groupId" value={group.id} />
             <label className="grid gap-1 text-xs uppercase text-muted-foreground">
               Member
@@ -225,11 +216,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
       >
         {memberModal ? (
           <div className="space-y-6">
-            <form
-              action={updateGroupMemberAction}
-              className="grid gap-4 md:grid-cols-2"
-              onSubmit={() => setMemberModal(null)}
-            >
+            <form className="grid gap-4 md:grid-cols-2" onSubmit={() => setMemberModal(null)}>
               <input type="hidden" name="groupId" value={group.id} />
               <input type="hidden" name="userId" value={memberModal.userId} />
               <label className="grid gap-1 text-xs uppercase text-muted-foreground">
@@ -278,7 +265,6 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
             </form>
 
             <form
-              action={removeGroupMemberAction}
               className="rounded-lg border border-destructive/50 bg-destructive/20 px-4 py-3"
               onSubmit={() => setMemberModal(null)}
             >

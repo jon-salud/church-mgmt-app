@@ -1,16 +1,4 @@
-import Link from 'next/link';
-import { redirect } from 'next/navigation';
 import { format } from 'date-fns';
-import { api } from '../../lib/api.server';
-
-type AuditLogSearchParams = {
-  entity?: string;
-  actorUserId?: string;
-  entityId?: string;
-  from?: string;
-  to?: string;
-  page?: string;
-};
 
 function formatName(actor?: {
   profile?: { firstName?: string; lastName?: string };
@@ -42,54 +30,42 @@ function formatMetadataValue(value: unknown) {
   return JSON.stringify(value);
 }
 
-export default async function AuditLogPage({
-  searchParams,
-}: {
-  searchParams?: AuditLogSearchParams;
-}) {
-  const params = searchParams ?? {};
-  const entity = params.entity?.trim() || undefined;
-  const actorUserId = params.actorUserId?.trim() || undefined;
-  const entityId = params.entityId?.trim() || undefined;
-  const from = params.from?.trim() || undefined;
-  const to = params.to?.trim() || undefined;
-  const pageParam = params.page ? Number.parseInt(params.page, 10) : 1;
-  const page = Number.isNaN(pageParam) || pageParam < 1 ? 1 : pageParam;
-
-  const me = await api.currentUser();
-  const isAdmin = me?.user?.roles?.some((role: { role: string }) => role.role === 'Admin');
-  if (!isAdmin) {
-    redirect('/dashboard');
-  }
-
-  const audit = await api.auditLogs({
-    entity,
-    actorUserId,
-    entityId,
-    from,
-    to,
-    page,
-  });
-
-  const totalPages = Math.max(1, Math.ceil(audit.meta.total / audit.meta.pageSize));
-  const baseSearch = new URLSearchParams();
-  if (entity) baseSearch.set('entity', entity);
-  if (actorUserId) baseSearch.set('actorUserId', actorUserId);
-  if (entityId) baseSearch.set('entityId', entityId);
-  if (from) baseSearch.set('from', from);
-  if (to) baseSearch.set('to', to);
-  const baseEntriesObject = Object.fromEntries(baseSearch.entries());
-
-  const hasFilters = Boolean(entity || actorUserId || entityId || from || to);
-  const buildHref = (targetPage: number) => {
-    const paramsForPage = new URLSearchParams(baseEntriesObject);
-    if (targetPage > 1) {
-      paramsForPage.set('page', String(targetPage));
-    } else {
-      paramsForPage.delete('page');
-    }
-    const query = paramsForPage.toString();
-    return query ? `/audit-log?${query}` : '/audit-log';
+export default async function AuditLogPage() {
+  // Demo data for static export
+  const audit = {
+    items: [
+      {
+        id: '1',
+        entity: 'member',
+        entityId: '1',
+        action: 'create',
+        summary: 'Created member John Doe',
+        createdAt: '2024-01-10T10:00:00Z',
+        actorUserId: 'admin',
+        actor: {
+          id: 'admin',
+          primaryEmail: 'admin@church.org',
+          profile: { firstName: 'Admin', lastName: 'User' },
+        },
+        metadata: { name: 'John Doe', email: 'john.doe@example.com' },
+      },
+      {
+        id: '2',
+        entity: 'group',
+        entityId: '1',
+        action: 'update',
+        summary: 'Updated group Worship Team',
+        createdAt: '2024-01-09T15:30:00Z',
+        actorUserId: 'admin',
+        actor: {
+          id: 'admin',
+          primaryEmail: 'admin@church.org',
+          profile: { firstName: 'Admin', lastName: 'User' },
+        },
+        metadata: { name: 'Worship Team', type: 'ServiceMinistry' },
+      },
+    ],
+    meta: { total: 2, pageSize: 20, page: 1 },
   };
 
   return (
@@ -102,98 +78,9 @@ export default async function AuditLogPage({
         </p>
       </header>
 
-      <form className="grid gap-4 md:grid-cols-5" method="get">
-        <div className="flex flex-col gap-1">
-          <label htmlFor="entity" className="text-xs font-semibold uppercase text-muted-foreground">
-            Entity
-          </label>
-          <input
-            id="entity"
-            name="entity"
-            defaultValue={entity ?? ''}
-            placeholder="event | contribution"
-            className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label
-            htmlFor="actorUserId"
-            className="text-xs font-semibold uppercase text-muted-foreground"
-          >
-            Actor ID
-          </label>
-          <input
-            id="actorUserId"
-            name="actorUserId"
-            defaultValue={actorUserId ?? ''}
-            placeholder="user-admin"
-            className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label
-            htmlFor="entityId"
-            className="text-xs font-semibold uppercase text-muted-foreground"
-          >
-            Entity ID
-          </label>
-          <input
-            id="entityId"
-            name="entityId"
-            defaultValue={entityId ?? ''}
-            placeholder="event-sunday-service"
-            className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label htmlFor="from" className="text-xs font-semibold uppercase text-muted-foreground">
-            From
-          </label>
-          <input
-            id="from"
-            name="from"
-            type="date"
-            defaultValue={from ?? ''}
-            className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
-          />
-        </div>
-        <div className="flex flex-col gap-1">
-          <label htmlFor="to" className="text-xs font-semibold uppercase text-muted-foreground">
-            To
-          </label>
-          <input
-            id="to"
-            name="to"
-            type="date"
-            defaultValue={to ?? ''}
-            className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-ring focus:outline-none focus:ring-1 focus:ring-ring"
-          />
-        </div>
-        <div className="md:col-span-5 flex items-center gap-2">
-          <button
-            id="apply-filters-button"
-            type="submit"
-            className="rounded-md border border-border px-4 py-2 text-sm font-medium text-foreground transition hover:bg-muted"
-          >
-            Apply Filters
-          </button>
-          {hasFilters ? (
-            <Link
-              id="reset-filters-link"
-              href="/audit-log"
-              className="text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
-            >
-              Reset
-            </Link>
-          ) : null}
-        </div>
-      </form>
-
       <div className="rounded-xl border border-border bg-card/60 shadow-lg shadow-black/5">
         {audit.items.length === 0 ? (
-          <div className="p-6 text-sm text-muted-foreground">
-            No audit entries match the current filters.
-          </div>
+          <div className="p-6 text-sm text-muted-foreground">No audit entries found.</div>
         ) : (
           <div
             className="overflow-x-auto"
@@ -269,33 +156,7 @@ export default async function AuditLogPage({
       </div>
 
       <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-        <p className="text-xs text-muted-foreground">
-          Showing page {audit.meta.page} of {totalPages} · {audit.meta.total} total entries
-        </p>
-        <div className="flex items-center gap-3">
-          {audit.meta.page > 1 ? (
-            <Link
-              id="previous-page-link"
-              href={buildHref(audit.meta.page - 1)}
-              className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
-            >
-              Previous
-            </Link>
-          ) : (
-            <span className="text-sm text-muted-foreground">Previous</span>
-          )}
-          {audit.meta.page < totalPages ? (
-            <Link
-              id="next-page-link"
-              href={buildHref(audit.meta.page + 1)}
-              className="text-sm font-medium text-foreground underline-offset-4 hover:underline"
-            >
-              Next
-            </Link>
-          ) : (
-            <span className="text-sm text-muted-foreground">Next</span>
-          )}
-        </div>
+        <p className="text-xs text-muted-foreground">Showing {audit.items.length} entries</p>
       </div>
     </section>
   );

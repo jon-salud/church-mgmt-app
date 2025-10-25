@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { Modal } from '../../../components/ui/modal';
-import { updateMemberAction, deleteMemberAction, updatePrayerRequestAction } from '../../actions';
 
 import { PrayerRequest } from '@/lib/types';
 
@@ -114,7 +113,7 @@ export function MemberDetailClient({
               <li key={request.id} className="rounded-md border border-border bg-card p-3 text-sm">
                 <p className="font-medium text-card-foreground">{request.title}</p>
                 <p className="text-xs text-muted-foreground">{request.description}</p>
-                <form action={updatePrayerRequestAction} className="mt-2">
+                <form className="mt-2">
                   <input type="hidden" name="prayerRequestId" value={request.id} />
                   <button
                     id={`mark-as-answered-button-${request.id}`}
@@ -227,11 +226,7 @@ export function MemberDetailClient({
           </p>
         }
       >
-        <form
-          action={updateMemberAction}
-          className="grid gap-4 md:grid-cols-2"
-          onSubmit={() => setIsEditOpen(false)}
-        >
+        <form className="grid gap-4 md:grid-cols-2" onSubmit={() => setIsEditOpen(false)}>
           <input type="hidden" name="userId" value={member.id} />
           <label className="grid gap-1 text-xs uppercase text-muted-foreground">
             First Name
@@ -419,11 +414,7 @@ export function MemberDetailClient({
           </span>{' '}
           from the directory?
         </p>
-        <form
-          action={deleteMemberAction}
-          className="mt-6 flex justify-end gap-3"
-          onSubmit={() => setIsRemoveOpen(false)}
-        >
+        <form className="mt-6 flex justify-end gap-3" onSubmit={() => setIsRemoveOpen(false)}>
           <input type="hidden" name="userId" value={member.id} />
           <button
             id="remove-member-cancel-button"

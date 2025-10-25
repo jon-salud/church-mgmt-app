@@ -1,4 +1,3 @@
-import { api } from '../../lib/api.server';
 import { GivingClient } from './giving-client';
 
 type Contribution = {
@@ -7,6 +6,7 @@ type Contribution = {
   amount: number;
   date: string;
   fundId?: string | null;
+  method: 'cash' | 'bank-transfer' | 'eftpos' | 'other';
 };
 
 type Fund = { id: string; name: string };
@@ -57,18 +57,60 @@ function deriveGivingSummary(contributions: Contribution[], funds: Fund[]) {
 }
 
 export default async function GivingPage() {
-  const [funds, contributions, members] = await Promise.all([
-    api.funds(),
-    api.contributions(),
-    api.members(),
-  ]);
+  // Demo data for static export
+  const funds = [
+    { id: 'general', name: 'General Fund' },
+    { id: 'missions', name: 'Missions' },
+    { id: 'building', name: 'Building Fund' },
+  ];
 
-  let summary;
-  try {
-    summary = await api.givingSummary();
-  } catch {
-    summary = deriveGivingSummary(contributions, funds);
-  }
+  const contributions: Contribution[] = [
+    {
+      id: '1',
+      memberId: '1',
+      amount: 150.0,
+      date: '2024-01-07',
+      fundId: 'general',
+      method: 'cash',
+    },
+    {
+      id: '2',
+      memberId: '2',
+      amount: 75.5,
+      date: '2024-01-08',
+      fundId: 'missions',
+      method: 'bank-transfer',
+    },
+    {
+      id: '3',
+      memberId: '1',
+      amount: 200.0,
+      date: '2024-01-09',
+      fundId: 'building',
+      method: 'eftpos',
+    },
+    { id: '4', memberId: '3', amount: 50.0, date: '2024-01-10', fundId: null, method: 'other' },
+  ];
+
+  const members = [
+    {
+      id: '1',
+      primaryEmail: 'john.doe@example.com',
+      profile: { firstName: 'John', lastName: 'Doe' },
+    },
+    {
+      id: '2',
+      primaryEmail: 'jane.smith@example.com',
+      profile: { firstName: 'Jane', lastName: 'Smith' },
+    },
+    {
+      id: '3',
+      primaryEmail: 'bob.johnson@example.com',
+      profile: { firstName: 'Bob', lastName: 'Johnson' },
+    },
+  ];
+
+  const summary = deriveGivingSummary(contributions, funds);
 
   return (
     <GivingClient

@@ -3,12 +3,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { Modal } from '../../components/ui/modal';
-import {
-  createEventAction,
-  deleteEventAction,
-  recordAttendanceAction,
-  updateEventAction,
-} from '../actions';
 import { loadOfflineSnapshot, persistOfflineSnapshot } from '../../lib/offline-cache';
 import { useOfflineStatus } from '../../lib/use-offline-status';
 
@@ -179,7 +173,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
 
                 <div>
                   <h3 className="text-sm font-semibold text-foreground">Quick update</h3>
-                  <form action={recordAttendanceAction} className="mt-2 grid gap-2 text-sm">
+                  <form className="mt-2 grid gap-2 text-sm">
                     <input type="hidden" name="eventId" value={event.id} />
                     <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                       Member
@@ -240,11 +234,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
           </p>
         }
       >
-        <form
-          action={createEventAction}
-          className="grid gap-3 md:grid-cols-2"
-          onSubmit={() => setIsCreateOpen(false)}
-        >
+        <form className="grid gap-3 md:grid-cols-2" onSubmit={() => setIsCreateOpen(false)}>
           <label className="grid gap-1 text-xs uppercase text-muted-foreground">
             Title
             <input
@@ -359,11 +349,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
       >
         {eventModal ? (
           <div className="space-y-6">
-            <form
-              action={updateEventAction}
-              className="grid gap-3 md:grid-cols-2"
-              onSubmit={() => setEventModal(null)}
-            >
+            <form className="grid gap-3 md:grid-cols-2" onSubmit={() => setEventModal(null)}>
               <input type="hidden" name="eventId" value={eventModal.id} />
               <label className="grid gap-1 text-xs uppercase text-muted-foreground">
                 Title
@@ -470,7 +456,6 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
             </form>
 
             <form
-              action={deleteEventAction}
               className="rounded-lg border border-destructive/40 bg-destructive/30 px-4 py-3"
               onSubmit={() => setEventModal(null)}
             >

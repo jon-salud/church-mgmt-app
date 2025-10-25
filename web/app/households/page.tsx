@@ -1,15 +1,31 @@
 import Link from 'next/link';
-import { api } from '../../lib/api.server';
 
 export default async function HouseholdsPage() {
-  const households = await api.households();
+  // Demo data for static export
+  const households = [
+    {
+      id: '1',
+      name: 'Smith Family',
+      memberCount: 4,
+    },
+    {
+      id: '2',
+      name: 'Johnson Household',
+      memberCount: 2,
+    },
+    {
+      id: '3',
+      name: 'Williams Family',
+      memberCount: 3,
+    },
+  ];
 
   return (
     <div>
       <h1 className="text-2xl font-bold">Households</h1>
       <div className="mt-4">
         <div className="flex flex-col gap-4">
-          {households.map((household: any) => (
+          {households.map(household => (
             <Link
               id={`household-link-${household.id}`}
               key={household.id}

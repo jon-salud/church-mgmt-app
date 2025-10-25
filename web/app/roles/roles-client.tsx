@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from 'react';
 import { Modal } from '../../components/ui/modal';
-import { createRoleAction, updateRoleAction, deleteRoleAction } from '../actions';
 import { PERMISSION_GROUPS } from './permission-schema';
 
 type RoleRecord = {
@@ -142,11 +141,7 @@ export function RolesClient({ roles }: RolesClientProps) {
           </p>
         }
       >
-        <form
-          action={createRoleAction}
-          className="grid gap-3"
-          onSubmit={() => setCreateOpen(false)}
-        >
+        <form className="grid gap-3" onSubmit={() => setCreateOpen(false)}>
           <label className="grid gap-1 text-xs uppercase text-muted-foreground">
             Name
             <input
@@ -216,11 +211,7 @@ export function RolesClient({ roles }: RolesClientProps) {
         }
       >
         {editingRole ? (
-          <form
-            action={updateRoleAction}
-            className="grid gap-3"
-            onSubmit={() => setEditingRole(null)}
-          >
+          <form className="grid gap-3" onSubmit={() => setEditingRole(null)}>
             <input type="hidden" name="roleId" value={editingRole.id} />
             {editingRole.slug === 'admin'
               ? editingRole.permissions.map(permission => (
@@ -301,11 +292,7 @@ export function RolesClient({ roles }: RolesClientProps) {
         }
       >
         {deletingRole ? (
-          <form
-            action={deleteRoleAction}
-            className="grid gap-3"
-            onSubmit={() => setDeletingRole(null)}
-          >
+          <form className="grid gap-3" onSubmit={() => setDeletingRole(null)}>
             <input type="hidden" name="roleId" value={deletingRole.id} />
             <p className="text-sm text-foreground">
               Are you sure you want to delete the <strong>{deletingRole.name}</strong> role?

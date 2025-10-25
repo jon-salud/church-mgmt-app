@@ -48,7 +48,10 @@ export default function NewTicketPage() {
           />
         </div>
         <div>
-          <label htmlFor="priority" className="block text-sm font-medium text-gray-700">
+          <label
+            htmlFor="new-ticket-priority-select"
+            className="block text-sm font-medium text-gray-700"
+          >
             Priority
           </label>
           <select

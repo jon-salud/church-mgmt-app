@@ -1,8 +1,47 @@
-import { api } from '../../lib/api.server';
 import { format } from 'date-fns';
 
 export default async function DashboardPage() {
-  const [summary, overview] = await Promise.all([api.dashboardSummary(), api.dashboardOverview()]);
+  // Demo data for static export
+  const summary = {
+    memberCount: 42,
+    groupCount: 8,
+    upcomingEvents: 5,
+    unreadAnnouncements: 2,
+    totalGivingLast30: 1250.5,
+  };
+
+  const overview = {
+    church: { id: 'demo-church', name: 'Demo Church', timezone: 'America/New_York' },
+    events: [
+      {
+        id: '1',
+        title: 'Sunday Service',
+        startAt: '2024-01-14T10:00:00Z',
+        location: 'Main Sanctuary',
+      },
+      {
+        id: '2',
+        title: 'Youth Group',
+        startAt: '2024-01-16T18:00:00Z',
+        location: 'Youth Room',
+      },
+      {
+        id: '3',
+        title: 'Bible Study',
+        startAt: '2024-01-18T19:00:00Z',
+        location: 'Fellowship Hall',
+      },
+    ],
+    announcements: [
+      { id: '1', title: 'Welcome New Members', publishAt: '2024-01-10T08:00:00Z' },
+      { id: '2', title: 'Community Potluck', publishAt: '2024-01-12T14:00:00Z' },
+    ],
+    contributions: [
+      { id: '1', amount: 150.0, date: '2024-01-07', fundId: 'General' },
+      { id: '2', amount: 75.5, date: '2024-01-08', fundId: 'Missions' },
+      { id: '3', amount: 200.0, date: '2024-01-09', fundId: 'Building' },
+    ],
+  };
 
   return (
     <section className="space-y-8">

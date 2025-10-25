@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { api } from '@/lib/api.server';
+import { api } from '@/lib/api.static';
 import { PrayerRequest } from '@/lib/types';
 import { PrayerAdminClientPage } from './client-page';
 

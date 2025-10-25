@@ -1,6 +1,6 @@
 import { Metadata, Viewport } from 'next';
 import './globals.css';
-import { api } from '../lib/api.server';
+import { api } from '../lib/api.static';
 import { ServiceWorkerRegister } from '../components/service-worker-register';
 import { ThemeProvider } from '../components/theme-provider';
 import { AppLayout } from './app-layout';

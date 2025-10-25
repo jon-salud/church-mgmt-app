@@ -3,7 +3,6 @@
 import { useMemo, useState } from 'react';
 import { format } from 'date-fns';
 import { Modal } from '../../components/ui/modal';
-import { recordContributionAction, updateContributionAction } from '../actions';
 
 type Fund = { id: string; name: string };
 type Member = { id: string; profile: { firstName?: string; lastName?: string } };
@@ -157,7 +156,7 @@ export function GivingClient({
 
           <div className="rounded-xl border border-border bg-card/60 p-5">
             <h2 className="text-lg font-semibold">Record contribution</h2>
-            <form action={recordContributionAction} className="mt-3 grid gap-3 text-sm">
+            <form className="mt-3 grid gap-3 text-sm">
               <label className="flex flex-col gap-1 text-xs uppercase tracking-wide text-muted-foreground">
                 Member
                 <select
@@ -278,11 +277,7 @@ export function GivingClient({
         }
       >
         {editContribution ? (
-          <form
-            action={updateContributionAction}
-            className="grid gap-3 text-sm"
-            onSubmit={() => setEditContribution(null)}
-          >
+          <form className="grid gap-3 text-sm" onSubmit={() => setEditContribution(null)}>
             <input type="hidden" name="contributionId" value={editContribution.id} />
             <label className="grid gap-1 text-xs uppercase tracking-wide text-muted-foreground">
               Member

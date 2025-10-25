@@ -1,8 +1,36 @@
 import Link from 'next/link';
-import { api } from '../../lib/api.server';
 
 export default async function GroupsPage() {
-  const groups = await api.groups();
+  // Demo data for static export
+  const groups = [
+    {
+      id: '1',
+      name: 'Worship Team',
+      type: 'ServiceMinistry',
+      description: 'Leading worship services and music ministry',
+      meetingDay: 'Sunday',
+      meetingTime: '8:00 AM',
+      members: Array(8).fill({ id: '1' }),
+    },
+    {
+      id: '2',
+      name: 'Youth Ministry',
+      type: 'ServiceMinistry',
+      description: 'Reaching and discipling teenagers',
+      meetingDay: 'Wednesday',
+      meetingTime: '6:00 PM',
+      members: Array(12).fill({ id: '1' }),
+    },
+    {
+      id: '3',
+      name: 'Small Group Alpha',
+      type: 'SmallGroup',
+      description: 'Bible study and fellowship group',
+      meetingDay: 'Thursday',
+      meetingTime: '7:00 PM',
+      members: Array(6).fill({ id: '1' }),
+    },
+  ];
 
   return (
     <section className="space-y-6">
