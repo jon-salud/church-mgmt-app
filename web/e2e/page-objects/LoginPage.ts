@@ -11,7 +11,10 @@ export class LoginPage extends BasePage {
   }
 
   async login() {
-    // Set the demo token cookie directly to bypass server action issues in Playwright
+    // Set the demo token cookie directly to bypass server action issues in Playwright.
+    // Playwright currently does not support Next.js 13+ server actions in E2E tests,
+    // which prevents us from logging in via the UI as server actions are not executed.
+    // See: https://github.com/vercel/next.js/issues/49260 (Next.js server actions and Playwright)
     await this.page.context().addCookies([
       {
         name: 'demo_token',
