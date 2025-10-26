@@ -170,7 +170,7 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - **Soft Delete Implementation:** Replace hard deletes with soft deletes (add `deletedAt` timestamp) across all entities to maintain data integrity and audit trails.
     - **Schema Update ✅:** Added `deletedAt` fields to all tables including join tables (`group_members`, `document_permissions`, `announcement_audiences`) in `DATABASE_SCHEMA.md`
     - **Backend Implementation ✅:** Updated API endpoints, mock data store, and data layer to implement soft delete logic with admin-only hard delete and recovery endpoints
-    - **Frontend Implementation Pending:** Update UI components to show "archived" instead of "deleted", add admin controls for viewing deleted items, and implement recovery UI with safety indicators
+    - **Frontend Implementation ✅:** Update UI components to show "archived" instead of "deleted", add admin controls for viewing deleted items, and implement recovery UI with safety indicators
 
 - **GDPR Compliance Implementation:**
   - **Backend:** Implement data retention policies, right to erasure (soft delete), data portability, and consent management.
@@ -270,6 +270,13 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 - **Backend:** Implement public registration APIs and visitor data management
 - **Frontend:** Create public event registration flows without authentication
+
+#### Immediate Tasks
+
+- **Update USER_MANUAL.md:** Add sections explaining archive/recovery functionality for members, events, and roles, including admin-only recovery capabilities
+- **Update API_DOCUMENTATION.md:** Document new admin endpoints for hard delete and recovery operations
+- **Update DATABASE_SCHEMA.md:** Ensure deletedAt fields are properly documented
+- **Update PRD.md:** Add soft delete feature to core features list with archive terminology
 
 #### Next (Q2)
 

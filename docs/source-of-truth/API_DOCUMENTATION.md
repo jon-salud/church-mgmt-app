@@ -163,9 +163,9 @@ implemented in the API.)_
 
 #### DELETE /users/:id
 
-- **Description:** Deletes a user. This is an admin-only endpoint.
+- **Description:** Archives a user (soft delete) instead of permanently deleting them. This preserves data integrity and allows for recovery. This is an admin-only endpoint.
 - **URL Parameters:**
-  - `id` (string, required): The unique identifier of the user to delete.
+  - `id` (string, required): The unique identifier of the user to archive.
 - **Success Response:**
   - **Code:** `200 OK`
   - **Content:**
@@ -173,7 +173,7 @@ implemented in the API.)_
     ```json
     {
       "success": true,
-      "message": "User deleted successfully"
+      "message": "User archived successfully"
     }
     ```
 
@@ -181,6 +181,27 @@ implemented in the API.)_
   - **Code:** `401 Unauthorized` - If the user is not authenticated.
   - **Code:** `403 Forbidden` - If the authenticated user is not an admin.
   - **Code:** `404 Not Found` - If a user with the specified ID does not exist.
+
+#### POST /users/:id/recover
+
+- **Description:** Recovers an archived user, restoring them to active status. This is an admin-only endpoint.
+- **URL Parameters:**
+  - `id` (string, required): The unique identifier of the user to recover.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "success": true,
+      "message": "User recovered successfully"
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the authenticated user is not an admin.
+  - **Code:** `404 Not Found` - If a user with the specified ID does not exist or is not archived.
 
 ---
 
@@ -400,10 +421,31 @@ This section covers endpoints related to managing church events and volunteer co
 
 #### DELETE /events/:id
 
-- **Description:** Deletes an event.
+- **Description:** Archives an event (soft delete) instead of permanently deleting it. This preserves attendance data and allows for recovery.
 - **Success Response:**
   - **Code:** `200 OK`
-  - **Content:** Success response with deleted event ID.
+  - **Content:** Success response with archived event ID.
+
+#### POST /events/:id/recover
+
+- **Description:** Recovers an archived event, restoring it to active status. This is an admin-only endpoint.
+- **URL Parameters:**
+  - `id` (string, required): The unique identifier of the event to recover.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "success": true,
+      "message": "Event recovered successfully"
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the authenticated user is not an admin.
+  - **Code:** `404 Not Found` - If an event with the specified ID does not exist or is not archived.
 
 ### Volunteer Roles
 

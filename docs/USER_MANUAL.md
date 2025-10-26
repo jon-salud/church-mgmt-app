@@ -51,6 +51,14 @@ The **Member Directory** is your central hub for all community data. Here, you c
 - Click on any member to view their profile, edit their information, or assign them to a different
   household.
 
+#### Archiving and Recovering Members
+
+The system uses "soft delete" functionality to preserve data integrity and maintain audit trails. Instead of permanently deleting members, you can archive them:
+
+- **Archive a Member:** From the member detail page, click "Archive Member" to remove them from active lists while preserving all their data and relationships.
+- **View Archived Members:** Check the "Show archived members" checkbox to see members who have been archived.
+- **Recover a Member:** For archived members, click the "Recover" button to restore them to active status. This action is only available to administrators.
+
 ### 3.2. How to Configure Application Settings
 
 You have the ability to customize parts of the application to fit your church's specific needs.
@@ -94,7 +102,25 @@ to classes and small groups.
   mark them as "Checked-in," providing valuable data for your church's planning and outreach
   efforts.
 
----
+#### Managing Events with Archive Functionality
+
+Events can be archived instead of permanently deleted to maintain historical records:
+
+- **Archive an Event:** From the events page, click "Archive Event" to remove it from active event lists while preserving all attendance data.
+- **View Archived Events:** Use the event filters to show archived events.
+- **Recover an Event:** Administrators can recover archived events to make them active again.
+
+### 3.6. How to Manage Roles and Permissions
+
+The system allows you to define custom roles for your church members with specific permissions.
+
+#### Archiving and Recovering Roles
+
+Roles can be archived when no longer needed while preserving historical data:
+
+- **Archive a Role:** From the roles management page, click "Archive Role" to remove it from active role assignments.
+- **View Archived Roles:** Check the "Show archived roles" option to see roles that have been archived.
+- **Recover a Role:** Administrators can recover archived roles to make them available for assignment again.
 
 ## 4. For Members
 

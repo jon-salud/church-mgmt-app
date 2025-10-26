@@ -44,6 +44,7 @@ The initial release of the platform will focus on the following core functionali
   members to church staff.
 - **Event & Service Check-in:** A system for tracking attendance at services and events.
 - **Child Check-in and Safety:** A comprehensive child check-in system with household management and safety features.
+- **Soft Delete Functionality:** Archive members, events, and roles instead of permanent deletion to maintain data integrity and audit trails.
 - **Onboarding Wizard:** A guided setup process for new Church Administrators.
 - **Document Library:** A secure, role-based repository for file sharing.
 - **Small Group Resource Sharing:** Functionality for small groups to share resources via web links.
