@@ -186,16 +186,22 @@ export class DocumentsController {
     }
   }
 
-  private async parseMultipartFields(req: any): Promise<Record<string, string>> {
+  /**
+   * Parses all multipart parts, returning both the file (if any) and the fields.
+   * Returns: { file, fields }
+   */
+  private async parseMultipartParts(req: any): Promise<{ file?: any; fields: Record<string, string> }> {
     const fields: Record<string, string> = {};
+    let file: any = undefined;
 
-    // Parse remaining multipart fields
     for await (const part of req.parts()) {
-      if (part.type === 'field') {
+      if (part.type === 'file' && !file) {
+        file = part;
+      } else if (part.type === 'field') {
         fields[part.fieldname] = part.value as string;
       }
     }
 
-    return fields;
+    return { file, fields };
   }
 }
