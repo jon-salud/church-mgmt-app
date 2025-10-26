@@ -56,6 +56,15 @@ The project requires environment variables for both the backend and frontend app
    authentication. The application uses Next.js middleware to protect all routes - unauthenticated
    users are automatically redirected to the login page.
 
+## 3.3. Data Management
+
+The application uses a mock datastore for development, which includes soft delete functionality:
+
+- **Soft Delete Behavior**: Records are "archived" rather than permanently deleted, preserving data integrity
+- **Recovery**: Admin users can recover archived records through the UI or API
+- **Data Persistence**: Mock data is stored in memory and resets on server restart
+- **Audit Trail**: All changes are logged to `api/storage/audit-log.json`
+
 ## 4. Running the Application
 
 The most common development workflow involves running the backend API and the frontend web
@@ -132,3 +141,15 @@ changes, run the quality checks to ensure your code meets the project's standard
 
 > For more details on the project's architecture, data model, and coding conventions, please refer
 > to the relevant documents in the `/docs` directory.
+
+---
+
+## Change Records
+
+### v1.0.0 - Soft Delete Documentation
+
+- **Date**: 2024-12-19
+- **Changes**:
+  - Added data management section explaining soft delete behavior
+  - Documented archive/recovery functionality in mock datastore
+  - Added audit trail information
