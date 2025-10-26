@@ -169,7 +169,9 @@ export class DocumentsController {
   }
 
   private ensureAdmin(req: any) {
-    if (!req.user?.isAdmin) {
+    const roles: Array<{ churchId: string; role: string }> = req.user?.roles ?? [];
+    const isAdmin = roles.some((role: { role: string }) => role.role === 'Admin');
+    if (!isAdmin) {
       throw new ForbiddenException('Admin access required');
     }
   }
