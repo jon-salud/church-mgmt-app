@@ -7,4 +7,5 @@ export interface MockChild {
   medicalNotes?: string;
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string;
 }

@@ -7,6 +7,7 @@ export interface MockRequestType {
   isBuiltIn: boolean;
   displayOrder: number;
   hasConfidentialField: boolean;
+  deletedAt?: string;
 }
 
 export const mockRequestTypes: MockRequestType[] = [

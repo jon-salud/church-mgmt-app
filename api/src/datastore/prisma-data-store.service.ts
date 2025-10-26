@@ -1100,4 +1100,41 @@ export class PrismaDataStore implements DataStore {
   ): Promise<any> {
     throw new Error('Not implemented: bulkCreateInvitations');
   }
+
+  // Soft delete management methods - not implemented for Prisma yet
+  async hardDeleteUser(_id: string, _input: any): Promise<any> {
+    throw new Error('Not implemented: hardDeleteUser');
+  }
+
+  async hardDeleteEvent(_id: string, _input: any): Promise<any> {
+    throw new Error('Not implemented: hardDeleteEvent');
+  }
+
+  async hardDeleteRole(_id: string, _input: any): Promise<any> {
+    throw new Error('Not implemented: hardDeleteRole');
+  }
+
+  async undeleteUser(_id: string, _input: any): Promise<any> {
+    throw new Error('Not implemented: undeleteUser');
+  }
+
+  async undeleteEvent(_id: string, _input: any): Promise<any> {
+    throw new Error('Not implemented: undeleteEvent');
+  }
+
+  async undeleteRole(_id: string, _input: any): Promise<any> {
+    throw new Error('Not implemented: undeleteRole');
+  }
+
+  async listDeletedUsers(_q?: string): Promise<any> {
+    throw new Error('Not implemented: listDeletedUsers');
+  }
+
+  async listDeletedEvents(): Promise<any> {
+    throw new Error('Not implemented: listDeletedEvents');
+  }
+
+  async listDeletedRoles(): Promise<any> {
+    throw new Error('Not implemented: listDeletedRoles');
+  }
 }

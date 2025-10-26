@@ -1,8 +1,9 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { Modal } from '../../components/ui/modal';
 import { createRoleAction, updateRoleAction, deleteRoleAction } from '../actions';
+import { clientApi } from '../../lib/api.client';
 import { PERMISSION_GROUPS } from './permission-schema';
 
 type RoleRecord = {
@@ -18,22 +19,42 @@ type RoleRecord = {
 
 type RolesClientProps = {
   roles: RoleRecord[];
+  me: any;
 };
 
-export function RolesClient({ roles }: RolesClientProps) {
+export function RolesClient({ roles, me }: RolesClientProps) {
   const [isCreateOpen, setCreateOpen] = useState(false);
   const [editingRole, setEditingRole] = useState<RoleRecord | null>(null);
   const [deletingRole, setDeletingRole] = useState<RoleRecord | null>(null);
+  const [showArchived, setShowArchived] = useState(false);
+  const [archivedRoles, setArchivedRoles] = useState<any[]>([]);
+  const isAdmin = me?.user?.roles?.some((role: any) => role.slug === 'admin') ?? false;
 
-  const sortedRoles = useMemo(
-    () =>
-      [...roles].sort((a, b) => {
-        if (a.isSystem && !b.isSystem) return -1;
-        if (!a.isSystem && b.isSystem) return 1;
-        return a.name.localeCompare(b.name);
-      }),
-    [roles]
-  );
+  const handleRecoverRole = async (roleId: string) => {
+    try {
+      await clientApi.recoverRole(roleId);
+      // Refresh the page to update the list
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to recover role:', error);
+      window.alert('Failed to recover role. Please try again.');
+    }
+  };
+
+  useEffect(() => {
+    if (showArchived && isAdmin && archivedRoles.length === 0) {
+      clientApi.listDeletedRoles().then(setArchivedRoles).catch(console.error);
+    }
+  }, [showArchived, isAdmin, archivedRoles.length]);
+
+  const sortedRoles = useMemo(() => {
+    const allRoles = showArchived ? [...roles, ...archivedRoles] : roles;
+    return [...allRoles].sort((a, b) => {
+      if (a.isSystem && !b.isSystem) return -1;
+      if (!a.isSystem && b.isSystem) return 1;
+      return a.name.localeCompare(b.name);
+    });
+  }, [roles, showArchived, archivedRoles]);
 
   const reassignCandidates = useMemo(() => {
     if (!deletingRole) return [];
@@ -49,13 +70,26 @@ export function RolesClient({ roles }: RolesClientProps) {
             Configure role templates and granular permissions. The Admin role is system protected.
           </p>
         </div>
-        <button
-          type="button"
-          onClick={() => setCreateOpen(true)}
-          className="self-start rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-        >
-          Create Role
-        </button>
+        <div className="flex flex-col gap-2 md:flex-row md:items-center">
+          {isAdmin && (
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={showArchived}
+                onChange={e => setShowArchived(e.target.checked)}
+                className="rounded border border-border"
+              />
+              Show archived roles
+            </label>
+          )}
+          <button
+            type="button"
+            onClick={() => setCreateOpen(true)}
+            className="self-start rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+          >
+            Create Role
+          </button>
+        </div>
       </header>
 
       <div className="overflow-x-auto rounded-xl border border-border bg-card/60">
@@ -116,14 +150,24 @@ export function RolesClient({ roles }: RolesClientProps) {
                     >
                       Edit
                     </button>
-                    <button
-                      type="button"
-                      onClick={() => setDeletingRole(role)}
-                      className="rounded-md border-0 bg-destructive px-3 py-1 text-xs font-medium text-destructive-foreground transition hover:bg-destructive/90 disabled:cursor-not-allowed disabled:opacity-40"
-                      disabled={!role.isDeletable || role.slug === 'admin'}
-                    >
-                      Delete
-                    </button>
+                    {role.deletedAt ? (
+                      <button
+                        type="button"
+                        onClick={() => handleRecoverRole(role.id)}
+                        className="rounded-md bg-green-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-green-700"
+                      >
+                        Recover
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => setDeletingRole(role)}
+                        className="rounded-md border-0 bg-destructive px-3 py-1 text-xs font-medium text-destructive-foreground transition hover:bg-destructive/90 disabled:cursor-not-allowed disabled:opacity-40"
+                        disabled={!role.isDeletable || role.slug === 'admin'}
+                      >
+                        Archive
+                      </button>
+                    )}
                   </div>
                 </td>
               </tr>
@@ -293,10 +337,11 @@ export function RolesClient({ roles }: RolesClientProps) {
       <Modal
         open={Boolean(deletingRole)}
         onClose={() => setDeletingRole(null)}
-        title={`Delete ${deletingRole?.name ?? 'Role'}`}
+        title={`Archive ${deletingRole?.name ?? 'Role'}`}
         footer={
           <p className="text-xs text-muted-foreground">
-            Roles in use must be reassigned before deletion. Admin role is not deletable.
+            Roles in use must be reassigned before archiving. Admin role is not archivable. Archived
+            roles can be recovered by an admin.
           </p>
         }
       >
@@ -308,7 +353,7 @@ export function RolesClient({ roles }: RolesClientProps) {
           >
             <input type="hidden" name="roleId" value={deletingRole.id} />
             <p className="text-sm text-foreground">
-              Are you sure you want to delete the <strong>{deletingRole.name}</strong> role?
+              Are you sure you want to archive the <strong>{deletingRole.name}</strong> role?
             </p>
             {deletingRole.assignmentCount > 0 ? (
               <label className="grid gap-1 text-xs uppercase text-muted-foreground">
@@ -344,7 +389,7 @@ export function RolesClient({ roles }: RolesClientProps) {
                 type="submit"
                 className="rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground transition hover:bg-destructive/80"
               >
-                Delete Role
+                Archive Role
               </button>
             </div>
           </form>

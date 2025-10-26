@@ -23,4 +23,17 @@ export class RolesService {
   delete(id: string, input: DeleteRoleDto, actorUserId?: string) {
     return this.db.deleteRole(id, { ...input, actorUserId: actorUserId ?? 'system' });
   }
+
+  // Admin operations for permanent deletion and recovery
+  hardDelete(id: string, actorUserId?: string) {
+    return this.db.hardDeleteRole(id, { actorUserId: actorUserId ?? 'system' });
+  }
+
+  undelete(id: string, actorUserId?: string) {
+    return this.db.undeleteRole(id, { actorUserId: actorUserId ?? 'system' });
+  }
+
+  listDeleted() {
+    return this.db.listDeletedRoles();
+  }
 }

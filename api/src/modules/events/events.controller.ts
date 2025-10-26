@@ -81,6 +81,30 @@ export class EventsController {
     return this.eventsService.remove(id, req.user.id);
   }
 
+  @Delete(':id/hard')
+  @ApiOperation({ summary: 'Permanently delete an event (admin only)' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  hardDelete(@Param('id') id: string, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.eventsService.hardDelete(id, req.user.id);
+  }
+
+  @Post(':id/undelete')
+  @ApiOperation({ summary: 'Restore a deleted event (admin only)' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  undelete(@Param('id') id: string, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.eventsService.undelete(id, req.user.id);
+  }
+
+  @Get('deleted')
+  @ApiOperation({ summary: 'List deleted events (admin only)' })
+  @ApiOkResponse(arrayOfObjectsResponse)
+  listDeleted(@Req() req: any) {
+    this.ensureAdmin(req);
+    return this.eventsService.listDeleted();
+  }
+
   @Get(':id/attendance.csv')
   @ApiOperation({ summary: 'Export attendance CSV' })
   @ApiProduces('text/csv')

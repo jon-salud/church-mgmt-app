@@ -4,4 +4,5 @@ export interface MockPastoralCareComment {
   authorId: string;
   body: string;
   createdAt: string;
+  deletedAt?: string;
 }

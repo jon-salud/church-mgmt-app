@@ -488,6 +488,8 @@ export class MockDatabaseService {
     const lower = query?.toLowerCase();
     const list = this.users
       .filter(user => {
+        // Filter out soft-deleted users
+        if (user.deletedAt) return false;
         if (!lower) return true;
         const profile = user.profile;
         return (
@@ -511,7 +513,7 @@ export class MockDatabaseService {
   }
 
   getUserById(id: string) {
-    const user = this.users.find(record => record.id === id);
+    const user = this.users.find(record => record.id === id && !record.deletedAt);
     if (!user) return null;
     return this.buildUserPayload(user);
   }
@@ -854,52 +856,46 @@ export class MockDatabaseService {
   }
 
   deleteUser(id: string, input: UserDeleteInput) {
-    const index = this.users.findIndex(user => user.id === id);
-    if (index === -1) {
+    const user = this.users.find(u => u.id === id);
+    if (!user) {
       return { success: false };
     }
-    const [removed] = this.users.splice(index, 1);
-    this.groups.forEach(group => {
-      group.members = group.members.filter(member => member.userId !== id);
-      if (group.leaderUserId === id) {
-        group.leaderUserId = group.members[0]?.userId;
-      }
-    });
-    this.events.forEach(event => {
-      event.attendance = event.attendance.filter(record => record.userId !== id);
-    });
-    this.contributions = this.contributions.filter(contribution => contribution.memberId !== id);
-    this.announcementReads = this.announcementReads.filter(read => read.userId !== id);
-    this.sessions = this.sessions.filter(session => session.userId !== id);
-    this.oauthAccounts = this.oauthAccounts.filter(account => account.userId !== id);
+    // Soft delete - set deletedAt timestamp
+    user.deletedAt = new Date().toISOString();
     const actorName = this.getUserName(input.actorUserId);
     const targetName =
-      `${removed.profile.firstName} ${removed.profile.lastName}`.trim() || removed.primaryEmail;
+      `${user.profile.firstName} ${user.profile.lastName}`.trim() || user.primaryEmail;
     this.createAuditLog({
       actorUserId: input.actorUserId,
-      action: 'user.deleted',
+      action: 'user.soft-deleted',
       entity: 'user',
-      entityId: removed.id,
-      summary: `${actorName} removed ${targetName} from the directory`,
+      entityId: user.id,
+      summary: `${actorName} soft-deleted ${targetName} from the directory`,
       metadata: {
-        userId: removed.id,
-        email: removed.primaryEmail,
+        userId: user.id,
+        email: user.primaryEmail,
       },
     });
     return { success: true };
   }
 
   getUserByEmail(email: string) {
-    return this.users.find(user => user.primaryEmail.toLowerCase() === email.toLowerCase()) || null;
+    return (
+      this.users.find(
+        user => user.primaryEmail.toLowerCase() === email.toLowerCase() && !user.deletedAt
+      ) || null
+    );
   }
 
   listGroups(churchId?: string) {
-    const list = this.groups.filter(group => !churchId || group.churchId === churchId);
+    const list = this.groups.filter(
+      group => (!churchId || group.churchId === churchId) && !group.deletedAt
+    );
     return clone(list);
   }
 
   getGroupById(id: string) {
-    return clone(this.groups.find(group => group.id === id) || null);
+    return clone(this.groups.find(group => group.id === id && !group.deletedAt) || null);
   }
 
   getGroupMembers(groupId: string) {
@@ -1026,11 +1022,11 @@ export class MockDatabaseService {
   }
 
   listEvents() {
-    return clone(this.events);
+    return clone(this.events.filter(event => !event.deletedAt));
   }
 
   getEventById(id: string) {
-    return clone(this.events.find(event => event.id === id) || null);
+    return clone(this.events.find(event => event.id === id && !event.deletedAt) || null);
   }
 
   createEvent(input: EventCreateInput) {
@@ -1130,21 +1126,22 @@ export class MockDatabaseService {
   }
 
   deleteEvent(id: string, input: EventDeleteInput) {
-    const index = this.events.findIndex(event => event.id === id);
-    if (index === -1) {
+    const event = this.events.find(e => e.id === id);
+    if (!event) {
       return { success: false };
     }
-    const [removed] = this.events.splice(index, 1);
+    // Soft delete - set deletedAt timestamp
+    event.deletedAt = new Date().toISOString();
     const actorName = this.getUserName(input.actorUserId);
     this.createAuditLog({
       actorUserId: input.actorUserId,
-      action: 'event.deleted',
+      action: 'event.soft-deleted',
       entity: 'event',
-      entityId: removed.id,
-      summary: `${actorName} deleted event ${removed.title}`,
+      entityId: event.id,
+      summary: `${actorName} soft-deleted event ${event.title}`,
       metadata: {
-        eventId: removed.id,
-        startAt: removed.startAt,
+        eventId: event.id,
+        startAt: event.startAt,
       },
     });
     return { success: true };
@@ -1853,14 +1850,15 @@ export class MockDatabaseService {
   }
 
   deleteRole(id: string, input: RoleDeleteInput) {
-    const roleIndex = this.roles.findIndex(record => record.id === id);
-    if (roleIndex === -1) {
+    const role = this.roles.find(r => r.id === id);
+    if (!role) {
       return { deleted: false, reassigned: 0 };
     }
-    const role = this.roles[roleIndex];
     if (!role.isDeletable || role.slug === 'admin') {
       throw new Error('This role cannot be deleted.');
     }
+
+    // Handle role reassignment before soft delete
     const assignments = this.users.filter(user => user.roles.some(r => r.roleId === id));
     let reassigned = 0;
     let targetRoleId: string | null = null;
@@ -1888,15 +1886,18 @@ export class MockDatabaseService {
         reassigned += 1;
       });
     }
-    this.roles.splice(roleIndex, 1);
+
+    // Soft delete - set deletedAt timestamp
+    role.deletedAt = new Date().toISOString();
     const actorName = this.getUserName(input.actorUserId);
     this.createAuditLog({
       actorUserId: input.actorUserId,
-      action: 'role.deleted',
+      action: 'role.soft-deleted',
       entity: 'role',
       entityId: role.id,
-      summary: `${actorName} deleted role ${role.name}`,
+      summary: `${actorName} soft-deleted role ${role.name}`,
       metadata: {
+        roleId: role.id,
         reassignedTo: targetRoleId,
         reassignedCount: reassigned,
       },
@@ -2654,6 +2655,228 @@ export class MockDatabaseService {
 
   listInvitations(churchId: string): MockInvitation[] {
     return clone(this.invitations.filter(inv => inv.churchId === churchId));
+  }
+
+  // Soft Delete Management Methods
+
+  // Hard delete methods (admin only, with audit logging)
+  hardDeleteUser(id: string, input: UserDeleteInput) {
+    const index = this.users.findIndex(user => user.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    const [removed] = this.users.splice(index, 1);
+    this.groups.forEach(group => {
+      group.members = group.members.filter(member => member.userId !== id);
+      if (group.leaderUserId === id) {
+        group.leaderUserId = group.members[0]?.userId;
+      }
+    });
+    this.events.forEach(event => {
+      event.attendance = event.attendance.filter(record => record.userId !== id);
+    });
+    this.contributions = this.contributions.filter(contribution => contribution.memberId !== id);
+    this.announcementReads = this.announcementReads.filter(read => read.userId !== id);
+    this.sessions = this.sessions.filter(session => session.userId !== id);
+    this.oauthAccounts = this.oauthAccounts.filter(account => account.userId !== id);
+    const actorName = this.getUserName(input.actorUserId);
+    const targetName =
+      `${removed.profile.firstName} ${removed.profile.lastName}`.trim() || removed.primaryEmail;
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'user.hard-deleted',
+      entity: 'user',
+      entityId: removed.id,
+      summary: `${actorName} permanently deleted ${targetName} from the directory`,
+      metadata: {
+        userId: removed.id,
+        email: removed.primaryEmail,
+        deletedAt: removed.deletedAt,
+      },
+    });
+    return { success: true };
+  }
+
+  hardDeleteEvent(id: string, input: EventDeleteInput) {
+    const index = this.events.findIndex(event => event.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    const [removed] = this.events.splice(index, 1);
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'event.hard-deleted',
+      entity: 'event',
+      entityId: removed.id,
+      summary: `${actorName} permanently deleted event ${removed.title}`,
+      metadata: {
+        eventId: removed.id,
+        startAt: removed.startAt,
+        deletedAt: removed.deletedAt,
+      },
+    });
+    return { success: true };
+  }
+
+  hardDeleteRole(id: string, input: RoleDeleteInput) {
+    const roleIndex = this.roles.findIndex(record => record.id === id);
+    if (roleIndex === -1) {
+      return { deleted: false, reassigned: 0 };
+    }
+    const role = this.roles[roleIndex];
+    if (!role.isDeletable || role.slug === 'admin') {
+      throw new Error('This role cannot be deleted.');
+    }
+    const assignments = this.users.filter(user => user.roles.some(r => r.roleId === id));
+    let reassigned = 0;
+    let targetRoleId: string | null = null;
+    if (assignments.length > 0) {
+      if (!input.reassignRoleId) {
+        throw new Error(
+          'Role is assigned to users. Provide reassignRoleId to transfer assignments.'
+        );
+      }
+      const resolved = this.resolveRoleId(input.reassignRoleId);
+      if (resolved === id) {
+        throw new Error('Reassignment role must be different from the role being deleted.');
+      }
+      const targetRole = this.getRoleById(resolved);
+      if (!targetRole) {
+        throw new Error('Target role not found.');
+      }
+      targetRoleId = targetRole.id;
+      this.users.forEach(user => {
+        if (!user.roles.some(r => r.roleId === id)) return;
+        user.roles = user.roles.filter(r => r.roleId !== id);
+        if (!user.roles.some(r => r.roleId === targetRole.id)) {
+          user.roles.push({ churchId: targetRole.churchId, roleId: targetRole.id });
+        }
+        reassigned += 1;
+      });
+    }
+    this.roles.splice(roleIndex, 1);
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'role.hard-deleted',
+      entity: 'role',
+      entityId: role.id,
+      summary: `${actorName} permanently deleted role ${role.name}`,
+      metadata: {
+        reassignedTo: targetRoleId,
+        reassignedCount: reassigned,
+      },
+    });
+    return { deleted: true, reassigned };
+  }
+
+  // Undelete methods (admin only)
+  undeleteUser(id: string, input: { actorUserId: string }) {
+    const user = this.users.find(u => u.id === id);
+    if (!user || !user.deletedAt) {
+      return { success: false, reason: 'User not found or not deleted' };
+    }
+    user.deletedAt = undefined;
+    const actorName = this.getUserName(input.actorUserId);
+    const targetName =
+      `${user.profile.firstName} ${user.profile.lastName}`.trim() || user.primaryEmail;
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'user.undeleted',
+      entity: 'user',
+      entityId: user.id,
+      summary: `${actorName} restored ${targetName} to the directory`,
+      metadata: {
+        userId: user.id,
+        email: user.primaryEmail,
+      },
+    });
+    return { success: true };
+  }
+
+  undeleteEvent(id: string, input: { actorUserId: string }) {
+    const event = this.events.find(e => e.id === id);
+    if (!event || !event.deletedAt) {
+      return { success: false, reason: 'Event not found or not deleted' };
+    }
+    event.deletedAt = undefined;
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'event.undeleted',
+      entity: 'event',
+      entityId: event.id,
+      summary: `${actorName} restored event ${event.title}`,
+      metadata: {
+        eventId: event.id,
+        startAt: event.startAt,
+      },
+    });
+    return { success: true };
+  }
+
+  undeleteRole(id: string, input: { actorUserId: string }) {
+    const role = this.roles.find(r => r.id === id);
+    if (!role || !role.deletedAt) {
+      return { success: false, reason: 'Role not found or not deleted' };
+    }
+    role.deletedAt = undefined;
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'role.undeleted',
+      entity: 'role',
+      entityId: role.id,
+      summary: `${actorName} restored role ${role.name}`,
+      metadata: {
+        roleId: role.id,
+      },
+    });
+    return { success: true };
+  }
+
+  // Admin methods to view deleted items
+  listDeletedUsers(query?: string) {
+    const lower = query?.toLowerCase();
+    const list = this.users
+      .filter(user => {
+        if (!user.deletedAt) return false;
+        if (!lower) return true;
+        const profile = user.profile;
+        return (
+          user.primaryEmail.toLowerCase().includes(lower) ||
+          profile.firstName.toLowerCase().includes(lower) ||
+          profile.lastName.toLowerCase().includes(lower)
+        );
+      })
+      .map(user => ({
+        ...this.buildUserPayload(user),
+        deletedAt: user.deletedAt,
+      }));
+    return clone(list) as any;
+  }
+
+  listDeletedEvents() {
+    return clone(
+      this.events
+        .filter(event => event.deletedAt)
+        .map(event => ({
+          ...event,
+          deletedAt: event.deletedAt,
+        }))
+    );
+  }
+
+  listDeletedRoles() {
+    return clone(
+      this.roles
+        .filter(role => role.deletedAt)
+        .map(role => ({
+          ...role,
+          deletedAt: role.deletedAt,
+        }))
+    );
   }
 
   bulkCreateInvitations(

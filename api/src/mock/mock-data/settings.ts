@@ -8,4 +8,5 @@ export interface MockSettings {
   requestTypes: string[];
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string;
 }

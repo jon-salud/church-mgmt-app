@@ -27,6 +27,19 @@ export class UsersService {
     return this.db.deleteUser(id, { actorUserId });
   }
 
+  // Admin operations for permanent deletion and recovery
+  hardDelete(id: string, actorUserId: string) {
+    return this.db.hardDeleteUser(id, { actorUserId });
+  }
+
+  undelete(id: string, actorUserId: string) {
+    return this.db.undeleteUser(id, { actorUserId });
+  }
+
+  listDeleted(q?: string) {
+    return this.db.listDeletedUsers(q);
+  }
+
   async bulkImport(emails: string[], actorUserId: string) {
     // Get the user's church ID
     const user = await this.db.getUserProfile(actorUserId);

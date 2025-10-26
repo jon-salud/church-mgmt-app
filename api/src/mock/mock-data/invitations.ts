@@ -9,6 +9,7 @@ export interface MockInvitation {
   status: 'pending' | 'accepted' | 'expired';
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string;
 }
 
 export const mockInvitations: MockInvitation[] = [];
