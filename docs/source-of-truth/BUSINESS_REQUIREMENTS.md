@@ -38,6 +38,7 @@ The initial release of the platform will focus on the following core functionali
   members to church staff (e.g., pastoral care, information).
 - **Event & Service Check-in:** A simple-to-use check-in system for tracking attendance at services,
   classes, and events.
+- **Child Check-in and Safety:** A comprehensive child check-in system with household management, safety features, and parent notifications.
 - **Onboarding Wizard:** A guided setup process for new Church Administrators.
 - **Document Library:** A secure, role-based repository for file sharing.
 - **Small Group Resource Sharing:** Basic functionality for small groups to share resources via web
@@ -117,7 +118,7 @@ initial release:
   integration with Google Drive or similar services).
 - **Volunteer Management:** Dedicated modules for scheduling and communicating with volunteers.
 - **Child Check-in Security:** Advanced features for child check-in, such as security tags and
-  parent notifications.
+  biometric identification.
 - **Financial & Giving Management:** Tools for tracking donations, pledges, and church finances.
 
 ## 3. Business Requirements
@@ -180,6 +181,18 @@ capabilities without altering data isolation or privacy commitments.
 - **Check-in Dashboard:** Church Administrators shall have access to a dashboard for monitoring check-in and attendance data.
 - **Attendance Tracking:** The system shall record attendance for members who are checked into a service or event, providing historical data for administrators.
 - **Reporting:** Administrators shall be able to export attendance and volunteer data for reporting and analysis.
+
+#### 3.2.5. Child Check-in and Safety
+
+- **Household Management:** The system shall support household structures with multiple guardians and children for proper authorization tracking.
+- **Dual Check-in Methods:** Parents shall be able to check in children via mobile app or at physical check-in tables, with different workflows for each method.
+- **Volunteer Confirmation:** App-based check-ins shall require volunteer confirmation within a configurable time limit to ensure child safety.
+- **Safety Notifications:** The system shall send alerts when check-ins are not confirmed, enabling volunteers to follow up with parents.
+- **Emergency Access:** Volunteers shall have secure access to parent emergency contact information during events.
+- **Printable Tags:** The system shall generate printable identification tags with child information, allergies, and emergency contacts.
+- **Check-out Process:** Parents shall be notified when it's time to pick up children, with required confirmation to ensure safe handoff.
+- **Audit Trails:** Complete logging of all check-in, confirmation, and check-out activities for safety and compliance.
+- **Configurable Time Limits:** Administrators shall be able to set time limits for confirmations, notifications, and required actions.
 
 ### 3.3. Non-Functional Requirements
 

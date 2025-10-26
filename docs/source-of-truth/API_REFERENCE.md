@@ -78,11 +78,19 @@ The demo uses automatic authentication with the `demo-admin` token. No manual lo
 - `GET /checkin/households/:householdId/children` - Get household children
 - `PATCH /checkin/children/:id` - Update child info
 - `DELETE /checkin/children/:id` - Remove child
-- `POST /checkin/initiate` - Start check-in process
-- `POST /checkin/confirm` - Complete check-in
-- `GET /checkin` - View current check-ins
-- `POST /checkin/checkout/initiate` - Start checkout
-- `POST /checkin/checkout/confirm` - Complete checkout
+- `POST /checkin/app/initiate` - Parent app check-in initiation
+- `POST /checkin/table/initiate` - Volunteer table check-in
+- `POST /checkin/confirm` - Volunteer confirmation of check-in
+- `POST /checkin/tag/print` - Mark tag as printed
+- `GET /checkin` - View current check-ins with status
+- `GET /checkin/pending` - Get pending confirmations
+- `GET /checkin/overdue` - Get overdue confirmations
+- `POST /checkin/checkout/initiate` - Volunteer checkout initiation
+- `POST /checkin/checkout/confirm` - Parent confirmation of checkout
+- `GET /checkin/emergency/:childId` - Get emergency contact info (volunteer only)
+- `POST /checkin/notifications/send` - Send notifications for check-in events
+- `GET /checkin/settings` - Get check-in configuration settings
+- `PUT /checkin/settings` - Update check-in configuration settings
 
 ### Giving & Finances
 
