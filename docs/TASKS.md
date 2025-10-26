@@ -117,6 +117,12 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 - [x] **Modal-Based Onboarding Wizard:**
   - [x] **Frontend:** Convert the existing page-based onboarding wizard to a modal that appears immediately after login for new administrators (onboardingComplete: false), featuring a "Get Started" button on the welcome step, consistent modal sizing with internal scrolling, progress indicators, skippable steps, and completion setting onboardingComplete to true.
   - [x] **Implementation:** Created OnboardingModal component, updated OnboardingWizard with modal-specific props, modified login flow to show modal instead of redirecting, added "Get Started" button to branding step, and ensured responsive design without infinite redirects.
+- [x] **Event Volunteer Management System:**
+  - [x] **Backend:** Implemented complete volunteer management API with endpoints for creating/updating/deleting volunteer roles, member signup/cancellation, and proper authorization controls (admin-only role management, user-owned signups).
+  - [x] **Database:** Added EventVolunteerRole and EventVolunteerSignup tables with proper foreign key relationships and capacity tracking.
+  - [x] **Frontend:** Built comprehensive volunteer coordination UI with role management interface, signup/cancel buttons, capacity indicators, and real-time updates.
+  - [x] **Testing:** Added E2E tests covering volunteer signup flows, admin role management, and authorization checks.
+  - [x] **Documentation:** Updated all source-of-truth documents (DATABASE_SCHEMA.md, API_DOCUMENTATION.md, FUNCTIONAL_REQUIREMENTS.md, BUSINESS_REQUIREMENTS.md) to reflect the complete volunteer management implementation.
 
 ### 🔄 In Progress
 

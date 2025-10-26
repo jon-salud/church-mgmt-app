@@ -135,9 +135,8 @@ tables.
 
 - `id` (UUID, Primary Key)
 - `householdId` (UUID, FK -> `households.id`, Not Null)
-- `churchId` (UUID, FK -> `churches.id`, Not Null)
 - `fullName` (Text, Not Null)
-- `dateOfBirth` (Date)
+- `dateOfBirth` (Date, Not Null)
 - `allergies` (Text)
 - `medicalNotes` (Text)
 - `createdAt` (Timestamp, Not Null)
@@ -184,19 +183,18 @@ tables.
 - `startAt` (Timestamp, Not Null)
 - `endAt` (Timestamp, Not Null)
 - `location` (Text)
+- `visibility` (Enum: 'public', 'private', Default: 'private')
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
 
-### Table: `attendance`
+### Table: `attendances`
 
 - `id` (UUID, Primary Key)
 - `eventId` (UUID, FK -> `events.id`, Not Null)
-- `churchId` (UUID, FK -> `churches.id`, Not Null)
-- `profileId` (UUID, FK -> `profiles.id`)
-- `childId` (UUID, FK -> `children.id`)
-- `checkinLocationId` (UUID, FK -> `checkin_locations.id`)
-- `status` (Enum: 'CheckedIn', 'Absent', 'Excused', Not Null)
+- `profileId` (UUID, FK -> `profiles.id`, Not Null)
+- `status` (Enum: 'Present', 'Absent', 'Late')
 - `note` (Text)
+- `recordedByProfileId` (UUID, FK -> `profiles.id`, Not Null)
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
 

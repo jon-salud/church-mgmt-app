@@ -105,12 +105,15 @@ initial release:
 - **Deletion Prevention:** The system shall prevent a request type from being deleted if there are
   any open requests of that type. This ensures data integrity.
 
-#### 3.2.4. Service & Event Check-in
+#### 3.2.4. Events, Volunteer Management & Check-in
 
-- **Dashboard:** Church Administrators shall have access to a dashboard for monitoring check-in and
-  attendance data.
-- **Attendance Tracking:** The system shall record attendance for members who are checked into a
-  service or event, providing historical data for administrators.
+- **Event Management:** Church Administrators shall be able to create, update, and delete events with details including title, description, date/time, location, and visibility settings.
+- **Volunteer Coordination:** Administrators shall be able to define volunteer roles for each event, specifying the number of volunteers needed for each role.
+- **Volunteer Signup:** Members shall be able to view available volunteer opportunities and sign up for roles, with the system preventing over-subscription.
+- **Volunteer Dashboard:** Administrators shall have access to a dashboard showing volunteer signup status, capacity tracking, and member assignments for each event.
+- **Check-in Dashboard:** Church Administrators shall have access to a dashboard for monitoring check-in and attendance data.
+- **Attendance Tracking:** The system shall record attendance for members who are checked into a service or event, providing historical data for administrators.
+- **Reporting:** Administrators shall be able to export attendance and volunteer data for reporting and analysis.
 
 ### 3.3. Non-Functional Requirements
 

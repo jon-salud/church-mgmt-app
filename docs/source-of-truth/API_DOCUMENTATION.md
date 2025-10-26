@@ -316,3 +316,176 @@ This section covers endpoints related to general requests.
   - **Code:** `400 Bad Request` - If the request body is missing required fields or contains invalid
     data.
   - **Code:** `401 Unauthorized` - If the user is not authenticated.
+
+---
+
+## 4. Events and Volunteer Management
+
+This section covers endpoints related to managing church events and volunteer coordination.
+
+### Events
+
+#### GET /events
+
+- **Description:** Retrieves a list of all events for the church.
+- **Query Parameters:**
+  - None
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    [
+      {
+        "id": "event-uuid-1",
+        "churchId": "church-uuid-1",
+        "title": "Sunday Service",
+        "description": "Weekly worship service",
+        "startAt": "2025-01-01T10:00:00Z",
+        "endAt": "2025-01-01T11:30:00Z",
+        "location": "Main Sanctuary",
+        "visibility": "public",
+        "groupId": null,
+        "volunteerRoles": [
+          {
+            "id": "role-uuid-1",
+            "name": "Usher",
+            "needed": 4,
+            "signups": [
+              {
+                "id": "signup-uuid-1",
+                "userId": "user-uuid-1",
+                "user": {
+                  "id": "user-uuid-1",
+                  "email": "member@example.com"
+                }
+              }
+            ]
+          }
+        ],
+        "createdAt": "timestamp",
+        "updatedAt": "timestamp"
+      }
+    ]
+    ```
+
+#### POST /events
+
+- **Description:** Creates a new event.
+- **Request Body:**
+
+  ```json
+  {
+    "title": "string (required)",
+    "description": "string (optional)",
+    "startAt": "ISO 8601 timestamp (required)",
+    "endAt": "ISO 8601 timestamp (required)",
+    "location": "string (optional)",
+    "visibility": "public|private (optional, default: private)",
+    "groupId": "UUID (optional)"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** The newly created event object.
+
+#### PATCH /events/:id
+
+- **Description:** Updates an existing event.
+- **Request Body:** Same as POST, all fields optional.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** The updated event object.
+
+#### DELETE /events/:id
+
+- **Description:** Deletes an event.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Success response with deleted event ID.
+
+### Volunteer Roles
+
+#### POST /events/:eventId/volunteer-roles
+
+- **Description:** Creates a volunteer role for an event. (Admin only)
+- **Request Body:**
+
+  ```json
+  {
+    "name": "string (required)",
+    "needed": "integer (required, min: 1)"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** The newly created volunteer role object.
+
+#### PATCH /events/volunteer-roles/:roleId
+
+- **Description:** Updates a volunteer role. (Admin only)
+- **Request Body:**
+
+  ```json
+  {
+    "name": "string (optional)",
+    "needed": "integer (optional, min: 1)"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** The updated volunteer role object.
+
+#### DELETE /events/volunteer-roles/:roleId
+
+- **Description:** Deletes a volunteer role. (Admin only)
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Success response.
+
+### Volunteer Signups
+
+#### POST /events/volunteer-roles/:roleId/signups
+
+- **Description:** Signs up the authenticated user for a volunteer role.
+- **Request Body:** None (user is determined from authentication)
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** The newly created signup object.
+
+#### DELETE /events/volunteer-signups/:signupId
+
+- **Description:** Cancels a volunteer signup. (Owner or Admin only)
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Success response.
+
+### Attendance
+
+#### POST /events/:id/attendance
+
+- **Description:** Records attendance for an event.
+- **Request Body:**
+
+  ```json
+  {
+    "userId": "UUID (required)",
+    "status": "Present|Absent|Late (required)",
+    "note": "string (optional)"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** The attendance record.
+
+#### GET /events/:id/attendance.csv
+
+- **Description:** Exports attendance data as CSV. (Admin only)
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content-Type:** `text/csv`
+  - **Content:** CSV file with attendance data.
