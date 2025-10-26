@@ -177,7 +177,6 @@ export const clientApi = {
       method: 'POST',
       body: formData,
       // Don't set Content-Type header, let the browser set it with boundary
-      headers: {},
     });
   },
   async updateDocument(
