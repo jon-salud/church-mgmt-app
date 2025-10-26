@@ -126,7 +126,7 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ### 🔄 In Progress
 
-- Persona documentation scaffolding — Created `docs/source-of-truth/personas/` with baseline notes for each identified persona; ready for iterative requirement refinements.
+- Persona documentation deep dive — Expanded every file in `docs/source-of-truth/personas/` with structured personas (goals, journeys, requirements, metrics); next action is to translate gaps into BRD/FRD updates and roadmap items.
 
 ### 📝 Backlog / Upcoming
 
