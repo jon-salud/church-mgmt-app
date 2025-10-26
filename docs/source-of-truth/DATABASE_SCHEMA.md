@@ -274,8 +274,6 @@ tables.
 - `title` (Text, Not Null)
 - `description` (Text, Not Null)
 - `priority` (Enum: 'Low', 'Normal', 'High', 'Urgent')
-- `description` (Text, Not Null)
-- `priority` (Enum: 'Low', 'Normal', 'High', 'Urgent')
 - `status` (Enum: 'Pending', 'InProgress', 'Closed')
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
