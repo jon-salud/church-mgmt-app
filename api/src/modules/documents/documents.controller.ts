@@ -119,10 +119,20 @@ export class DocumentsController {
 
     // Parse JSON fields from form data
     const fields = await this.parseMultipartFields(req);
+    let roleIds: string[];
+    if (Array.isArray(fields.roleIds)) {
+      roleIds = fields.roleIds;
+    } else {
+      try {
+        roleIds = JSON.parse(fields.roleIds || '[]');
+      } catch (e) {
+        throw new BadRequestException('Malformed JSON in roleIds field');
+      }
+    }
     const dto: CreateDocumentDto = {
       title: fields.title,
       description: fields.description,
-      roleIds: Array.isArray(fields.roleIds) ? fields.roleIds : JSON.parse(fields.roleIds || '[]'),
+      roleIds,
     };
 
     return this.documentsService.create(
