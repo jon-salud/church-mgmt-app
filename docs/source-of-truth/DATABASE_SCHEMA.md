@@ -197,7 +197,6 @@ tables.
 - `recordedByProfileId` (UUID, FK -> `profiles.id`, Not Null)
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
-- `updatedAt` (Timestamp, Not Null)
 
 ### 4.6. Giving and Contributions
 
