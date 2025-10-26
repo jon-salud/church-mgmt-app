@@ -48,11 +48,20 @@ export class EventsPage extends BasePage {
   async deleteEvent(title: string) {
     const eventCard = this.getEventCard(title);
     await eventCard.getByText('Edit event details').click();
-    await eventCard.getByRole('button', { name: 'Delete event' }).click();
+    await eventCard.getByRole('button', { name: 'Archive Event' }).click();
   }
 
   async verifyEventNotVisible(title: string) {
     await expect(this.page.getByRole('heading', { name: title })).toHaveCount(0);
+  }
+
+  async toggleShowArchived() {
+    await this.page.getByLabel('Show archived events').check();
+  }
+
+  async verifyEventInArchivedList(title: string) {
+    await this.page.getByLabel('Show archived events').check();
+    await expect(this.page.getByRole('heading', { name: title })).toBeVisible();
   }
 
   private getEventCard(title: string) {

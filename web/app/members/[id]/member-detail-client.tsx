@@ -404,16 +404,16 @@ export function MemberDetailClient({
       <Modal
         open={isRemoveOpen}
         onClose={() => setIsRemoveOpen(false)}
-        title="Remove Member"
+        title="Archive Member"
         footer={
           <p className="text-xs text-muted-foreground">
-            This removes the member from the demo datastore along with related group memberships and
-            attendance.
+            This archives the member and hides them from the directory. They can be recovered by an
+            admin. Group memberships and attendance records will be preserved.
           </p>
         }
       >
         <p className="text-sm text-foreground">
-          Are you sure you want to remove{' '}
+          Are you sure you want to archive{' '}
           <span className="font-medium">
             {member.profile?.firstName} {member.profile?.lastName}
           </span>{' '}
@@ -438,7 +438,7 @@ export function MemberDetailClient({
             type="submit"
             className="rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground transition hover:bg-destructive/90"
           >
-            Remove Member
+            Archive Member
           </button>
         </form>
       </Modal>

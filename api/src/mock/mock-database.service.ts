@@ -1857,6 +1857,36 @@ export class MockDatabaseService {
     if (!role.isDeletable || role.slug === 'admin') {
       throw new Error('This role cannot be deleted.');
     }
+
+    // Handle role reassignment before soft delete
+    const assignments = this.users.filter(user => user.roles.some(r => r.roleId === id));
+    let reassigned = 0;
+    let targetRoleId: string | null = null;
+    if (assignments.length > 0) {
+      if (!input.reassignRoleId) {
+        throw new Error(
+          'Role is assigned to users. Provide reassignRoleId to transfer assignments.'
+        );
+      }
+      const resolved = this.resolveRoleId(input.reassignRoleId);
+      if (resolved === id) {
+        throw new Error('Reassignment role must be different from the role being deleted.');
+      }
+      const targetRole = this.getRoleById(resolved);
+      if (!targetRole) {
+        throw new Error('Target role not found.');
+      }
+      targetRoleId = targetRole.id;
+      this.users.forEach(user => {
+        if (!user.roles.some(r => r.roleId === id)) return;
+        user.roles = user.roles.filter(r => r.roleId !== id);
+        if (!user.roles.some(r => r.roleId === targetRole.id)) {
+          user.roles.push({ churchId: targetRole.churchId, roleId: targetRole.id });
+        }
+        reassigned += 1;
+      });
+    }
+
     // Soft delete - set deletedAt timestamp
     role.deletedAt = new Date().toISOString();
     const actorName = this.getUserName(input.actorUserId);
@@ -1868,9 +1898,11 @@ export class MockDatabaseService {
       summary: `${actorName} soft-deleted role ${role.name}`,
       metadata: {
         roleId: role.id,
+        reassignedTo: targetRoleId,
+        reassignedCount: reassigned,
       },
     });
-    return { deleted: true, reassigned: 0 };
+    return { deleted: true, reassigned };
   }
 
   createSession(email: string, provider: DemoSession['provider'], requestedRole?: string) {
@@ -2733,7 +2765,7 @@ export class MockDatabaseService {
       summary: `${actorName} permanently deleted role ${role.name}`,
       metadata: {
         reassignedTo: targetRoleId,
-        deletedAt: role.deletedAt,
+        reassignedCount: reassigned,
       },
     });
     return { deleted: true, reassigned };

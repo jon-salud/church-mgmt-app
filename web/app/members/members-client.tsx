@@ -1,9 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Modal } from '../../components/ui/modal';
 import { createMemberAction } from '../actions';
+import { clientApi } from '../../lib/api.client';
 
 type RoleOption = {
   id: string;
@@ -15,11 +16,35 @@ type MembersClientProps = {
   members: Array<any>;
   roles: RoleOption[];
   initialQuery: string;
+  me: any;
 };
 
-export function MembersClient({ members, roles, initialQuery }: MembersClientProps) {
+export function MembersClient({ members, roles, initialQuery, me }: MembersClientProps) {
   const [isAddOpen, setIsAddOpen] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
+  const [archivedMembers, setArchivedMembers] = useState<any[]>([]);
   const defaultRoleId = roles.find(role => role.slug === 'member')?.id ?? roles[0]?.id ?? '';
+  const isAdmin = me?.user?.roles?.some((role: any) => role.slug === 'admin') ?? false;
+
+  const handleRecoverMember = async (memberId: string) => {
+    try {
+      await clientApi.recoverUser(memberId);
+      // Refresh the page to update the list
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to recover member:', error);
+      alert('Failed to recover member. Please try again.');
+    }
+  };
+
+  useEffect(() => {
+    if (showArchived && isAdmin && archivedMembers.length === 0) {
+      clientApi.listDeletedUsers().then(setArchivedMembers).catch(console.error);
+    }
+  }, [showArchived, isAdmin, archivedMembers.length]);
+
+  // Filter members based on archived status
+  const displayedMembers = showArchived ? [...members, ...archivedMembers] : members;
 
   return (
     <section className="space-y-6">
@@ -49,6 +74,17 @@ export function MembersClient({ members, roles, initialQuery }: MembersClientPro
               Search
             </button>
           </form>
+          {isAdmin && (
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={showArchived}
+                onChange={e => setShowArchived(e.target.checked)}
+                className="rounded border border-border"
+              />
+              Show archived members
+            </label>
+          )}
           <button
             id="add-member-button"
             type="button"
@@ -82,10 +118,15 @@ export function MembersClient({ members, roles, initialQuery }: MembersClientPro
               <th scope="col" className="px-4 py-3">
                 Groups
               </th>
+              {showArchived && (
+                <th scope="col" className="px-4 py-3">
+                  Actions
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {members.map(member => (
+            {displayedMembers.map(member => (
               <tr key={member.id} className="transition hover:bg-muted/70">
                 <td className="px-4 py-3 font-medium">
                   <Link
@@ -103,6 +144,18 @@ export function MembersClient({ members, roles, initialQuery }: MembersClientPro
                 <td className="px-4 py-3 text-muted-foreground">
                   {member.groups?.map((g: any) => g.name).join(', ') || '—'}
                 </td>
+                {showArchived && (
+                  <td className="px-4 py-3">
+                    {member.deletedAt && (
+                      <button
+                        onClick={() => handleRecoverMember(member.id)}
+                        className="rounded-md bg-green-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-green-700"
+                      >
+                        Recover
+                      </button>
+                    )}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>

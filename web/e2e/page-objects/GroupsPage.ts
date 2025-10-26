@@ -10,6 +10,10 @@ export class GroupsPage extends BasePage {
     await super.goto('http://localhost:3000/groups');
   }
 
+  async gotoGroup(groupId: string) {
+    await super.goto(`http://localhost:3000/groups/${groupId}`);
+  }
+
   async addMemberToGroup(memberId: string, role: string, status: string) {
     const addMemberForm = this.page.locator('form', {
       has: this.page.getByRole('button', { name: 'Add to Group' }),

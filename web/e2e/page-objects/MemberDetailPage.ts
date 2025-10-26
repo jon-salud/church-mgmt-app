@@ -29,7 +29,7 @@ export class MemberDetailPage extends BasePage {
   }
 
   async removeMember() {
-    await this.page.getByRole('button', { name: 'Remove Member' }).click();
+    await this.page.getByRole('button', { name: 'Archive Member' }).click();
     await this.page.waitForURL('http://localhost:3000/members');
   }
 

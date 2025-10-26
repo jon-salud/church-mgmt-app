@@ -120,4 +120,44 @@ export const clientApi = {
       body: JSON.stringify({ emails }),
     });
   },
+  // Soft delete admin endpoints
+  async hardDeleteUser(userId: string) {
+    return apiFetch(`/users/${userId}/hard`, {
+      method: 'DELETE',
+    });
+  },
+  async recoverUser(userId: string) {
+    return apiFetch(`/users/${userId}/undelete`, {
+      method: 'POST',
+    });
+  },
+  async listDeletedUsers() {
+    return apiFetch<any[]>('/users/deleted');
+  },
+  async hardDeleteEvent(eventId: string) {
+    return apiFetch(`/events/${eventId}/hard`, {
+      method: 'DELETE',
+    });
+  },
+  async recoverEvent(eventId: string) {
+    return apiFetch(`/events/${eventId}/undelete`, {
+      method: 'POST',
+    });
+  },
+  async listDeletedEvents() {
+    return apiFetch<any[]>('/events/deleted');
+  },
+  async hardDeleteRole(roleId: string) {
+    return apiFetch(`/roles/${roleId}/hard`, {
+      method: 'DELETE',
+    });
+  },
+  async recoverRole(roleId: string) {
+    return apiFetch(`/roles/${roleId}/undelete`, {
+      method: 'POST',
+    });
+  },
+  async listDeletedRoles() {
+    return apiFetch<any[]>('/roles/deleted');
+  },
 };

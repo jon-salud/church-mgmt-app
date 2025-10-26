@@ -28,6 +28,17 @@ export class MembersPage extends BasePage {
     ).toHaveCount(0);
   }
 
+  async toggleShowArchived() {
+    await this.page.getByLabel('Show archived members').check();
+  }
+
+  async verifyMemberInArchivedList(firstName: string, lastName: string) {
+    await this.page.getByLabel('Show archived members').check();
+    await expect(
+      this.page.getByRole('cell', { name: new RegExp(`${firstName}\\s+${lastName}`) })
+    ).toBeVisible();
+  }
+
   async getMemberId(firstName: string, lastName: string): Promise<string | null> {
     const memberLink = this.page.locator(`a:has-text("${firstName} ${lastName}")`);
     if (await memberLink.count()) {

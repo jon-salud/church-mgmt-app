@@ -13,6 +13,7 @@ import {
   recordAttendanceAction,
   updateEventAction,
 } from '../actions';
+import { clientApi } from '../../lib/api.client';
 import { loadOfflineSnapshot, persistOfflineSnapshot } from '../../lib/offline-cache';
 import { useOfflineStatus } from '../../lib/use-offline-status';
 
@@ -42,7 +43,21 @@ export function EventsClient({ events, members, groups, me }: EventsClientProps)
   const [eventState, setEventState] = useState(events);
   const [memberState, setMemberState] = useState(members);
   const [groupState, setGroupState] = useState(groups);
+  const [showArchived, setShowArchived] = useState(false);
+  const [archivedEvents, setArchivedEvents] = useState<any[]>([]);
   const isOffline = useOfflineStatus();
+  const isAdmin = me?.user?.roles?.some((role: any) => role.slug === 'admin') ?? false;
+
+  const handleRecoverEvent = async (eventId: string) => {
+    try {
+      await clientApi.recoverEvent(eventId);
+      // Refresh the page to update the list
+      window.location.reload();
+    } catch (error) {
+      console.error('Failed to recover event:', error);
+      alert('Failed to recover event. Please try again.');
+    }
+  };
 
   useEffect(() => {
     setEventState(events);
@@ -86,11 +101,18 @@ export function EventsClient({ events, members, groups, me }: EventsClientProps)
     });
   }, [isOffline, eventState.length, memberState.length, groupState.length]);
 
-  const sortedEvents = useMemo(
-    () =>
-      [...eventState].sort((a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()),
-    [eventState]
-  );
+  useEffect(() => {
+    if (showArchived && isAdmin && archivedEvents.length === 0) {
+      clientApi.listDeletedEvents().then(setArchivedEvents).catch(console.error);
+    }
+  }, [showArchived, isAdmin, archivedEvents.length]);
+
+  const sortedEvents = useMemo(() => {
+    const allEvents = showArchived ? [...eventState, ...archivedEvents] : eventState;
+    return [...allEvents].sort(
+      (a, b) => new Date(a.startAt).getTime() - new Date(b.startAt).getTime()
+    );
+  }, [eventState, showArchived, archivedEvents]);
 
   return (
     <section className="space-y-6">
@@ -107,14 +129,27 @@ export function EventsClient({ events, members, groups, me }: EventsClientProps)
             </p>
           ) : null}
         </div>
-        <button
-          id="schedule-event-button"
-          type="button"
-          onClick={() => setIsCreateOpen(true)}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-        >
-          Schedule event
-        </button>
+        <div className="flex flex-col gap-2 md:flex-row md:items-center">
+          {isAdmin && (
+            <label className="flex items-center gap-2 text-sm">
+              <input
+                type="checkbox"
+                checked={showArchived}
+                onChange={e => setShowArchived(e.target.checked)}
+                className="rounded border border-border"
+              />
+              Show archived events
+            </label>
+          )}
+          <button
+            id="schedule-event-button"
+            type="button"
+            onClick={() => setIsCreateOpen(true)}
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+          >
+            Schedule event
+          </button>
+        </div>
       </div>
 
       <div className="space-y-6">
@@ -162,6 +197,14 @@ export function EventsClient({ events, members, groups, me }: EventsClientProps)
                   >
                     Edit
                   </button>
+                  {event.deletedAt && isAdmin && (
+                    <button
+                      onClick={() => handleRecoverEvent(event.id)}
+                      className="rounded-md bg-green-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-green-700"
+                    >
+                      Recover
+                    </button>
+                  )}
                 </div>
               </header>
 
@@ -566,18 +609,18 @@ export function EventsClient({ events, members, groups, me }: EventsClientProps)
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
                   <h3 className="text-sm font-semibold text-destructive-foreground">
-                    Delete event
+                    Archive event
                   </h3>
                   <p className="text-xs text-destructive-foreground/70">
-                    Attendees will no longer see this on the calendar. Attendance logs are
-                    discarded.
+                    This event will be hidden from the calendar but can be recovered by an admin.
+                    Attendance logs will be preserved.
                   </p>
                 </div>
                 <button
                   id="delete-event-button"
                   className="rounded-md bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground transition hover:bg-destructive/80"
                 >
-                  Delete Event
+                  Archive Event
                 </button>
               </div>
             </form>
