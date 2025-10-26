@@ -3,6 +3,7 @@ import { AppModule } from '../src/modules/app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { getAuthToken } from './support/get-auth-token';
 import { MockDatabaseService } from '../src/mock/mock-database.service';
+import { NotificationsService } from '../src/modules/notifications/notifications.service';
 
 describe('Checkin (e2e-light)', () => {
   let app: NestFastifyApplication;
@@ -14,7 +15,13 @@ describe('Checkin (e2e-light)', () => {
   let mockDbService: MockDatabaseService;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
+    const moduleRef = await Test.createTestingModule({ imports: [AppModule] })
+      .overrideProvider(NotificationsService)
+      .useValue({
+        processNotification: jest.fn(),
+        sendNotification: jest.fn(),
+      })
+      .compile();
     const adapter = new FastifyAdapter();
     app = moduleRef.createNestApplication<NestFastifyApplication>(adapter);
     app.setGlobalPrefix('api/v1');

@@ -212,6 +212,22 @@ interface EventDeleteInput {
   actorUserId: string;
 }
 
+interface EventVolunteerRoleCreateInput {
+  eventId: string;
+  name: string;
+  needed: number;
+}
+
+interface EventVolunteerRoleUpdateInput {
+  name?: string;
+  needed?: number;
+}
+
+interface EventVolunteerSignupCreateInput {
+  volunteerRoleId: string;
+  userId: string;
+}
+
 interface RoleCreateInput {
   name: string;
   description?: string;
@@ -322,6 +338,8 @@ export class MockDatabaseService {
   private settings: MockSettings[] = clone(mockSettings);
   private invitations: MockInvitation[] = clone(mockInvitations);
   private pushSubscriptions: any[] = [];
+  private eventVolunteerRoles: any[] = [];
+  private eventVolunteerSignups: any[] = [];
 
   constructor(private readonly auditPersistence: AuditLogPersistence) {
     this.hydrateAuditLogSnapshot();
@@ -1130,6 +1148,64 @@ export class MockDatabaseService {
       },
     });
     return { success: true };
+  }
+
+  createEventVolunteerRole(input: EventVolunteerRoleCreateInput) {
+    const role = {
+      id: `evt-role-${randomUUID()}`,
+      eventId: input.eventId,
+      name: input.name,
+      needed: input.needed,
+    };
+    this.eventVolunteerRoles.push(role);
+    return clone(role);
+  }
+
+  updateEventVolunteerRole(id: string, input: EventVolunteerRoleUpdateInput) {
+    const role = this.eventVolunteerRoles.find(r => r.id === id);
+    if (!role) {
+      return null;
+    }
+    if (input.name) {
+      role.name = input.name;
+    }
+    if (input.needed) {
+      role.needed = input.needed;
+    }
+    return clone(role);
+  }
+
+  deleteEventVolunteerRole(id: string) {
+    const index = this.eventVolunteerRoles.findIndex(r => r.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    this.eventVolunteerRoles.splice(index, 1);
+    this.eventVolunteerSignups = this.eventVolunteerSignups.filter(s => s.volunteerRoleId !== id);
+    return { success: true };
+  }
+
+  createEventVolunteerSignup(input: EventVolunteerSignupCreateInput) {
+    const signup = {
+      id: `evt-signup-${randomUUID()}`,
+      volunteerRoleId: input.volunteerRoleId,
+      userId: input.userId,
+    };
+    this.eventVolunteerSignups.push(signup);
+    return clone(signup);
+  }
+
+  deleteEventVolunteerSignup(id: string) {
+    const index = this.eventVolunteerSignups.findIndex(s => s.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    this.eventVolunteerSignups.splice(index, 1);
+    return { success: true };
+  }
+
+  getEventVolunteerSignupById(id: string) {
+    return clone(this.eventVolunteerSignups.find(s => s.id === id) || null);
   }
 
   recordAttendance(input: AttendanceInput) {

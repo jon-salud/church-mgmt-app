@@ -23,6 +23,7 @@ import {
 import { EventsService } from './events.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
+import { CreateEventVolunteerRoleDto, UpdateEventVolunteerRoleDto } from './dto/volunteer.dto';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { arrayOfObjectsResponse, objectResponse } from '../../common/openapi/schemas';
@@ -105,5 +106,51 @@ export class EventsController {
     if (!isAdmin) {
       throw new ForbiddenException('Admin role required for event management');
     }
+  }
+
+  @Post(':id/volunteer-roles')
+  @ApiOperation({ summary: 'Create a volunteer role for an event' })
+  @ApiCreatedResponse(objectResponse)
+  createVolunteerRole(
+    @Param('id') id: string,
+    @Body() dto: CreateEventVolunteerRoleDto,
+    @Req() req: any
+  ) {
+    this.ensureAdmin(req);
+    return this.eventsService.createVolunteerRole(id, dto.name, dto.needed);
+  }
+
+  @Patch('volunteer-roles/:roleId')
+  @ApiOperation({ summary: 'Update a volunteer role' })
+  @ApiOkResponse(objectResponse)
+  updateVolunteerRole(
+    @Param('roleId') roleId: string,
+    @Body() dto: UpdateEventVolunteerRoleDto,
+    @Req() req: any
+  ) {
+    this.ensureAdmin(req);
+    return this.eventsService.updateVolunteerRole(roleId, dto.name, dto.needed);
+  }
+
+  @Delete('volunteer-roles/:roleId')
+  @ApiOperation({ summary: 'Delete a volunteer role' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  deleteVolunteerRole(@Param('roleId') roleId: string, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.eventsService.deleteVolunteerRole(roleId);
+  }
+
+  @Post('volunteer-roles/:roleId/signups')
+  @ApiOperation({ summary: 'Sign up for a volunteer role' })
+  @ApiCreatedResponse(objectResponse)
+  createVolunteerSignup(@Param('roleId') roleId: string, @Req() req: any) {
+    return this.eventsService.createVolunteerSignup(roleId, req.user.id);
+  }
+
+  @Delete('volunteer-signups/:signupId')
+  @ApiOperation({ summary: 'Delete a volunteer signup' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  async deleteVolunteerSignup(@Param('signupId') signupId: string, @Req() req: any) {
+    return await this.eventsService.deleteVolunteerSignup(signupId, req.user.id);
   }
 }

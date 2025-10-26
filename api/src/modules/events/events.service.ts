@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { AttendanceStatus } from '../../mock/mock-data';
 import { DATA_STORE, DataStore } from '../../datastore';
 import { CreateEventDto } from './dto/create-event.dto';
@@ -36,6 +36,41 @@ export class EventsService {
 
   remove(id: string, actorUserId: string) {
     return this.db.deleteEvent(id, { actorUserId });
+  }
+
+  createVolunteerRole(eventId: string, name: string, needed: number) {
+    return this.db.createEventVolunteerRole({ eventId, name, needed });
+  }
+
+  updateVolunteerRole(id: string, name?: string, needed?: number) {
+    const updateData: { name?: string; needed?: number } = {};
+    if (name !== undefined) updateData.name = name;
+    if (needed !== undefined) updateData.needed = needed;
+    return this.db.updateEventVolunteerRole(id, updateData);
+  }
+
+  deleteVolunteerRole(id: string) {
+    return this.db.deleteEventVolunteerRole(id);
+  }
+
+  createVolunteerSignup(volunteerRoleId: string, userId: string) {
+    return this.db.createEventVolunteerSignup({ volunteerRoleId, userId });
+  }
+
+  async deleteVolunteerSignup(id: string, actorUserId: string) {
+    const signup = await this.db.getEventVolunteerSignupById(id);
+    if (!signup) {
+      throw new NotFoundException('Signup not found');
+    }
+
+    const user = await this.db.getUserById(actorUserId);
+    const isAdmin = user?.roles.some((role: any) => role.role === 'Admin');
+
+    if (signup.userId !== actorUserId && !isAdmin) {
+      throw new ForbiddenException('You are not authorized to delete this signup');
+    }
+
+    return this.db.deleteEventVolunteerSignup(id);
   }
 
   async exportAttendanceCsv(eventId: string) {

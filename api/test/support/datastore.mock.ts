@@ -41,6 +41,11 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   createEvent: resolvedFn(),
   updateEvent: resolvedFn(),
   deleteEvent: resolvedFn(),
+  createEventVolunteerRole: resolvedFn(),
+  updateEventVolunteerRole: resolvedFn(),
+  deleteEventVolunteerRole: resolvedFn(),
+  createEventVolunteerSignup: resolvedFn(),
+  deleteEventVolunteerSignup: resolvedFn(),
   recordAttendance: resolvedFn(),
   listAnnouncements: resolvedFn(),
   markAnnouncementRead: resolvedFn(),
@@ -93,4 +98,5 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   acceptInvitation: resolvedFn(),
   listInvitations: resolvedFn([]),
   bulkCreateInvitations: resolvedFn([]),
+  getEventVolunteerSignupById: resolvedFn(),
 });

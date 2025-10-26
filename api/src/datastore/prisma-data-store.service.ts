@@ -482,6 +482,43 @@ export class PrismaDataStore implements DataStore {
     throw new Error('deleteEvent is not yet implemented for Prisma data store');
   }
 
+  async createEventVolunteerRole(
+    input: Parameters<DataStore['createEventVolunteerRole']>[0]
+  ): Promise<StoreReturn<'createEventVolunteerRole'>> {
+    const role = await this.client.eventVolunteerRole.create({ data: input });
+    return role;
+  }
+
+  async updateEventVolunteerRole(
+    id: string,
+    input: Parameters<DataStore['updateEventVolunteerRole']>[1]
+  ): Promise<StoreReturn<'updateEventVolunteerRole'>> {
+    const role = await this.client.eventVolunteerRole.update({ where: { id }, data: input });
+    return role;
+  }
+
+  async deleteEventVolunteerRole(id: string): Promise<StoreReturn<'deleteEventVolunteerRole'>> {
+    await this.client.eventVolunteerSignup.deleteMany({ where: { volunteerRoleId: id } });
+    await this.client.eventVolunteerRole.delete({ where: { id } });
+    return { success: true };
+  }
+
+  async createEventVolunteerSignup(
+    input: Parameters<DataStore['createEventVolunteerSignup']>[0]
+  ): Promise<StoreReturn<'createEventVolunteerSignup'>> {
+    const signup = await this.client.eventVolunteerSignup.create({ data: input });
+    return signup;
+  }
+
+  async deleteEventVolunteerSignup(id: string): Promise<StoreReturn<'deleteEventVolunteerSignup'>> {
+    await this.client.eventVolunteerSignup.delete({ where: { id } });
+    return { success: true };
+  }
+
+  async getEventVolunteerSignupById(id: string) {
+    return this.client.eventVolunteerSignup.findUnique({ where: { id } });
+  }
+
   async recordAttendance(input: Parameters<DataStore['recordAttendance']>[0]) {
     const record = await this.client.attendance.upsert({
       where: { eventId_userId: { eventId: input.eventId, userId: input.userId } },
