@@ -40,3 +40,6 @@ api/prisma/client/
 # Database files
 *.db
 *.db-journal
+
+# Storage files (generated during runtime and tests)
+api/storage/audit-log.json

@@ -63,7 +63,7 @@ The application uses a mock datastore for development, which includes soft delet
 - **Soft Delete Behavior**: Records are "archived" rather than permanently deleted, preserving data integrity
 - **Recovery**: Admin users can recover archived records through the UI or API
 - **Data Persistence**: Mock data is stored in memory and resets on server restart
-- **Audit Trail**: All changes are logged to `api/storage/audit-log.json`
+- **Audit Trail**: All changes are logged to `api/storage/audit-log.json` (this file is not committed to git and is generated during runtime)
 
 ## 4. Running the Application
 
