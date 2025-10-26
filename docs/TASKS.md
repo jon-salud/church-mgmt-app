@@ -170,7 +170,7 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - **Soft Delete Implementation:** Replace hard deletes with soft deletes (add `deletedAt` timestamp) across all entities to maintain data integrity and audit trails.
     - **Schema Update ✅:** Added `deletedAt` fields to all tables including join tables (`group_members`, `document_permissions`, `announcement_audiences`) in `DATABASE_SCHEMA.md`
     - **Backend Implementation ✅:** Updated API endpoints, mock data store, and data layer to implement soft delete logic with admin-only hard delete and recovery endpoints
-    - **Frontend Implementation Pending:** Update UI components to show "archived" instead of "deleted", add admin controls for viewing deleted items, and implement recovery UI with safety indicators
+    - **Frontend Implementation ✅:** Update UI components to show "archived" instead of "deleted", add admin controls for viewing deleted items, and implement recovery UI with safety indicators
 
 - **GDPR Compliance Implementation:**
   - **Backend:** Implement data retention policies, right to erasure (soft delete), data portability, and consent management.
@@ -271,12 +271,12 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 - **Backend:** Implement public registration APIs and visitor data management
 - **Frontend:** Create public event registration flows without authentication
 
-#### Next (Q2)
+#### Visitor Conversion (Q2)
 
 - **Backend:** Add automated nurture workflows and conversion tracking
 - **Frontend:** Implement visitor follow-up interfaces and conversion pathways
 
-#### Later (Q3+)
+#### Advanced Features (Q3+)
 
 - **Backend:** Integrate CRM-lite features with interaction history and segmentation
 - **Frontend:** Add advanced visitor analytics and conversion optimization tools
