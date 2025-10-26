@@ -392,6 +392,37 @@ export async function deleteEventAction(formData: FormData) {
   revalidatePath('/events');
 }
 
+export async function createEventVolunteerRoleAction(formData: FormData) {
+  const eventId = String(formData.get('eventId'));
+  const name = String(formData.get('name'));
+  const needed = Number(formData.get('needed'));
+  await apiFetch(`/events/${eventId}/volunteer-roles`, {
+    method: 'POST',
+    body: JSON.stringify({ name, needed }),
+  });
+  revalidatePath('/events');
+}
+
+export async function deleteEventVolunteerRoleAction(formData: FormData) {
+  const roleId = String(formData.get('roleId'));
+  await apiFetch(`/events/volunteer-roles/${roleId}`, { method: 'DELETE' });
+  revalidatePath('/events');
+}
+
+export async function createEventVolunteerSignupAction(formData: FormData) {
+  const roleId = String(formData.get('roleId'));
+  await apiFetch(`/events/volunteer-roles/${roleId}/signups`, {
+    method: 'POST',
+  });
+  revalidatePath('/events');
+}
+
+export async function deleteEventVolunteerSignupAction(formData: FormData) {
+  const signupId = String(formData.get('signupId'));
+  await apiFetch(`/events/volunteer-signups/${signupId}`, { method: 'DELETE' });
+  revalidatePath('/events');
+}
+
 export async function demoLoginAction(formData: FormData) {
   const cookieStore = cookies();
   const returnTo = formData.get('returnTo')?.toString();

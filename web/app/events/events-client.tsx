@@ -5,7 +5,13 @@ import { format } from 'date-fns';
 import { Modal } from '../../components/ui/modal';
 import {
   createEventAction,
+  createEventVolunteerRoleAction,
+  createEventAction,
+  createEventVolunteerRoleAction,
+  createEventVolunteerSignupAction,
   deleteEventAction,
+  deleteEventVolunteerRoleAction,
+  deleteEventVolunteerSignupAction,
   recordAttendanceAction,
   updateEventAction,
 } from '../actions';
@@ -16,6 +22,7 @@ type EventsClientProps = {
   events: Array<any>;
   members: Array<any>;
   groups: Array<any>;
+  me: any;
 };
 
 type EventDraft = {
@@ -28,9 +35,10 @@ type EventDraft = {
   groupId?: string | null;
   tags?: string[] | null;
   description?: string | null;
+  volunteerRoles?: any[];
 };
 
-export function EventsClient({ events, members, groups }: EventsClientProps) {
+export function EventsClient({ events, members, groups, me }: EventsClientProps) {
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [eventModal, setEventModal] = useState<EventDraft | null>(null);
   const [eventState, setEventState] = useState(events);
@@ -149,6 +157,7 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                         groupId: event.groupId ?? null,
                         tags: event.tags ?? [],
                         description: event.description ?? '',
+                        volunteerRoles: event.volunteerRoles ?? [],
                       })
                     }
                     className="rounded-md border border-border px-3 py-1 text-xs text-foreground transition hover:bg-muted"
@@ -174,6 +183,32 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                         <span className="text-muted-foreground">{record.status}</span>
                       </li>
                     ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-semibold text-foreground">Volunteer Roles</h3>
+                  <ul className="mt-2 grid gap-2 text-sm">
+                    {event.volunteerRoles?.map((role: any) => {
+                      const userId = me?.user?.id;
+                      const userSignup = role.signups?.find((s: any) => s.userId === userId);
+                      return (
+                        <li key={role.id} className="flex justify-between rounded-md border border-border bg-card/60 px-3 py-2">
+                          <span>{role.name} ({role.signups?.length || 0}/{role.needed})</span>
+                          {userSignup ? (
+                            <form action={deleteEventVolunteerSignupAction}>
+                              <input type="hidden" name="signupId" value={userSignup.id} />
+                              <button type="submit" className="text-xs text-destructive">Cancel Signup</button>
+                            </form>
+                          ) : (
+                            <form action={createEventVolunteerSignupAction}>
+                              <input type="hidden" name="roleId" value={role.id} />
+                              <button type="submit" className="text-xs text-primary">Sign Up</button>
+                            </form>
+                          )}
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
 
@@ -450,6 +485,28 @@ export function EventsClient({ events, members, groups }: EventsClientProps) {
                   className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
                 />
               </label>
+
+              <div className="md:col-span-2">
+                <h3 className="text-sm font-semibold text-foreground">Volunteer Roles</h3>
+                <div className="mt-2 space-y-2">
+                  {eventModal.volunteerRoles?.map((role: any) => (
+                    <div key={role.id} className="flex items-center justify-between rounded-md border border-border bg-card/60 px-3 py-2">
+                      <span>{role.name} ({role.needed})</span>
+                      <form action={deleteEventVolunteerRoleAction}>
+                        <input type="hidden" name="roleId" value={role.id} />
+                        <button type="submit" className="text-xs text-destructive">Remove</button>
+                      </form>
+                    </div>
+                  ))}
+                </div>
+                <form action={createEventVolunteerRoleAction} className="mt-2 flex items-center gap-2">
+                  <input type="hidden" name="eventId" value={eventModal.id} />
+                  <input name="name" placeholder="Role name" className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" />
+                  <input name="needed" type="number" placeholder="Needed" className="w-20 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" />
+                  <button type="submit" className="rounded-md bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground">Add Role</button>
+                </form>
+              </div>
+
               <div className="md:col-span-2 flex justify-end gap-2">
                 <button
                   id="edit-cancel-button"

@@ -121,6 +121,37 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.deleteEvent(id, input);
   }
 
+  async createEventVolunteerRole(
+    input: Parameters<MockDatabaseService['createEventVolunteerRole']>[0]
+  ) {
+    return this.mock.createEventVolunteerRole(input);
+  }
+
+  async updateEventVolunteerRole(
+    id: string,
+    input: Parameters<MockDatabaseService['updateEventVolunteerRole']>[1]
+  ) {
+    return this.mock.updateEventVolunteerRole(id, input);
+  }
+
+  async deleteEventVolunteerRole(id: string) {
+    return this.mock.deleteEventVolunteerRole(id);
+  }
+
+  async createEventVolunteerSignup(
+    input: Parameters<MockDatabaseService['createEventVolunteerSignup']>[0]
+  ) {
+    return this.mock.createEventVolunteerSignup(input);
+  }
+
+  async deleteEventVolunteerSignup(id: string) {
+    return this.mock.deleteEventVolunteerSignup(id);
+  }
+
+  async getEventVolunteerSignupById(id: string) {
+    return this.mock.getEventVolunteerSignupById(id);
+  }
+
   async recordAttendance(input: Parameters<MockDatabaseService['recordAttendance']>[0]) {
     return this.mock.recordAttendance(input);
   }
