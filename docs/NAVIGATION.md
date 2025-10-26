@@ -52,7 +52,7 @@ Admin users can access archived (soft-deleted) records for recovery:
 
 ### v1.0.0 - Archive Navigation
 
-- **Date**: 2024-12-19
+- **Date**: 2025-10-27
 - **Changes**:
   - Added Archive & Recovery section with navigation paths
   - Documented routes for viewing archived members, events, and roles

@@ -232,7 +232,7 @@ Enjoy exploring your church management application! 🏛️✨
 
 ### v1.0.0 - Soft Delete Demo
 
-- **Date**: 2024-12-19
+- **Date**: 2025-10-27
 - **Changes**:
   - Added Archive & Recovery section to Settings & Administration
   - Documented soft delete behavior and admin recovery features

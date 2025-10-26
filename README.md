@@ -305,7 +305,7 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 
 ### v1.0.0 - Soft Delete Implementation
 
-- **Date**: 2024-12-19
+- **Date**: 2025-10-27
 - **Changes**:
   - Added soft delete functionality to features table
   - Updated data description to include "soft delete (no Postgres required)"

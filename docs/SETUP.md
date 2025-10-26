@@ -148,7 +148,7 @@ changes, run the quality checks to ensure your code meets the project's standard
 
 ### v1.0.0 - Soft Delete Documentation
 
-- **Date**: 2024-12-19
+- **Date**: 2025-10-27
 - **Changes**:
   - Added data management section explaining soft delete behavior
   - Documented archive/recovery functionality in mock datastore
