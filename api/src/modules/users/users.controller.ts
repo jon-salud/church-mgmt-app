@@ -72,6 +72,31 @@ export class UsersController {
     return this.usersService.delete(id, req.user.id);
   }
 
+  @Delete(':id/hard')
+  @ApiOperation({ summary: 'Permanently delete a user (admin only)' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  hardDelete(@Param('id') id: string, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.usersService.hardDelete(id, req.user.id);
+  }
+
+  @Post(':id/undelete')
+  @ApiOperation({ summary: 'Restore a deleted user (admin only)' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  undelete(@Param('id') id: string, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.usersService.undelete(id, req.user.id);
+  }
+
+  @Get('deleted')
+  @ApiOperation({ summary: 'List deleted users (admin only)' })
+  @ApiQuery({ name: 'q', required: false, description: 'Optional search query' })
+  @ApiOkResponse(arrayOfObjectsResponse)
+  listDeleted(@Req() req: any, @Query('q') q?: string) {
+    this.ensureAdmin(req);
+    return this.usersService.listDeleted(q);
+  }
+
   @Post('bulk-import')
   @ApiOperation({ summary: 'Bulk import members by sending invitations' })
   @ApiCreatedResponse(objectResponse)

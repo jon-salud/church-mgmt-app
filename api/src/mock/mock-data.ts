@@ -14,6 +14,7 @@ export interface MockSettings {
   requestTypes: string[];
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string;
 }
 
 export const mockSettings: MockSettings[] = [];
@@ -39,6 +40,7 @@ export interface MockRole {
   isDeletable: boolean;
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string;
 }
 
 export type MembershipStatus = 'Active' | 'Inactive';
@@ -63,6 +65,7 @@ export interface MockHousehold {
   anniversaryDate?: string;
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string;
 }
 
 export interface MockProfile {
@@ -110,6 +113,7 @@ export interface MockUser {
   lastLoginAt?: string;
   roles: Array<{ churchId: string; roleId: string }>;
   profile: MockProfile;
+  deletedAt?: string;
 }
 
 export interface MockGroupMember {
@@ -137,6 +141,7 @@ export interface MockGroup {
   tags: string[];
   leaderUserId?: string;
   members: MockGroupMember[];
+  deletedAt?: string;
 }
 
 export interface MockAttendance {
@@ -160,6 +165,7 @@ export interface MockEvent {
   groupId?: string;
   tags: string[];
   attendance: MockAttendance[];
+  deletedAt?: string;
 }
 
 export interface MockAnnouncementRead {
@@ -177,12 +183,14 @@ export interface MockAnnouncement {
   groupIds?: string[];
   publishAt: string;
   expireAt?: string;
+  deletedAt?: string;
 }
 
 export interface MockFund {
   id: string;
   churchId: string;
   name: string;
+  deletedAt?: string;
 }
 
 export interface MockContribution {
@@ -194,6 +202,7 @@ export interface MockContribution {
   method: ContributionMethod;
   fundId?: string;
   note?: string;
+  deletedAt?: string;
 }
 
 export interface MockAuditLog {
@@ -213,6 +222,7 @@ export interface MockChurch {
   id: string;
   name: string;
   timezone: string;
+  deletedAt?: string;
 }
 
 export interface MockCheckin {
@@ -225,6 +235,7 @@ export interface MockCheckin {
   checkoutTime?: string;
   checkedInBy?: string;
   checkedOutBy?: string;
+  deletedAt?: string;
 }
 
 export interface DemoSession {

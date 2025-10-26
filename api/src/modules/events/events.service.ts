@@ -38,6 +38,19 @@ export class EventsService {
     return this.db.deleteEvent(id, { actorUserId });
   }
 
+  // Admin operations for permanent deletion and recovery
+  hardDelete(id: string, actorUserId: string) {
+    return this.db.hardDeleteEvent(id, { actorUserId });
+  }
+
+  undelete(id: string, actorUserId: string) {
+    return this.db.undeleteEvent(id, { actorUserId });
+  }
+
+  listDeleted() {
+    return this.db.listDeletedEvents();
+  }
+
   createVolunteerRole(eventId: string, name: string, needed: number) {
     return this.db.createEventVolunteerRole({ eventId, name, needed });
   }

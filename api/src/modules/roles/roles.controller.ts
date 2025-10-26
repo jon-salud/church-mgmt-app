@@ -62,6 +62,30 @@ export class RolesController {
     return this.rolesService.delete(id, dto, req.user?.id);
   }
 
+  @Delete(':id/hard')
+  @ApiOperation({ summary: 'Permanently delete a role (admin only)' })
+  @ApiOkResponse(objectResponse)
+  hardDelete(@Param('id') id: string, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.rolesService.hardDelete(id, req.user?.id);
+  }
+
+  @Post(':id/undelete')
+  @ApiOperation({ summary: 'Restore a deleted role (admin only)' })
+  @ApiOkResponse(objectResponse)
+  undelete(@Param('id') id: string, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.rolesService.undelete(id, req.user?.id);
+  }
+
+  @Get('deleted')
+  @ApiOperation({ summary: 'List deleted roles (admin only)' })
+  @ApiOkResponse(arrayOfObjectsResponse)
+  listDeleted(@Req() req: any) {
+    this.ensureAdmin(req);
+    return this.rolesService.listDeleted();
+  }
+
   private ensureAdmin(req: any) {
     const roles: Array<{ role?: string }> = req.user?.roles ?? [];
     const isAdmin = roles.some(role => role.role === 'Admin');

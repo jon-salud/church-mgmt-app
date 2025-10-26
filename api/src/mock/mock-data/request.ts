@@ -8,6 +8,7 @@ export interface MockRequest {
   isConfidential: boolean;
   createdAt: string;
   status: 'Pending' | 'InProgress' | 'Closed';
+  deletedAt?: string;
 }
 
 export const mockRequests: MockRequest[] = [

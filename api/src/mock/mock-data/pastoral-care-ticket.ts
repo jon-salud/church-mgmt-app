@@ -9,4 +9,5 @@ export interface MockPastoralCareTicket {
   assigneeId?: string;
   createdAt: string;
   updatedAt: string;
+  deletedAt?: string;
 }

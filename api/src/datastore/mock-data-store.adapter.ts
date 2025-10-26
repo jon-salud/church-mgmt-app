@@ -381,4 +381,41 @@ export class MockDataStoreAdapter implements DataStore {
   ) {
     return this.mock.bulkCreateInvitations(churchId, emails, roleId, actorUserId, type);
   }
+
+  // Soft delete management methods
+  async hardDeleteUser(id: string, input: Parameters<MockDatabaseService['hardDeleteUser']>[1]) {
+    return this.mock.hardDeleteUser(id, input);
+  }
+
+  async hardDeleteEvent(id: string, input: Parameters<MockDatabaseService['hardDeleteEvent']>[1]) {
+    return this.mock.hardDeleteEvent(id, input);
+  }
+
+  async hardDeleteRole(id: string, input: Parameters<MockDatabaseService['hardDeleteRole']>[1]) {
+    return this.mock.hardDeleteRole(id, input);
+  }
+
+  async undeleteUser(id: string, input: Parameters<MockDatabaseService['undeleteUser']>[1]) {
+    return this.mock.undeleteUser(id, input);
+  }
+
+  async undeleteEvent(id: string, input: Parameters<MockDatabaseService['undeleteEvent']>[1]) {
+    return this.mock.undeleteEvent(id, input);
+  }
+
+  async undeleteRole(id: string, input: Parameters<MockDatabaseService['undeleteRole']>[1]) {
+    return this.mock.undeleteRole(id, input);
+  }
+
+  async listDeletedUsers(q?: string) {
+    return this.mock.listDeletedUsers(q);
+  }
+
+  async listDeletedEvents() {
+    return this.mock.listDeletedEvents();
+  }
+
+  async listDeletedRoles() {
+    return this.mock.listDeletedRoles();
+  }
 }
