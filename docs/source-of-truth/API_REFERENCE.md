@@ -114,6 +114,44 @@ The demo uses automatic authentication with the `demo-admin` token. No manual lo
 - `GET /audit` - View audit logs
 - `GET /metrics` - System metrics
 
+### Trustee Governance
+
+- `GET /governance/dashboard` - Governance dashboard data
+- `GET /governance/documents` - List governance documents
+- `POST /governance/documents/:id/acknowledge` - Acknowledge document
+- `GET /governance/approvals` - List approval requests
+- `POST /governance/approvals/:id/vote` - Submit approval vote
+
+### Coordinator Volunteer Management
+
+- `GET /volunteers/availability` - Get volunteer availability
+- `PUT /volunteers/availability` - Update personal availability
+- `GET /scheduling/templates` - List scheduling templates
+- `POST /scheduling/generate` - Generate volunteer assignments
+
+### Leader Ministry Dashboards
+
+- `GET /leaders/dashboard` - Ministry dashboard data
+- `GET /leaders/tasks` - Assigned tasks
+- `POST /leaders/tasks/:id/update` - Update task status
+- `POST /pastoral-notes` - Create pastoral note
+
+### Member Experience Enhancement
+
+- `GET /notifications` - User notifications
+- `PUT /notifications/preferences` - Update notification preferences
+- `GET /events/recommendations` - Event recommendations
+- `GET /serving/opportunities` - Serving opportunities
+
+### Visitor Conversion Funnel
+
+- `POST /visitors/register` - Register visitor
+- `GET /visitors/interactions` - Visitor interaction history
+- `POST /visitors/:id/interaction` - Record visitor interaction
+- `POST /visitors/:id/convert` - Convert visitor to member
+- `GET /nurture/workflows` - List nurture workflows
+- `POST /nurture/enroll` - Enroll visitor in workflow
+
 ## Data Formats
 
 All API responses use JSON format. Request bodies should be JSON for POST/PATCH/PUT operations.

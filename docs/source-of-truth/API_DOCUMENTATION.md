@@ -489,3 +489,321 @@ This section covers endpoints related to managing church events and volunteer co
   - **Code:** `200 OK`
   - **Content-Type:** `text/csv`
   - **Content:** CSV file with attendance data.
+
+---
+
+## Persona-Specific Endpoints
+
+### Trustee Governance
+
+#### GET /governance/dashboard
+
+- **Description:** Retrieves governance dashboard data including compliance reports, document acknowledgments, and approval statuses. (Trustee/Admin only)
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "complianceReports": [...],
+      "pendingApprovals": [...],
+      "documentAcknowledgments": [...],
+      "recentActivity": [...]
+    }
+    ```
+
+#### GET /governance/documents
+
+- **Description:** Lists governance documents with acknowledgment status. (Trustee/Admin only)
+- **Query Parameters:**
+  - `type` (string, optional): Filter by document type
+  - `acknowledged` (boolean, optional): Filter by acknowledgment status
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of governance documents.
+
+#### POST /governance/documents/:id/acknowledge
+
+- **Description:** Records acknowledgment of a governance document. (Trustee only)
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** Acknowledgment record.
+
+#### GET /governance/approvals
+
+- **Description:** Lists governance approvals requiring trustee action. (Trustee/Admin only)
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of approval requests.
+
+#### POST /governance/approvals/:id/vote
+
+- **Description:** Submits a vote on a governance approval. (Trustee only)
+- **Request Body:**
+
+  ```json
+  {
+    "vote": "Approve|Reject|Abstain",
+    "comments": "Optional comments"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** Vote record.
+
+### Coordinator Volunteer Management
+
+#### GET /volunteers/availability
+
+- **Description:** Retrieves volunteer availability for scheduling. (Coordinator/Admin only)
+- **Query Parameters:**
+  - `eventId` (UUID, optional): Filter by event
+  - `dateRange` (string, optional): Date range filter
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of volunteer availability records.
+
+#### PUT /volunteers/availability
+
+- **Description:** Updates volunteer availability. (Member only)
+- **Request Body:**
+
+  ```json
+  {
+    "dayOfWeek": 0,
+    "startTime": "09:00",
+    "endTime": "17:00",
+    "isAvailable": true,
+    "notes": "Optional notes"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Updated availability record.
+
+#### GET /scheduling/templates
+
+- **Description:** Lists scheduling templates for events. (Coordinator/Admin only)
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of scheduling templates.
+
+#### POST /scheduling/generate
+
+- **Description:** Generates volunteer assignments based on template and availability. (Coordinator/Admin only)
+- **Request Body:**
+
+  ```json
+  {
+    "eventId": "uuid",
+    "templateId": "uuid",
+    "date": "2025-01-01"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** Generated assignments.
+
+### Leader Ministry Dashboards
+
+#### GET /leaders/dashboard
+
+- **Description:** Retrieves ministry-specific dashboard data. (Leader only)
+- **Query Parameters:**
+  - `scope` (string, optional): Ministry scope filter
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "careRequests": [...],
+      "attendanceTrends": [...],
+      "engagementSignals": [...],
+      "assignedTasks": [...]
+    }
+    ```
+
+#### GET /leaders/tasks
+
+- **Description:** Lists tasks assigned to the leader. (Leader only)
+- **Query Parameters:**
+  - `status` (string, optional): Filter by task status
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of assigned tasks.
+
+#### POST /leaders/tasks/:id/update
+
+- **Description:** Updates task status and adds notes. (Leader only)
+- **Request Body:**
+
+  ```json
+  {
+    "status": "InProgress|Completed",
+    "notes": "Optional update notes"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Updated task.
+
+#### POST /pastoral-notes
+
+- **Description:** Creates a pastoral note for a member. (Leader only)
+- **Request Body:**
+
+  ```json
+  {
+    "subjectProfileId": "uuid",
+    "noteType": "Care|Discipleship|Counseling|Administrative",
+    "content": "Note content",
+    "isConfidential": false,
+    "followUpDate": "2025-01-15T10:00:00Z"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** Created pastoral note.
+
+### Member Experience Enhancement
+
+#### GET /notifications
+
+- **Description:** Retrieves user notifications. (Authenticated users)
+- **Query Parameters:**
+  - `unreadOnly` (boolean, optional): Filter to unread notifications
+  - `category` (string, optional): Filter by category
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of notifications.
+
+#### PUT /notifications/preferences
+
+- **Description:** Updates notification preferences. (Authenticated users)
+- **Request Body:**
+
+  ```json
+  {
+    "channel": "Email|SMS|Push",
+    "category": "Events|Announcements|Requests|Groups|Giving",
+    "isEnabled": true,
+    "frequency": "Immediate|Daily|Weekly|None"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Updated preferences.
+
+#### GET /events/recommendations
+
+- **Description:** Retrieves personalized event recommendations. (Members only)
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of recommended events with scores.
+
+#### GET /serving/opportunities
+
+- **Description:** Lists available serving opportunities. (Members only)
+- **Query Parameters:**
+  - `eventId` (UUID, optional): Filter by event
+  - `skills` (string[], optional): Filter by required skills
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of serving opportunities.
+
+### Visitor Conversion Funnel
+
+#### POST /visitors/register
+
+- **Description:** Registers a visitor for an event or requests information. (Public endpoint)
+- **Request Body:**
+
+  ```json
+  {
+    "email": "visitor@example.com",
+    "firstName": "John",
+    "lastName": "Doe",
+    "eventId": "uuid",
+    "source": "Website|Event|Referral",
+    "consentGiven": true
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** Visitor record.
+
+#### GET /visitors/interactions
+
+- **Description:** Retrieves visitor interaction history. (Staff/Admin only)
+- **Query Parameters:**
+  - `visitorId` (UUID, required): Visitor to retrieve interactions for
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of visitor interactions.
+
+#### POST /visitors/:id/interaction
+
+- **Description:** Records a new visitor interaction. (Staff/Admin only)
+- **Request Body:**
+
+  ```json
+  {
+    "interactionType": "PhoneCall|Meeting|EmailOpen",
+    "details": {},
+    "notes": "Optional notes"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** Interaction record.
+
+#### POST /visitors/:id/convert
+
+- **Description:** Converts a visitor to a full member profile. (Admin only)
+- **Request Body:**
+
+  ```json
+  {
+    "profileData": {
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "member@example.com"
+    }
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** New member profile with link to visitor record.
+
+#### GET /nurture/workflows
+
+- **Description:** Lists available nurture workflows. (Staff/Admin only)
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of nurture workflows.
+
+#### POST /nurture/enroll
+
+- **Description:** Enrolls a visitor in a nurture workflow. (Staff/Admin only)
+- **Request Body:**
+
+  ```json
+  {
+    "visitorId": "uuid",
+    "workflowId": "uuid"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** Enrollment record.

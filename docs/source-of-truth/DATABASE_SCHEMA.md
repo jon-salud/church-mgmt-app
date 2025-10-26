@@ -277,3 +277,274 @@ tables.
 - `status` (Enum: 'Pending', 'InProgress', 'Closed')
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
+
+---
+
+## 5. Persona-Specific Tables
+
+### 5.1. Trustee Governance
+
+### Table: `governance_documents`
+
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `title` (Text, Not Null)
+- `description` (Text)
+- `documentType` (Enum: 'Policy', 'AuditReport', 'MeetingMinutes', 'ComplianceReport')
+- `fileUrl` (Text, Not Null)
+- `version` (Text, Not Null)
+- `isActive` (Boolean, Not Null, Default: true)
+- `requiresAcknowledgment` (Boolean, Not Null, Default: false)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `document_acknowledgments`
+
+- `id` (UUID, Primary Key)
+- `documentId` (UUID, FK -> `governance_documents.id`, Not Null)
+- `profileId` (UUID, FK -> `profiles.id`, Not Null)
+- `acknowledgedAt` (Timestamp, Not Null)
+- `ipAddress` (Text)
+- `userAgent` (Text)
+
+### Table: `governance_approvals`
+
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `title` (Text, Not Null)
+- `description` (Text, Not Null)
+- `approvalType` (Enum: 'PolicyChange', 'BudgetApproval', 'IncidentReview', 'StrategicDecision')
+- `status` (Enum: 'Draft', 'Pending', 'Approved', 'Rejected', 'Expired')
+- `initiatorProfileId` (UUID, FK -> `profiles.id`, Not Null)
+- `decision` (Text)
+- `decisionDate` (Timestamp)
+- `expiresAt` (Timestamp)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `approval_votes`
+
+- `id` (UUID, Primary Key)
+- `approvalId` (UUID, FK -> `governance_approvals.id`, Not Null)
+- `profileId` (UUID, FK -> `profiles.id`, Not Null)
+- `vote` (Enum: 'Approve', 'Reject', 'Abstain')
+- `comments` (Text)
+- `votedAt` (Timestamp, Not Null)
+
+### 5.2. Coordinator Volunteer Management
+
+### Table: `volunteer_availability`
+
+- `id` (UUID, Primary Key)
+- `profileId` (UUID, FK -> `profiles.id`, Not Null)
+- `dayOfWeek` (Integer, 0-6, Not Null) -- 0 = Sunday
+- `startTime` (Time, Not Null)
+- `endTime` (Time, Not Null)
+- `isAvailable` (Boolean, Not Null, Default: true)
+- `notes` (Text)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `volunteer_blackout_dates`
+
+- `id` (UUID, Primary Key)
+- `profileId` (UUID, FK -> `profiles.id`, Not Null)
+- `startDate` (Date, Not Null)
+- `endDate` (Date, Not Null)
+- `reason` (Text)
+- `createdAt` (Timestamp, Not Null)
+
+### Table: `scheduling_templates`
+
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `name` (Text, Not Null)
+- `description` (Text)
+- `eventType` (Text, Not Null) -- e.g., 'SundayService', 'CommunityEvent'
+- `isActive` (Boolean, Not Null, Default: true)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `template_assignments`
+
+- `id` (UUID, Primary Key)
+- `templateId` (UUID, FK -> `scheduling_templates.id`, Not Null)
+- `roleName` (Text, Not Null)
+- `requiredCount` (Integer, Not Null)
+- `preferredSkills` (Text[]) -- Array of skill requirements
+- `createdAt` (Timestamp, Not Null)
+
+### Table: `reminder_configs`
+
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `eventType` (Text, Not Null)
+- `reminderType` (Enum: 'Email', 'SMS', 'Push')
+- `timing` (Interval, Not Null) -- e.g., '24 hours', '1 week'
+- `template` (Text, Not Null)
+- `isActive` (Boolean, Not Null, Default: true)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### 5.3. Leader Ministry Dashboards
+
+### Table: `ministry_scopes`
+
+- `id` (UUID, Primary Key)
+- `profileId` (UUID, FK -> `profiles.id`, Not Null)
+- `scopeType` (Enum: 'Group', 'MinistryArea', 'AgeGroup', 'Geographic')
+- `scopeValue` (Text, Not Null) -- e.g., group ID, ministry name
+- `permissions` (Text[], Not Null) -- Array of allowed actions
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `leader_tasks`
+
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `assigneeProfileId` (UUID, FK -> `profiles.id`, Not Null)
+- `assignerProfileId` (UUID, FK -> `profiles.id`, Not Null)
+- `title` (Text, Not Null)
+- `description` (Text)
+- `priority` (Enum: 'Low', 'Normal', 'High', 'Urgent')
+- `status` (Enum: 'Assigned', 'InProgress', 'Completed', 'Cancelled')
+- `dueDate` (Timestamp)
+- `relatedEntityType` (Text) -- e.g., 'Profile', 'Group', 'Event'
+- `relatedEntityId` (UUID)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `pastoral_notes`
+
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `subjectProfileId` (UUID, FK -> `profiles.id`, Not Null)
+- `authorProfileId` (UUID, FK -> `profiles.id`, Not Null)
+- `ministryScopeId` (UUID, FK -> `ministry_scopes.id`)
+- `noteType` (Enum: 'Care', 'Discipleship', 'Counseling', 'Administrative')
+- `content` (Text, Not Null)
+- `isConfidential` (Boolean, Not Null, Default: false)
+- `followUpDate` (Timestamp)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `alert_configs`
+
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `profileId` (UUID, FK -> `profiles.id`, Not Null)
+- `alertType` (Enum: 'AttendanceDip', 'UrgentRequest', 'VolunteerGap', 'EngagementChange')
+- `threshold` (JSONB, Not Null) -- Flexible configuration for alert conditions
+- `isActive` (Boolean, Not Null, Default: true)
+- `lastTriggered` (Timestamp)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### 5.4. Member Experience Enhancement
+
+### Table: `notification_preferences`
+
+- `id` (UUID, Primary Key)
+- `profileId` (UUID, FK -> `profiles.id`, Not Null)
+- `channel` (Enum: 'Email', 'SMS', 'Push', Not Null)
+- `category` (Enum: 'Events', 'Announcements', 'Requests', 'Groups', 'Giving')
+- `isEnabled` (Boolean, Not Null, Default: true)
+- `frequency` (Enum: 'Immediate', 'Daily', 'Weekly', 'None')
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `notifications`
+
+- `id` (UUID, Primary Key)
+- `profileId` (UUID, FK -> `profiles.id`, Not Null)
+- `title` (Text, Not Null)
+- `message` (Text, Not Null)
+- `category` (Enum: 'Events', 'Announcements', 'Requests', 'Groups', 'Giving')
+- `channel` (Enum: 'Email', 'SMS', 'Push', Not Null)
+- `isRead` (Boolean, Not Null, Default: false)
+- `actionUrl` (Text) -- Optional link to take action
+- `sentAt` (Timestamp, Not Null)
+- `readAt` (Timestamp)
+
+### Table: `event_recommendations`
+
+- `id` (UUID, Primary Key)
+- `profileId` (UUID, FK -> `profiles.id`, Not Null)
+- `eventId` (UUID, FK -> `events.id`, Not Null)
+- `score` (Decimal, 0-1, Not Null) -- Recommendation confidence score
+- `reason` (Text) -- Why this event was recommended
+- `isDismissed` (Boolean, Not Null, Default: false)
+- `createdAt` (Timestamp, Not Null)
+
+### Table: `serving_opportunities`
+
+- `id` (UUID, Primary Key)
+- `eventId` (UUID, FK -> `events.id`, Not Null)
+- `roleName` (Text, Not Null)
+- `description` (Text)
+- `requiredSkills` (Text[])
+- `timeCommitment` (Interval)
+- `isFilled` (Boolean, Not Null, Default: false)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### 5.5. Visitor Conversion Funnel
+
+### Table: `visitors`
+
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `email` (Text)
+- `phone` (Text)
+- `firstName` (Text)
+- `lastName` (Text)
+- `source` (Enum: 'Website', 'Event', 'Referral', 'SocialMedia', 'Other')
+- `interestLevel` (Enum: 'Casual', 'Interested', 'Committed', 'Converted')
+- `consentGiven` (Boolean, Not Null, Default: false)
+- `consentDate` (Timestamp)
+- `convertedToProfileId` (UUID, FK -> `profiles.id`) -- Links to member profile after conversion
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `visitor_interactions`
+
+- `id` (UUID, Primary Key)
+- `visitorId` (UUID, FK -> `visitors.id`, Not Null)
+- `interactionType` (Enum: 'WebsiteVisit', 'EventRSVP', 'EmailOpen', 'FormSubmission', 'PhoneCall', 'Meeting')
+- `details` (JSONB) -- Flexible data for different interaction types
+- `notes` (Text)
+- `staffProfileId` (UUID, FK -> `profiles.id`) -- Staff member who handled interaction
+- `createdAt` (Timestamp, Not Null)
+
+### Table: `nurture_workflows`
+
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `name` (Text, Not Null)
+- `description` (Text)
+- `trigger` (Enum: 'NewVisitor', 'EventInterest', 'FollowUpNeeded', 'Manual')
+- `isActive` (Boolean, Not Null, Default: true)
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `nurture_steps`
+
+- `id` (UUID, Primary Key)
+- `workflowId` (UUID, FK -> `nurture_workflows.id`, Not Null)
+- `stepNumber` (Integer, Not Null)
+- `actionType` (Enum: 'SendEmail', 'SendSMS', 'ScheduleCall', 'SendResource', 'Wait')
+- `delay` (Interval) -- Time to wait before executing this step
+- `templateId` (Text) -- Reference to email/SMS template
+- `content` (Text) -- For simple actions
+- `createdAt` (Timestamp, Not Null)
+
+### Table: `visitor_nurture_enrollments`
+
+- `id` (UUID, Primary Key)
+- `visitorId` (UUID, FK -> `visitors.id`, Not Null)
+- `workflowId` (UUID, FK -> `nurture_workflows.id`, Not Null)
+- `currentStep` (Integer, Not Null)
+- `status` (Enum: 'Active', 'Completed', 'Paused', 'Cancelled')
+- `enrolledAt` (Timestamp, Not Null)
+- `completedAt` (Timestamp)
+- `nextActionAt` (Timestamp)

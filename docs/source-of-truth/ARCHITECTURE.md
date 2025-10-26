@@ -68,17 +68,26 @@ applications.
   `admin` frontends. This reduces code duplication and ensures all data modifications go through the
   same business logic and validation rules.
 - **Robust Authorization:** The API will be responsible for enforcing all access control. It will
-  use a role-based access control (RBAC) system that can distinguish between different user roles.
+  use a role-based access control (RBAC) system that can distinguish between different user roles
+  with granular permissions and data scoping.
   - **Church-Level Roles (Admin, Leader, Member):** These users will have their access strictly
     scoped to their own church client's data.
+  - **Specialized Church Roles (Trustee, Coordinator):** These roles provide elevated access to
+    specific functional areas (governance, volunteer management) while maintaining church data
+    isolation.
+  - **Ministry-Scoped Roles:** Leaders can be assigned to specific ministry areas with filtered
+    access to relevant member data and care requests.
   - **System-Level Roles (Super Admin):** This role will have access to platform-wide data and
     administrative endpoints that are inaccessible to all other roles.
+- **Data Scoping:** Beyond basic church-level isolation, the system implements ministry-specific
+  and functional-area scoping to ensure users only access data relevant to their responsibilities.
+  This includes time-bound access for governance functions and privacy-preserving data filtering.
 - **Database:** A single PostgreSQL database will be used, with every table containing a `churchId`
   column to ensure strict data-tenancy and isolation between church clients.
 
 ## 4. Architectural Diagram
 
-The following diagram illustrates the high-level structure of the system:
+The following diagram illustrates the high-level structure of the system with persona-specific functional areas:
 
 ```txt
 +---------------------------+        +---------------------------------+
@@ -89,7 +98,15 @@ The following diagram illustrates the high-level structure of the system:
 +---------------------------+        +---------------------------------+
 |      CLIENT APP (web)     |        |      SYSTEM ADMIN APP (admin)   |
 | (Next.js / React)         |        | (Next.js / React)               |
-+-------------+-------------+        +----------------+----------------+
+|                           |        |                                 |
+| Features:                 |        | Features:                       |
+| • Member Portal           |        | • Platform Monitoring          |
+| • Governance Portal       |        | • Tenant Management            |
+| • Volunteer Coordination  |        | • Billing Integration          |
+| • Ministry Dashboards     |        | • Global Audit Trail           |
+| • Event Registration      |        |                                 |
+| • Notification Center     |        +----------------+----------------+
++---------------------------+        +---------------------------------+
               |                                        |
               +---------------------+------------------+
                                     |
@@ -99,6 +116,14 @@ The following diagram illustrates the high-level structure of the system:
 |                        UNIFIED BACKEND API (api)                       |
 |         (NestJS, Role-Based Access Control & Authorization)          |
 |                                                                      |
+| Modules:                                                            |
+| • Core (Users, Groups, Events)                                      |
+| • Governance (Documents, Approvals, Compliance)                     |
+| • Volunteer Mgmt (Scheduling, Availability, Reminders)              |
+| • Ministry Care (Scoped Dashboards, Tasks, Notes)                   |
+| • Member Experience (Notifications, Recommendations)                |
+| • Visitor Funnel (Registration, Nurture, Conversion)                |
+|                                                                      |
 +------------------------------------+---------------------------------+
                                      |
                                      v
@@ -107,5 +132,12 @@ The following diagram illustrates the high-level structure of the system:
 |                     PostgreSQL DATABASE (Single DB)                  |
 |          (Strict data tenancy enforced via `churchId` column)        |
 |                                                                      |
+| Schema Areas:                                                       |
+| • Core Entities (Users, Profiles, Groups, Events)                   |
+| • Governance (Documents, Approvals, Acknowledgments)                |
+| • Volunteer (Availability, Templates, Assignments)                  |
+| • Ministry (Scopes, Tasks, Pastoral Notes, Alerts)                  |
+| • Member (Notifications, Recommendations, Opportunities)            |
+| • Visitor (Profiles, Interactions, Nurture Workflows)               |
 +----------------------------------------------------------------------+
 ```
