@@ -128,6 +128,7 @@ explicitly querying for audit/compliance purposes.
 
 - `documentId` (UUID, FK -> `documents.id`, Primary Key)
 - `roleId` (UUID, FK -> `roles.id`, Primary Key)
+- `deletedAt` (Timestamp)
 
 ### 4.3. Households and Children
 
@@ -169,6 +170,7 @@ explicitly querying for audit/compliance purposes.
 - `groupId` (UUID, FK -> `groups.id`, Primary Key)
 - `roleInGroup` (Enum: 'Leader', 'Member', Not Null, Default: 'Member')
 - `joinedAt` (Timestamp, Not Null)
+- `deletedAt` (Timestamp)
 
 ### Table: `group_resources`
 
@@ -249,6 +251,7 @@ explicitly querying for audit/compliance purposes.
 
 - `announcementId` (UUID, FK -> `announcements.id`, Primary Key)
 - `groupId` (UUID, FK -> `groups.id`, Primary Key)
+- `deletedAt` (Timestamp)
 
 ### 4.8. Pastoral Care, Prayer, and Requests
 

@@ -168,6 +168,8 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 - **Complete CRUD Operations for All Entities:**
   - **Backend:** Implement full Create, Read, Update, Delete operations for all database entities (users, profiles, groups, events, announcements, funds, contributions, households, children, etc.).
   - **Soft Delete Implementation:** Replace hard deletes with soft deletes (add `deletedAt` timestamp) across all entities to maintain data integrity and audit trails.
+    - **Schema Update ✅:** Added `deletedAt` fields to all tables including join tables (`group_members`, `document_permissions`, `announcement_audiences`) in `DATABASE_SCHEMA.md`
+    - **Code Implementation Pending:** Update API endpoints, mock data store, and frontend to implement soft delete logic
 
 - **GDPR Compliance Implementation:**
   - **Backend:** Implement data retention policies, right to erasure (soft delete), data portability, and consent management.
