@@ -45,6 +45,27 @@ The initial release of the platform will focus on the following core functionali
 - **Theming:** The user interface will support both light and dark themes for improved accessibility
   and user preference.
 
+### 2.2. Persona-Driven Business Requirements (Priority Focus)
+
+The following persona-focused requirements refine platform and tenant administration needs and guide
+subsequent functional specifications. These complement, not replace, existing modules.
+
+#### 2.2.1. Super Admin (Platform Operator)
+
+- Tenant lifecycle management (provision, suspend, decommission) with plan/entitlement controls.
+- Platform health and observability dashboards (uptime, error rates, request volumes) with incident workflows.
+- Billing alignment (integration or manual workflows) including trials, renewals, delinquency handling, and receipts.
+- Global audit trail for super-admin actions and tenant lifecycle events.
+- Impersonation/safe troubleshooting mechanism with explicit logging and revocation.
+
+#### 2.2.2. Church App Admin (Tenant Administrator)
+
+- Role/permission management with templated roles (Admin, Staff, Leader, Volunteer, Member) and custom roles.
+- Configurable dashboards (attendance, engagement, requests) and export/sharing capabilities.
+- Data management tools (bulk import, deduplication, household management) with audit trails.
+- Workflow support for assignments, reminders, and approvals across requests and events.
+- Integration controls for tenant-level communications (email/SMS) and calendars.
+
 ### 2.2. Out-of-Scope Features (Future Releases)
 
 The following features are identified as valuable but will be considered for development after the
@@ -68,6 +89,11 @@ initial release:
   data, and oversee all functional modules.
 - **Member:** A general user from the church congregation. This user can manage their own profile,
   submit prayer and other requests, and interact with community features.
+
+Additional documented personas are available in `docs/source-of-truth/personas/` and inform
+cross-cutting requirements (e.g., Trustees governance views, Household Leaders updates,
+Non-Members onboarding, Volunteer Coordinators scheduling). These are used to prioritize and phase
+capabilities without altering data isolation or privacy commitments.
 
 ### 3.2. Functional Requirements
 
