@@ -8,6 +8,7 @@ This document details the functional requirements for the Church Management Appl
 
 | Date | Version | Change Description | Author |
 |------|---------|-------------------|---------|
+| 2025-10-27 | 1.2 | Updated FR-EVT-017 terminology from "delete/remove" to "archive" for consistency | AI Assistant |
 | 2025-10-27 | 1.1 | Updated terminology from "delete" to "archive" for soft delete implementation across all entities | AI Assistant |
 | 2025-10-27 | 1.0 | Initial document creation | Original Author |
 
@@ -251,7 +252,7 @@ main dashboard.
 
 - **FR-EVT-015:** An admin shall be able to update event details.
 - **FR-EVT-016:** An admin shall be able to archive events.
-- **FR-EVT-017:** Deleting an event shall also remove all associated volunteer roles and signups.
+- **FR-EVT-017:** Archiving an event shall also archive all associated volunteer roles and signups.
 
 ### A.6.6. Attendance Tracking
 
