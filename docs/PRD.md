@@ -43,6 +43,7 @@ The initial release of the platform will focus on the following core functionali
 - **General Request Management:** A flexible system for managing various internal requests from
   members to church staff.
 - **Event & Service Check-in:** A system for tracking attendance at services and events.
+- **Child Check-in and Safety:** A comprehensive child check-in system with household management and safety features.
 - **Onboarding Wizard:** A guided setup process for new Church Administrators.
 - **Document Library:** A secure, role-based repository for file sharing.
 - **Small Group Resource Sharing:** Functionality for small groups to share resources via web links.
@@ -104,7 +105,7 @@ described in this document:
 - Advanced Content Management System (CMS)
 - Integrated File Hosting (e.g., Google Drive)
 - Volunteer Management and Scheduling
-- Advanced Child Check-in Security Features
+- Advanced Child Check-in Security Features (biometric identification, security tags)
 - Financial & Giving Management
 
 > This roadmap is managed and tracked in the **[Tasks Document](./TASKS.md)**.

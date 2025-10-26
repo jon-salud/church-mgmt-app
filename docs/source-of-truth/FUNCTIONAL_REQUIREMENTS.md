@@ -143,7 +143,76 @@ main dashboard.
 
 - **FR-CHK-003:** The system shall record attendance when a member is checked into an event.
 
-## A.6. Event Volunteer Management
+## A.6. Child Check-In and Safety
+
+### A.6.1. Household and Child Management
+
+- **FR-CHILD-001:** The system shall support household structures to group family members together.
+- **FR-CHILD-002:** Households shall contain multiple guardians and children.
+- **FR-CHILD-003:** Admins shall be able to create, update, and delete households.
+- **FR-CHILD-004:** Admins shall be able to add and remove members from households.
+- **FR-CHILD-005:** The system shall require parent/guardian contact information for emergency purposes.
+
+### A.6.2. Child Registration
+
+- **FR-CHILD-006:** Admins shall be able to register children with full name, date of birth, allergies, medical notes, and emergency contact information.
+- **FR-CHILD-007:** Children shall be associated with households and their authorized guardians.
+- **FR-CHILD-008:** Admins shall be able to update child information including allergies and medical conditions.
+- **FR-CHILD-009:** The system shall calculate and display child age based on date of birth for grouping purposes.
+
+### A.6.3. Check-In Methods
+
+- **FR-CHILD-010:** Parents shall be able to check in children via mobile app or at a physical check-in table.
+- **FR-CHILD-011:** App-based check-ins shall require volunteer confirmation within a configurable time period (default: 10 minutes).
+- **FR-CHILD-012:** If app check-in is not confirmed by volunteer within the time limit, the system shall raise a flag and send notifications.
+- **FR-CHILD-013:** Notifications for unconfirmed check-ins shall be sent to volunteers and optionally to parents.
+- **FR-CHILD-014:** Table-based check-ins shall be performed manually by volunteers.
+
+### A.6.4. Check-In Tags and Labels
+
+- **FR-CHILD-015:** The system shall generate printable tags/IDs for checked-in children.
+- **FR-CHILD-016:** Tags shall include child's name, calculated age, allergies, medical notes, and emergency contact information.
+- **FR-CHILD-017:** Tags shall be color-coded or grouped by age ranges for childcare worker organization.
+- **FR-CHILD-018:** Volunteers shall be able to print tags immediately after check-in confirmation.
+
+### A.6.5. Check-In Dashboard and Monitoring
+
+- **FR-CHILD-019:** Admins and volunteers shall have access to a child check-in dashboard.
+- **FR-CHILD-020:** The dashboard shall show pending check-ins requiring confirmation.
+- **FR-CHILD-021:** The dashboard shall display currently checked-in children with their location and status.
+- **FR-CHILD-022:** The dashboard shall highlight unconfirmed check-ins that have exceeded the confirmation time limit.
+- **FR-CHILD-023:** The system shall support real-time updates of check-in status across multiple volunteer devices.
+
+### A.6.6. Emergency and Communication Features
+
+- **FR-CHILD-024:** Volunteers shall be able to access parent contact information for emergencies or questions during events.
+- **FR-CHILD-025:** The system shall log all access to parent contact information for audit purposes.
+- **FR-CHILD-026:** Emergency contact information shall be prominently displayed on child profiles and tags.
+
+### A.6.7. Check-Out Process
+
+- **FR-CHILD-027:** The system shall notify parents when it's time to pick up their children (15 minutes after event ends).
+- **FR-CHILD-028:** Notifications shall be sent via the mobile app to registered parents.
+- **FR-CHILD-029:** Volunteers shall perform the check-out action for children at the physical location.
+- **FR-CHILD-030:** Parents shall confirm child pickup via app within 3 minutes of volunteer check-out.
+- **FR-CHILD-031:** If parent confirmation is not received within 3 minutes, the system shall raise an alert.
+- **FR-CHILD-032:** Visitors shall complete manual check-out procedures without app confirmation.
+
+### A.6.8. Safety and Audit Features
+
+- **FR-CHILD-033:** The system shall maintain complete audit trails of all check-in, confirmation, and check-out activities.
+- **FR-CHILD-034:** Audit logs shall include timestamps, user IDs, and actions performed.
+- **FR-CHILD-035:** The system shall prevent unauthorized check-out of children by non-authorized guardians.
+- **FR-CHILD-036:** Safety flags shall be raised for overdue confirmations, missing pickups, and unconfirmed check-outs.
+
+### A.6.9. Configuration and Settings
+
+- **FR-CHILD-037:** Admins shall be able to configure confirmation time limits (default: 10 minutes).
+- **FR-CHILD-038:** Admins shall be able to configure check-out notification timing (default: 15 minutes after event).
+- **FR-CHILD-039:** Admins shall be able to configure parent confirmation time limits (default: 3 minutes).
+- **FR-CHILD-040:** The system shall support different workflows for members (app-based) vs visitors (manual).
+
+## A.7. Event Volunteer Management
 
 ### A.6.1. Create Event (Admin)
 
