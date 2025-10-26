@@ -187,3 +187,54 @@ main dashboard.
 
 _The remaining sections and Part B (System Administration) are omitted for brevity but are
 understood to be included in the full document._
+
+---
+
+## Part B: Platform and Tenant Administration
+
+### B.1. Super Admin Console (Platform Operator)
+
+- **FR-SUP-001:** Provide a tenant list view including `Tenant Name`, `Plan`, `Status`, `CreatedAt`, `LastActiveAt`.
+- **FR-SUP-002:** Support tenant lifecycle actions: `Provision`, `Suspend`, `Reinstate`, `Decommission` with confirmations and audit logging.
+- **FR-SUP-003:** Allow editing tenant entitlements (enabled modules, user caps), effective immediately with audit trail.
+- **FR-SUP-004:** Implement impersonation for troubleshooting with explicit banner, time-bound access, and immutable audit log entries.
+
+### B.2. Platform Observability & Incidents
+
+- **FR-SUP-005:** Expose platform health dashboard with uptime, error rates, request throughput, and dependency status.
+- **FR-SUP-006:** Trigger incident workflows on threshold breaches: create incident ticket, status banner, and tenant notifications.
+- **FR-SUP-007:** Maintain an incident history with timestamps, scope, impact, and remediation notes.
+
+### B.3. Billing Alignment (High-Level)
+
+- **FR-SUP-008:** Store billing metadata per tenant (`Plan`, `BillingStatus`, `RenewalDate`, `GraceUntil`).
+- **FR-SUP-009:** On `BillingStatus=Delinquent`, move tenant to grace period and restrict access when expired.
+- **FR-SUP-010:** Record billing state changes in the global audit log. Integration specifics to be defined by provider decision.
+
+### B.4. Global Audit Trail
+
+- **FR-SUP-011:** Record all super-admin actions (who, what, when, before/after state) with export capability (CSV/JSON).
+- **FR-SUP-012:** Log tenant lifecycle events and impersonation sessions with correlation IDs.
+
+### B.5. Tenant Administration Enhancements (Church App Admin)
+
+- **FR-TEN-001:** Role/Permission Editor: create, edit, delete custom roles; assign granular permissions by module/action.
+- **FR-TEN-002:** Data Tools: bulk import (CSV), deduplication assistance, household reassignment with preview and audit.
+- **FR-TEN-003:** Configurable Dashboards: create saved views with KPIs (attendance, engagement, requests) and export/share.
+- **FR-TEN-004:** Workflows: assignment, reminders, and approvals for requests/events with due dates and escalation.
+- **FR-TEN-005:** Integrations: tenant-level settings for email/SMS providers and calendar exports (ICS).
+
+### B.6. Security & Access Controls
+
+- **FR-SEC-001:** Enforce data isolation by `churchId` across all tenant-admin features.
+- **FR-SEC-002:** Support scoped access for impersonation with explicit consent/logging where policy requires.
+- **FR-SEC-003:** Provide permission checks client- and server-side with a consistent authorization policy.
+
+---
+
+## Decision Log and Owners (Initial)
+
+- **Billing Provider Selection:** Owner – Product/Founder; Needed to finalize FR-SUP-008..010.
+- **Impersonation Policy (consent, banners, retention):** Owner – Security Lead; Affects FR-SUP-004, FR-SUP-011..012.
+- **Permission Model Granularity:** Owner – Tech Lead; Affects FR-TEN-001, FR-SEC-003.
+- **Notification Channels (email/SMS providers):** Owner – Product/Tech; Affects FR-TEN-005 and workflows.
