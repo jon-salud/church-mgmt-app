@@ -271,19 +271,12 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 - **Backend:** Implement public registration APIs and visitor data management
 - **Frontend:** Create public event registration flows without authentication
 
-#### Immediate Tasks
-
-- **Update USER_MANUAL.md:** Add sections explaining archive/recovery functionality for members, events, and roles, including admin-only recovery capabilities
-- **Update API_DOCUMENTATION.md:** Document new admin endpoints for hard delete and recovery operations
-- **Update DATABASE_SCHEMA.md:** Ensure deletedAt fields are properly documented
-- **Update PRD.md:** Add soft delete feature to core features list with archive terminology
-
-#### Next (Q2)
+#### Visitor Conversion (Q2)
 
 - **Backend:** Add automated nurture workflows and conversion tracking
 - **Frontend:** Implement visitor follow-up interfaces and conversion pathways
 
-#### Later (Q3+)
+#### Advanced Features (Q3+)
 
 - **Backend:** Integrate CRM-lite features with interaction history and segmentation
 - **Frontend:** Add advanced visitor analytics and conversion optimization tools

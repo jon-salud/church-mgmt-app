@@ -112,7 +112,7 @@ Events can be archived instead of permanently deleted to maintain historical rec
 
 ### 3.6. How to Manage Roles and Permissions
 
-The system allows you to define custom roles for your church members with specific permissions.
+Roles and permissions are central to how the Church Management System controls access to features and information. A **role** defines a set of responsibilities or access rights (such as "Administrator," "Group Leader," or "Member"), while **permissions** determine what actions users in each role can perform—like managing events, viewing giving records, or editing group memberships. Administrators can create custom roles tailored to their church's needs and assign them to members, ensuring that everyone has the appropriate level of access and responsibility.
 
 #### Archiving and Recovering Roles
 
