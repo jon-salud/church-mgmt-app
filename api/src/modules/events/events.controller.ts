@@ -129,7 +129,7 @@ export class EventsController {
     @Req() req: any
   ) {
     this.ensureAdmin(req);
-    return this.eventsService.updateVolunteerRole(roleId, dto.name!, dto.needed!);
+    return this.eventsService.updateVolunteerRole(roleId, dto.name, dto.needed);
   }
 
   @Delete('volunteer-roles/:roleId')
@@ -151,7 +151,6 @@ export class EventsController {
   @ApiOperation({ summary: 'Delete a volunteer signup' })
   @ApiOkResponse({ type: SuccessResponseDto })
   async deleteVolunteerSignup(@Param('signupId') signupId: string, @Req() req: any) {
-    // TODO: Add logic to ensure only the user who signed up or an admin can delete the signup.
     return await this.eventsService.deleteVolunteerSignup(signupId, req.user.id);
   }
 }
