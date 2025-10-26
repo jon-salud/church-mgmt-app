@@ -124,9 +124,9 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - [x] **Testing:** Added E2E tests covering volunteer signup flows, admin role management, and authorization checks.
   - [x] **Documentation:** Updated all source-of-truth documents (DATABASE_SCHEMA.md, API_DOCUMENTATION.md, FUNCTIONAL_REQUIREMENTS.md, BUSINESS_REQUIREMENTS.md) to reflect the complete volunteer management implementation.
 
-### 🔄 In Progress
+- Persona documentation deep dive — Expanded every file in `docs/source-of-truth/personas/` with structured personas (goals, journeys, requirements, metrics); translated gaps into BRD/FRD updates and roadmap items with complete persona-driven epics.
 
-- Persona documentation deep dive — Expanded every file in `docs/source-of-truth/personas/` with structured personas (goals, journeys, requirements, metrics); next action is to translate gaps into BRD/FRD updates and roadmap items.
+### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming
 
@@ -168,6 +168,8 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 - **Complete CRUD Operations for All Entities:**
   - **Backend:** Implement full Create, Read, Update, Delete operations for all database entities (users, profiles, groups, events, announcements, funds, contributions, households, children, etc.).
   - **Soft Delete Implementation:** Replace hard deletes with soft deletes (add `deletedAt` timestamp) across all entities to maintain data integrity and audit trails.
+    - **Schema Update ✅:** Added `deletedAt` fields to all tables including join tables (`group_members`, `document_permissions`, `announcement_audiences`) in `DATABASE_SCHEMA.md`
+    - **Code Implementation Pending:** Update API endpoints, mock data store, and frontend to implement soft delete logic
 
 - **GDPR Compliance Implementation:**
   - **Backend:** Implement data retention policies, right to erasure (soft delete), data portability, and consent management.

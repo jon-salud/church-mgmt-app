@@ -6,6 +6,11 @@ This document outlines the database schema for the Church Management SaaS Platfo
 for a multi-church client environment with strict data isolation via a `churchId` on all relevant
 tables.
 
+**Soft Delete Implementation:** All tables implement soft delete functionality using a `deletedAt`
+timestamp field. Records are marked as deleted rather than physically removed to maintain audit
+trails and data integrity. Application queries automatically filter out deleted records unless
+explicitly querying for audit/compliance purposes.
+
 ---
 
 ## 2. Core Tables
@@ -18,6 +23,7 @@ tables.
 - `brandColor` (Text)
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
+- `deletedAt` (Timestamp)
 
 ### Table: `users`
 
@@ -25,6 +31,7 @@ tables.
 - `email` (Text, Not Null, Unique)
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
+- `deletedAt` (Timestamp)
 
 ### Table: `profiles`
 
@@ -40,6 +47,7 @@ tables.
 - `birthday` (Date)
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
+- `deletedAt` (Timestamp)
 
 ---
 
@@ -120,6 +128,7 @@ tables.
 
 - `documentId` (UUID, FK -> `documents.id`, Primary Key)
 - `roleId` (UUID, FK -> `roles.id`, Primary Key)
+- `deletedAt` (Timestamp)
 
 ### 4.3. Households and Children
 
@@ -153,6 +162,7 @@ tables.
 - `description` (Text)
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
+- `deletedAt` (Timestamp)
 
 ### Table: `group_members` (Join Table)
 
@@ -160,6 +170,7 @@ tables.
 - `groupId` (UUID, FK -> `groups.id`, Primary Key)
 - `roleInGroup` (Enum: 'Leader', 'Member', Not Null, Default: 'Member')
 - `joinedAt` (Timestamp, Not Null)
+- `deletedAt` (Timestamp)
 
 ### Table: `group_resources`
 
@@ -240,6 +251,7 @@ tables.
 
 - `announcementId` (UUID, FK -> `announcements.id`, Primary Key)
 - `groupId` (UUID, FK -> `groups.id`, Primary Key)
+- `deletedAt` (Timestamp)
 
 ### 4.8. Pastoral Care, Prayer, and Requests
 

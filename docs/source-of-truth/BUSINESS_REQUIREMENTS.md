@@ -190,6 +190,10 @@ capabilities without altering data isolation or privacy commitments.
   - **Authentication:** All access to the application shall be restricted to authenticated users.
   - **Data Isolation:** Each church client's data must be strictly segregated and inaccessible to
     any other client.
+  - **Soft Delete Implementation:** All data entities shall implement soft delete functionality
+    (adding `deletedAt` timestamp) instead of hard deletes to maintain audit trails and data
+    integrity. Deleted records shall be excluded from normal queries but remain accessible for
+    compliance and auditing purposes.
 - **Scalability:** The platform must be designed to accommodate growth in the number of church
   clients and the number of members within each client without degradation in performance.
 - **Accessibility:** The application will support both light and dark themes to accommodate user
