@@ -238,3 +238,50 @@ understood to be included in the full document._
 - **Impersonation Policy (consent, banners, retention):** Owner – Security Lead; Affects FR-SUP-004, FR-SUP-011..012.
 - **Permission Model Granularity:** Owner – Tech Lead; Affects FR-TEN-001, FR-SEC-003.
 - **Notification Channels (email/SMS providers):** Owner – Product/Tech; Affects FR-TEN-005 and workflows.
+- **Billing Provider Selection:** Owner – Product/Founder; Needed to finalize FR-SUP-008..010.
+- **Impersonation Policy (consent, banners, retention):** Owner – Security Lead; Affects FR-SUP-004, FR-SUP-011..012.
+- **Permission Model Granularity:** Owner – Tech Lead; Affects FR-TEN-001, FR-SEC-003.
+
+---
+
+## Part C: Persona-Specific Functional Requirements
+
+### C.1. Board of Trustees (Governance Body)
+
+- **FR-TRUST-001:** Trustees shall have access to a governance dashboard displaying quarterly compliance reports, financial summaries, risk registers, and safeguarding metrics.
+- **FR-TRUST-002:** Secure document portal with role-based access to policy documents, audit reports, and meeting materials with versioning and acknowledgment tracking.
+- **FR-TRUST-003:** Workflow tools for policy approvals, incident reviews, and decision logging with full audit trails and comment threads.
+- **FR-TRUST-004:** Automated notifications for compliance deadlines, incident alerts, and quarterly reporting cycles with escalation paths.
+- **FR-TRUST-005:** Time-bound access controls with explicit logging of all document views, downloads, and governance actions.
+
+### C.2. Non-Fulltime Coordinators (Ministry Coordinators)
+
+- **FR-COORD-001:** Volunteer scheduling interface with drag-and-drop assignments, availability conflict detection, and template reuse for recurring events.
+- **FR-COORD-002:** Volunteer availability management with self-service blackout dates, skill tracking, and preference settings.
+- **FR-COORD-003:** Automated reminder workflows for assignments, confirmations, and last-minute coverage requests with customizable templates.
+- **FR-COORD-004:** Communication tools with ministry segmentation and message logging for volunteer coordination and announcements.
+- **FR-COORD-005:** Basic analytics dashboard showing coverage rates, participation trends, volunteer retention metrics, and gap analysis.
+
+### C.3. Church Leaders (Pastoral/Ministry Leaders)
+
+- **FR-LEAD-001:** Ministry-specific dashboards with filtered care requests, attendance trends, engagement signals, and task assignments.
+- **FR-LEAD-002:** Task management capabilities for assigning follow-ups, updating pastoral notes, and tracking completion with status workflows.
+- **FR-LEAD-003:** Automated alerts for attendance dips, urgent care requests, and volunteer coverage gaps with configurable thresholds.
+- **FR-LEAD-004:** Integration with communication tools respecting member privacy preferences and opt-in requirements.
+- **FR-LEAD-005:** Scoped access controls limiting data visibility to assigned ministries with confidentiality boundaries and audit logging.
+
+### C.4. Members (Registered Congregants)
+
+- **FR-MEMB-001:** Self-service profile management with household connections, preference settings, and contact information updates.
+- **FR-MEMB-002:** Event discovery and registration with filtering, recommendations, and household bulk registration capabilities.
+- **FR-MEMB-003:** Personal dashboard summarizing upcoming commitments, recent interactions, and engagement history.
+- **FR-MEMB-004:** Notification center with preference management across email, SMS, and push channels with opt-in/opt-out controls.
+- **FR-MEMB-005:** Request submission and tracking for prayer, pastoral care, and general support needs with status updates and feedback loops.
+
+### C.5. Non-Members (Visitors/Seekers)
+
+- **FR-VISIT-001:** Guest-friendly public flows for event registration and information requests without account requirements.
+- **FR-VISIT-002:** Automated nurture workflows with segmented communications and follow-up scheduling based on interaction history.
+- **FR-VISIT-003:** Visitor-to-member conversion pathway with data continuity, consent management, and profile migration.
+- **FR-VISIT-004:** Public resource access for service information, beliefs, and next steps toward membership with minimal barriers.
+- **FR-VISIT-005:** Privacy controls with transparent data usage statements, consent management, and easy opt-out mechanisms.
