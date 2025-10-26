@@ -237,6 +237,27 @@ export interface MockCheckin {
   deletedAt?: string;
 }
 
+export interface MockDocument {
+  id: string;
+  churchId: string;
+  uploaderProfileId: string;
+  fileName: string;
+  fileType: string;
+  title: string;
+  description?: string;
+  storageKey: string;
+  fileData: string; // Base64-encoded file content for mock storage
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string;
+}
+
+export interface MockDocumentPermission {
+  documentId: string;
+  roleId: string;
+  deletedAt?: string;
+}
+
 export interface DemoSession {
   token: string;
   userId: string;
@@ -737,6 +758,81 @@ export const mockAuditLogs: MockAuditLog[] = [
     metadata: { userId: 'user-leader' },
     createdAt: makeDate(-2, 12),
   },
+];
+
+// Sample PDF content (small base64 encoded PDF with text "Sample Document")
+const samplePdfBase64 =
+  'JVBERi0xLjQKJeLjz9MKMyAwIG9iago8PC9UeXBlL1BhZ2UvUGFyZW50IDIgMCBSL1Jlc291cmNlczw8L0ZvbnQ8PC9GMSA1IDAgUj4+Pj4vTWVkaWFCb3hbMCAwIDYxMiA3OTJdL0NvbnRlbnRzIDQgMCBSPj4KZW5kb2JqCjQgMCBvYmoKPDwvTGVuZ3RoIDQ0Pj4Kc3RyZWFtCkJUCi9GMSA0OCBUZgoxMCA3MDAgVGQKKFNhbXBsZSBEb2N1bWVudCkgVGoKRVQKZW5kc3RyZWFtCmVuZG9iago1IDAgb2JqCjw8L1R5cGUvRm9udC9TdWJ0eXBlL1R5cGUxL0Jhc2VGb250L1RpbWVzLVJvbWFuPj4KZW5kb2JqCjIgMCBvYmoKPDwvVHlwZS9QYWdlcy9LaWRzWzMgMCBSXS9Db3VudCAxPj4KZW5kb2JqCjEgMCBvYmoKPDwvVHlwZS9DYXRhbG9nL1BhZ2VzIDIgMCBSPj4KZW5kb2JqCjYgMCBvYmoKPDwvQ3JlYXRvcihNb2NrIFBERiBHZW5lcmF0b3IpL1Byb2R1Y2VyKE1vY2spL0NyZWF0aW9uRGF0ZShEOjIwMjUxMDI2KT4+CmVuZG9iagp4cmVmCjAgNwowMDAwMDAwMDAwIDY1NTM1IGYgCjAwMDAwMDAzMDEgMDAwMDAgbiAKMDAwMDAwMDI1MCAwMDAwMCBuIAowMDAwMDAwMDEwIDAwMDAwIG4gCjAwMDAwMDAxMjMgMDAwMDAgbiAKMDAwMDAwMDIxNiAwMDAwMCBuIAowMDAwMDAwMzUwIDAwMDAwIG4gCnRyYWlsZXIKPDwvU2l6ZSA3L1Jvb3QgMSAwIFI+PgpzdGFydHhyZWYKNDQ4CiUlRU9G';
+
+export const mockDocuments: MockDocument[] = [
+  {
+    id: 'doc-1',
+    churchId,
+    uploaderProfileId: 'user-admin',
+    fileName: 'church-bylaws.pdf',
+    fileType: 'application/pdf',
+    title: 'Church Bylaws 2024',
+    description: 'Official church bylaws and governance documents',
+    storageKey: 'documents/church-bylaws.pdf',
+    fileData: samplePdfBase64,
+    createdAt: makeDate(-60, 9),
+    updatedAt: makeDate(-60, 9),
+  },
+  {
+    id: 'doc-2',
+    churchId,
+    uploaderProfileId: 'user-admin',
+    fileName: 'volunteer-handbook.pdf',
+    fileType: 'application/pdf',
+    title: 'Volunteer Handbook',
+    description: 'Guidelines and expectations for church volunteers',
+    storageKey: 'documents/volunteer-handbook.pdf',
+    fileData: samplePdfBase64,
+    createdAt: makeDate(-45, 14),
+    updatedAt: makeDate(-45, 14),
+  },
+  {
+    id: 'doc-3',
+    churchId,
+    uploaderProfileId: 'user-leader',
+    fileName: 'small-group-guide.pdf',
+    fileType: 'application/pdf',
+    title: 'Small Group Leader Guide',
+    description: 'Resources for small group leaders',
+    storageKey: 'documents/small-group-guide.pdf',
+    fileData: samplePdfBase64,
+    createdAt: makeDate(-30, 10),
+    updatedAt: makeDate(-30, 10),
+  },
+  {
+    id: 'doc-4',
+    churchId,
+    uploaderProfileId: 'user-admin',
+    fileName: 'ministry-calendar.pdf',
+    fileType: 'application/pdf',
+    title: 'Annual Ministry Calendar',
+    description: 'Church-wide ministry and event calendar for the year',
+    storageKey: 'documents/ministry-calendar.pdf',
+    fileData: samplePdfBase64,
+    createdAt: makeDate(-15, 11),
+    updatedAt: makeDate(-15, 11),
+  },
+];
+
+export const mockDocumentPermissions: MockDocumentPermission[] = [
+  // Church Bylaws - Admin only
+  { documentId: 'doc-1', roleId: 'role-admin' },
+  // Volunteer Handbook - Admin and Leaders
+  { documentId: 'doc-2', roleId: 'role-admin' },
+  { documentId: 'doc-2', roleId: 'role-leader' },
+  // Small Group Guide - Admin, Leaders, and Members
+  { documentId: 'doc-3', roleId: 'role-admin' },
+  { documentId: 'doc-3', roleId: 'role-leader' },
+  { documentId: 'doc-3', roleId: 'role-member' },
+  // Ministry Calendar - All roles
+  { documentId: 'doc-4', roleId: 'role-admin' },
+  { documentId: 'doc-4', roleId: 'role-leader' },
+  { documentId: 'doc-4', roleId: 'role-member' },
 ];
 
 export const mockSessions: DemoSession[] = [

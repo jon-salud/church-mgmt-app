@@ -178,6 +178,10 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.listRoles();
   }
 
+  async getRole(id: string) {
+    return this.mock.getRole(id);
+  }
+
   async createRole(input: Parameters<MockDatabaseService['createRole']>[0]) {
     return this.mock.createRole(input);
   }
@@ -380,6 +384,73 @@ export class MockDataStoreAdapter implements DataStore {
     type?: 'team' | 'member'
   ) {
     return this.mock.bulkCreateInvitations(churchId, emails, roleId, actorUserId, type);
+  }
+
+  // Document Library methods
+  async listDocuments(churchId: string, userRoleIds: string[]) {
+    return this.mock.listDocuments(churchId, userRoleIds);
+  }
+
+  async getDocument(id: string) {
+    return this.mock.getDocument(id);
+  }
+
+  async getDocumentWithPermissions(id: string, userRoleIds: string[]) {
+    return this.mock.getDocumentWithPermissions(id, userRoleIds);
+  }
+
+  async createDocument(
+    churchId: string,
+    uploaderProfileId: string,
+    fileName: string,
+    fileType: string,
+    title: string,
+    description: string | undefined,
+    fileData: string,
+    roleIds: string[],
+    actorUserId: string
+  ) {
+    return this.mock.createDocument(
+      churchId,
+      uploaderProfileId,
+      fileName,
+      fileType,
+      title,
+      description,
+      fileData,
+      roleIds,
+      actorUserId
+    );
+  }
+
+  async updateDocument(
+    id: string,
+    title: string | undefined,
+    description: string | undefined,
+    roleIds: string[] | undefined,
+    actorUserId: string
+  ) {
+    return this.mock.updateDocument(id, title, description, roleIds, actorUserId);
+  }
+
+  async deleteDocument(id: string, actorUserId: string) {
+    return this.mock.deleteDocument(id, actorUserId);
+  }
+
+  async hardDeleteDocument(id: string, actorUserId: string) {
+    return this.mock.hardDeleteDocument(id, actorUserId);
+  }
+
+  async undeleteDocument(id: string, actorUserId: string) {
+    return this.mock.undeleteDocument(id, actorUserId);
+  }
+
+  async listDeletedDocuments(churchId: string) {
+    return this.mock.listDeletedDocuments(churchId);
+  }
+
+  async getDocumentPermissions(documentId: string) {
+    return this.mock.getDocumentPermissions(documentId);
   }
 
   // Soft delete management methods

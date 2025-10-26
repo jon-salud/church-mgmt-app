@@ -1137,4 +1137,65 @@ export class PrismaDataStore implements DataStore {
   async listDeletedRoles(): Promise<any> {
     throw new Error('Not implemented: listDeletedRoles');
   }
+
+  // Document Library methods - not implemented for Prisma yet
+  async listDocuments(_churchId: string, _userRoleIds: string[]): Promise<any> {
+    throw new Error('Not implemented: listDocuments');
+  }
+
+  async getDocument(_id: string): Promise<any> {
+    throw new Error('Not implemented: getDocument');
+  }
+
+  async getDocumentWithPermissions(_id: string, _userRoleIds: string[]): Promise<any> {
+    throw new Error('Not implemented: getDocumentWithPermissions');
+  }
+
+  async createDocument(
+    _churchId: string,
+    _uploaderProfileId: string,
+    _fileName: string,
+    _fileType: string,
+    _title: string,
+    _description: string | undefined,
+    _fileData: string,
+    _roleIds: string[],
+    _actorUserId: string
+  ): Promise<any> {
+    throw new Error('Not implemented: createDocument');
+  }
+
+  async updateDocument(
+    _id: string,
+    _title: string | undefined,
+    _description: string | undefined,
+    _roleIds: string[] | undefined,
+    _actorUserId: string
+  ): Promise<any> {
+    throw new Error('Not implemented: updateDocument');
+  }
+
+  async deleteDocument(_id: string, _actorUserId: string): Promise<any> {
+    throw new Error('Not implemented: deleteDocument');
+  }
+
+  async hardDeleteDocument(_id: string, _actorUserId: string): Promise<any> {
+    throw new Error('Not implemented: hardDeleteDocument');
+  }
+
+  async undeleteDocument(_id: string, _actorUserId: string): Promise<any> {
+    throw new Error('Not implemented: undeleteDocument');
+  }
+
+  async listDeletedDocuments(_churchId: string): Promise<any> {
+    throw new Error('Not implemented: listDeletedDocuments');
+  }
+
+  async getDocumentPermissions(_documentId: string): Promise<any> {
+    throw new Error('Not implemented: getDocumentPermissions');
+  }
+
+  async getRole(_id: string): Promise<any> {
+    throw new Error('Not implemented: getRole');
+  }
 }

@@ -108,4 +108,16 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   listInvitations: resolvedFn([]),
   bulkCreateInvitations: resolvedFn([]),
   getEventVolunteerSignupById: resolvedFn(),
+  // Document Library methods
+  listDocuments: resolvedFn([]),
+  getDocument: resolvedFn(),
+  getDocumentWithPermissions: resolvedFn(),
+  createDocument: resolvedFn(),
+  updateDocument: resolvedFn(),
+  deleteDocument: resolvedFn(),
+  hardDeleteDocument: resolvedFn(),
+  undeleteDocument: resolvedFn(),
+  listDeletedDocuments: resolvedFn([]),
+  getDocumentPermissions: resolvedFn([]),
+  getRole: resolvedFn(),
 });

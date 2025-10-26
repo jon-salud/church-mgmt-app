@@ -21,6 +21,13 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpErrorFilter(appLogger));
   app.enableCors({ origin: 'http://localhost:3000', credentials: true });
 
+  // Register multipart/form-data support for file uploads
+  await app.register(require('@fastify/multipart'), {
+    limits: {
+      fileSize: 10 * 1024 * 1024, // 10MB limit
+    },
+  });
+
   if (sentryActive) {
     appLogger.log({ event: 'sentry.initialised' }, 'Bootstrap');
   } else {
