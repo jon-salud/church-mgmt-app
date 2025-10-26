@@ -104,5 +104,479 @@
       "type": "team"
     },
     "createdAt": "2025-10-25T11:05:44.936Z"
+  },
+  {
+    "id": "audit-user-user-956cfde1-9532-421c-96e7-d6e2d1c58cb6-1761502679961",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-956cfde1-9532-421c-96e7-d6e2d1c58cb6",
+    "summary": "Ariana Matau added QA1761502675551 Member to the directory",
+    "metadata": {
+      "userId": "user-956cfde1-9532-421c-96e7-d6e2d1c58cb6",
+      "email": "qa-1761502675551@example.com",
+      "roles": [
+        "Member"
+      ]
+    },
+    "createdAt": "2025-10-26T18:17:59.961Z"
+  },
+  {
+    "id": "audit-user-user-fc16d8b3-50f5-4d27-948f-c971093914e6-1761502774730",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-fc16d8b3-50f5-4d27-948f-c971093914e6",
+    "summary": "Ariana Matau added QA1761502770915 Member to the directory",
+    "metadata": {
+      "userId": "user-fc16d8b3-50f5-4d27-948f-c971093914e6",
+      "email": "qa-1761502770915@example.com",
+      "roles": [
+        "Member"
+      ]
+    },
+    "createdAt": "2025-10-26T18:19:34.730Z"
+  },
+  {
+    "id": "audit-user-user-fc16d8b3-50f5-4d27-948f-c971093914e6-1761502777003",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-fc16d8b3-50f5-4d27-948f-c971093914e6",
+    "summary": "Ariana Matau updated QA1761502770915 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-0915",
+        "newValue": "555-0915-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-fc16d8b3-50f5-4d27-948f-c971093914e6"
+    },
+    "createdAt": "2025-10-26T18:19:37.003Z"
+  },
+  {
+    "id": "audit-user-user-4d4afe42-f60e-43fb-a14e-5e93b8daab9a-1761502926326",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-4d4afe42-f60e-43fb-a14e-5e93b8daab9a",
+    "summary": "Ariana Matau added QA1761502913366 Member to the directory",
+    "metadata": {
+      "userId": "user-4d4afe42-f60e-43fb-a14e-5e93b8daab9a",
+      "email": "qa-1761502913366@example.com",
+      "roles": [
+        "Member"
+      ]
+    },
+    "createdAt": "2025-10-26T18:22:06.326Z"
+  },
+  {
+    "id": "audit-user-user-968c64fd-c3c1-42d0-b24f-ffcab0891e65-1761503035995",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-968c64fd-c3c1-42d0-b24f-ffcab0891e65",
+    "summary": "Ariana Matau added QA1761503032267 Member to the directory",
+    "metadata": {
+      "userId": "user-968c64fd-c3c1-42d0-b24f-ffcab0891e65",
+      "email": "qa-1761503032267@example.com",
+      "roles": [
+        "Member"
+      ]
+    },
+    "createdAt": "2025-10-26T18:23:55.995Z"
+  },
+  {
+    "id": "audit-user-user-968c64fd-c3c1-42d0-b24f-ffcab0891e65-1761503038664",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-968c64fd-c3c1-42d0-b24f-ffcab0891e65",
+    "summary": "Ariana Matau updated QA1761503032267 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-2267",
+        "newValue": "555-2267-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-968c64fd-c3c1-42d0-b24f-ffcab0891e65"
+    },
+    "createdAt": "2025-10-26T18:23:58.664Z"
+  },
+  {
+    "id": "audit-user-user-9a37c310-4d3e-4544-aa2f-e73d3c11f123-1761503139393",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-9a37c310-4d3e-4544-aa2f-e73d3c11f123",
+    "summary": "Ariana Matau added QA1761503135013 Member to the directory",
+    "metadata": {
+      "userId": "user-9a37c310-4d3e-4544-aa2f-e73d3c11f123",
+      "email": "qa-1761503135013@example.com",
+      "roles": [
+        "Member"
+      ]
+    },
+    "createdAt": "2025-10-26T18:25:39.393Z"
+  },
+  {
+    "id": "audit-user-user-9a37c310-4d3e-4544-aa2f-e73d3c11f123-1761503141761",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-9a37c310-4d3e-4544-aa2f-e73d3c11f123",
+    "summary": "Ariana Matau updated QA1761503135013 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-5013",
+        "newValue": "555-5013-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-9a37c310-4d3e-4544-aa2f-e73d3c11f123"
+    },
+    "createdAt": "2025-10-26T18:25:41.761Z"
+  },
+  {
+    "id": "audit-user-user-be765720-8d3b-44bc-8271-d893a9b101f6-1761503226786",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-be765720-8d3b-44bc-8271-d893a9b101f6",
+    "summary": "Ariana Matau added QA1761503222688 Member to the directory",
+    "metadata": {
+      "userId": "user-be765720-8d3b-44bc-8271-d893a9b101f6",
+      "email": "qa-1761503222688@example.com",
+      "roles": [
+        "Member"
+      ]
+    },
+    "createdAt": "2025-10-26T18:27:06.786Z"
+  },
+  {
+    "id": "audit-user-user-be765720-8d3b-44bc-8271-d893a9b101f6-1761503229287",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-be765720-8d3b-44bc-8271-d893a9b101f6",
+    "summary": "Ariana Matau updated QA1761503222688 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-2688",
+        "newValue": "555-2688-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-be765720-8d3b-44bc-8271-d893a9b101f6"
+    },
+    "createdAt": "2025-10-26T18:27:09.287Z"
+  },
+  {
+    "id": "audit-user-user-f8a5fcda-993f-41b1-b0e6-90a4a99f2083-1761503328576",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-f8a5fcda-993f-41b1-b0e6-90a4a99f2083",
+    "summary": "Ariana Matau added QA1761503324592 Member to the directory",
+    "metadata": {
+      "userId": "user-f8a5fcda-993f-41b1-b0e6-90a4a99f2083",
+      "email": "qa-1761503324592@example.com",
+      "roles": [
+        "Member"
+      ]
+    },
+    "createdAt": "2025-10-26T18:28:48.576Z"
+  },
+  {
+    "id": "audit-user-user-f8a5fcda-993f-41b1-b0e6-90a4a99f2083-1761503331023",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-f8a5fcda-993f-41b1-b0e6-90a4a99f2083",
+    "summary": "Ariana Matau updated QA1761503324592 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-4592",
+        "newValue": "555-4592-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-f8a5fcda-993f-41b1-b0e6-90a4a99f2083"
+    },
+    "createdAt": "2025-10-26T18:28:51.023Z"
+  },
+  {
+    "id": "audit-user-user-f8a5fcda-993f-41b1-b0e6-90a4a99f2083-1761503332092",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.soft-deleted",
+    "entity": "user",
+    "entityId": "user-f8a5fcda-993f-41b1-b0e6-90a4a99f2083",
+    "summary": "Ariana Matau soft-deleted QA1761503324592 Member from the directory",
+    "metadata": {
+      "userId": "user-f8a5fcda-993f-41b1-b0e6-90a4a99f2083",
+      "email": "qa-1761503324592@example.com"
+    },
+    "createdAt": "2025-10-26T18:28:52.092Z"
+  },
+  {
+    "id": "audit-user-user-fdf1f013-9f02-4a2c-9ef5-c0829d8fb5d4-1761503652224",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-fdf1f013-9f02-4a2c-9ef5-c0829d8fb5d4",
+    "summary": "Ariana Matau added QA1761503646089 Member to the directory",
+    "metadata": {
+      "userId": "user-fdf1f013-9f02-4a2c-9ef5-c0829d8fb5d4",
+      "email": "qa-1761503646089@example.com",
+      "roles": [
+        "Member"
+      ]
+    },
+    "createdAt": "2025-10-26T18:34:12.224Z"
+  },
+  {
+    "id": "audit-user-user-fdf1f013-9f02-4a2c-9ef5-c0829d8fb5d4-1761503654858",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-fdf1f013-9f02-4a2c-9ef5-c0829d8fb5d4",
+    "summary": "Ariana Matau updated QA1761503646089 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-6089",
+        "newValue": "555-6089-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-fdf1f013-9f02-4a2c-9ef5-c0829d8fb5d4"
+    },
+    "createdAt": "2025-10-26T18:34:14.858Z"
+  },
+  {
+    "id": "audit-user-user-fdf1f013-9f02-4a2c-9ef5-c0829d8fb5d4-1761503655572",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.soft-deleted",
+    "entity": "user",
+    "entityId": "user-fdf1f013-9f02-4a2c-9ef5-c0829d8fb5d4",
+    "summary": "Ariana Matau soft-deleted QA1761503646089 Member from the directory",
+    "metadata": {
+      "userId": "user-fdf1f013-9f02-4a2c-9ef5-c0829d8fb5d4",
+      "email": "qa-1761503646089@example.com"
+    },
+    "createdAt": "2025-10-26T18:34:15.572Z"
+  },
+  {
+    "id": "audit-user-user-9703b62e-3441-4cdf-92e3-3376fce32fd1-1761503730768",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-9703b62e-3441-4cdf-92e3-3376fce32fd1",
+    "summary": "Ariana Matau added QA1761503726261 Member to the directory",
+    "metadata": {
+      "userId": "user-9703b62e-3441-4cdf-92e3-3376fce32fd1",
+      "email": "qa-1761503726261@example.com",
+      "roles": [
+        "Member"
+      ]
+    },
+    "createdAt": "2025-10-26T18:35:30.768Z"
+  },
+  {
+    "id": "audit-user-user-9703b62e-3441-4cdf-92e3-3376fce32fd1-1761503734056",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-9703b62e-3441-4cdf-92e3-3376fce32fd1",
+    "summary": "Ariana Matau updated QA1761503726261 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-6261",
+        "newValue": "555-6261-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-9703b62e-3441-4cdf-92e3-3376fce32fd1"
+    },
+    "createdAt": "2025-10-26T18:35:34.056Z"
+  },
+  {
+    "id": "audit-user-user-9703b62e-3441-4cdf-92e3-3376fce32fd1-1761503735474",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.soft-deleted",
+    "entity": "user",
+    "entityId": "user-9703b62e-3441-4cdf-92e3-3376fce32fd1",
+    "summary": "Ariana Matau soft-deleted QA1761503726261 Member from the directory",
+    "metadata": {
+      "userId": "user-9703b62e-3441-4cdf-92e3-3376fce32fd1",
+      "email": "qa-1761503726261@example.com"
+    },
+    "createdAt": "2025-10-26T18:35:35.474Z"
+  },
+  {
+    "id": "audit-user-user-c81d56fe-e8c1-4021-b7bd-e01d165d87c8-1761504091693",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-c81d56fe-e8c1-4021-b7bd-e01d165d87c8",
+    "summary": "Ariana Matau added QA1761504086510 Member to the directory",
+    "metadata": {
+      "userId": "user-c81d56fe-e8c1-4021-b7bd-e01d165d87c8",
+      "email": "qa-1761504086510@example.com",
+      "roles": [
+        "Member"
+      ]
+    },
+    "createdAt": "2025-10-26T18:41:31.693Z"
+  },
+  {
+    "id": "audit-user-user-c81d56fe-e8c1-4021-b7bd-e01d165d87c8-1761504094382",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-c81d56fe-e8c1-4021-b7bd-e01d165d87c8",
+    "summary": "Ariana Matau updated QA1761504086510 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-6510",
+        "newValue": "555-6510-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-c81d56fe-e8c1-4021-b7bd-e01d165d87c8"
+    },
+    "createdAt": "2025-10-26T18:41:34.382Z"
+  },
+  {
+    "id": "audit-user-user-c81d56fe-e8c1-4021-b7bd-e01d165d87c8-1761504095126",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.soft-deleted",
+    "entity": "user",
+    "entityId": "user-c81d56fe-e8c1-4021-b7bd-e01d165d87c8",
+    "summary": "Ariana Matau soft-deleted QA1761504086510 Member from the directory",
+    "metadata": {
+      "userId": "user-c81d56fe-e8c1-4021-b7bd-e01d165d87c8",
+      "email": "qa-1761504086510@example.com"
+    },
+    "createdAt": "2025-10-26T18:41:35.126Z"
   }
 ]

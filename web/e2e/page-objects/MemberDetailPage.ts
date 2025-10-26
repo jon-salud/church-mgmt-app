@@ -13,6 +13,12 @@ export class MemberDetailPage extends BasePage {
   }
 
   async updateMemberDetails(phone: string, address: string) {
+    // Click the Edit Profile button to open the modal
+    await this.page.getByRole('button', { name: 'Edit Profile' }).click();
+
+    // Wait for the modal to open and form fields to be visible
+    await this.page.getByLabel('Phone').waitFor({ state: 'visible' });
+
     await this.page.getByLabel('Phone').fill(phone);
     await this.page.getByLabel('Address').fill(address);
     await this.page.getByLabel('Status').selectOption('invited');
@@ -29,7 +35,12 @@ export class MemberDetailPage extends BasePage {
   }
 
   async removeMember() {
+    // Click "Remove Member" to open the archive modal
+    await this.page.getByRole('button', { name: 'Remove Member' }).click();
+
+    // Click "Archive Member" in the modal
     await this.page.getByRole('button', { name: 'Archive Member' }).click();
+
     await this.page.waitForURL('http://localhost:3000/members');
   }
 

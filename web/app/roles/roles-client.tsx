@@ -37,7 +37,7 @@ export function RolesClient({ roles, me }: RolesClientProps) {
       window.location.reload();
     } catch (error) {
       console.error('Failed to recover role:', error);
-      alert('Failed to recover role. Please try again.');
+      window.alert('Failed to recover role. Please try again.');
     }
   };
 

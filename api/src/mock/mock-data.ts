@@ -17,7 +17,6 @@ export interface MockSettings {
   deletedAt?: string;
 }
 
-export const mockSettings: MockSettings[] = [];
 export type { MockInvitation } from './mock-data/invitations';
 export { mockInvitations } from './mock-data/invitations';
 export type { MockPastoralCareTicket } from './mock-data/pastoral-care-ticket';
@@ -253,6 +252,18 @@ const makeDate = (offsetDays: number, hour = 10): string => {
   d.setHours(hour, 0, 0, 0);
   return d.toISOString();
 };
+
+export const mockSettings: MockSettings[] = [
+  {
+    id: 'settings-church-acc',
+    churchId: 'church-acc',
+    onboardingComplete: true,
+    enabledFields: ['phone', 'email', 'address'],
+    requestTypes: ['prayer', 'pastoral-care', 'general'],
+    createdAt: makeDate(-365),
+    updatedAt: makeDate(-1),
+  },
+];
 
 const churchId = 'church-acc';
 

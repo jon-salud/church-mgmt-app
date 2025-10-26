@@ -55,7 +55,7 @@ export function EventsClient({ events, members, groups, me }: EventsClientProps)
       window.location.reload();
     } catch (error) {
       console.error('Failed to recover event:', error);
-      alert('Failed to recover event. Please try again.');
+      window.alert('Failed to recover event. Please try again.');
     }
   };
 

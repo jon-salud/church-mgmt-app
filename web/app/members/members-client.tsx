@@ -33,7 +33,7 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
       window.location.reload();
     } catch (error) {
       console.error('Failed to recover member:', error);
-      alert('Failed to recover member. Please try again.');
+      window.alert('Failed to recover member. Please try again.');
     }
   };
 

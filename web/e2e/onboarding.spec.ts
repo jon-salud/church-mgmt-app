@@ -28,7 +28,7 @@ test.describe.serial('Onboarding Wizard', () => {
     }
 
     const loginPage = new LoginPage(page);
-    await loginPage.login('demo-new-admin');
+    await loginPage.login('demo-new-admin', true); // Skip modal handling for onboarding test
 
     // The onboarding modal should appear automatically after login for new users
     // No need to navigate to a specific page
