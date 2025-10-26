@@ -98,4 +98,5 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   acceptInvitation: resolvedFn(),
   listInvitations: resolvedFn([]),
   bulkCreateInvitations: resolvedFn([]),
+  getEventVolunteerSignupById: resolvedFn(),
 });

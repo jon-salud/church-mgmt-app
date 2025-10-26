@@ -42,8 +42,11 @@ export class EventsService {
     return this.db.createEventVolunteerRole({ eventId, name, needed });
   }
 
-  updateVolunteerRole(id: string, name: string, needed: number) {
-    return this.db.updateEventVolunteerRole(id, { name, needed });
+  updateVolunteerRole(id: string, name?: string, needed?: number) {
+    const updateData: { name?: string; needed?: number } = {};
+    if (name !== undefined) updateData.name = name;
+    if (needed !== undefined) updateData.needed = needed;
+    return this.db.updateEventVolunteerRole(id, updateData);
   }
 
   deleteVolunteerRole(id: string) {

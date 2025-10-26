@@ -6,7 +6,7 @@ export default async function EventsPage() {
     api.events(),
     api.members(),
     api.groups(),
-    api.me(),
+    api.currentUser(),
   ]);
   const eventsWithDownloads = events.map(event => ({
     ...event,

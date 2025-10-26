@@ -1,4 +1,4 @@
-import { IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
+import { IsInt, IsNotEmpty, IsString, Min, IsOptional } from 'class-validator';
 
 export class CreateEventVolunteerRoleDto {
   @IsString()
@@ -11,10 +11,12 @@ export class CreateEventVolunteerRoleDto {
 }
 
 export class UpdateEventVolunteerRoleDto {
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   name?: string;
 
+  @IsOptional()
   @IsInt()
   @Min(1)
   needed?: number;
