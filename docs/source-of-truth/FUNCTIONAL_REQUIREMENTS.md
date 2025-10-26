@@ -238,9 +238,6 @@ understood to be included in the full document._
 - **Impersonation Policy (consent, banners, retention):** Owner – Security Lead; Affects FR-SUP-004, FR-SUP-011..012.
 - **Permission Model Granularity:** Owner – Tech Lead; Affects FR-TEN-001, FR-SEC-003.
 - **Notification Channels (email/SMS providers):** Owner – Product/Tech; Affects FR-TEN-005 and workflows.
-- **Billing Provider Selection:** Owner – Product/Founder; Needed to finalize FR-SUP-008..010.
-- **Impersonation Policy (consent, banners, retention):** Owner – Security Lead; Affects FR-SUP-004, FR-SUP-011..012.
-- **Permission Model Granularity:** Owner – Tech Lead; Affects FR-TEN-001, FR-SEC-003.
 
 ---
 
