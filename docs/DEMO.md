@@ -144,6 +144,15 @@ The main dashboard provides a comprehensive overview of your church:
 - **Access Control**: Feature-specific permissions
 - **Audit Logs**: Track system changes and access
 
+### Archive & Recovery
+
+- **Soft Delete**: Records are archived instead of permanently deleted
+- **Admin Recovery**: Administrators can restore archived items
+- **Data Integrity**: Preserves relationships and prevents accidental data loss
+- **Audit Trail**: All archive/recovery actions are logged
+
+**Try It**: Go to Members → Archive tab to see archived records, or Settings → Roles → Archive to recover deleted roles.
+
 ## 🔧 Technical Features
 
 ### Progressive Web App (PWA)
@@ -216,3 +225,15 @@ This demo showcases a complete church management solution with:
 - ✅ Mobile and offline support
 
 Enjoy exploring your church management application! 🏛️✨
+
+---
+
+## Change Records
+
+### v1.0.0 - Soft Delete Demo
+
+- **Date**: 2025-10-27
+- **Changes**:
+  - Added Archive & Recovery section to Settings & Administration
+  - Documented soft delete behavior and admin recovery features
+  - Added demo instructions for testing archive/recovery functionality

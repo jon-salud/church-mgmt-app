@@ -4,6 +4,14 @@
 
 This document details the functional requirements for the Church Management Application.
 
+## 📋 Change Record
+
+| Date | Version | Change Description | Author |
+|------|---------|-------------------|---------|
+| 2025-10-27 | 1.2 | Updated FR-EVT-017 terminology from "delete/remove" to "archive" for consistency | AI Assistant |
+| 2025-10-27 | 1.1 | Updated terminology from "delete" to "archive" for soft delete implementation across all entities | AI Assistant |
+| 2025-10-27 | 1.0 | Initial document creation | Original Author |
+
 ---
 
 ## Part A: Client Application (`web`)
@@ -66,7 +74,7 @@ main dashboard.
 - **FR-DOC-002:** The system shall provide an interface to upload files (e.g., PDF, DOCX, PNG).
 - **FR-DOC-003:** For each uploaded document, the admin must provide a `Title` and can provide an
   optional `Description`.
-- **FR-DOC-004:** Admins can edit the title and description of or delete any existing document.
+- **FR-DOC-004:** Admins can edit the title and description of or archive any existing document.
 
 ### A.2.2. Document Permissions (Admin)
 
@@ -149,7 +157,7 @@ main dashboard.
 
 - **FR-CHILD-001:** The system shall support household structures to group family members together.
 - **FR-CHILD-002:** Households shall contain multiple guardians and children.
-- **FR-CHILD-003:** Admins shall be able to create, update, and delete households.
+- **FR-CHILD-003:** Admins shall be able to create, update, and archive households.
 - **FR-CHILD-004:** Admins shall be able to add and remove members from households.
 - **FR-CHILD-005:** The system shall require parent/guardian contact information for emergency purposes.
 
@@ -224,7 +232,7 @@ main dashboard.
 
 - **FR-EVT-004:** For each event, an admin shall be able to create volunteer roles with a name and number of volunteers needed.
 - **FR-EVT-005:** An admin shall be able to update volunteer role names and capacity requirements.
-- **FR-EVT-006:** An admin shall be able to delete volunteer roles that have no current signups.
+- **FR-EVT-006:** An admin shall be able to archive volunteer roles that have no current signups.
 
 ### A.6.3. Volunteer Signup (Member)
 
@@ -243,8 +251,8 @@ main dashboard.
 ### A.6.5. Event Management (Admin)
 
 - **FR-EVT-015:** An admin shall be able to update event details.
-- **FR-EVT-016:** An admin shall be able to delete events.
-- **FR-EVT-017:** Deleting an event shall also remove all associated volunteer roles and signups.
+- **FR-EVT-016:** An admin shall be able to archive events.
+- **FR-EVT-017:** Archiving an event shall also archive all associated volunteer roles and signups.
 
 ### A.6.6. Attendance Tracking
 
@@ -287,7 +295,7 @@ understood to be included in the full document._
 
 ### B.5. Tenant Administration Enhancements (Church App Admin)
 
-- **FR-TEN-001:** Role/Permission Editor: create, edit, delete custom roles; assign granular permissions by module/action.
+- **FR-TEN-001:** Role/Permission Editor: create, edit, archive custom roles; assign granular permissions by module/action.
 - **FR-TEN-002:** Data Tools: bulk import (CSV), deduplication assistance, household reassignment with preview and audit.
 - **FR-TEN-003:** Configurable Dashboards: create saved views with KPIs (attendance, engagement, requests) and export/share.
 - **FR-TEN-004:** Workflows: assignment, reminders, and approvals for requests/events with due dates and escalation.

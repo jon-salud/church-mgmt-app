@@ -6,7 +6,7 @@ This monorepo packages a complete walkthrough of the PRD using mock data only. Y
 | --------- | -------------------------------------------------------------------------------------- |
 | **API**   | NestJS (Fastify), in-memory mock store, OAuth-style demo login, OpenAPI docs           |
 | **Web**   | Next.js App Router + React + Tailwind + PWA service worker + shadcn-style UI seeds     |
-| **Data**  | Members, groups, events, announcements, giving, seeded sessions (no Postgres required) |
+| **Data**  | Members, groups, events, announcements, giving, seeded sessions, soft delete (no Postgres required) |
 | **Tests** | Jest (API smoke) and Playwright (dashboard e2e), with CI linting and formatting checks |
 
 ---
@@ -298,6 +298,17 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 - Search inputs include associated labels (visually hidden) to satisfy WCAG form requirements.
 - Playwright E2E suite includes automated checks for skip link focus, labelled navigation, and table
   captions (`pnpm -C web test:e2e`).
+
+---
+
+## Change Records
+
+### v1.0.0 - Soft Delete Implementation
+
+- **Date**: 2025-10-27
+- **Changes**:
+  - Added soft delete functionality to features table
+  - Updated data description to include "soft delete (no Postgres required)"
 
 ---
 

@@ -37,3 +37,23 @@ redirected to the login page (`/login`). The login page provides options for OAu
   - **/settings/roles**: Manage user roles and permissions.
   - **/settings/request-types**: Configure the types of requests members can submit.
   - **/settings/profile-fields**: Customize the data fields available for member profiles.
+
+### Archive & Recovery
+
+Admin users can access archived (soft-deleted) records for recovery:
+
+- **/members/archived**: View and recover archived member records.
+- **/events/archived**: View and recover archived event records.
+- **/settings/roles/archived**: View and recover archived role records.
+
+---
+
+## Change Records
+
+### v1.0.0 - Archive Navigation
+
+- **Date**: 2025-10-27
+- **Changes**:
+  - Added Archive & Recovery section with navigation paths
+  - Documented routes for viewing archived members, events, and roles
+  - Added admin-only recovery functionality paths
