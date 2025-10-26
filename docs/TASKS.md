@@ -124,9 +124,9 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - [x] **Testing:** Added E2E tests covering volunteer signup flows, admin role management, and authorization checks.
   - [x] **Documentation:** Updated all source-of-truth documents (DATABASE_SCHEMA.md, API_DOCUMENTATION.md, FUNCTIONAL_REQUIREMENTS.md, BUSINESS_REQUIREMENTS.md) to reflect the complete volunteer management implementation.
 
-### 🔄 In Progress
+- Persona documentation deep dive — Expanded every file in `docs/source-of-truth/personas/` with structured personas (goals, journeys, requirements, metrics); translated gaps into BRD/FRD updates and roadmap items with complete persona-driven epics.
 
-- Persona documentation deep dive — Expanded every file in `docs/source-of-truth/personas/` with structured personas (goals, journeys, requirements, metrics); next action is to translate gaps into BRD/FRD updates and roadmap items.
+### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming
 
