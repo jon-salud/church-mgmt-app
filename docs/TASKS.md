@@ -126,15 +126,16 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 - Persona documentation deep dive — Expanded every file in `docs/source-of-truth/personas/` with structured personas (goals, journeys, requirements, metrics); translated gaps into BRD/FRD updates and roadmap items with complete persona-driven epics.
 
+- **Document Library:**
+  - **Backend:** Developed API endpoints for file uploads (with @fastify/multipart v8), metadata management, role-based permission filtering, and generating secure time-limited download URLs.
+  - **Frontend:** Created the UI for uploading, viewing, editing, and managing documents with role-based permissions checkboxes.
+  - **Testing:** Added 13 passing unit tests covering all document endpoints including list, get, upload, update, delete, download, and permission filtering.
+
 ### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming
 
 ## Phase 1: Complete Core Initial Release Features
-
-- **Document Library:**
-  - **Backend:** Develop API endpoints for file uploads (interfacing with a cloud storage service), metadata management, and generating secure, permission-based download URLs.
-  - **Frontend:** Create the UI for uploading, viewing, editing, and managing documents and their role-based permissions.
 
 - **Small Group Resource Sharing:**
   - **Backend:** Create CRUD endpoints for managing `group_resources` (title and URL).
