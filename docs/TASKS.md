@@ -126,6 +126,8 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ### 🔄 In Progress
 
+- Persona documentation scaffolding — Created `docs/source-of-truth/personas/` with baseline notes for each identified persona; ready for iterative requirement refinements.
+
 ### 📝 Backlog / Upcoming
 
 ## Phase 1: Complete Core Initial Release Features
