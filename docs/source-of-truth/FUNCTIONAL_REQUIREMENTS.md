@@ -143,6 +143,46 @@ main dashboard.
 
 - **FR-CHK-003:** The system shall record attendance when a member is checked into an event.
 
+## A.6. Event Volunteer Management
+
+### A.6.1. Create Event (Admin)
+
+- **FR-EVT-001:** An admin shall be able to create new events with title, description, start/end times, location, and visibility settings.
+- **FR-EVT-002:** Events can be optionally linked to specific groups.
+- **FR-EVT-003:** Events shall have public or private visibility settings.
+
+### A.6.2. Manage Volunteer Roles (Admin)
+
+- **FR-EVT-004:** For each event, an admin shall be able to create volunteer roles with a name and number of volunteers needed.
+- **FR-EVT-005:** An admin shall be able to update volunteer role names and capacity requirements.
+- **FR-EVT-006:** An admin shall be able to delete volunteer roles that have no current signups.
+
+### A.6.3. Volunteer Signup (Member)
+
+- **FR-EVT-007:** Members shall be able to view available volunteer roles for upcoming events.
+- **FR-EVT-008:** Members shall be able to sign up for volunteer roles if capacity is not exceeded.
+- **FR-EVT-009:** Members shall be able to cancel their volunteer signups.
+- **FR-EVT-010:** The system shall prevent duplicate signups for the same role by the same member.
+
+### A.6.4. Volunteer Coordination Dashboard (Admin)
+
+- **FR-EVT-011:** An admin shall have access to a volunteer coordination dashboard showing all events and their volunteer roles.
+- **FR-EVT-012:** The dashboard shall display current signup counts versus capacity for each role.
+- **FR-EVT-013:** The dashboard shall show which members are signed up for each role.
+- **FR-EVT-014:** The dashboard shall highlight roles that are under/over capacity.
+
+### A.6.5. Event Management (Admin)
+
+- **FR-EVT-015:** An admin shall be able to update event details.
+- **FR-EVT-016:** An admin shall be able to delete events.
+- **FR-EVT-017:** Deleting an event shall also remove all associated volunteer roles and signups.
+
+### A.6.6. Attendance Tracking
+
+- **FR-EVT-018:** An admin shall be able to record attendance for events.
+- **FR-EVT-019:** Attendance records shall include status (Present, Absent, Late) and optional notes.
+- **FR-EVT-020:** An admin shall be able to export attendance data as CSV for reporting purposes.
+
 ---
 
 _The remaining sections and Part B (System Administration) are omitted for brevity but are
