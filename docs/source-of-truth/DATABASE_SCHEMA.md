@@ -150,7 +150,13 @@ explicitly querying for audit/compliance purposes.
 - `medicalNotes` (Text)
 - `emergencyContactName` (Text)
 - `emergencyContactPhone` (Text)
-- `authorizedGuardians` (JSON Array of guardian contact info)
+- `authorizedGuardians` (JSON Array of guardian contact info objects. Each object should include:
+  - `name` (Text, Not Null): Guardian's full name
+  - `phone` (Text, Not Null): Guardian's phone number
+  - `relationship` (Text, Not Null): Relationship to child (e.g., 'parent', 'guardian', 'grandparent')
+  - `userId` (UUID, Optional): Reference to user account if guardian is a registered user
+  - `email` (Text, Optional): Guardian's email address
+  - `isPrimary` (Boolean, Default: false): Whether this is the primary contact)
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
 
@@ -172,6 +178,14 @@ explicitly querying for audit/compliance purposes.
 - `tagPrinted` (Boolean, Default: false)
 - `tagPrintedAt` (Timestamp)
 - `notificationsSent` (JSON Array of notification records)
+  - Each notification record is an object with the following fields:
+    - `timestamp` (Timestamp, Not Null): When the notification was sent
+    - `type` (Text, Not Null): Type of notification (e.g., 'checkin-reminder', 'confirmation-request')
+    - `recipient` (Text, Not Null): Recipient identifier (e.g., user ID, email, or phone number)
+    - `status` (Text, Not Null): Status of the notification (e.g., 'sent', 'delivered', 'failed')
+    - `channel` (Text, Optional): Channel used (e.g., 'email', 'sms', 'push')
+    - `messageId` (Text, Optional): Identifier from the notification provider
+    - `error` (Text, Optional): Error message if sending failed
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
 
