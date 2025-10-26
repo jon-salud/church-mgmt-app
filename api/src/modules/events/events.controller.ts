@@ -23,10 +23,7 @@ import {
 import { EventsService } from './events.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { UpdateAttendanceDto } from './dto/update-attendance.dto';
-import {
-  CreateEventVolunteerRoleDto,
-  UpdateEventVolunteerRoleDto,
-} from './dto/volunteer.dto';
+import { CreateEventVolunteerRoleDto, UpdateEventVolunteerRoleDto } from './dto/volunteer.dto';
 import { CreateEventDto } from './dto/create-event.dto';
 import { UpdateEventDto } from './dto/update-event.dto';
 import { arrayOfObjectsResponse, objectResponse } from '../../common/openapi/schemas';

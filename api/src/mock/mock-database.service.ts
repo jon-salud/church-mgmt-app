@@ -229,7 +229,7 @@ interface EventVolunteerSignupCreateInput {
 }
 
 interface RoleCreateInput {
-  name:string;
+  name: string;
   description?: string;
   permissions?: string[];
   actorUserId: string;

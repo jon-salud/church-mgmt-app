@@ -497,9 +497,7 @@ export class PrismaDataStore implements DataStore {
     return role;
   }
 
-  async deleteEventVolunteerRole(
-    id: string
-  ): Promise<StoreReturn<'deleteEventVolunteerRole'>> {
+  async deleteEventVolunteerRole(id: string): Promise<StoreReturn<'deleteEventVolunteerRole'>> {
     await this.client.eventVolunteerSignup.deleteMany({ where: { volunteerRoleId: id } });
     await this.client.eventVolunteerRole.delete({ where: { id } });
     return { success: true };
@@ -512,9 +510,7 @@ export class PrismaDataStore implements DataStore {
     return signup;
   }
 
-  async deleteEventVolunteerSignup(
-    id: string
-  ): Promise<StoreReturn<'deleteEventVolunteerSignup'>> {
+  async deleteEventVolunteerSignup(id: string): Promise<StoreReturn<'deleteEventVolunteerSignup'>> {
     await this.client.eventVolunteerSignup.delete({ where: { id } });
     return { success: true };
   }

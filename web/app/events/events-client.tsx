@@ -6,8 +6,6 @@ import { Modal } from '../../components/ui/modal';
 import {
   createEventAction,
   createEventVolunteerRoleAction,
-  createEventAction,
-  createEventVolunteerRoleAction,
   createEventVolunteerSignupAction,
   deleteEventAction,
   deleteEventVolunteerRoleAction,
@@ -193,17 +191,26 @@ export function EventsClient({ events, members, groups, me }: EventsClientProps)
                       const userId = me?.user?.id;
                       const userSignup = role.signups?.find((s: any) => s.userId === userId);
                       return (
-                        <li key={role.id} className="flex justify-between rounded-md border border-border bg-card/60 px-3 py-2">
-                          <span>{role.name} ({role.signups?.length || 0}/{role.needed})</span>
+                        <li
+                          key={role.id}
+                          className="flex justify-between rounded-md border border-border bg-card/60 px-3 py-2"
+                        >
+                          <span>
+                            {role.name} ({role.signups?.length || 0}/{role.needed})
+                          </span>
                           {userSignup ? (
                             <form action={deleteEventVolunteerSignupAction}>
                               <input type="hidden" name="signupId" value={userSignup.id} />
-                              <button type="submit" className="text-xs text-destructive">Cancel Signup</button>
+                              <button type="submit" className="text-xs text-destructive">
+                                Cancel Signup
+                              </button>
                             </form>
                           ) : (
                             <form action={createEventVolunteerSignupAction}>
                               <input type="hidden" name="roleId" value={role.id} />
-                              <button type="submit" className="text-xs text-primary">Sign Up</button>
+                              <button type="submit" className="text-xs text-primary">
+                                Sign Up
+                              </button>
                             </form>
                           )}
                         </li>
@@ -490,20 +497,44 @@ export function EventsClient({ events, members, groups, me }: EventsClientProps)
                 <h3 className="text-sm font-semibold text-foreground">Volunteer Roles</h3>
                 <div className="mt-2 space-y-2">
                   {eventModal.volunteerRoles?.map((role: any) => (
-                    <div key={role.id} className="flex items-center justify-between rounded-md border border-border bg-card/60 px-3 py-2">
-                      <span>{role.name} ({role.needed})</span>
+                    <div
+                      key={role.id}
+                      className="flex items-center justify-between rounded-md border border-border bg-card/60 px-3 py-2"
+                    >
+                      <span>
+                        {role.name} ({role.needed})
+                      </span>
                       <form action={deleteEventVolunteerRoleAction}>
                         <input type="hidden" name="roleId" value={role.id} />
-                        <button type="submit" className="text-xs text-destructive">Remove</button>
+                        <button type="submit" className="text-xs text-destructive">
+                          Remove
+                        </button>
                       </form>
                     </div>
                   ))}
                 </div>
-                <form action={createEventVolunteerRoleAction} className="mt-2 flex items-center gap-2">
+                <form
+                  action={createEventVolunteerRoleAction}
+                  className="mt-2 flex items-center gap-2"
+                >
                   <input type="hidden" name="eventId" value={eventModal.id} />
-                  <input name="name" placeholder="Role name" className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" />
-                  <input name="needed" type="number" placeholder="Needed" className="w-20 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground" />
-                  <button type="submit" className="rounded-md bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground">Add Role</button>
+                  <input
+                    name="name"
+                    placeholder="Role name"
+                    className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+                  />
+                  <input
+                    name="needed"
+                    type="number"
+                    placeholder="Needed"
+                    className="w-20 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+                  />
+                  <button
+                    type="submit"
+                    className="rounded-md bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground"
+                  >
+                    Add Role
+                  </button>
                 </form>
               </div>
 
