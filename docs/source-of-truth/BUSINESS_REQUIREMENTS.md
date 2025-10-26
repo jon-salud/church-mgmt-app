@@ -66,7 +66,47 @@ subsequent functional specifications. These complement, not replace, existing mo
 - Workflow support for assignments, reminders, and approvals across requests and events.
 - Integration controls for tenant-level communications (email/SMS) and calendars.
 
-### 2.2. Out-of-Scope Features (Future Releases)
+#### 2.2.3. Board of Trustees (Governance Body)
+
+- Governance dashboard with quarterly compliance reports, financial summaries, risk registers, and safeguarding metrics.
+- Secure document portal for policy documents, audit reports, and meeting materials with versioning and acknowledgment tracking.
+- Workflow tools for policy approvals, incident reviews, and decision logging with full audit trails.
+- Automated notifications for compliance deadlines, incident alerts, and quarterly reporting cycles.
+- Time-bound access controls with explicit logging of all document views and downloads.
+
+#### 2.2.4. Non-Fulltime Coordinators (Ministry Coordinators)
+
+- Volunteer scheduling interface with drag-and-drop assignments, availability conflict detection, and template reuse.
+- Volunteer availability management with self-service blackout dates and skill tracking.
+- Automated reminder workflows for assignments, confirmations, and last-minute coverage requests.
+- Communication tools with ministry segmentation and message logging for volunteer coordination.
+- Basic analytics dashboard showing coverage rates, participation trends, and volunteer retention metrics.
+
+#### 2.2.5. Church Leaders (Pastoral/Ministry Leaders)
+
+- Ministry-specific dashboards with filtered care requests, attendance trends, and engagement signals.
+- Task management capabilities for assigning follow-ups, updating pastoral notes, and tracking completion.
+- Automated alerts for attendance dips, urgent care requests, and volunteer coverage gaps.
+- Integration with communication tools respecting member privacy preferences and opt-in requirements.
+- Scoped access to member data limited to assigned ministries with confidentiality controls.
+
+#### 2.2.6. Members (Registered Congregants)
+
+- Self-service profile management with household connections and preference settings.
+- Event discovery and registration with filtering, recommendations, and household bulk registration.
+- Personal dashboard summarizing upcoming commitments, recent interactions, and engagement history.
+- Notification center with preference management across email, SMS, and push channels.
+- Request submission and tracking for prayer, pastoral care, and general support needs.
+
+#### 2.2.7. Non-Members (Visitors/Seekers)
+
+- Guest-friendly public flows for event registration and information requests without account requirements.
+- Automated nurture workflows with segmented communications and follow-up scheduling.
+- Visitor-to-member conversion pathway with data continuity and consent management.
+- Public resource access for service information, beliefs, and next steps toward membership.
+- Privacy controls with transparent data usage and easy opt-out mechanisms.
+
+### 2.3. Out-of-Scope Features (Future Releases)
 
 The following features are identified as valuable but will be considered for development after the
 initial release:
