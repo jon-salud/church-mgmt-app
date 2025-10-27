@@ -38,56 +38,6 @@ const adminNavItems: NavItem[] = [
   { href: '/settings', label: 'Settings', icon: 'Settings' },
 ];
 
-const leaderNavItems: NavItem[] = [
-  { href: '/dashboard', label: 'Dashboard', icon: 'Home' },
-  { href: '/groups', label: 'My Groups', icon: 'UserRoundCog' },
-  { href: '/events', label: 'Events', icon: 'Calendar' },
-  { href: '/announcements', label: 'Announcements', icon: 'Megaphone' },
-  { href: '/prayer', label: 'Prayer Wall', icon: 'HeartHandshake' },
-  { href: '/pastoral-care', label: 'Pastoral Care', icon: 'HeartPulse' },
-  { href: '/checkin/dashboard', label: 'Check-In', icon: 'MonitorCheck' },
-];
-
-const basicMemberNavItems: NavItem[] = [
-  { href: '/dashboard', label: 'Dashboard', icon: 'Home' },
-  { href: '/events', label: 'Events', icon: 'Calendar' },
-  { href: '/announcements', label: 'Announcements', icon: 'Megaphone' },
-  { href: '/prayer', label: 'Prayer Wall', icon: 'HeartHandshake' },
-  { href: '/requests', label: 'Requests', icon: 'HeartHandshake' },
-];
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getNavigationItems(userRoles: any[]) {
-  const hasAdminRole = userRoles?.some(
-    (role: any) => role?.slug === 'admin' || role?.role === 'Admin'
-  );
-
-  const hasLeaderRole = userRoles?.some(
-    (role: any) => role?.slug === 'leader' || role?.role === 'Leader'
-  );
-
-  if (hasAdminRole) {
-    return {
-      memberNavItems,
-      givingNavItems,
-      adminNavItems,
-    };
-  } else if (hasLeaderRole) {
-    return {
-      memberNavItems: leaderNavItems,
-      givingNavItems,
-      adminNavItems: [], // Leaders don't get admin nav
-    };
-  } else {
-    // Basic member
-    return {
-      memberNavItems: basicMemberNavItems,
-      givingNavItems,
-      adminNavItems: [], // Members don't get admin nav
-    };
-  }
-}
-
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const me = await api.currentUser();
 
@@ -105,13 +55,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     }
   }
 
-  // Get role-based navigation items
-  const {
-    memberNavItems: filteredMemberNavItems,
-    givingNavItems: filteredGivingNavItems,
-    adminNavItems: filteredAdminNavItems,
-  } = getNavigationItems(me?.user?.roles || []);
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="min-h-screen">
@@ -119,9 +62,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <ServiceWorkerRegister />
           <AppLayout
             me={me}
-            memberNavItems={filteredMemberNavItems}
-            givingNavItems={filteredGivingNavItems}
-            adminNavItems={filteredAdminNavItems}
+            memberNavItems={memberNavItems}
+            givingNavItems={givingNavItems}
+            adminNavItems={adminNavItems}
             onboardingRequired={onboardingRequired}
             churchId={churchId}
             initialSettings={settings}
