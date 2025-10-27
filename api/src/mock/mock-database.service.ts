@@ -1047,9 +1047,7 @@ export class MockDatabaseService {
   }
 
   getGroupResources(groupId: string) {
-    return clone(
-      this.groupResources.filter(resource => resource.groupId === groupId)
-    );
+    return clone(this.groupResources.filter(resource => resource.groupId === groupId));
   }
 
   createGroupResource(groupId: string, input: GroupResourceCreateInput) {

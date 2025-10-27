@@ -340,6 +340,36 @@ export async function removeGroupMemberAction(formData: FormData) {
   revalidatePath(`/groups/${groupId}`);
 }
 
+export async function addGroupResourceAction(formData: FormData) {
+  const groupId = String(formData.get('groupId'));
+  const title = String(formData.get('title'));
+  const url = String(formData.get('url'));
+  await apiFetch(`/groups/${groupId}/resources`, {
+    method: 'POST',
+    body: JSON.stringify({ title, url }),
+  });
+  revalidatePath(`/groups/${groupId}`);
+}
+
+export async function updateGroupResourceAction(formData: FormData) {
+  const groupId = String(formData.get('groupId'));
+  const resourceId = String(formData.get('resourceId'));
+  const title = formData.get('title') ? String(formData.get('title')) : undefined;
+  const url = formData.get('url') ? String(formData.get('url')) : undefined;
+  await apiFetch(`/groups/resources/${resourceId}`, {
+    method: 'PATCH',
+    body: JSON.stringify({ title, url }),
+  });
+  revalidatePath(`/groups/${groupId}`);
+}
+
+export async function deleteGroupResourceAction(formData: FormData) {
+  const groupId = String(formData.get('groupId'));
+  const resourceId = String(formData.get('resourceId'));
+  await apiFetch(`/groups/resources/${resourceId}`, { method: 'DELETE' });
+  revalidatePath(`/groups/${groupId}`);
+}
+
 const parseTags = (value: FormDataEntryValue | null) => {
   if (!value) return undefined;
   return String(value)
