@@ -21,7 +21,7 @@ export function NewPrayerRequestClientPage() {
         requestTypeId: 'req-type-1', // Prayer request type
         title,
         body: description,
-        isConfidential: false,
+        isConfidential: isAnonymous,
       });
       console.log('Prayer request submitted successfully');
       setIsSubmitted(true);

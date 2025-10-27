@@ -38,9 +38,12 @@ export default async function HouseholdDetailPage({ params }: { params: { id: st
         </div>
       </div>
     );
-  } catch (error) {
+  } catch {
     return (
-      <div>Error loading household: {error instanceof Error ? error.message : 'Unknown error'}</div>
+      <div>
+        Unable to load household details. Please try again or contact support if the problem
+        persists.
+      </div>
     );
   }
 }
