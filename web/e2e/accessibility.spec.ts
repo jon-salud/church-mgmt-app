@@ -15,20 +15,20 @@ import { SettingsPage } from './page-objects/SettingsPage';
 
 // Helper functions for theme management
 async function setLightTheme(page: Page) {
-  await page.goto('http://localhost:3000');
+  await page.goto('/');
   await page.evaluate(() => localStorage.setItem('theme', 'light'));
   await page.reload();
   await page.waitForLoadState('load');
 }
 
 async function setDarkTheme(page: Page) {
-  await page.goto('http://localhost:3000');
+  await page.goto('/');
   await page.evaluate(() => localStorage.setItem('theme', 'dark'));
   await page.reload();
   await page.waitForLoadState('load');
 }
 
-test.describe('Accessibility tests - Light Theme', () => {
+test.describe.serial('Accessibility tests - Light Theme', () => {
   let context: BrowserContext;
   let page: Page;
 
@@ -134,7 +134,7 @@ test.describe('Accessibility tests - Light Theme', () => {
   });
 });
 
-test.describe('Accessibility tests - Dark Theme', () => {
+test.describe.serial('Accessibility tests - Dark Theme', () => {
   let context: BrowserContext;
   let page: Page;
 
