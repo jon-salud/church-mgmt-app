@@ -1094,11 +1094,11 @@ export class MockDatabaseService {
         diff[key] = { previous, newValue: next };
       }
     };
-    if (input.title !== undefined && input.title !== resource.title) {
+    if (input.title !== undefined) {
       track('title', resource.title, input.title);
       resource.title = input.title;
     }
-    if (input.url !== undefined && input.url !== resource.url) {
+    if (input.url !== undefined) {
       track('url', resource.url, input.url);
       resource.url = input.url;
     }

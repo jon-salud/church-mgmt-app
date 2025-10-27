@@ -427,7 +427,7 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
       </Modal>
 
       <Modal
-        open={Boolean(resourceModal)}
+        open={!!resourceModal}
         onClose={() => setResourceModal(null)}
         title={resourceModal ? `Manage ${resourceModal.title}` : 'Manage resource'}
         footer={
