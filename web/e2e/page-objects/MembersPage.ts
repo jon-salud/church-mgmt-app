@@ -28,6 +28,10 @@ export class MembersPage extends BasePage {
         lastName,
         phone,
         roleIds: ['role-member'], // Default role
+        profile: {
+          phone,
+          householdRole: 'Head',
+        },
       },
       headers: {
         'Content-Type': 'application/json',

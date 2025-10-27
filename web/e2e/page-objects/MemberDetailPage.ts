@@ -38,10 +38,17 @@ export class MemberDetailPage extends BasePage {
     // Click "Remove Member" to open the archive modal
     await this.page.getByRole('button', { name: 'Remove Member' }).click();
 
+    // Wait for modal to open
+    await this.page.getByRole('dialog', { name: 'Archive Member' }).waitFor({ state: 'visible' });
+
     // Click "Archive Member" in the modal
     await this.page.getByRole('button', { name: 'Archive Member' }).click();
 
-    await this.page.waitForURL('http://localhost:3000/members');
+    // Wait for modal to close
+    await this.page.getByRole('dialog', { name: 'Archive Member' }).waitFor({ state: 'hidden' });
+
+    // Wait for navigation to members page
+    await this.page.waitForURL('**/members');
   }
 
   getMemberIdFromUrl() {

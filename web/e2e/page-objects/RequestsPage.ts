@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class RequestsPage extends BasePage {
@@ -22,7 +22,8 @@ export class RequestsPage extends BasePage {
   }
 
   async selectRequestType(type: 'Prayer' | 'Benevolence' | 'Improvement' | 'Suggestion') {
-    await this.requestTypeSelect.selectOption({ label: `${type} Request` });
+    await this.requestTypeSelect.click();
+    await this.page.getByRole('option', { name: type }).click();
   }
 
   async fillRequestForm(title: string, body: string, isConfidential = false) {
@@ -35,5 +36,46 @@ export class RequestsPage extends BasePage {
 
   async submitRequest() {
     await this.submitButton.click();
+  }
+
+  async verifyRequestsPage() {
+    await expect(this.page).toHaveURL('http://localhost:3000/requests');
+    await expect(this.page.getByRole('heading', { name: 'Requests' })).toBeVisible();
+  }
+
+  async verifyRequestTypeDropdown() {
+    await expect(this.requestTypeSelect).toBeVisible();
+  }
+
+  async getAvailableRequestTypes(): Promise<string[]> {
+    await this.requestTypeSelect.click();
+    const options = this.page.getByRole('option');
+    const count = await options.count();
+    const types: string[] = [];
+    for (let i = 0; i < count; i++) {
+      const text = await options.nth(i).textContent();
+      if (text) types.push(text.replace(' Request', ''));
+    }
+    return types;
+  }
+
+  async verifyPrayerRequestForm() {
+    await expect(this.titleInput).toBeVisible();
+    await expect(this.bodyTextarea).toBeVisible();
+    await expect(this.confidentialCheckbox).toBeVisible();
+  }
+
+  async verifyRequestSubmitted() {
+    // Check for success message or redirect
+    await expect(this.page.getByText('Request submitted successfully'))
+      .toBeVisible()
+      .catch(async () => {
+        // May redirect to pastoral-care page
+        await expect(this.page).toHaveURL(/pastoral-care/);
+      });
+  }
+
+  async verifyConfidentialOptionVisible() {
+    await expect(this.confidentialCheckbox).toBeVisible();
   }
 }

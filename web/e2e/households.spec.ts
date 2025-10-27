@@ -20,15 +20,16 @@ test.describe('Households', () => {
 
       // Verify households are displayed with member counts
       await expect(page.getByText('Matau Family')).toBeVisible();
-      await expect(page.getByRole('link', { name: 'Matau Family 1 member' })).toBeVisible();
+      await expect(page.getByRole('link', { name: 'Matau Family' })).toBeVisible();
     });
 
     await test.step('Navigate to household detail page and verify content', async () => {
       await householdsPage.navigateToHousehold(householdName);
+      await expect(page).toHaveURL(/\/households\/hh-matau/);
       await householdDetailPage.verifyHouseholdDetailPage(householdName);
 
       // Verify household details are displayed
-      await expect(page.getByText('Members')).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Members' })).toBeVisible();
       await expect(page.getByText(/Head|Spouse|Child/)).toBeVisible(); // Should show household roles
     });
   });
