@@ -131,15 +131,17 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - **Frontend:** Created the UI for uploading, viewing, editing, and managing documents with role-based permissions checkboxes.
   - **Testing:** Added 13 passing unit tests covering all document endpoints including list, get, upload, update, delete, download, and permission filtering.
 
+- **Small Group Resource Sharing:**
+  - **Backend:** Created CRUD endpoints for managing `group_resources` (title and URL) with full validation and audit logging.
+  - **Frontend:** Implemented UI for adding, viewing, editing, and deleting resource links on the group details page with modal dialogs.
+  - **Testing:** Added 4 passing API unit tests covering all resource CRUD operations (create, read, update, delete).
+  - **Features:** Admin-only resource management, clickable resource URLs opening in new tabs, proper churchId isolation, and audit trail for all operations.
+
 ### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming
 
 ## Phase 1: Complete Core Initial Release Features
-
-- **Small Group Resource Sharing:**
-  - **Backend:** Create CRUD endpoints for managing `group_resources` (title and URL).
-  - **Frontend:** Implement the UI for adding and viewing resource links on the group details page.
 
 ## Phase 2: Admin Experience & Polish
 
