@@ -37,7 +37,7 @@ export function AppLayout({
     ? `${me.user.profile.firstName} ${me.user.profile.lastName ?? ''}`.trim()
     : me?.user?.primaryEmail || 'Demo Admin';
   const roles = me?.user?.roles ?? [];
-  const isAdmin = roles.some((entry: any) => entry?.slug === 'admin' || entry?.role === 'Admin');
+  const isAdmin = roles.some((entry: any) => entry?.slug === 'admin');
   const primaryRole = roles[0]?.role ?? (isAdmin ? 'Admin' : 'Member');
 
   return (
