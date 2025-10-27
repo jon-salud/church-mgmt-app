@@ -8,6 +8,7 @@ import {
   Get,
   UseGuards,
   Query,
+  BadRequestException,
 } from '@nestjs/common';
 import { CheckinService } from './checkin.service';
 import { CreateChildDto } from './dto/create-child.dto';
@@ -74,13 +75,23 @@ export class CheckinController {
 
   @Get()
   getCheckins(
-    @Query('status') status: 'pending' | 'checked-in',
+    @Query('status') status?: 'pending' | 'checked-in',
     @Query('eventId') eventId?: string
   ) {
+    // Validate that only one parameter is provided to avoid ambiguous behavior
+    if (status && eventId) {
+      throw new BadRequestException(
+        'Cannot specify both status and eventId parameters. Use status for filtering by check-in status, or eventId for getting all checkins for a specific event.'
+      );
+    }
+    if (!status && !eventId) {
+      throw new BadRequestException('Either status or eventId parameter must be provided.');
+    }
+
     if (eventId) {
       return this.checkinService.getCheckinsByEventId(eventId);
     }
-    return this.checkinService.getCheckins(status);
+    return this.checkinService.getCheckins(status!);
   }
 
   @Post('checkout/confirm')
