@@ -162,7 +162,7 @@ export const clientApi = {
   },
   // Document Library methods
   async uploadDocument(
-    file: File,
+    file: any,
     metadata: { title: string; description?: string; roleIds: string[] }
   ) {
     const formData = new FormData();

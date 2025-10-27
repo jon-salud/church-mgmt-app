@@ -1,13 +1,11 @@
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../src/modules/app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { MAX_FILE_SIZE_BYTES } from '../src/common/constants';
 
 describe('Documents (e2e)', () => {
   let app: NestFastifyApplication;
   let createdDocumentId: string;
-  let roleAdminId: string;
-  let roleLeaderId: string;
-  let roleMemberId: string;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
@@ -16,22 +14,11 @@ describe('Documents (e2e)', () => {
     app.setGlobalPrefix('api/v1');
     await app.register(require('@fastify/multipart'), {
       limits: {
-        fileSize: 10 * 1024 * 1024,
+        fileSize: MAX_FILE_SIZE_BYTES,
       },
     });
     await app.init();
     await adapter.getInstance().ready();
-
-    // Get role IDs
-    const rolesResponse = await app.inject({
-      method: 'GET',
-      url: '/api/v1/roles',
-      headers: { authorization: 'Bearer demo-admin' },
-    });
-    const roles = rolesResponse.json();
-    roleAdminId = roles.find((r: any) => r.slug === 'admin')?.id;
-    roleLeaderId = roles.find((r: any) => r.slug === 'leader')?.id;
-    roleMemberId = roles.find((r: any) => r.slug === 'member')?.id;
   });
 
   afterAll(async () => {

@@ -1,14 +1,9 @@
-import {
-  Inject,
-  Injectable,
-  NotFoundException,
-  ForbiddenException,
-  BadRequestException,
-} from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DATA_STORE, DataStore } from '../../datastore';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { randomUUID } from 'node:crypto';
+import { MAX_FILE_SIZE_BYTES } from '../../common/constants';
 
 @Injectable()
 export class DocumentsService {
@@ -55,7 +50,7 @@ export class DocumentsService {
     if (!user) throw new NotFoundException('User not found');
 
     // Validate file size (max 10MB for mock storage)
-    if (file.buffer.length > 10 * 1024 * 1024) {
+    if (file.buffer.length > MAX_FILE_SIZE_BYTES) {
       throw new BadRequestException('File size exceeds 10MB limit');
     }
 

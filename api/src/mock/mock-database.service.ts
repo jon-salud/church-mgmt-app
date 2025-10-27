@@ -2574,8 +2574,7 @@ export class MockDatabaseService {
         if (doc.churchId !== churchId || doc.deletedAt) return false;
         // Check if user has permission to view this document
         const hasPermission = this.documentPermissions.some(
-          perm =>
-            perm.documentId === doc.id && userRoleIds.includes(perm.roleId) && !perm.deletedAt
+          perm => perm.documentId === doc.id && userRoleIds.includes(perm.roleId) && !perm.deletedAt
         );
         return hasPermission;
       })

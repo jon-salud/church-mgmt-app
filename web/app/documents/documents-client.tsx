@@ -7,15 +7,12 @@ import { Input } from '../../components/ui/input';
 import { Label } from '../../components/ui/label';
 import { Textarea } from '../../components/ui/textarea';
 import { Checkbox } from '../../components/ui/checkbox';
-import {
-  DownloadIcon,
-  FileIcon,
-  PencilIcon,
-  TrashIcon,
-  UploadIcon,
-  PlusIcon,
-} from 'lucide-react';
+import { DownloadIcon, FileIcon, PencilIcon, TrashIcon, UploadIcon } from 'lucide-react';
 import { clientApi } from '../../lib/api.client';
+
+// Declare browser globals for ESLint
+declare const alert: (message: string) => void;
+declare const confirm: (message: string) => boolean;
 
 type DocumentsClientProps = {
   documents: Array<any>;
@@ -28,7 +25,7 @@ type DocumentDraft = {
   title: string;
   description?: string;
   roleIds: string[];
-  file?: File;
+  file?: any;
 };
 
 export function DocumentsClient({ documents: initialDocuments, roles, me }: DocumentsClientProps) {
@@ -133,14 +130,6 @@ export function DocumentsClient({ documents: initialDocuments, roles, me }: Docu
     }));
   };
 
-  const formatFileSize = (bytes: number) => {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
-  };
-
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-NZ', {
       year: 'numeric',
@@ -193,6 +182,7 @@ export function DocumentsClient({ documents: initialDocuments, roles, me }: Docu
                       onClick={() => handleEditClick(doc)}
                       className="text-gray-500 hover:text-gray-700"
                       data-testid={`edit-document-${doc.id}`}
+                      aria-label="Edit document"
                     >
                       <PencilIcon className="h-4 w-4" />
                     </button>
@@ -200,6 +190,7 @@ export function DocumentsClient({ documents: initialDocuments, roles, me }: Docu
                       onClick={() => handleDelete(doc.id)}
                       className="text-gray-500 hover:text-red-700"
                       data-testid={`delete-document-${doc.id}`}
+                      aria-label="Delete document"
                     >
                       <TrashIcon className="h-4 w-4" />
                     </button>
@@ -244,9 +235,7 @@ export function DocumentsClient({ documents: initialDocuments, roles, me }: Docu
                 id="file"
                 type="file"
                 required
-                onChange={e =>
-                  setDocumentDraft({ ...documentDraft, file: e.target.files?.[0] })
-                }
+                onChange={e => setDocumentDraft({ ...documentDraft, file: e.target.files?.[0] })}
                 data-testid="document-file-input"
               />
             </div>

@@ -105,27 +105,25 @@ export class DocumentsController {
     },
   })
   @ApiCreatedResponse(objectResponse)
-  async upload(@Req() req: any, @Body() body: any) {
+  async upload(@Req() req: any) {
     this.ensureAdmin(req);
 
-    // Handle file upload using Fastify multipart
-    const data = await req.file();
-    if (!data) {
+    // Parse multipart form data
+    const { file, fields } = await this.parseMultipartParts(req);
+    if (!file) {
       throw new BadRequestException('No file uploaded');
     }
 
     // Get the buffer from the file stream
-    const buffer = await data.toBuffer();
+    const buffer = await file.toBuffer();
 
-    // Parse JSON fields from form data
-    const fields = await this.parseMultipartFields(req);
     let roleIds: string[];
     if (Array.isArray(fields.roleIds)) {
       roleIds = fields.roleIds;
     } else {
       try {
         roleIds = JSON.parse(fields.roleIds || '[]');
-      } catch (e) {
+      } catch {
         throw new BadRequestException('Malformed JSON in roleIds field');
       }
     }
@@ -137,8 +135,8 @@ export class DocumentsController {
 
     return this.documentsService.create(
       {
-        filename: data.filename,
-        mimetype: data.mimetype,
+        filename: file.filename,
+        mimetype: file.mimetype,
         buffer,
       },
       dto,
@@ -190,7 +188,9 @@ export class DocumentsController {
    * Parses all multipart parts, returning both the file (if any) and the fields.
    * Returns: { file, fields }
    */
-  private async parseMultipartParts(req: any): Promise<{ file?: any; fields: Record<string, string> }> {
+  private async parseMultipartParts(
+    req: any
+  ): Promise<{ file?: any; fields: Record<string, string> }> {
     const fields: Record<string, string> = {};
     let file: any = undefined;
 
