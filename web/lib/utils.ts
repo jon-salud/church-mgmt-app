@@ -7,18 +7,15 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 /**
- * Check if a user has a specific role by slug or role name (case-insensitive)
+ * Check if a user has a specific role by slug (case-insensitive)
  */
 export function hasRole(userRoles: Role[] | undefined | null, roleName: string): boolean {
   if (!Array.isArray(userRoles)) return false;
   const normalizedRoleName = roleName.toLowerCase();
   return userRoles.some(role => {
     if (!role) return false;
-    // Check both 'slug' and 'role' properties, case-insensitive
+    // Check only 'slug' property, case-insensitive
     if (typeof role.slug === 'string' && role.slug.toLowerCase() === normalizedRoleName) {
-      return true;
-    }
-    if (typeof role.role === 'string' && role.role.toLowerCase() === normalizedRoleName) {
       return true;
     }
     return false;
