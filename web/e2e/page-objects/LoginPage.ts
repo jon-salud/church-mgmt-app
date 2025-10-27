@@ -10,7 +10,10 @@ export class LoginPage extends BasePage {
     await super.goto('http://localhost:3000/login');
   }
 
-  async login(demoToken = 'demo-admin', skipModalHandling = false) {
+  async login(
+    persona: 'demo-admin' | 'demo-leader' | 'demo-member' | 'demo-new-admin' = 'demo-admin',
+    skipModalHandling = false
+  ) {
     // Set the demo token cookie directly to bypass server action issues in Playwright.
     // Playwright currently does not support Next.js 13+ server actions in E2E tests,
     // which prevents us from logging in via the UI as server actions are not executed.
@@ -18,7 +21,7 @@ export class LoginPage extends BasePage {
     await this.page.context().addCookies([
       {
         name: 'demo_token',
-        value: demoToken,
+        value: persona,
         url: 'http://localhost:3000',
       },
       {

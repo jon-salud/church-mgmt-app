@@ -456,7 +456,13 @@ export async function deleteEventVolunteerSignupAction(formData: FormData) {
 export async function demoLoginAction(formData: FormData) {
   const cookieStore = cookies();
   const returnTo = formData.get('returnTo')?.toString();
-  cookieStore.set('demo_token', 'demo-admin', {
+  const persona = formData.get('persona')?.toString() || 'demo-admin';
+
+  // Validate persona
+  const validPersonas = ['demo-admin', 'demo-leader', 'demo-member', 'demo-new-admin'];
+  const demoToken = validPersonas.includes(persona) ? persona : 'demo-admin';
+
+  cookieStore.set('demo_token', demoToken, {
     path: '/',
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
