@@ -61,8 +61,6 @@ test.describe('Pastoral Care Pages', () => {
     // Wait for page to load and check if we're on the right page
     await page.waitForLoadState('networkidle');
     console.log('Current URL:', page.url());
-    console.log('Page title:', await page.title());
-
     // Verify we're on the ticket detail page
     await expect(page.locator('h1')).toBeVisible();
 
