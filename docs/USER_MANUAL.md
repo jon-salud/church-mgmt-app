@@ -122,6 +122,27 @@ Roles can be archived when no longer needed while preserving historical data:
 - **View Archived Roles:** Check the "Show archived roles" option to see roles that have been archived.
 - **Recover a Role:** Administrators can recover archived roles to make them available for assignment again.
 
+### 3.7. How to Manage Group Resources
+
+Church administrators and group leaders can share useful resources (links to articles, videos, study materials, etc.) with their small groups.
+
+#### Adding Resources to a Group
+
+1. Navigate to the **Groups** page and click on a specific group to view its details.
+2. In the "Resources" section, click the "Add Resource" button.
+3. Enter a descriptive title for the resource.
+4. Provide the URL of the resource.
+5. Click "Save" to add the resource to the group.
+
+#### Managing Group Resources
+
+- **View Resources:** All group members can see the list of shared resources on the group details page.
+- **Edit Resources:** Group leaders and administrators can edit resource titles and URLs by clicking the edit icon next to each resource.
+- **Delete Resources:** Resources can be removed by clicking the delete icon. This action is restricted to group leaders and administrators.
+- **Access Resources:** Click on any resource title to open the link in a new browser tab.
+
+Resources are automatically organized by group, ensuring that each small group has access to its own relevant materials while maintaining separation between different groups.
+
 ## 4. For Members
 
 This section is for all church members. It explains how you can use the platform to manage your
