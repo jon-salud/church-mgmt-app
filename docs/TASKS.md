@@ -139,6 +139,20 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ### 🔄 In Progress
 
+### ✅ Completed
+
+- **Re-enable UI Tests (Phase 3):**
+  - Convert redundant accessibility tests into functional tests instead of removing them
+  - ✅ Phase 1: Smoke tests (2/2 completed - dashboard and audit log)
+  - ✅ Phase 2: Announcements (1/1 completed - full CRUD functionality)
+  - ✅ Phase 3: Check-in tests (4/4 completed - checkin-dashboard 3/3, checkin 1/1)
+  - ✅ Phase 4: Households (1/1 completed - list and detail navigation)
+  - ✅ Phase 4: Roles (1/1 completed - table display and permissions)
+  - ✅ Phase 4: Settings (1/1 completed - form display and options)
+  - ✅ Phase 5: Volunteer (1/1 completed - event volunteer role management)
+  - For each test: enable, fix issues, verify functionality, move to next
+  - Ensure all tests pass and provide meaningful validation
+
 ### 📝 Backlog / Upcoming
 
 ## Phase 1: Complete Core Initial Release Features

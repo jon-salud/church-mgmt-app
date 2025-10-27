@@ -35,6 +35,10 @@ export class CheckinService {
     return this.db.getCheckinsByEventId(eventId);
   }
 
+  async getCheckins(status: 'pending' | 'checked-in') {
+    return this.db.getCheckins(status);
+  }
+
   async initiateCheckin(data: InitiateCheckinDto, actorUserId: string) {
     const checkins = await Promise.all(
       data.childIds.map(childId =>

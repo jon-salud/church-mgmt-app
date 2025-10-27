@@ -73,8 +73,14 @@ export class CheckinController {
   }
 
   @Get()
-  getCheckinsByEventId(@Query('eventId') eventId: string) {
-    return this.checkinService.getCheckinsByEventId(eventId);
+  getCheckins(
+    @Query('status') status: 'pending' | 'checked-in',
+    @Query('eventId') eventId?: string
+  ) {
+    if (eventId) {
+      return this.checkinService.getCheckinsByEventId(eventId);
+    }
+    return this.checkinService.getCheckins(status);
   }
 
   @Post('checkout/confirm')

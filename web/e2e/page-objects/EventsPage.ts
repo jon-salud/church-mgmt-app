@@ -17,17 +17,29 @@ export class EventsPage extends BasePage {
     endAt: string,
     tags: string
   ) {
-    const scheduleSection = this.page.locator('section', {
-      has: this.page.getByRole('heading', { name: 'Schedule New Event' }),
-    });
-    await scheduleSection.getByLabel('Title').fill(title);
-    await scheduleSection.getByLabel('Location').fill(location);
-    await scheduleSection.getByLabel('Start').fill(startAt);
-    await scheduleSection.getByLabel('End').fill(endAt);
-    await scheduleSection.getByLabel('Visibility').selectOption('public');
-    await scheduleSection.getByLabel('Group (optional)').selectOption('');
-    await scheduleSection.getByLabel('Tags (comma separated)').fill(tags);
-    await scheduleSection.getByRole('button', { name: 'Create Event' }).click();
+    // Click the "Schedule event" button to open the modal
+    await this.page.getByRole('button', { name: 'Schedule event' }).click();
+
+    // Wait for the modal to appear
+    await expect(this.page.getByRole('heading', { name: 'Schedule event' })).toBeVisible();
+
+    // Fill in the form fields using the correct IDs
+    await this.page.fill('#create-title-input', title);
+    await this.page.fill('#create-location-input', location);
+    await this.page.fill('#create-start-at-input', startAt);
+    await this.page.fill('#create-end-at-input', endAt);
+    await this.page.selectOption('#create-visibility-select', 'public');
+    await this.page.selectOption('#create-group-select', '');
+    await this.page.fill('#create-tags-input', tags);
+
+    // Submit the form
+    await this.page.click('#create-event-button');
+
+    // Wait for the modal to close
+    await expect(this.page.getByRole('heading', { name: 'Schedule event' })).not.toBeVisible();
+
+    // Wait for the event to appear in the list
+    await expect(this.page.getByRole('heading', { name: title })).toBeVisible();
   }
 
   async verifyEventVisible(title: string) {

@@ -28,7 +28,7 @@ async function setDarkTheme(page: Page) {
   await page.waitForLoadState('load');
 }
 
-test.describe.serial('Accessibility tests - Light Theme', () => {
+test.describe('Accessibility tests - Light Theme', () => {
   let context: BrowserContext;
   let page: Page;
 
@@ -134,7 +134,7 @@ test.describe.serial('Accessibility tests - Light Theme', () => {
   });
 });
 
-test.describe.serial('Accessibility tests - Dark Theme', () => {
+test.describe('Accessibility tests - Dark Theme', () => {
   let context: BrowserContext;
   let page: Page;
 
