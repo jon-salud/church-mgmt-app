@@ -558,5 +558,65 @@
       "email": "qa-1761504086510@example.com"
     },
     "createdAt": "2025-10-26T18:41:35.126Z"
+  },
+  {
+    "id": "audit-user-user-e1ca35ea-a8a6-4559-bd7d-38615fbe7b05-1761527764283",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-e1ca35ea-a8a6-4559-bd7d-38615fbe7b05",
+    "summary": "Ariana Matau added QA1761527758915 Member to the directory",
+    "metadata": {
+      "userId": "user-e1ca35ea-a8a6-4559-bd7d-38615fbe7b05",
+      "email": "qa-1761527758915@example.com",
+      "roles": ["Member"]
+    },
+    "createdAt": "2025-10-27T01:16:04.283Z"
+  },
+  {
+    "id": "audit-user-user-e1ca35ea-a8a6-4559-bd7d-38615fbe7b05-1761527766967",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-e1ca35ea-a8a6-4559-bd7d-38615fbe7b05",
+    "summary": "Ariana Matau updated QA1761527758915 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-8915",
+        "newValue": "555-8915-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-e1ca35ea-a8a6-4559-bd7d-38615fbe7b05"
+    },
+    "createdAt": "2025-10-27T01:16:06.967Z"
+  },
+  {
+    "id": "audit-user-user-e1ca35ea-a8a6-4559-bd7d-38615fbe7b05-1761527767695",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.soft-deleted",
+    "entity": "user",
+    "entityId": "user-e1ca35ea-a8a6-4559-bd7d-38615fbe7b05",
+    "summary": "Ariana Matau soft-deleted QA1761527758915 Member from the directory",
+    "metadata": {
+      "userId": "user-e1ca35ea-a8a6-4559-bd7d-38615fbe7b05",
+      "email": "qa-1761527758915@example.com"
+    },
+    "createdAt": "2025-10-27T01:16:07.695Z"
   }
 ]

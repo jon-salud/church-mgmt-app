@@ -43,6 +43,10 @@ import {
   mockRequests,
   MockRequestType,
   mockRequestTypes,
+  MockDocument,
+  mockDocuments,
+  MockDocumentPermission,
+  mockDocumentPermissions,
 } from './mock-data';
 import { AuditLogPersistence } from './audit-log.persistence';
 
@@ -340,6 +344,8 @@ export class MockDatabaseService {
   private pushSubscriptions: any[] = [];
   private eventVolunteerRoles: any[] = [];
   private eventVolunteerSignups: any[] = [];
+  private documents: MockDocument[] = clone(mockDocuments);
+  private documentPermissions: MockDocumentPermission[] = clone(mockDocumentPermissions);
 
   constructor(private readonly auditPersistence: AuditLogPersistence) {
     this.hydrateAuditLogSnapshot();
@@ -1735,6 +1741,11 @@ export class MockDatabaseService {
     return this.roles.map(role => this.withAssignmentCount(role));
   }
 
+  getRole(id: string) {
+    const role = this.getRoleById(id);
+    return role ? this.withAssignmentCount(role) : undefined;
+  }
+
   createRole(input: RoleCreateInput) {
     const churchId = this.getChurch().id;
     const name = input.name?.trim();
@@ -2554,6 +2565,214 @@ export class MockDatabaseService {
     });
 
     return clone(this.requestTypes);
+  }
+
+  // Document Library methods
+  listDocuments(churchId: string, userRoleIds: string[]): MockDocument[] {
+    return this.documents
+      .filter(doc => {
+        if (doc.churchId !== churchId || doc.deletedAt) return false;
+        // Check if user has permission to view this document
+        const hasPermission = this.documentPermissions.some(
+          perm => perm.documentId === doc.id && userRoleIds.includes(perm.roleId) && !perm.deletedAt
+        );
+        return hasPermission;
+      })
+      .map(doc => clone(doc));
+  }
+
+  getDocument(id: string): MockDocument | undefined {
+    const doc = this.documents.find(d => d.id === id && !d.deletedAt);
+    return doc ? clone(doc) : undefined;
+  }
+
+  getDocumentWithPermissions(
+    id: string,
+    userRoleIds: string[]
+  ): (MockDocument & { permissions: string[] }) | undefined {
+    const doc = this.documents.find(d => d.id === id && !d.deletedAt);
+    if (!doc) return undefined;
+
+    const permissions = this.documentPermissions
+      .filter(p => p.documentId === id && !p.deletedAt)
+      .map(p => p.roleId);
+
+    // Check if user has permission
+    const hasPermission = permissions.some(roleId => userRoleIds.includes(roleId));
+    if (!hasPermission) return undefined;
+
+    return { ...clone(doc), permissions };
+  }
+
+  createDocument(
+    churchId: string,
+    uploaderProfileId: string,
+    fileName: string,
+    fileType: string,
+    title: string,
+    description: string | undefined,
+    fileData: string,
+    roleIds: string[],
+    actorUserId: string
+  ): MockDocument {
+    const actorName = this.getUserName(actorUserId);
+    const id = randomUUID();
+    const storageKey = `documents/${id}/${fileName}`;
+    const now = new Date().toISOString();
+
+    const doc: MockDocument = {
+      id,
+      churchId,
+      uploaderProfileId,
+      fileName,
+      fileType,
+      title,
+      description,
+      storageKey,
+      fileData,
+      createdAt: now,
+      updatedAt: now,
+    };
+
+    this.documents.push(doc);
+
+    // Create permissions
+    roleIds.forEach(roleId => {
+      this.documentPermissions.push({
+        documentId: id,
+        roleId,
+      });
+    });
+
+    this.createAuditLog({
+      actorUserId,
+      action: 'document.created',
+      entity: 'document',
+      entityId: id,
+      summary: `${actorName} uploaded document "${title}"`,
+      metadata: { fileName, roleIds },
+    });
+
+    return clone(doc);
+  }
+
+  updateDocument(
+    id: string,
+    title: string | undefined,
+    description: string | undefined,
+    roleIds: string[] | undefined,
+    actorUserId: string
+  ): MockDocument | undefined {
+    const actorName = this.getUserName(actorUserId);
+    const doc = this.documents.find(d => d.id === id && !d.deletedAt);
+    if (!doc) return undefined;
+
+    const oldTitle = doc.title;
+    const changes: string[] = [];
+
+    if (title !== undefined && title !== doc.title) {
+      doc.title = title;
+      changes.push(`title: "${oldTitle}" → "${title}"`);
+    }
+
+    if (description !== undefined && description !== doc.description) {
+      doc.description = description;
+      changes.push('description updated');
+    }
+
+    if (roleIds !== undefined) {
+      // Remove old permissions
+      this.documentPermissions = this.documentPermissions.filter(p => p.documentId !== id);
+      // Add new permissions
+      roleIds.forEach(roleId => {
+        this.documentPermissions.push({
+          documentId: id,
+          roleId,
+        });
+      });
+      changes.push('permissions updated');
+    }
+
+    doc.updatedAt = new Date().toISOString();
+
+    this.createAuditLog({
+      actorUserId,
+      action: 'document.updated',
+      entity: 'document',
+      entityId: id,
+      summary: `${actorName} updated document "${doc.title}"${changes.length > 0 ? `: ${changes.join(', ')}` : ''}`,
+      metadata: { changes },
+    });
+
+    return clone(doc);
+  }
+
+  deleteDocument(id: string, actorUserId: string): boolean {
+    const actorName = this.getUserName(actorUserId);
+    const doc = this.documents.find(d => d.id === id && !d.deletedAt);
+    if (!doc) return false;
+
+    doc.deletedAt = new Date().toISOString();
+
+    this.createAuditLog({
+      actorUserId,
+      action: 'document.deleted',
+      entity: 'document',
+      entityId: id,
+      summary: `${actorName} archived document "${doc.title}"`,
+    });
+
+    return true;
+  }
+
+  hardDeleteDocument(id: string, actorUserId: string): boolean {
+    const actorName = this.getUserName(actorUserId);
+    const index = this.documents.findIndex(d => d.id === id);
+    if (index === -1) return false;
+
+    const doc = this.documents[index];
+    this.documents.splice(index, 1);
+    this.documentPermissions = this.documentPermissions.filter(p => p.documentId !== id);
+
+    this.createAuditLog({
+      actorUserId,
+      action: 'document.hardDeleted',
+      entity: 'document',
+      entityId: id,
+      summary: `${actorName} permanently deleted document "${doc.title}"`,
+    });
+
+    return true;
+  }
+
+  undeleteDocument(id: string, actorUserId: string): boolean {
+    const actorName = this.getUserName(actorUserId);
+    const doc = this.documents.find(d => d.id === id && d.deletedAt);
+    if (!doc) return false;
+
+    doc.deletedAt = undefined;
+
+    this.createAuditLog({
+      actorUserId,
+      action: 'document.restored',
+      entity: 'document',
+      entityId: id,
+      summary: `${actorName} restored document "${doc.title}"`,
+    });
+
+    return true;
+  }
+
+  listDeletedDocuments(churchId: string): MockDocument[] {
+    return this.documents
+      .filter(doc => doc.churchId === churchId && doc.deletedAt)
+      .map(doc => clone(doc));
+  }
+
+  getDocumentPermissions(documentId: string): string[] {
+    return this.documentPermissions
+      .filter(p => p.documentId === documentId && !p.deletedAt)
+      .map(p => p.roleId);
   }
 
   // Invitation methods

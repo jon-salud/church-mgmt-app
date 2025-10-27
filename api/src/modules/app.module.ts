@@ -19,6 +19,7 @@ import { PastoralCareModule } from './pastoral-care/pastoral-care.module';
 import { PrayerModule } from './prayer/prayer.module';
 import { RequestsModule } from './requests/requests.module';
 import { InvitationsModule } from './invitations/invitations.module';
+import { DocumentsModule } from './documents/documents.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { InvitationsModule } from './invitations/invitations.module';
     PrayerModule,
     RequestsModule,
     InvitationsModule,
+    DocumentsModule,
   ],
 })
 export class AppModule {}

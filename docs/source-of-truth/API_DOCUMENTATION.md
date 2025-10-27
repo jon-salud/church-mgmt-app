@@ -266,20 +266,217 @@ This section covers endpoints related to prayer requests.
 
 ### Document Library
 
-_(Note: The following endpoints are planned based on the Functional Requirements but are not yet
-implemented in the API.)_
+#### GET /documents
+
+- **Description:** Retrieves a list of documents the user has permission to view based on their assigned roles.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    [
+      {
+        "id": "doc-1",
+        "churchId": "church-acc",
+        "uploaderProfileId": "user-admin",
+        "fileName": "church-bylaws.pdf",
+        "fileType": "application/pdf",
+        "title": "Church Bylaws 2024",
+        "description": "Official church bylaws and governance documents",
+        "storageKey": "documents/church-bylaws.pdf",
+        "createdAt": "2025-09-27T09:00:00.000Z",
+        "updatedAt": "2025-09-27T09:00:00.000Z"
+      }
+    ]
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
 
 ---
 
-#### GET /documents
+#### GET /documents/:id
 
-- **Description:** Retrieves a list of documents the user has permission to view.
+- **Description:** Retrieves details for a specific document including its permissions.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "id": "doc-1",
+      "churchId": "church-acc",
+      "uploaderProfileId": "user-admin",
+      "fileName": "church-bylaws.pdf",
+      "fileType": "application/pdf",
+      "title": "Church Bylaws 2024",
+      "description": "Official church bylaws and governance documents",
+      "storageKey": "documents/church-bylaws.pdf",
+      "createdAt": "2025-09-27T09:00:00.000Z",
+      "updatedAt": "2025-09-27T09:00:00.000Z",
+      "permissions": ["role-admin"]
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `404 Not Found` - If the document does not exist or user lacks permission.
+
+---
+
+#### GET /documents/:id/download-url
+
+- **Description:** Generates a time-limited download URL for a document (valid for 1 hour).
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "url": "/api/v1/documents/doc-1/download?token=abc123...",
+      "expiresAt": "2025-10-26T20:37:00.000Z"
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `404 Not Found` - If the document does not exist or user lacks permission.
+
+---
+
+#### GET /documents/:id/download
+
+- **Description:** Downloads the document file.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content-Type:** `application/octet-stream`
+  - **Headers:** `Content-Disposition: attachment; filename="document.pdf"`
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `404 Not Found` - If the document does not exist or user lacks permission.
 
 ---
 
 #### POST /documents
 
-- **Description:** Uploads a new document. (Admin only)
+- **Description:** Uploads a new document with metadata and role-based permissions (Admin only).
+- **Content-Type:** `multipart/form-data`
+- **Request Body:**
+  - `file` (file, required): The document file to upload
+  - `title` (string, required, max 200 chars): Document title
+  - `description` (string, optional, max 1000 chars): Document description
+  - `roleIds` (JSON array, required): Array of role IDs that can view this document
+
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** The newly created document object
+
+- **Error Responses:**
+  - **Code:** `400 Bad Request` - If the request is invalid or file size exceeds 10MB.
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an admin.
+
+---
+
+#### PATCH /documents/:id
+
+- **Description:** Updates document metadata and permissions (Admin only).
+- **Request Body:**
+
+  ```json
+  {
+    "title": "string (optional, max 200 chars)",
+    "description": "string (optional, max 1000 chars)",
+    "roleIds": ["role-id-1", "role-id-2"]
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** The updated document object
+
+- **Error Responses:**
+  - **Code:** `400 Bad Request` - If the request body contains invalid data.
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an admin.
+  - **Code:** `404 Not Found` - If the document does not exist.
+
+---
+
+#### DELETE /documents/:id
+
+- **Description:** Archives a document (soft delete, Admin only).
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "success": true,
+      "message": "Document archived"
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an admin.
+  - **Code:** `404 Not Found` - If the document does not exist.
+
+---
+
+#### GET /documents/deleted
+
+- **Description:** Lists all archived documents (Admin only).
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of archived document objects
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an admin.
+
+---
+
+#### POST /documents/:id/undelete
+
+- **Description:** Restores an archived document (Admin only).
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "success": true,
+      "message": "Document restored"
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an admin.
+  - **Code:** `404 Not Found` - If the document does not exist or is not deleted.
+
+---
+
+#### DELETE /documents/:id/hard
+
+- **Description:** Permanently deletes a document (Admin only, cannot be undone).
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "success": true,
+      "message": "Document permanently deleted"
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an admin.
+  - **Code:** `404 Not Found` - If the document does not exist.
 
 ---
 

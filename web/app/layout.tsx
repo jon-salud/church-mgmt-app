@@ -23,6 +23,7 @@ const memberNavItems: NavItem[] = [
   { href: '/groups', label: 'Groups', icon: 'UserRoundCog' },
   { href: '/events', label: 'Events', icon: 'Calendar' },
   { href: '/announcements', label: 'Announcements', icon: 'Megaphone' },
+  { href: '/documents', label: 'Documents', icon: 'FileText' },
   { href: '/prayer', label: 'Prayer Wall', icon: 'HeartHandshake' },
   { href: '/requests', label: 'Requests', icon: 'HeartHandshake' },
 ];

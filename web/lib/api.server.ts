@@ -176,6 +176,15 @@ export const api = {
   async getRequestTypes(churchId: string) {
     return apiFetch<any[]>(`/settings/${churchId}/request-types`);
   },
+  async documents() {
+    return apiFetch<Array<any>>('/documents');
+  },
+  async document(id: string) {
+    return apiFetch<any>(`/documents/${id}`);
+  },
+  async deletedDocuments() {
+    return apiFetch<Array<any>>('/documents/deleted');
+  },
   async get<T>(path: string) {
     return apiFetch<T>(path);
   },

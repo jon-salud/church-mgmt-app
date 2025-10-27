@@ -160,4 +160,53 @@ export const clientApi = {
   async listDeletedRoles() {
     return apiFetch<any[]>('/roles/deleted');
   },
+  // Document Library methods
+  async uploadDocument(
+    file: any,
+    metadata: { title: string; description?: string; roleIds: string[] }
+  ) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('title', metadata.title);
+    if (metadata.description) {
+      formData.append('description', metadata.description);
+    }
+    formData.append('roleIds', JSON.stringify(metadata.roleIds));
+
+    return apiFetch('/documents', {
+      method: 'POST',
+      body: formData,
+      // Don't set Content-Type header, let the browser set it with boundary
+    });
+  },
+  async updateDocument(
+    docId: string,
+    updates: { title?: string; description?: string; roleIds?: string[] }
+  ) {
+    return apiFetch(`/documents/${docId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(updates),
+    });
+  },
+  async deleteDocument(docId: string) {
+    return apiFetch(`/documents/${docId}`, {
+      method: 'DELETE',
+    });
+  },
+  async getDocumentDownloadUrl(docId: string) {
+    return apiFetch<{ url: string; expiresAt: string }>(`/documents/${docId}/download-url`);
+  },
+  async hardDeleteDocument(docId: string) {
+    return apiFetch(`/documents/${docId}/hard`, {
+      method: 'DELETE',
+    });
+  },
+  async recoverDocument(docId: string) {
+    return apiFetch(`/documents/${docId}/undelete`, {
+      method: 'POST',
+    });
+  },
+  async listDeletedDocuments() {
+    return apiFetch<any[]>('/documents/deleted');
+  },
 };

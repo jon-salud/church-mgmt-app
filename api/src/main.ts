@@ -7,6 +7,7 @@ import { HttpErrorFilter } from './common/filters/http-error.filter';
 import { createAppLogger } from './common/logger/app-logger';
 import { MetricsService } from './modules/observability/metrics.service';
 import { initSentry } from './common/observability/sentry';
+import { MAX_FILE_SIZE_BYTES } from './common/constants';
 
 async function bootstrap() {
   const { logger: appLogger, pino } = createAppLogger();
@@ -20,6 +21,13 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
   app.useGlobalFilters(new HttpErrorFilter(appLogger));
   app.enableCors({ origin: 'http://localhost:3000', credentials: true });
+
+  // Register multipart/form-data support for file uploads
+  await app.register(require('@fastify/multipart'), {
+    limits: {
+      fileSize: MAX_FILE_SIZE_BYTES, // 10MB limit
+    },
+  });
 
   if (sentryActive) {
     appLogger.log({ event: 'sentry.initialised' }, 'Bootstrap');
