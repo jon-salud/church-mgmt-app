@@ -139,10 +139,6 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - **Testing:** Added 4 passing API unit tests covering all resource CRUD operations (create, read, update, delete).
   - **Features:** Admin-only resource management, clickable resource URLs opening in new tabs, proper churchId isolation, and audit trail for all operations.
 
-### 🔄 In Progress
-
-### ✅ Completed
-
 - **Re-enable UI Tests (Phase 3):**
   - Convert redundant accessibility tests into functional tests instead of removing them
   - ✅ Phase 1: Smoke tests (2/2 completed - dashboard and audit log)
@@ -154,6 +150,8 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ Phase 5: Volunteer (1/1 completed - event volunteer role management)
   - For each test: enable, fix issues, verify functionality, move to next
   - Ensure all tests pass and provide meaningful validation
+
+### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming
 
