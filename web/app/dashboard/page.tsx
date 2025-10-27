@@ -1,6 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from '../../lib/api.server';
 import { format } from 'date-fns';
+import { hasRole } from '../../lib/utils';
+import type { DashboardSummary, DashboardOverview } from '../../lib/types';
 
 export default async function DashboardPage() {
   const [summary, overview, me] = await Promise.all([
@@ -9,7 +10,7 @@ export default async function DashboardPage() {
     api.currentUser(),
   ]);
 
-  const isLeader = me?.user?.roles?.some((role: any) => role?.slug === 'leader') ?? false;
+  const isLeader = hasRole(me?.user?.roles, 'leader');
 
   return (
     <section className="space-y-8">
@@ -33,7 +34,13 @@ export default async function DashboardPage() {
   );
 }
 
-function LeaderDashboard({ summary, overview }: { summary: any; overview: any }) {
+function LeaderDashboard({
+  summary,
+  overview,
+}: {
+  summary: DashboardSummary;
+  overview: DashboardOverview;
+}) {
   return (
     <>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -69,7 +76,7 @@ function LeaderDashboard({ summary, overview }: { summary: any; overview: any })
             <p className="text-sm text-muted-foreground">No upcoming events.</p>
           ) : (
             <ul className="space-y-3">
-              {overview.events.map((event: any) => (
+              {overview.events.map(event => (
                 <li key={event.id} className="rounded-md border border-border bg-muted/40 p-3">
                   <p className="font-medium">{event.title}</p>
                   <p className="text-xs text-muted-foreground">
@@ -78,7 +85,7 @@ function LeaderDashboard({ summary, overview }: { summary: any; overview: any })
                   </p>
                   {event.volunteerRoles && event.volunteerRoles.length > 0 && (
                     <p className="text-xs text-blue-600 mt-1">
-                      {event.volunteerRoles.filter((role: any) => role.filled < role.needed).length}{' '}
+                      {event.volunteerRoles.filter(role => role.filled < role.needed).length}{' '}
                       volunteer roles open
                     </p>
                   )}
@@ -105,7 +112,13 @@ function LeaderDashboard({ summary, overview }: { summary: any; overview: any })
   );
 }
 
-function AdminDashboard({ summary, overview }: { summary: any; overview: any }) {
+function AdminDashboard({
+  summary,
+  overview,
+}: {
+  summary: DashboardSummary;
+  overview: DashboardOverview;
+}) {
   return (
     <>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -141,7 +154,7 @@ function AdminDashboard({ summary, overview }: { summary: any; overview: any }) 
             <p className="text-sm text-muted-foreground">No upcoming events yet.</p>
           ) : (
             <ul className="space-y-3">
-              {overview.events.map((event: any) => (
+              {overview.events.map(event => (
                 <li key={event.id} className="rounded-md border border-border bg-muted/40 p-3">
                   <p className="font-medium">{event.title}</p>
                   <p className="text-xs text-muted-foreground">
@@ -158,7 +171,7 @@ function AdminDashboard({ summary, overview }: { summary: any; overview: any }) 
             <p className="text-sm text-muted-foreground">No announcements to show.</p>
           ) : (
             <ul className="space-y-3">
-              {overview.announcements.map((announcement: any) => (
+              {overview.announcements.map(announcement => (
                 <li
                   key={announcement.id}
                   className="rounded-md border border-border bg-muted/40 p-3"
@@ -187,7 +200,7 @@ function AdminDashboard({ summary, overview }: { summary: any; overview: any }) 
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {overview.contributions.map((item: any) => (
+              {overview.contributions.map(item => (
                 <tr key={item.id}>
                   <td className="py-2">{format(new Date(item.date), 'd MMM yyyy')}</td>
                   <td className="py-2 font-medium">${item.amount.toFixed(2)}</td>

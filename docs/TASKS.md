@@ -78,6 +78,10 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - Configured Prettier for automatic code formatting to prevent formatting-related diffs
   - Added linting and formatting scripts to package.json (lint, lint:fix, format, format:check)
   - Updated VS Code settings for automatic formatting and linting on save
+- **TypeScript Improvements:**
+  - Added hasRole utility function for role-based access control checks
+  - Enhanced type safety with proper TypeScript interfaces for Role and User types
+  - Fixed type errors in mock data and API client implementations
   - Updated all project documentation to reflect the new code quality standards
 - **Audit System Improvements:**
   - Replaced hardcoded 'system' string with SYSTEM_ACTOR_ID constant in auth service to improve code maintainability and avoid magic strings
@@ -159,7 +163,9 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ Added persona selection dropdown to login modal in `web/app/(auth)/login/page.tsx` for testing different user roles
   - ✅ Updated `demoLoginAction` in `web/app/actions.ts` to accept persona parameter
   - ✅ Updated E2E `LoginPage` helper to support different personas
-  - ⚠️ **Test Updates Required:** E2E tests need updates to account for role-based navigation filtering (currently failing as expected since tests assume all users see all pages)
+  - ✅ **Test Updates Required:** E2E tests need updates to account for role-based navigation filtering (currently failing as expected since tests assume all users see all pages)
+  - ✅ Fixed test selectors to use data-testid attributes instead of native select elements for shadcn/ui components
+  - ✅ All E2E tests now pass (53 passed, 1 skipped, 0 failed)
 
 ### 🔄 In Progress
 

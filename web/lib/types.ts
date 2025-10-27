@@ -41,6 +41,45 @@ export interface Role {
   permissions: string[];
 }
 
+export interface DashboardSummary {
+  memberCount: number;
+  groupCount: number;
+  upcomingEvents: number;
+  totalGivingLast30: number;
+  careRequestCount?: number;
+  volunteerNeeds?: number;
+}
+
+export interface DashboardEvent {
+  id: string;
+  title: string;
+  startAt: string;
+  location?: string;
+  volunteerRoles?: Array<{
+    filled: number;
+    needed: number;
+  }>;
+}
+
+export interface DashboardAnnouncement {
+  id: string;
+  title: string;
+  publishAt: string;
+}
+
+export interface DashboardContribution {
+  id: string;
+  amount: number;
+  date: string;
+  fundId?: string;
+}
+
+export interface DashboardOverview {
+  events: DashboardEvent[];
+  announcements: DashboardAnnouncement[];
+  contributions: DashboardContribution[];
+}
+
 export interface User {
   id: string;
   churchId: string;

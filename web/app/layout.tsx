@@ -5,6 +5,8 @@ import { ServiceWorkerRegister } from '../components/service-worker-register';
 import { ThemeProvider } from '../components/theme-provider';
 import { AppLayout } from './app-layout';
 import { NavItem } from '../components/sidebar-nav';
+import { hasRole } from '../lib/utils';
+import type { Role } from '../lib/types';
 
 export const metadata: Metadata = {
   title: 'Church Management Console',
@@ -16,74 +18,58 @@ export const viewport: Viewport = {
   themeColor: '#0f172a',
 };
 
-const memberNavItems: NavItem[] = [
-  { href: '/dashboard', label: 'Dashboard', icon: 'Home' },
-  { href: '/members', label: 'Members', icon: 'Users' },
-  { href: '/households', label: 'Households', icon: 'UsersRound' },
-  { href: '/groups', label: 'Groups', icon: 'UserRoundCog' },
-  { href: '/events', label: 'Events', icon: 'Calendar' },
-  { href: '/announcements', label: 'Announcements', icon: 'Megaphone' },
-  { href: '/documents', label: 'Documents', icon: 'FileText' },
-  { href: '/prayer', label: 'Prayer Wall', icon: 'HeartHandshake' },
-  { href: '/requests', label: 'Requests', icon: 'HeartHandshake' },
-];
-
 const givingNavItems: NavItem[] = [{ href: '/giving', label: 'Giving', icon: 'DollarSign' }];
 
-const adminNavItems: NavItem[] = [
-  { href: '/roles', label: 'Roles', icon: 'ShieldCheck' },
-  { href: '/audit-log', label: 'Audit Log', icon: 'History' },
-  { href: '/pastoral-care', label: 'Pastoral Care', icon: 'HeartPulse' },
-  { href: '/checkin/dashboard', label: 'Check-In', icon: 'MonitorCheck' },
-  { href: '/settings', label: 'Settings', icon: 'Settings' },
-];
+function getFilteredNavItems(userRoles: Role[]) {
+  const hasAdminRole = hasRole(userRoles, 'admin');
+  const hasLeaderRole = hasRole(userRoles, 'leader');
 
-const leaderNavItems: NavItem[] = [
-  { href: '/dashboard', label: 'Dashboard', icon: 'Home' },
-  { href: '/groups', label: 'My Groups', icon: 'UserRoundCog' },
-  { href: '/events', label: 'Events', icon: 'Calendar' },
-  { href: '/announcements', label: 'Announcements', icon: 'Megaphone' },
-  { href: '/prayer', label: 'Prayer Wall', icon: 'HeartHandshake' },
-  { href: '/pastoral-care', label: 'Pastoral Care', icon: 'HeartPulse' },
-  { href: '/checkin/dashboard', label: 'Check-In', icon: 'MonitorCheck' },
-];
+  // Base navigation items available to all users
+  const baseMemberNavItems: NavItem[] = [
+    { href: '/dashboard', label: 'Dashboard', icon: 'Home' },
+    { href: '/events', label: 'Events', icon: 'Calendar' },
+    { href: '/announcements', label: 'Announcements', icon: 'Megaphone' },
+    { href: '/prayer', label: 'Prayer Wall', icon: 'HeartHandshake' },
+    { href: '/requests', label: 'Requests', icon: 'HeartHandshake' },
+  ];
 
-const basicMemberNavItems: NavItem[] = [
-  { href: '/dashboard', label: 'Dashboard', icon: 'Home' },
-  { href: '/events', label: 'Events', icon: 'Calendar' },
-  { href: '/announcements', label: 'Announcements', icon: 'Megaphone' },
-  { href: '/prayer', label: 'Prayer Wall', icon: 'HeartHandshake' },
-  { href: '/requests', label: 'Requests', icon: 'HeartHandshake' },
-];
+  // Extended member navigation for admins and leaders
+  const extendedMemberNavItems: NavItem[] = [
+    { href: '/members', label: 'Members', icon: 'Users' },
+    { href: '/households', label: 'Households', icon: 'UsersRound' },
+    { href: '/groups', label: 'Groups', icon: 'UserRoundCog' },
+    { href: '/documents', label: 'Documents', icon: 'FileText' },
+  ];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getNavigationItems(userRoles: any[]) {
-  const hasAdminRole = userRoles?.some(
-    (role: any) => role?.slug === 'admin' || role?.role === 'Admin'
-  );
-
-  const hasLeaderRole = userRoles?.some(
-    (role: any) => role?.slug === 'leader' || role?.role === 'Leader'
-  );
+  // Admin-only navigation items
+  const adminOnlyNavItems: NavItem[] = [
+    { href: '/roles', label: 'Roles', icon: 'ShieldCheck' },
+    { href: '/audit-log', label: 'Audit Log', icon: 'History' },
+    { href: '/pastoral-care', label: 'Pastoral Care', icon: 'HeartPulse' },
+    { href: '/checkin/dashboard', label: 'Check-In', icon: 'MonitorCheck' },
+    { href: '/settings', label: 'Settings', icon: 'Settings' },
+  ];
 
   if (hasAdminRole) {
+    // Admins get all navigation items
     return {
-      memberNavItems,
+      memberNavItems: [...baseMemberNavItems, ...extendedMemberNavItems],
       givingNavItems,
-      adminNavItems,
+      adminNavItems: adminOnlyNavItems,
     };
   } else if (hasLeaderRole) {
+    // Leaders get extended member nav but no admin nav
     return {
-      memberNavItems: leaderNavItems,
+      memberNavItems: [...baseMemberNavItems, ...extendedMemberNavItems],
       givingNavItems,
-      adminNavItems: [], // Leaders don't get admin nav
+      adminNavItems: [], // Leaders don't get admin navigation
     };
   } else {
-    // Basic member
+    // Basic members get only base navigation
     return {
-      memberNavItems: basicMemberNavItems,
+      memberNavItems: baseMemberNavItems,
       givingNavItems,
-      adminNavItems: [], // Members don't get admin nav
+      adminNavItems: [], // Basic members don't get admin navigation
     };
   }
 }
@@ -110,7 +96,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     memberNavItems: filteredMemberNavItems,
     givingNavItems: filteredGivingNavItems,
     adminNavItems: filteredAdminNavItems,
-  } = getNavigationItems(me?.user?.roles || []);
+  } = getFilteredNavItems(me?.user?.roles || []);
 
   return (
     <html lang="en" suppressHydrationWarning>

@@ -22,7 +22,8 @@ export class RequestsPage extends BasePage {
   }
 
   async selectRequestType(type: 'Prayer' | 'Benevolence' | 'Improvement' | 'Suggestion') {
-    await this.requestTypeSelect.click();
+    // Use the data-testid for stable test selection instead of targeting native select
+    await this.page.locator('[data-testid="request-type-select"]').click();
     await this.page.getByRole('option', { name: type }).click();
   }
 
