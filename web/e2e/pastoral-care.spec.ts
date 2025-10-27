@@ -44,7 +44,7 @@ test.describe('Pastoral Care Pages', () => {
 
     // Submit ticket and verify redirect to ticket detail page
     await newPastoralCareTicketPage.submitButton.click();
-    await page.waitForTimeout(1000); // Wait for potential redirect
+    await page.waitForURL(/\/pastoral-care\/[a-zA-Z0-9-]+$/); // Wait for redirect to ticket detail page
     console.log('URL after submit:', page.url());
 
     // Check if we're still on the new ticket page (indicating failure)
