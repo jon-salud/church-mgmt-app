@@ -44,6 +44,7 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   updateGroupResource: resolvedFn(),
   deleteGroupResource: resolvedFn(),
   listEvents: resolvedFn([{ id: 'event-sunday-service', title: 'Sunday Service' }]),
+  listEventsByGroupId: resolvedFn([]),
   getEventById: resolvedFn(),
   createEvent: resolvedFn(),
   updateEvent: resolvedFn(),
