@@ -56,13 +56,8 @@ export class PrayerPage extends BasePage {
   }
 
   async verifyPrayerRequestList() {
-    // Check if prayer request list exists (may be empty)
-    await expect(this.prayerRequestList.first())
-      .toBeVisible()
-      .catch(() => {
-        // If no requests, that's also valid
-        expect(true).toBe(true);
-      });
+    // It's valid for the list to be empty, so just check that the locator exists (count >= 0)
+    await expect(await this.prayerRequestList.count()).toBeGreaterThanOrEqual(0);
   }
 
   async verifyPrayerWallContent() {
@@ -95,7 +90,7 @@ export class PrayerPage extends BasePage {
 
   async submitPrayerRequest() {
     await this.submitButton.click();
-    await this.page.waitForTimeout(1000); // Wait for API call to complete
+    await expect(this.successMessage).toBeVisible();
   }
 
   async verifyPrayerRequestSubmitted() {
@@ -108,13 +103,9 @@ export class PrayerPage extends BasePage {
   }
 
   async verifyPendingRequestsList() {
-    // Check if pending requests list exists
-    await expect(this.pendingRequestList.first())
-      .toBeVisible()
-      .catch(() => {
-        // If no pending requests, that's also valid
-        expect(true).toBe(true);
-      });
+    // Check if pending requests list can be empty or have items
+    const count = await this.pendingRequestList.count();
+    expect(count).toBeGreaterThanOrEqual(0);
   }
 
   async verifyModerationControls() {

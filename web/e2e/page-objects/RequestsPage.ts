@@ -67,12 +67,19 @@ export class RequestsPage extends BasePage {
 
   async verifyRequestSubmitted() {
     // Check for success message or redirect
-    await expect(this.page.getByText('Request submitted successfully'))
-      .toBeVisible()
-      .catch(async () => {
+    try {
+      await expect(this.page.getByText('Request submitted successfully')).toBeVisible();
+    } catch (err) {
+      try {
         // May redirect to pastoral-care page
         await expect(this.page).toHaveURL(/pastoral-care/);
-      });
+      } catch (err2) {
+        throw new Error(
+          `Neither success message was visible nor was the page redirected to pastoral-care. ` +
+            `Original error: ${err}; Redirect check error: ${err2}`
+        );
+      }
+    }
   }
 
   async verifyConfidentialOptionVisible() {
