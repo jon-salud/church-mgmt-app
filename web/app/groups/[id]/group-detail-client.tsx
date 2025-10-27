@@ -8,6 +8,9 @@ import {
   addGroupMemberAction,
   removeGroupMemberAction,
   updateGroupMemberAction,
+  addGroupResourceAction,
+  updateGroupResourceAction,
+  deleteGroupResourceAction,
 } from '../../actions';
 
 type GroupDetailClientProps = {
@@ -22,9 +25,17 @@ type EditableMember = {
   status: string;
 };
 
+type EditableResource = {
+  id: string;
+  title: string;
+  url: string;
+};
+
 export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps) {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [memberModal, setMemberModal] = useState<EditableMember | null>(null);
+  const [isAddResourceOpen, setIsAddResourceOpen] = useState(false);
+  const [resourceModal, setResourceModal] = useState<EditableResource | null>(null);
 
   const availableMembers = useMemo(() => {
     const currentIds = new Set((group.members ?? []).map((member: any) => member.userId));
@@ -121,6 +132,58 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
           </ul>
         ) : (
           <p className="text-sm text-muted-foreground">No scheduled events yet.</p>
+        )}
+      </section>
+
+      <section className="rounded-xl border border-border bg-card p-5">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <h2 className="text-lg font-semibold text-card-foreground">Resources</h2>
+          <button
+            id="add-resource-button"
+            type="button"
+            onClick={() => setIsAddResourceOpen(true)}
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+          >
+            Add resource
+          </button>
+        </div>
+        {group.resources?.length ? (
+          <div className="mt-3 space-y-2">
+            {group.resources.map((resource: any) => (
+              <div
+                key={resource.id}
+                className="flex items-center justify-between rounded-md border border-border bg-background p-3"
+              >
+                <div className="flex-1">
+                  <p className="font-medium text-sm">{resource.title}</p>
+                  <a
+                    href={resource.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-primary hover:underline"
+                  >
+                    {resource.url}
+                  </a>
+                </div>
+                <button
+                  id={`manage-resource-button-${resource.id}`}
+                  type="button"
+                  onClick={() =>
+                    setResourceModal({
+                      id: resource.id,
+                      title: resource.title,
+                      url: resource.url,
+                    })
+                  }
+                  className="ml-3 rounded-md border border-border px-3 py-1 text-xs text-foreground transition hover:bg-muted"
+                >
+                  Manage
+                </button>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-muted-foreground">No resources shared yet.</p>
         )}
       </section>
 
@@ -298,6 +361,152 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
                   className="rounded-md bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground transition hover:bg-destructive/90"
                 >
                   Remove Member
+                </button>
+              </div>
+            </form>
+          </div>
+        ) : null}
+      </Modal>
+
+      <Modal
+        open={isAddResourceOpen}
+        onClose={() => setIsAddResourceOpen(false)}
+        title="Add resource to group"
+        footer={
+          <p className="text-xs text-muted-foreground">
+            Share useful links and resources with {group.name} members.
+          </p>
+        }
+      >
+        <form
+          action={addGroupResourceAction}
+          className="grid gap-4"
+          onSubmit={() => setIsAddResourceOpen(false)}
+        >
+          <input type="hidden" name="groupId" value={group.id} />
+          <label className="grid gap-1 text-xs uppercase text-muted-foreground">
+            Title
+            <input
+              id="add-resource-title-input"
+              type="text"
+              name="title"
+              className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+              placeholder="e.g., Bible Study Guide"
+              required
+            />
+          </label>
+          <label className="grid gap-1 text-xs uppercase text-muted-foreground">
+            URL
+            <input
+              id="add-resource-url-input"
+              type="url"
+              name="url"
+              className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+              placeholder="e.g., https://example.com/guide"
+              required
+            />
+          </label>
+          <div className="flex justify-end gap-2">
+            <button
+              id="add-resource-cancel-button"
+              type="button"
+              onClick={() => setIsAddResourceOpen(false)}
+              className="rounded-md border border-border px-4 py-2 text-sm text-foreground transition hover:bg-muted"
+            >
+              Cancel
+            </button>
+            <button
+              id="add-resource-submit-button"
+              type="submit"
+              className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+            >
+              Add Resource
+            </button>
+          </div>
+        </form>
+      </Modal>
+
+      <Modal
+        open={!!resourceModal}
+        onClose={() => setResourceModal(null)}
+        title={resourceModal ? `Manage ${resourceModal.title}` : 'Manage resource'}
+        footer={
+          <p className="text-xs text-muted-foreground">
+            Changes update the resource for all group members and trigger revalidation right away.
+          </p>
+        }
+      >
+        {resourceModal ? (
+          <div className="space-y-6">
+            <form
+              action={updateGroupResourceAction}
+              className="grid gap-4"
+              onSubmit={() => setResourceModal(null)}
+            >
+              <input type="hidden" name="groupId" value={group.id} />
+              <input type="hidden" name="resourceId" value={resourceModal.id} />
+              <label className="grid gap-1 text-xs uppercase text-muted-foreground">
+                Title
+                <input
+                  id="manage-resource-title-input"
+                  type="text"
+                  name="title"
+                  defaultValue={resourceModal.title}
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+                  required
+                />
+              </label>
+              <label className="grid gap-1 text-xs uppercase text-muted-foreground">
+                URL
+                <input
+                  id="manage-resource-url-input"
+                  type="url"
+                  name="url"
+                  defaultValue={resourceModal.url}
+                  className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+                  required
+                />
+              </label>
+              <div className="flex justify-end gap-2">
+                <button
+                  id="manage-resource-close-button"
+                  type="button"
+                  onClick={() => setResourceModal(null)}
+                  className="rounded-md border border-border px-4 py-2 text-sm text-foreground transition hover:bg-muted"
+                >
+                  Close
+                </button>
+                <button
+                  id="manage-resource-save-button"
+                  type="submit"
+                  className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
+
+            <form
+              action={deleteGroupResourceAction}
+              className="rounded-lg border border-destructive/50 bg-destructive/20 px-4 py-3"
+              onSubmit={() => setResourceModal(null)}
+            >
+              <input type="hidden" name="groupId" value={group.id} />
+              <input type="hidden" name="resourceId" value={resourceModal.id} />
+              <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h3 className="text-sm font-semibold text-destructive-foreground">
+                    Delete resource
+                  </h3>
+                  <p className="text-xs text-destructive-foreground/80">
+                    This will permanently remove the resource from {group.name}.
+                  </p>
+                </div>
+                <button
+                  id="delete-resource-button"
+                  className="rounded-md bg-destructive px-3 py-2 text-sm font-medium text-destructive-foreground transition hover:bg-destructive/90"
+                >
+                  Delete Resource
                 </button>
               </div>
             </form>

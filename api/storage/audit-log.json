@@ -618,5 +618,21 @@
       "email": "qa-1761527758915@example.com"
     },
     "createdAt": "2025-10-27T01:16:07.695Z"
+  },
+  {
+    "id": "audit-group-group-worship-1761533006065",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "group.resources.created",
+    "entity": "group",
+    "entityId": "group-worship",
+    "summary": "Ariana Matau added resource \"Song Lyrics Database\" to Worship Team",
+    "metadata": {
+      "groupId": "group-worship",
+      "resourceId": "resource-26bf1cd4-187e-4ed0-b642-9f82734369f9",
+      "title": "Song Lyrics Database",
+      "url": "https://example.com/lyrics"
+    },
+    "createdAt": "2025-10-27T02:43:26.065Z"
   }
 ]

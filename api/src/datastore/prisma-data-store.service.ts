@@ -426,10 +426,53 @@ export class PrismaDataStore implements DataStore {
     throw new Error('removeGroupMember is not yet implemented for Prisma data store');
   }
 
+  async getGroupResources(_groupId: string): Promise<StoreReturn<'getGroupResources'>> {
+    throw new Error('getGroupResources is not yet implemented for Prisma data store');
+  }
+
+  async createGroupResource(
+    _groupId: string,
+    _input: Parameters<DataStore['createGroupResource']>[1]
+  ): Promise<StoreReturn<'createGroupResource'>> {
+    throw new Error('createGroupResource is not yet implemented for Prisma data store');
+  }
+
+  async updateGroupResource(
+    _resourceId: string,
+    _input: Parameters<DataStore['updateGroupResource']>[1]
+  ): Promise<StoreReturn<'updateGroupResource'>> {
+    throw new Error('updateGroupResource is not yet implemented for Prisma data store');
+  }
+
+  async deleteGroupResource(
+    _resourceId: string,
+    _input: Parameters<DataStore['deleteGroupResource']>[1]
+  ): Promise<StoreReturn<'deleteGroupResource'>> {
+    throw new Error('deleteGroupResource is not yet implemented for Prisma data store');
+  }
+
   async listEvents() {
     const churchId = await this.getPrimaryChurchId();
     const events = await this.client.event.findMany({
       where: { churchId },
+      include: { attendances: true },
+      orderBy: { startAt: 'asc' },
+    });
+
+    return (events as any[]).map((event: any) => ({
+      ...event,
+      startAt: toISO(event.startAt)!,
+      endAt: toISO(event.endAt)!,
+      attendance: (event.attendances as any[]).map((entry: any) => ({
+        ...entry,
+        recordedAt: toISO(entry.recordedAt)!,
+      })),
+    }));
+  }
+
+  async listEventsByGroupId(groupId: string) {
+    const events = await this.client.event.findMany({
+      where: { groupId },
       include: { attendances: true },
       orderBy: { startAt: 'asc' },
     });

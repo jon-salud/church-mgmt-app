@@ -7,6 +7,7 @@ describe('Groups (e2e-light)', () => {
   let createdUserId: string;
   let targetGroupId: string;
   let memberRoleId: string;
+  let createdResourceId: string;
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
@@ -94,6 +95,65 @@ describe('Groups (e2e-light)', () => {
     const res = await app.inject({
       method: 'DELETE',
       url: `/api/v1/groups/${targetGroupId}/members/${createdUserId}`,
+      headers: { authorization: 'Bearer demo-admin' },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body).toMatchObject({ success: true });
+  });
+
+  it('GET /groups/:id/resources should list group resources', async () => {
+    const res = await app.inject({
+      method: 'GET',
+      url: `/api/v1/groups/${targetGroupId}/resources`,
+      headers: { authorization: 'Bearer demo-admin' },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(Array.isArray(body)).toBe(true);
+  });
+
+  it('POST /groups/:id/resources should create group resource', async () => {
+    const res = await app.inject({
+      method: 'POST',
+      url: `/api/v1/groups/${targetGroupId}/resources`,
+      headers: { authorization: 'Bearer demo-admin' },
+      payload: {
+        title: 'Test Resource',
+        url: 'https://example.com/test-resource',
+      },
+    });
+    expect([200, 201]).toContain(res.statusCode);
+    const body = res.json();
+    expect(body).toMatchObject({
+      title: 'Test Resource',
+      url: 'https://example.com/test-resource',
+      groupId: targetGroupId,
+    });
+    expect(body.id).toBeDefined();
+    createdResourceId = body.id;
+  });
+
+  it('PATCH /groups/resources/:resourceId should update group resource', async () => {
+    const res = await app.inject({
+      method: 'PATCH',
+      url: `/api/v1/groups/resources/${createdResourceId}`,
+      headers: { authorization: 'Bearer demo-admin' },
+      payload: {
+        title: 'Updated Test Resource',
+        url: 'https://example.com/updated-resource',
+      },
+    });
+    expect(res.statusCode).toBe(200);
+    const body = res.json();
+    expect(body.title).toBe('Updated Test Resource');
+    expect(body.url).toBe('https://example.com/updated-resource');
+  });
+
+  it('DELETE /groups/resources/:resourceId should delete group resource', async () => {
+    const res = await app.inject({
+      method: 'DELETE',
+      url: `/api/v1/groups/resources/${createdResourceId}`,
       headers: { authorization: 'Bearer demo-admin' },
     });
     expect(res.statusCode).toBe(200);

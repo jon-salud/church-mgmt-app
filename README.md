@@ -6,7 +6,7 @@ This monorepo packages a complete walkthrough of the PRD using mock data only. Y
 | --------- | -------------------------------------------------------------------------------------- |
 | **API**   | NestJS (Fastify), in-memory mock store, OAuth-style demo login, OpenAPI docs           |
 | **Web**   | Next.js App Router + React + Tailwind + PWA service worker + shadcn-style UI seeds     |
-| **Data**  | Members, groups, events, announcements, giving, seeded sessions, soft delete (no Postgres required) |
+| **Data**  | Members, groups (with resource sharing), events, announcements, giving, seeded sessions, soft delete (no Postgres required) |
 | **Tests** | Jest (API smoke) and Playwright (dashboard e2e), with CI linting and formatting checks |
 
 ---
