@@ -83,13 +83,29 @@ export default function LoginPage() {
 
         <div className="space-y-2 border-t border-border pt-4 text-center">
           <p className="text-xs text-muted-foreground">Need to demo quickly?</p>
-          <form action={demoLoginAction} className="space-y-1">
+          <form action={demoLoginAction} className="space-y-3">
             <input type="hidden" name="returnTo" value={returnTo} />
+            <div className="space-y-2">
+              <label htmlFor="persona-select" className="block text-xs text-muted-foreground">
+                Select demo persona:
+              </label>
+              <select
+                id="persona-select"
+                name="persona"
+                className="w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground"
+                defaultValue="demo-admin"
+              >
+                <option value="demo-admin">Admin - Full access to all features</option>
+                <option value="demo-leader">Leader - Ministry-focused access</option>
+                <option value="demo-member">Member - Basic community access</option>
+                <option value="demo-new-admin">New Admin - Limited admin access</option>
+              </select>
+            </div>
             <button
               id="demo-login-button"
               className="w-full rounded-md border border-border px-4 py-2 text-xs font-medium text-foreground transition hover:bg-muted"
             >
-              Explore demo mode (uses seeded admin session)
+              Explore demo mode
             </button>
           </form>
           <p className="text-xs text-muted-foreground">
