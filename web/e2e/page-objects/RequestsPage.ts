@@ -22,8 +22,9 @@ export class RequestsPage extends BasePage {
   }
 
   async selectRequestType(type: 'Prayer' | 'Benevolence' | 'Improvement' | 'Suggestion') {
-    // Use the select element directly to avoid conflicts with shadcn/ui text display
-    await this.page.locator('select[name="requestTypeId"]').selectOption({ label: type });
+    // Use the data-testid for stable test selection instead of targeting native select
+    await this.page.locator('[data-testid="request-type-select"]').click();
+    await this.page.getByRole('option', { name: type }).click();
   }
 
   async fillRequestForm(title: string, body: string, isConfidential = false) {

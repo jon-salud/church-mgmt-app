@@ -66,7 +66,7 @@ export function RequestForm({ initialRequestTypes, churchId: _churchId }: Reques
           <div className="space-y-2">
             <Label htmlFor="request-type">Request Type</Label>
             <Select name="requestTypeId" onValueChange={setRequestTypeId}>
-              <SelectTrigger id="request-type">
+              <SelectTrigger id="request-type" data-testid="request-type-select">
                 <SelectValue placeholder="Select a request type..." />
               </SelectTrigger>
               <SelectContent>
