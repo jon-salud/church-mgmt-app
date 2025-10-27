@@ -24,10 +24,10 @@ export class NewPastoralCareTicketPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.titleInput = page.getByLabel('Title');
-    this.descriptionInput = page.getByLabel('Description');
-    this.prioritySelect = page.getByLabel('Priority');
-    this.submitButton = page.getByRole('button', { name: 'Submit' });
+    this.titleInput = page.locator('#new-ticket-title-input');
+    this.descriptionInput = page.locator('#new-ticket-description-textarea');
+    this.prioritySelect = page.locator('#new-ticket-priority-select');
+    this.submitButton = page.locator('#new-ticket-submit-button');
   }
 
   async goto() {
@@ -42,8 +42,8 @@ export class PastoralCareTicketDetailPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.commentTextarea = page.getByLabel('Add a Comment');
-    this.addCommentButton = page.getByRole('button', { name: 'Add Comment' });
+    this.commentTextarea = page.locator('#new-comment-textarea');
+    this.addCommentButton = page.locator('#add-comment-button');
     this.commentElements = page.locator('div:has-text("Comments") >> div[class*="border"]');
   }
 }

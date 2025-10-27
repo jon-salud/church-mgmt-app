@@ -167,6 +167,15 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ Fixed test selectors to use data-testid attributes instead of native select elements for shadcn/ui components
   - ✅ All E2E tests now pass (53 passed, 1 skipped, 0 failed)
 
+- **Pastoral Care Ticket Creation UI:**
+  - ✅ Added role-based "New Ticket" button to pastoral care dashboard (admin/leader only)
+  - ✅ Implemented conditional rendering based on user roles using hasRole utility
+  - ✅ Updated server component to pass user data to client component for role checking
+  - ✅ Enabled previously skipped pastoral-care.spec.ts E2E test
+  - ✅ Added role-based access test to verify button visibility for different user roles
+  - ✅ Updated page objects to use stable ID selectors instead of labels
+  - ✅ Verified role-based access control works correctly across admin, leader, and member roles
+
 ### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming
@@ -197,6 +206,13 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 - **Debug and stabilize E2E test environment:** Fix port conflicts and improve test reliability.
 
 ## Technical Debt & Compliance
+
+- **API Authentication Issue in E2E Tests:**
+  - **Issue:** Full E2E workflow for pastoral care ticket creation and commenting is blocked by authentication issues between web app and API server
+  - **Impact:** Prevents complete end-to-end testing of ticket creation → detail view → comment workflow
+  - **Root Cause:** CORS/cookie handling issues between Next.js web app and NestJS API server in test environment
+  - **Workaround:** Tests currently pass basic navigation and form validation but cannot complete full workflow
+  - **Resolution:** Investigate and fix CORS configuration, cookie domain settings, and authentication flow in E2E test environment
 
 - **Complete CRUD Operations for All Entities:**
   - **Backend:** Implement full Create, Read, Update, Delete operations for all database entities (users, profiles, groups, events, announcements, funds, contributions, households, children, etc.).

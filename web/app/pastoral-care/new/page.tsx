@@ -14,8 +14,13 @@ export default function NewTicketPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newTicket = await clientApi.createPastoralCareTicket({ title, description, priority });
-    router.push(`/pastoral-care/${newTicket.id}`);
+    try {
+      const newTicket = await clientApi.createPastoralCareTicket({ title, description, priority });
+      router.push(`/pastoral-care/${newTicket.id}`);
+    } catch (error) {
+      console.error('Failed to create ticket:', error);
+      alert('Failed to create ticket: ' + (error instanceof Error ? error.message : String(error)));
+    }
   };
 
   return (
@@ -56,6 +61,7 @@ export default function NewTicketPage() {
             value={priority}
             onChange={e => setPriority(e.target.value)}
             className="w-full p-2 border rounded-md"
+            aria-label="Priority"
           >
             <option value="LOW">Low</option>
             <option value="NORMAL">Normal</option>

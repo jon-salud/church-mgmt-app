@@ -28,6 +28,10 @@ const extractCookieToken = (cookieHeader?: string): string | undefined => {
     if (name === SESSION_COOKIE_NAME) {
       return rest.join('=').trim();
     }
+    // Also check for demo_token
+    if (name === 'demo_token') {
+      return rest.join('=').trim();
+    }
   }
   return undefined;
 };
