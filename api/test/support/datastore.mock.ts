@@ -88,6 +88,7 @@ export const createDataStoreMock = (): jest.Mocked<DataStore> => ({
   deleteChild: resolvedFn(),
   getChildren: resolvedFn([]),
   getCheckinsByEventId: resolvedFn([]),
+  getCheckins: resolvedFn([]),
   getCheckinById: resolvedFn(),
   createCheckin: resolvedFn(),
   updateCheckin: resolvedFn(),

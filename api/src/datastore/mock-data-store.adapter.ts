@@ -300,6 +300,10 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.getCheckinsByEventId(eventId);
   }
 
+  async getCheckins(status: 'pending' | 'checked-in') {
+    return this.mock.getCheckins(status);
+  }
+
   async createCheckin(data: Parameters<MockDatabaseService['createCheckin']>[0]) {
     return this.mock.createCheckin(data);
   }

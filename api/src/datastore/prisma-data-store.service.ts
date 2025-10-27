@@ -960,6 +960,14 @@ export class PrismaDataStore implements DataStore {
     return checkins;
   }
 
+  async getCheckins(status: 'pending' | 'checked-in') {
+    const checkins = await this.client.checkin.findMany({
+      where: { status },
+      include: { child: true },
+    });
+    return checkins;
+  }
+
   async getCheckinById(id: string) {
     const checkin = await this.client.checkin.findUnique({
       where: { id },

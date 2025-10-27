@@ -2318,6 +2318,16 @@ export class MockDatabaseService {
     return clone(this.checkins.filter(checkin => checkin.eventId === eventId));
   }
 
+  getCheckins(status: 'pending' | 'checked-in') {
+    const filtered = this.checkins.filter(checkin => checkin.status === status);
+    return clone(
+      filtered.map(checkin => {
+        const child = this.children.find(c => c.id === checkin.childId);
+        return { ...checkin, child: clone(child) };
+      })
+    );
+  }
+
   getCheckinById(id: string) {
     const checkin = this.checkins.find(c => c.id === id);
     if (!checkin) return null;
