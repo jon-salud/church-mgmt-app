@@ -156,6 +156,9 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ Created role-specific dashboard components in `web/app/dashboard/page.tsx` with LeaderDashboard showing ministry-focused metrics
   - ✅ Navigation correctly filters based on user roles: Admin sees all pages, Leaders see ministry-focused pages, Members see basic community pages
   - ✅ Build passes with TypeScript compilation after adding eslint-disable for mock data typing
+  - ✅ Added persona selection dropdown to login modal in `web/app/(auth)/login/page.tsx` for testing different user roles
+  - ✅ Updated `demoLoginAction` in `web/app/actions.ts` to accept persona parameter
+  - ✅ Updated E2E `LoginPage` helper to support different personas
   - ⚠️ **Test Updates Required:** E2E tests need updates to account for role-based navigation filtering (currently failing as expected since tests assume all users see all pages)
 
 ### 🔄 In Progress
