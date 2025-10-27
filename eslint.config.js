@@ -26,6 +26,7 @@ export default [
       'test-results/',
       'playwright-report/',
       'api/storage/',
+      'api/src/modules/audit/',
       'scripts/',
       '.eslintcache',
     ],

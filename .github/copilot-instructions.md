@@ -133,6 +133,7 @@ pnpm lint             # Check linting issues
 pnpm lint:fix         # Auto-fix linting issues
 pnpm format           # Format code with Prettier
 pnpm format:check     # Check code formatting
+pnpm format:fix       # Auto-fix code formatting
 
 # Testing
 pnpm -C api test      # API tests
