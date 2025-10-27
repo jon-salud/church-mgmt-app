@@ -21,6 +21,8 @@ import { GroupsService } from './groups.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { AddGroupMemberDto } from './dto/add-group-member.dto';
 import { UpdateGroupMemberDto } from './dto/update-group-member.dto';
+import { CreateGroupResourceDto } from './dto/create-group-resource.dto';
+import { UpdateGroupResourceDto } from './dto/update-group-resource.dto';
 import { arrayOfObjectsResponse, objectResponse } from '../../common/openapi/schemas';
 import { SuccessResponseDto } from '../../common/dto/success-response.dto';
 
@@ -83,6 +85,41 @@ export class GroupsController {
   ) {
     this.ensureAdmin(req);
     return this.groupsService.removeMember(groupId, userId, req.user.id);
+  }
+
+  @Get(':id/resources')
+  @ApiOperation({ summary: 'List group resources' })
+  @ApiOkResponse(arrayOfObjectsResponse)
+  resources(@Param('id') id: string) {
+    return this.groupsService.resources(id);
+  }
+
+  @Post(':id/resources')
+  @ApiOperation({ summary: 'Create group resource' })
+  @ApiCreatedResponse(objectResponse)
+  createResource(@Param('id') id: string, @Body() dto: CreateGroupResourceDto, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.groupsService.createResource(id, dto, req.user.id);
+  }
+
+  @Patch('resources/:resourceId')
+  @ApiOperation({ summary: 'Update group resource' })
+  @ApiOkResponse(objectResponse)
+  updateResource(
+    @Param('resourceId') resourceId: string,
+    @Body() dto: UpdateGroupResourceDto,
+    @Req() req: any
+  ) {
+    this.ensureAdmin(req);
+    return this.groupsService.updateResource(resourceId, dto, req.user.id);
+  }
+
+  @Delete('resources/:resourceId')
+  @ApiOperation({ summary: 'Delete group resource' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  deleteResource(@Param('resourceId') resourceId: string, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.groupsService.deleteResource(resourceId, req.user.id);
   }
 
   private ensureAdmin(req: any) {

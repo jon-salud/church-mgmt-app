@@ -143,6 +143,16 @@ export interface MockGroup {
   deletedAt?: string;
 }
 
+export interface MockGroupResource {
+  id: string;
+  groupId: string;
+  churchId: string;
+  title: string;
+  url: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface MockAttendance {
   eventId: string;
   userId: string;
@@ -596,6 +606,45 @@ export const mockGroups: MockGroup[] = [
       { userId: 'user-member-1', role: 'Member', status: 'Active', joinedAt: makeDate(-200) },
       { userId: 'user-member-2', role: 'Member', status: 'Active', joinedAt: makeDate(-120) },
     ],
+  },
+];
+
+export const mockGroupResources: MockGroupResource[] = [
+  {
+    id: 'resource-1',
+    groupId: 'group-worship',
+    churchId,
+    title: 'Chord Charts Collection',
+    url: 'https://example.com/chord-charts',
+    createdAt: makeDate(-60),
+    updatedAt: makeDate(-60),
+  },
+  {
+    id: 'resource-2',
+    groupId: 'group-worship',
+    churchId,
+    title: 'Practice Schedule',
+    url: 'https://example.com/practice-schedule',
+    createdAt: makeDate(-45),
+    updatedAt: makeDate(-45),
+  },
+  {
+    id: 'resource-3',
+    groupId: 'group-kids',
+    churchId,
+    title: 'Lesson Plans',
+    url: 'https://example.com/lesson-plans',
+    createdAt: makeDate(-30),
+    updatedAt: makeDate(-30),
+  },
+  {
+    id: 'resource-4',
+    groupId: 'group-east',
+    churchId,
+    title: 'Bible Study Guide',
+    url: 'https://example.com/study-guide',
+    createdAt: makeDate(-20),
+    updatedAt: makeDate(-20),
   },
 ];
 

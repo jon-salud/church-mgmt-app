@@ -101,6 +101,31 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.removeGroupMember(groupId, userId, input);
   }
 
+  async getGroupResources(groupId: string) {
+    return this.mock.getGroupResources(groupId);
+  }
+
+  async createGroupResource(
+    groupId: string,
+    input: Parameters<MockDatabaseService['createGroupResource']>[1]
+  ) {
+    return this.mock.createGroupResource(groupId, input);
+  }
+
+  async updateGroupResource(
+    resourceId: string,
+    input: Parameters<MockDatabaseService['updateGroupResource']>[1]
+  ) {
+    return this.mock.updateGroupResource(resourceId, input);
+  }
+
+  async deleteGroupResource(
+    resourceId: string,
+    input: Parameters<MockDatabaseService['deleteGroupResource']>[1]
+  ) {
+    return this.mock.deleteGroupResource(resourceId, input);
+  }
+
   async listEvents() {
     return this.mock.listEvents();
   }

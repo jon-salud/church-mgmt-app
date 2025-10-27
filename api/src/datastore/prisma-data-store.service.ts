@@ -426,6 +426,31 @@ export class PrismaDataStore implements DataStore {
     throw new Error('removeGroupMember is not yet implemented for Prisma data store');
   }
 
+  async getGroupResources(_groupId: string): Promise<StoreReturn<'getGroupResources'>> {
+    throw new Error('getGroupResources is not yet implemented for Prisma data store');
+  }
+
+  async createGroupResource(
+    _groupId: string,
+    _input: Parameters<DataStore['createGroupResource']>[1]
+  ): Promise<StoreReturn<'createGroupResource'>> {
+    throw new Error('createGroupResource is not yet implemented for Prisma data store');
+  }
+
+  async updateGroupResource(
+    _resourceId: string,
+    _input: Parameters<DataStore['updateGroupResource']>[1]
+  ): Promise<StoreReturn<'updateGroupResource'>> {
+    throw new Error('updateGroupResource is not yet implemented for Prisma data store');
+  }
+
+  async deleteGroupResource(
+    _resourceId: string,
+    _input: Parameters<DataStore['deleteGroupResource']>[1]
+  ): Promise<StoreReturn<'deleteGroupResource'>> {
+    throw new Error('deleteGroupResource is not yet implemented for Prisma data store');
+  }
+
   async listEvents() {
     const churchId = await this.getPrimaryChurchId();
     const events = await this.client.event.findMany({

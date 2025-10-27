@@ -6,6 +6,8 @@ import {
   MockGroup,
   MockGroupMember,
   mockGroups,
+  MockGroupResource,
+  mockGroupResources,
   MockEvent,
   mockEvents,
   MockAnnouncement,
@@ -188,6 +190,22 @@ interface GroupMemberRemoveInput {
   actorUserId: string;
 }
 
+interface GroupResourceCreateInput {
+  title: string;
+  url: string;
+  actorUserId: string;
+}
+
+interface GroupResourceUpdateInput {
+  title?: string;
+  url?: string;
+  actorUserId: string;
+}
+
+interface GroupResourceDeleteInput {
+  actorUserId: string;
+}
+
 interface EventCreateInput {
   title: string;
   description?: string;
@@ -322,6 +340,7 @@ export class MockDatabaseService {
   private checkins: MockCheckin[] = [];
   private roles: MockRole[] = clone(mockRoles);
   private groups: MockGroup[] = clone(mockGroups);
+  private groupResources: MockGroupResource[] = clone(mockGroupResources);
   private events: MockEvent[] = clone(mockEvents);
   private announcements: MockAnnouncement[] = clone(mockAnnouncements);
   private announcementReads: MockAnnouncementRead[] = clone(mockAnnouncementReads);
@@ -1022,6 +1041,108 @@ export class MockDatabaseService {
         groupId,
         userId,
         role: removed.role,
+      },
+    });
+    return { success: true };
+  }
+
+  getGroupResources(groupId: string) {
+    return clone(
+      this.groupResources.filter(resource => resource.groupId === groupId)
+    );
+  }
+
+  createGroupResource(groupId: string, input: GroupResourceCreateInput) {
+    const group = this.groups.find(g => g.id === groupId && !g.deletedAt);
+    if (!group) {
+      throw new Error('Group not found');
+    }
+    const resource: MockGroupResource = {
+      id: `resource-${randomUUID()}`,
+      groupId,
+      churchId: group.churchId,
+      title: input.title,
+      url: input.url,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    this.groupResources.push(resource);
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'group.resources.created',
+      entity: 'group',
+      entityId: group.id,
+      summary: `${actorName} added resource "${input.title}" to ${group.name}`,
+      metadata: {
+        groupId,
+        resourceId: resource.id,
+        title: input.title,
+        url: input.url,
+      },
+    });
+    return clone(resource);
+  }
+
+  updateGroupResource(resourceId: string, input: GroupResourceUpdateInput) {
+    const resource = this.groupResources.find(r => r.id === resourceId);
+    if (!resource) {
+      throw new Error('Resource not found');
+    }
+    const group = this.groups.find(g => g.id === resource.groupId);
+    const diff: Record<string, { previous: unknown; newValue: unknown }> = {};
+    const track = (key: string, previous: unknown, next: unknown) => {
+      if (previous !== next) {
+        diff[key] = { previous, newValue: next };
+      }
+    };
+    if (input.title !== undefined && input.title !== resource.title) {
+      track('title', resource.title, input.title);
+      resource.title = input.title;
+    }
+    if (input.url !== undefined && input.url !== resource.url) {
+      track('url', resource.url, input.url);
+      resource.url = input.url;
+    }
+    if (Object.keys(diff).length > 0) {
+      resource.updatedAt = new Date().toISOString();
+      const actorName = this.getUserName(input.actorUserId);
+      this.createAuditLog({
+        actorUserId: input.actorUserId,
+        action: 'group.resources.updated',
+        entity: 'group',
+        entityId: resource.groupId,
+        summary: `${actorName} updated resource "${resource.title}" in ${group?.name || 'group'}`,
+        diff,
+        metadata: {
+          groupId: resource.groupId,
+          resourceId: resource.id,
+        },
+      });
+    }
+    return clone(resource);
+  }
+
+  deleteGroupResource(resourceId: string, input: GroupResourceDeleteInput) {
+    const index = this.groupResources.findIndex(r => r.id === resourceId);
+    if (index === -1) {
+      throw new Error('Resource not found');
+    }
+    const resource = this.groupResources[index];
+    const group = this.groups.find(g => g.id === resource.groupId);
+    this.groupResources.splice(index, 1);
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'group.resources.deleted',
+      entity: 'group',
+      entityId: resource.groupId,
+      summary: `${actorName} deleted resource "${resource.title}" from ${group?.name || 'group'}`,
+      metadata: {
+        groupId: resource.groupId,
+        resourceId: resource.id,
+        title: resource.title,
+        url: resource.url,
       },
     });
     return { success: true };
