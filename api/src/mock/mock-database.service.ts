@@ -1150,6 +1150,10 @@ export class MockDatabaseService {
     return clone(this.events.filter(event => !event.deletedAt));
   }
 
+  listEventsByGroupId(groupId: string) {
+    return clone(this.events.filter(event => event.groupId === groupId && !event.deletedAt));
+  }
+
   getEventById(id: string) {
     return clone(this.events.find(event => event.id === id && !event.deletedAt) || null);
   }

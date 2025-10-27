@@ -354,8 +354,8 @@ export async function addGroupResourceAction(formData: FormData) {
 export async function updateGroupResourceAction(formData: FormData) {
   const groupId = String(formData.get('groupId'));
   const resourceId = String(formData.get('resourceId'));
-  const title = formData.get('title') ? String(formData.get('title')) : undefined;
-  const url = formData.get('url') ? String(formData.get('url')) : undefined;
+  const title = String(formData.get('title'));
+  const url = String(formData.get('url'));
   await apiFetch(`/groups/resources/${resourceId}`, {
     method: 'PATCH',
     body: JSON.stringify({ title, url }),

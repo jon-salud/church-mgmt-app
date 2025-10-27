@@ -470,6 +470,24 @@ export class PrismaDataStore implements DataStore {
     }));
   }
 
+  async listEventsByGroupId(groupId: string) {
+    const events = await this.client.event.findMany({
+      where: { groupId },
+      include: { attendances: true },
+      orderBy: { startAt: 'asc' },
+    });
+
+    return (events as any[]).map((event: any) => ({
+      ...event,
+      startAt: toISO(event.startAt)!,
+      endAt: toISO(event.endAt)!,
+      attendance: (event.attendances as any[]).map((entry: any) => ({
+        ...entry,
+        recordedAt: toISO(entry.recordedAt)!,
+      })),
+    }));
+  }
+
   async getEventById(id: string) {
     const event = await this.client.event.findUnique({
       where: { id },

@@ -18,16 +18,13 @@ export class GroupsService {
     if (!group) return null;
     const [members, events, resources] = await Promise.all([
       this.db.getGroupMembers(id),
-      this.db.listEvents(),
+      this.db.listEventsByGroupId(id),
       this.db.getGroupResources(id),
     ]);
-    const matchingEvents = events
-      .filter(event => event.groupId === id)
-      .sort((a, b) => String(a.startAt).localeCompare(String(b.startAt)));
     return {
       ...group,
       members,
-      events: matchingEvents,
+      events: events.sort((a, b) => String(a.startAt).localeCompare(String(b.startAt))),
       resources,
     };
   }

@@ -130,6 +130,10 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.listEvents();
   }
 
+  async listEventsByGroupId(groupId: string) {
+    return this.mock.listEventsByGroupId(groupId);
+  }
+
   async getEventById(id: string) {
     return this.mock.getEventById(id);
   }
