@@ -296,7 +296,7 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 **Priority:** High - Member engagement and retention
 
-#### Now (Membership Experience:Q1 Post-MVP)
+#### Now (Membership Experience: Q1 Post-MVP)
 
 - **Backend:** Implement notification center APIs with preference management
 - **Frontend:** Add member notification center and preference settings
