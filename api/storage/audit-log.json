@@ -634,5 +634,954 @@
       "url": "https://example.com/lyrics"
     },
     "createdAt": "2025-10-27T02:43:26.065Z"
+  },
+  {
+    "id": "audit-announcement-announcement-5fad10b6-2f94-4045-ae51-0e55e91f5101-1761613191210",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.created",
+    "entity": "announcement",
+    "entityId": "announcement-5fad10b6-2f94-4045-ae51-0e55e91f5101",
+    "summary": "Ariana Matau published announcement \"Test Announcement 1761613183412\"",
+    "metadata": {
+      "audience": "all",
+      "groupIds": [],
+      "publishAt": "2025-10-28T00:59:00.000Z",
+      "expireAt": null
+    },
+    "createdAt": "2025-10-28T00:59:51.210Z"
+  },
+  {
+    "id": "audit-announcement-announcement-5fad10b6-2f94-4045-ae51-0e55e91f5101-1761613193164",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.updated",
+    "entity": "announcement",
+    "entityId": "announcement-5fad10b6-2f94-4045-ae51-0e55e91f5101",
+    "summary": "Ariana Matau updated announcement \"Updated Test Announcement 1761613183412\"",
+    "diff": {
+      "title": {
+        "previous": "Test Announcement 1761613183412",
+        "newValue": "Updated Test Announcement 1761613183412"
+      },
+      "body": {
+        "previous": "This is a test announcement created at 2025-10-28T00:59:43.412Z",
+        "newValue": "Updated: This is a test announcement created at 2025-10-28T00:59:43.412Z"
+      }
+    },
+    "createdAt": "2025-10-28T00:59:53.164Z"
+  },
+  {
+    "id": "audit-user-user-6f035101-9ff8-4be4-b2e9-08d1f9df0148-1761613197673",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-6f035101-9ff8-4be4-b2e9-08d1f9df0148",
+    "summary": "Ariana Matau added QA1761613189208 Member to the directory",
+    "metadata": {
+      "userId": "user-6f035101-9ff8-4be4-b2e9-08d1f9df0148",
+      "email": "qa-1761613189208@example.com",
+      "roles": ["Member"]
+    },
+    "createdAt": "2025-10-28T00:59:57.673Z"
+  },
+  {
+    "id": "audit-announcement-announcement-47df2050-6fed-40c4-92f8-f1969e40a299-1761613227890",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.created",
+    "entity": "announcement",
+    "entityId": "announcement-47df2050-6fed-40c4-92f8-f1969e40a299",
+    "summary": "Ariana Matau published announcement \"Test Announcement 1761613221288\"",
+    "metadata": {
+      "audience": "all",
+      "groupIds": [],
+      "publishAt": "2025-10-28T01:00:00.000Z",
+      "expireAt": null
+    },
+    "createdAt": "2025-10-28T01:00:27.890Z"
+  },
+  {
+    "id": "audit-announcement-announcement-cf50f3e3-52c2-49ca-b85a-65c69061cb29-1761613410413",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.created",
+    "entity": "announcement",
+    "entityId": "announcement-cf50f3e3-52c2-49ca-b85a-65c69061cb29",
+    "summary": "Ariana Matau published announcement \"Test Announcement 1761613404198\"",
+    "metadata": {
+      "audience": "all",
+      "groupIds": [],
+      "publishAt": "2025-10-28T01:03:00.000Z",
+      "expireAt": null
+    },
+    "createdAt": "2025-10-28T01:03:30.413Z"
+  },
+  {
+    "id": "audit-announcement-announcement-cf50f3e3-52c2-49ca-b85a-65c69061cb29-1761613412223",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.updated",
+    "entity": "announcement",
+    "entityId": "announcement-cf50f3e3-52c2-49ca-b85a-65c69061cb29",
+    "summary": "Ariana Matau updated announcement \"Updated Test Announcement 1761613404198\"",
+    "diff": {
+      "title": {
+        "previous": "Test Announcement 1761613404198",
+        "newValue": "Updated Test Announcement 1761613404198"
+      },
+      "body": {
+        "previous": "This is a test announcement created at 2025-10-28T01:03:24.198Z",
+        "newValue": "Updated: This is a test announcement created at 2025-10-28T01:03:24.198Z"
+      }
+    },
+    "createdAt": "2025-10-28T01:03:32.223Z"
+  },
+  {
+    "id": "audit-user-user-59594bbf-cdc7-4e13-aafb-176763cc8a20-1761613415208",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-59594bbf-cdc7-4e13-aafb-176763cc8a20",
+    "summary": "Ariana Matau added QA1761613408658 Member to the directory",
+    "metadata": {
+      "userId": "user-59594bbf-cdc7-4e13-aafb-176763cc8a20",
+      "email": "qa-1761613408658@example.com",
+      "roles": ["Member"]
+    },
+    "createdAt": "2025-10-28T01:03:35.208Z"
+  },
+  {
+    "id": "audit-user-user-59594bbf-cdc7-4e13-aafb-176763cc8a20-1761613422244",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-59594bbf-cdc7-4e13-aafb-176763cc8a20",
+    "summary": "Ariana Matau updated QA1761613408658 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-8658",
+        "newValue": "555-8658-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-59594bbf-cdc7-4e13-aafb-176763cc8a20"
+    },
+    "createdAt": "2025-10-28T01:03:42.244Z"
+  },
+  {
+    "id": "audit-user-user-59594bbf-cdc7-4e13-aafb-176763cc8a20-1761613426533",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.soft-deleted",
+    "entity": "user",
+    "entityId": "user-59594bbf-cdc7-4e13-aafb-176763cc8a20",
+    "summary": "Ariana Matau soft-deleted QA1761613408658 Member from the directory",
+    "metadata": {
+      "userId": "user-59594bbf-cdc7-4e13-aafb-176763cc8a20",
+      "email": "qa-1761613408658@example.com"
+    },
+    "createdAt": "2025-10-28T01:03:46.533Z"
+  },
+  {
+    "id": "audit-event-event-6b1bf435-9386-4ae0-8ac8-9c130c43a939-1761613432534",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-6b1bf435-9386-4ae0-8ac8-9c130c43a939",
+    "summary": "Ariana Matau scheduled Test Volunteer Event 1761613431536",
+    "metadata": {
+      "eventId": "event-6b1bf435-9386-4ae0-8ac8-9c130c43a939",
+      "startAt": "2024-12-24T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T01:03:52.534Z"
+  },
+  {
+    "id": "audit-event-event-a340630e-3270-4c6a-ac98-058b4fcf262c-1761613434602",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-a340630e-3270-4c6a-ac98-058b4fcf262c",
+    "summary": "Ariana Matau scheduled Test Signup Event 1761613433804",
+    "metadata": {
+      "eventId": "event-a340630e-3270-4c6a-ac98-058b4fcf262c",
+      "startAt": "2024-12-25T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T01:03:54.602Z"
+  },
+  {
+    "id": "audit-announcement-announcement-2cd67dfe-9a5f-4060-9faa-6772b7edff8b-1761613504660",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.created",
+    "entity": "announcement",
+    "entityId": "announcement-2cd67dfe-9a5f-4060-9faa-6772b7edff8b",
+    "summary": "Ariana Matau published announcement \"Test Announcement 1761613498564\"",
+    "metadata": {
+      "audience": "all",
+      "groupIds": [],
+      "publishAt": "2025-10-28T01:05:00.000Z",
+      "expireAt": null
+    },
+    "createdAt": "2025-10-28T01:05:04.660Z"
+  },
+  {
+    "id": "audit-announcement-announcement-2cd67dfe-9a5f-4060-9faa-6772b7edff8b-1761613507144",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.updated",
+    "entity": "announcement",
+    "entityId": "announcement-2cd67dfe-9a5f-4060-9faa-6772b7edff8b",
+    "summary": "Ariana Matau updated announcement \"Updated Test Announcement 1761613498564\"",
+    "diff": {
+      "title": {
+        "previous": "Test Announcement 1761613498564",
+        "newValue": "Updated Test Announcement 1761613498564"
+      },
+      "body": {
+        "previous": "This is a test announcement created at 2025-10-28T01:04:58.564Z",
+        "newValue": "Updated: This is a test announcement created at 2025-10-28T01:04:58.564Z"
+      }
+    },
+    "createdAt": "2025-10-28T01:05:07.144Z"
+  },
+  {
+    "id": "audit-user-user-f4134243-0b20-47cd-8f95-2e09f08d3466-1761613508749",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-f4134243-0b20-47cd-8f95-2e09f08d3466",
+    "summary": "Ariana Matau added QA1761613503461 Member to the directory",
+    "metadata": {
+      "userId": "user-f4134243-0b20-47cd-8f95-2e09f08d3466",
+      "email": "qa-1761613503461@example.com",
+      "roles": ["Member"]
+    },
+    "createdAt": "2025-10-28T01:05:08.749Z"
+  },
+  {
+    "id": "audit-user-user-f4134243-0b20-47cd-8f95-2e09f08d3466-1761613514728",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-f4134243-0b20-47cd-8f95-2e09f08d3466",
+    "summary": "Ariana Matau updated QA1761613503461 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-3461",
+        "newValue": "555-3461-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-f4134243-0b20-47cd-8f95-2e09f08d3466"
+    },
+    "createdAt": "2025-10-28T01:05:14.728Z"
+  },
+  {
+    "id": "audit-user-user-f4134243-0b20-47cd-8f95-2e09f08d3466-1761613519188",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.soft-deleted",
+    "entity": "user",
+    "entityId": "user-f4134243-0b20-47cd-8f95-2e09f08d3466",
+    "summary": "Ariana Matau soft-deleted QA1761613503461 Member from the directory",
+    "metadata": {
+      "userId": "user-f4134243-0b20-47cd-8f95-2e09f08d3466",
+      "email": "qa-1761613503461@example.com"
+    },
+    "createdAt": "2025-10-28T01:05:19.188Z"
+  },
+  {
+    "id": "audit-event-event-1201ba14-761a-4935-b3e7-307d5cfe380f-1761613531157",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-1201ba14-761a-4935-b3e7-307d5cfe380f",
+    "summary": "Ariana Matau scheduled Test Volunteer Event 1761613528251",
+    "metadata": {
+      "eventId": "event-1201ba14-761a-4935-b3e7-307d5cfe380f",
+      "startAt": "2024-12-24T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T01:05:31.157Z"
+  },
+  {
+    "id": "audit-event-event-ac6bd192-3d37-43ac-8b56-8fa59e0357d1-1761613533331",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-ac6bd192-3d37-43ac-8b56-8fa59e0357d1",
+    "summary": "Ariana Matau scheduled Test Signup Event 1761613532205",
+    "metadata": {
+      "eventId": "event-ac6bd192-3d37-43ac-8b56-8fa59e0357d1",
+      "startAt": "2024-12-25T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T01:05:33.331Z"
+  },
+  {
+    "id": "audit-announcement-announcement-1d577a07-223b-4460-a320-563a54bfd412-1761614091187",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.created",
+    "entity": "announcement",
+    "entityId": "announcement-1d577a07-223b-4460-a320-563a54bfd412",
+    "summary": "Ariana Matau published announcement \"Test Announcement 1761614081411\"",
+    "metadata": {
+      "audience": "all",
+      "groupIds": [],
+      "publishAt": "2025-10-28T01:14:00.000Z",
+      "expireAt": null
+    },
+    "createdAt": "2025-10-28T01:14:51.187Z"
+  },
+  {
+    "id": "audit-announcement-announcement-1d577a07-223b-4460-a320-563a54bfd412-1761614093063",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.updated",
+    "entity": "announcement",
+    "entityId": "announcement-1d577a07-223b-4460-a320-563a54bfd412",
+    "summary": "Ariana Matau updated announcement \"Updated Test Announcement 1761614081411\"",
+    "diff": {
+      "title": {
+        "previous": "Test Announcement 1761614081411",
+        "newValue": "Updated Test Announcement 1761614081411"
+      },
+      "body": {
+        "previous": "This is a test announcement created at 2025-10-28T01:14:41.411Z",
+        "newValue": "Updated: This is a test announcement created at 2025-10-28T01:14:41.411Z"
+      }
+    },
+    "createdAt": "2025-10-28T01:14:53.063Z"
+  },
+  {
+    "id": "audit-user-user-346d201e-ded2-4b88-b67f-ba285ca7d34e-1761614100032",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-346d201e-ded2-4b88-b67f-ba285ca7d34e",
+    "summary": "Ariana Matau added QA1761614089591 Member to the directory",
+    "metadata": {
+      "userId": "user-346d201e-ded2-4b88-b67f-ba285ca7d34e",
+      "email": "qa-1761614089591@example.com",
+      "roles": ["Member"]
+    },
+    "createdAt": "2025-10-28T01:15:00.032Z"
+  },
+  {
+    "id": "audit-user-user-346d201e-ded2-4b88-b67f-ba285ca7d34e-1761614104154",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-346d201e-ded2-4b88-b67f-ba285ca7d34e",
+    "summary": "Ariana Matau updated QA1761614089591 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-9591",
+        "newValue": "555-9591-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-346d201e-ded2-4b88-b67f-ba285ca7d34e"
+    },
+    "createdAt": "2025-10-28T01:15:04.154Z"
+  },
+  {
+    "id": "audit-user-user-346d201e-ded2-4b88-b67f-ba285ca7d34e-1761614108905",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.soft-deleted",
+    "entity": "user",
+    "entityId": "user-346d201e-ded2-4b88-b67f-ba285ca7d34e",
+    "summary": "Ariana Matau soft-deleted QA1761614089591 Member from the directory",
+    "metadata": {
+      "userId": "user-346d201e-ded2-4b88-b67f-ba285ca7d34e",
+      "email": "qa-1761614089591@example.com"
+    },
+    "createdAt": "2025-10-28T01:15:08.905Z"
+  },
+  {
+    "id": "audit-event-event-e0a0cc45-20ee-4b8a-a13c-4d127631a433-1761614120895",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-e0a0cc45-20ee-4b8a-a13c-4d127631a433",
+    "summary": "Ariana Matau scheduled Test Volunteer Event 1761614119392",
+    "metadata": {
+      "eventId": "event-e0a0cc45-20ee-4b8a-a13c-4d127631a433",
+      "startAt": "2024-12-24T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T01:15:20.895Z"
+  },
+  {
+    "id": "audit-event-event-a6c61fe2-5718-45d9-8d89-b5fe15c77068-1761614123265",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-a6c61fe2-5718-45d9-8d89-b5fe15c77068",
+    "summary": "Ariana Matau scheduled Test Signup Event 1761614122406",
+    "metadata": {
+      "eventId": "event-a6c61fe2-5718-45d9-8d89-b5fe15c77068",
+      "startAt": "2024-12-25T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T01:15:23.265Z"
+  },
+  {
+    "id": "audit-announcement-announcement-d11fe7fd-bc54-4ae0-b7ab-6d5c28adc475-1761614198056",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.created",
+    "entity": "announcement",
+    "entityId": "announcement-d11fe7fd-bc54-4ae0-b7ab-6d5c28adc475",
+    "summary": "Ariana Matau published announcement \"Test Announcement 1761614187825\"",
+    "metadata": {
+      "audience": "all",
+      "groupIds": [],
+      "publishAt": "2025-10-28T01:16:00.000Z",
+      "expireAt": null
+    },
+    "createdAt": "2025-10-28T01:16:38.056Z"
+  },
+  {
+    "id": "audit-announcement-announcement-d11fe7fd-bc54-4ae0-b7ab-6d5c28adc475-1761614201792",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.updated",
+    "entity": "announcement",
+    "entityId": "announcement-d11fe7fd-bc54-4ae0-b7ab-6d5c28adc475",
+    "summary": "Ariana Matau updated announcement \"Updated Test Announcement 1761614187825\"",
+    "diff": {
+      "title": {
+        "previous": "Test Announcement 1761614187825",
+        "newValue": "Updated Test Announcement 1761614187825"
+      },
+      "body": {
+        "previous": "This is a test announcement created at 2025-10-28T01:16:27.825Z",
+        "newValue": "Updated: This is a test announcement created at 2025-10-28T01:16:27.825Z"
+      }
+    },
+    "createdAt": "2025-10-28T01:16:41.792Z"
+  },
+  {
+    "id": "audit-user-user-9c73559f-fc4c-4016-b527-149f9c200281-1761614203986",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-9c73559f-fc4c-4016-b527-149f9c200281",
+    "summary": "Ariana Matau added QA1761614194708 Member to the directory",
+    "metadata": {
+      "userId": "user-9c73559f-fc4c-4016-b527-149f9c200281",
+      "email": "qa-1761614194708@example.com",
+      "roles": ["Member"]
+    },
+    "createdAt": "2025-10-28T01:16:43.986Z"
+  },
+  {
+    "id": "audit-user-user-9c73559f-fc4c-4016-b527-149f9c200281-1761614208636",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-9c73559f-fc4c-4016-b527-149f9c200281",
+    "summary": "Ariana Matau updated QA1761614194708 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-4708",
+        "newValue": "555-4708-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-9c73559f-fc4c-4016-b527-149f9c200281"
+    },
+    "createdAt": "2025-10-28T01:16:48.636Z"
+  },
+  {
+    "id": "audit-user-user-9c73559f-fc4c-4016-b527-149f9c200281-1761614212530",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.soft-deleted",
+    "entity": "user",
+    "entityId": "user-9c73559f-fc4c-4016-b527-149f9c200281",
+    "summary": "Ariana Matau soft-deleted QA1761614194708 Member from the directory",
+    "metadata": {
+      "userId": "user-9c73559f-fc4c-4016-b527-149f9c200281",
+      "email": "qa-1761614194708@example.com"
+    },
+    "createdAt": "2025-10-28T01:16:52.530Z"
+  },
+  {
+    "id": "audit-event-event-b5e61761-0e28-47d1-ad4a-2ae6823046a6-1761614226225",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-b5e61761-0e28-47d1-ad4a-2ae6823046a6",
+    "summary": "Ariana Matau scheduled Test Volunteer Event 1761614222914",
+    "metadata": {
+      "eventId": "event-b5e61761-0e28-47d1-ad4a-2ae6823046a6",
+      "startAt": "2024-12-24T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T01:17:06.225Z"
+  },
+  {
+    "id": "audit-event-event-d6715f2d-16db-4caa-9996-03ffa42bd13b-1761614228774",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-d6715f2d-16db-4caa-9996-03ffa42bd13b",
+    "summary": "Ariana Matau scheduled Test Signup Event 1761614227390",
+    "metadata": {
+      "eventId": "event-d6715f2d-16db-4caa-9996-03ffa42bd13b",
+      "startAt": "2024-12-25T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T01:17:08.774Z"
+  },
+  {
+    "id": "audit-announcement-announcement-f6749016-5822-49be-8ea2-e48718949d2a-1761614762235",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.created",
+    "entity": "announcement",
+    "entityId": "announcement-f6749016-5822-49be-8ea2-e48718949d2a",
+    "summary": "Ariana Matau published announcement \"Test Announcement 1761614752667\"",
+    "metadata": {
+      "audience": "all",
+      "groupIds": [],
+      "publishAt": "2025-10-28T01:25:00.000Z",
+      "expireAt": null
+    },
+    "createdAt": "2025-10-28T01:26:02.235Z"
+  },
+  {
+    "id": "audit-announcement-announcement-f6749016-5822-49be-8ea2-e48718949d2a-1761614764120",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.updated",
+    "entity": "announcement",
+    "entityId": "announcement-f6749016-5822-49be-8ea2-e48718949d2a",
+    "summary": "Ariana Matau updated announcement \"Updated Test Announcement 1761614752667\"",
+    "diff": {
+      "title": {
+        "previous": "Test Announcement 1761614752667",
+        "newValue": "Updated Test Announcement 1761614752667"
+      },
+      "body": {
+        "previous": "This is a test announcement created at 2025-10-28T01:25:52.667Z",
+        "newValue": "Updated: This is a test announcement created at 2025-10-28T01:25:52.667Z"
+      }
+    },
+    "createdAt": "2025-10-28T01:26:04.120Z"
+  },
+  {
+    "id": "audit-user-user-9cf82041-ffe8-47f7-9b01-13ea7bbb74fb-1761614766687",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-9cf82041-ffe8-47f7-9b01-13ea7bbb74fb",
+    "summary": "Ariana Matau added QA1761614759404 Member to the directory",
+    "metadata": {
+      "userId": "user-9cf82041-ffe8-47f7-9b01-13ea7bbb74fb",
+      "email": "qa-1761614759404@example.com",
+      "roles": ["Member"]
+    },
+    "createdAt": "2025-10-28T01:26:06.687Z"
+  },
+  {
+    "id": "audit-user-user-9cf82041-ffe8-47f7-9b01-13ea7bbb74fb-1761614773368",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-9cf82041-ffe8-47f7-9b01-13ea7bbb74fb",
+    "summary": "Ariana Matau updated QA1761614759404 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-9404",
+        "newValue": "555-9404-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-9cf82041-ffe8-47f7-9b01-13ea7bbb74fb"
+    },
+    "createdAt": "2025-10-28T01:26:13.368Z"
+  },
+  {
+    "id": "audit-user-user-9cf82041-ffe8-47f7-9b01-13ea7bbb74fb-1761614777964",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.soft-deleted",
+    "entity": "user",
+    "entityId": "user-9cf82041-ffe8-47f7-9b01-13ea7bbb74fb",
+    "summary": "Ariana Matau soft-deleted QA1761614759404 Member from the directory",
+    "metadata": {
+      "userId": "user-9cf82041-ffe8-47f7-9b01-13ea7bbb74fb",
+      "email": "qa-1761614759404@example.com"
+    },
+    "createdAt": "2025-10-28T01:26:17.964Z"
+  },
+  {
+    "id": "audit-event-event-48e73874-98ab-4c32-a3db-0d8bcbd1c1d5-1761614789983",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-48e73874-98ab-4c32-a3db-0d8bcbd1c1d5",
+    "summary": "Ariana Matau scheduled Test Volunteer Event 1761614785369",
+    "metadata": {
+      "eventId": "event-48e73874-98ab-4c32-a3db-0d8bcbd1c1d5",
+      "startAt": "2024-12-24T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T01:26:29.983Z"
+  },
+  {
+    "id": "audit-event-event-636e5044-35da-4a93-a2f3-51b3e0c1bf11-1761614792392",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-636e5044-35da-4a93-a2f3-51b3e0c1bf11",
+    "summary": "Ariana Matau scheduled Test Signup Event 1761614791176",
+    "metadata": {
+      "eventId": "event-636e5044-35da-4a93-a2f3-51b3e0c1bf11",
+      "startAt": "2024-12-25T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T01:26:32.392Z"
+  },
+  {
+    "id": "audit-announcement-announcement-993a9339-8bb8-46ca-b55d-504d8eb8c60a-1761629885255",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.created",
+    "entity": "announcement",
+    "entityId": "announcement-993a9339-8bb8-46ca-b55d-504d8eb8c60a",
+    "summary": "Ariana Matau published announcement \"Test Announcement 1761629874077\"",
+    "metadata": {
+      "audience": "all",
+      "groupIds": [],
+      "publishAt": "2025-10-28T05:38:00.000Z",
+      "expireAt": null
+    },
+    "createdAt": "2025-10-28T05:38:05.255Z"
+  },
+  {
+    "id": "audit-announcement-announcement-993a9339-8bb8-46ca-b55d-504d8eb8c60a-1761629888464",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.updated",
+    "entity": "announcement",
+    "entityId": "announcement-993a9339-8bb8-46ca-b55d-504d8eb8c60a",
+    "summary": "Ariana Matau updated announcement \"Updated Test Announcement 1761629874077\"",
+    "diff": {
+      "title": {
+        "previous": "Test Announcement 1761629874077",
+        "newValue": "Updated Test Announcement 1761629874077"
+      },
+      "body": {
+        "previous": "This is a test announcement created at 2025-10-28T05:37:54.077Z",
+        "newValue": "Updated: This is a test announcement created at 2025-10-28T05:37:54.077Z"
+      }
+    },
+    "createdAt": "2025-10-28T05:38:08.464Z"
+  },
+  {
+    "id": "audit-user-user-e145d6e3-2d2e-4c87-b8bf-e6dd8dcb5f7e-1761629889917",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-e145d6e3-2d2e-4c87-b8bf-e6dd8dcb5f7e",
+    "summary": "Ariana Matau added QA1761629883723 Member to the directory",
+    "metadata": {
+      "userId": "user-e145d6e3-2d2e-4c87-b8bf-e6dd8dcb5f7e",
+      "email": "qa-1761629883723@example.com",
+      "roles": ["Member"]
+    },
+    "createdAt": "2025-10-28T05:38:09.917Z"
+  },
+  {
+    "id": "audit-user-user-e145d6e3-2d2e-4c87-b8bf-e6dd8dcb5f7e-1761629892384",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-e145d6e3-2d2e-4c87-b8bf-e6dd8dcb5f7e",
+    "summary": "Ariana Matau updated QA1761629883723 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-3723",
+        "newValue": "555-3723-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-e145d6e3-2d2e-4c87-b8bf-e6dd8dcb5f7e"
+    },
+    "createdAt": "2025-10-28T05:38:12.384Z"
+  },
+  {
+    "id": "audit-user-user-e145d6e3-2d2e-4c87-b8bf-e6dd8dcb5f7e-1761629895525",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.soft-deleted",
+    "entity": "user",
+    "entityId": "user-e145d6e3-2d2e-4c87-b8bf-e6dd8dcb5f7e",
+    "summary": "Ariana Matau soft-deleted QA1761629883723 Member from the directory",
+    "metadata": {
+      "userId": "user-e145d6e3-2d2e-4c87-b8bf-e6dd8dcb5f7e",
+      "email": "qa-1761629883723@example.com"
+    },
+    "createdAt": "2025-10-28T05:38:15.525Z"
+  },
+  {
+    "id": "audit-event-event-a2591817-989c-4153-96fd-aabf09b4c1ae-1761629909422",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-a2591817-989c-4153-96fd-aabf09b4c1ae",
+    "summary": "Ariana Matau scheduled Test Volunteer Event 1761629907961",
+    "metadata": {
+      "eventId": "event-a2591817-989c-4153-96fd-aabf09b4c1ae",
+      "startAt": "2024-12-24T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T05:38:29.422Z"
+  },
+  {
+    "id": "audit-event-event-aa665205-58f9-4ce0-b667-536dd32cb311-1761629911362",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-aa665205-58f9-4ce0-b667-536dd32cb311",
+    "summary": "Ariana Matau scheduled Test Signup Event 1761629910612",
+    "metadata": {
+      "eventId": "event-aa665205-58f9-4ce0-b667-536dd32cb311",
+      "startAt": "2024-12-25T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T05:38:31.362Z"
+  },
+  {
+    "id": "audit-announcement-announcement-504ae919-a1e0-4684-b5a2-7fe7a60db7a2-1761634738460",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.created",
+    "entity": "announcement",
+    "entityId": "announcement-504ae919-a1e0-4684-b5a2-7fe7a60db7a2",
+    "summary": "Ariana Matau published announcement \"Test Announcement 1761634730735\"",
+    "metadata": {
+      "audience": "all",
+      "groupIds": [],
+      "publishAt": "2025-10-28T06:58:00.000Z",
+      "expireAt": null
+    },
+    "createdAt": "2025-10-28T06:58:58.460Z"
+  },
+  {
+    "id": "audit-announcement-announcement-504ae919-a1e0-4684-b5a2-7fe7a60db7a2-1761634741722",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "announcement.updated",
+    "entity": "announcement",
+    "entityId": "announcement-504ae919-a1e0-4684-b5a2-7fe7a60db7a2",
+    "summary": "Ariana Matau updated announcement \"Updated Test Announcement 1761634730735\"",
+    "diff": {
+      "title": {
+        "previous": "Test Announcement 1761634730735",
+        "newValue": "Updated Test Announcement 1761634730735"
+      },
+      "body": {
+        "previous": "This is a test announcement created at 2025-10-28T06:58:50.735Z",
+        "newValue": "Updated: This is a test announcement created at 2025-10-28T06:58:50.735Z"
+      }
+    },
+    "createdAt": "2025-10-28T06:59:01.722Z"
+  },
+  {
+    "id": "audit-user-user-69ed6355-d06d-4ee1-8397-a1b15ac3dd74-1761634743755",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.created",
+    "entity": "user",
+    "entityId": "user-69ed6355-d06d-4ee1-8397-a1b15ac3dd74",
+    "summary": "Ariana Matau added QA1761634737406 Member to the directory",
+    "metadata": {
+      "userId": "user-69ed6355-d06d-4ee1-8397-a1b15ac3dd74",
+      "email": "qa-1761634737406@example.com",
+      "roles": ["Member"]
+    },
+    "createdAt": "2025-10-28T06:59:03.755Z"
+  },
+  {
+    "id": "audit-user-user-69ed6355-d06d-4ee1-8397-a1b15ac3dd74-1761634746834",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.updated",
+    "entity": "user",
+    "entityId": "user-69ed6355-d06d-4ee1-8397-a1b15ac3dd74",
+    "summary": "Ariana Matau updated QA1761634737406 Member's profile",
+    "diff": {
+      "status": {
+        "previous": "active",
+        "newValue": "invited"
+      },
+      "profile.phone": {
+        "previous": "555-7406",
+        "newValue": "555-7406-U"
+      },
+      "household.address": {
+        "previous": null,
+        "newValue": "123 QA Street"
+      },
+      "profile.notes": {
+        "previous": null,
+        "newValue": ""
+      }
+    },
+    "metadata": {
+      "userId": "user-69ed6355-d06d-4ee1-8397-a1b15ac3dd74"
+    },
+    "createdAt": "2025-10-28T06:59:06.834Z"
+  },
+  {
+    "id": "audit-user-user-69ed6355-d06d-4ee1-8397-a1b15ac3dd74-1761634750487",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "user.soft-deleted",
+    "entity": "user",
+    "entityId": "user-69ed6355-d06d-4ee1-8397-a1b15ac3dd74",
+    "summary": "Ariana Matau soft-deleted QA1761634737406 Member from the directory",
+    "metadata": {
+      "userId": "user-69ed6355-d06d-4ee1-8397-a1b15ac3dd74",
+      "email": "qa-1761634737406@example.com"
+    },
+    "createdAt": "2025-10-28T06:59:10.487Z"
+  },
+  {
+    "id": "audit-event-event-8ad18c04-3ad1-497b-b909-3461e72e7726-1761634764614",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-8ad18c04-3ad1-497b-b909-3461e72e7726",
+    "summary": "Ariana Matau scheduled Test Volunteer Event 1761634761561",
+    "metadata": {
+      "eventId": "event-8ad18c04-3ad1-497b-b909-3461e72e7726",
+      "startAt": "2024-12-24T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T06:59:24.614Z"
+  },
+  {
+    "id": "audit-event-event-3bfb7249-0743-4f94-bfc0-7b39d85e3d6b-1761634767033",
+    "churchId": "church-acc",
+    "actorUserId": "user-admin",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-3bfb7249-0743-4f94-bfc0-7b39d85e3d6b",
+    "summary": "Ariana Matau scheduled Test Signup Event 1761634765881",
+    "metadata": {
+      "eventId": "event-3bfb7249-0743-4f94-bfc0-7b39d85e3d6b",
+      "startAt": "2024-12-25T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-28T06:59:27.033Z"
   }
 ]

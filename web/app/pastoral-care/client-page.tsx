@@ -110,7 +110,7 @@ export function PastoralCareClientPage({
       </div>
       <div className="flex space-x-4">
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px]" aria-label="Filter by status">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
@@ -156,7 +156,7 @@ export function PastoralCareClientPage({
           </DropdownMenuContent>
         </DropdownMenu>
         <Select value={sortOrder} onValueChange={setSortOrder}>
-          <SelectTrigger className="w-[180px]">
+          <SelectTrigger className="w-[180px]" aria-label="Sort order">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
           <SelectContent>

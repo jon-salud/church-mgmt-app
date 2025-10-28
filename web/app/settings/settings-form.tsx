@@ -230,16 +230,24 @@ export function SettingsForm({
                               <div
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
-                                {...provided.dragHandleProps}
                                 className="flex items-center justify-between p-4 border-b last:border-b-0"
                               >
-                                <div>
-                                  <div className="font-medium">{type.name}</div>
-                                  {type.description && (
-                                    <div className="text-sm text-muted-foreground">
-                                      {type.description}
-                                    </div>
-                                  )}
+                                <div className="flex items-center gap-4 flex-1">
+                                  <div
+                                    {...provided.dragHandleProps}
+                                    className="cursor-grab active:cursor-grabbing"
+                                    aria-label="Drag to reorder"
+                                  >
+                                    <span className="text-muted-foreground">≡</span>
+                                  </div>
+                                  <div className="flex-1">
+                                    <div className="font-medium">{type.name}</div>
+                                    {type.description && (
+                                      <div className="text-sm text-muted-foreground">
+                                        {type.description}
+                                      </div>
+                                    )}
+                                  </div>
                                 </div>
                                 <div className="flex items-center gap-4">
                                   <div className="flex items-center gap-2">
@@ -251,9 +259,6 @@ export function SettingsForm({
                                         handleStatusChange(type.id, checked ? 'active' : 'archived')
                                       }
                                     />
-                                  </div>
-                                  <div className="text-muted-foreground">
-                                    <span title="Drag to reorder">≡</span>
                                   </div>
                                 </div>
                               </div>
