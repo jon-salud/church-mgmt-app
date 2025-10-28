@@ -233,7 +233,11 @@ export function SettingsForm({
                                 className="flex items-center justify-between p-4 border-b last:border-b-0"
                               >
                                 <div className="flex items-center gap-4 flex-1">
-                                  <div {...provided.dragHandleProps} className="cursor-grab active:cursor-grabbing" aria-label="Drag to reorder">
+                                  <div
+                                    {...provided.dragHandleProps}
+                                    className="cursor-grab active:cursor-grabbing"
+                                    aria-label="Drag to reorder"
+                                  >
                                     <span className="text-muted-foreground">≡</span>
                                   </div>
                                   <div className="flex-1">
