@@ -3,7 +3,7 @@ import { MockGroup, MockGroupMember, MockGroupResource, MockUser } from '../../m
 export const GROUPS_REPOSITORY = Symbol('GROUPS_REPOSITORY');
 
 export interface IGroupsRepository {
-  listGroups(churchId?: string): Promise<MockGroup[]>;
+  listGroups(): Promise<MockGroup[]>;
   getGroupById(id: string): Promise<MockGroup | null>;
   getGroupMembers(groupId: string): Promise<Array<MockGroupMember & { user: MockUser }>>;
   addGroupMember(

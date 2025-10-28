@@ -15,8 +15,8 @@ import { MockGroup, MockGroupMember, MockGroupResource, MockUser } from '../../m
 export class GroupsDataStoreRepository implements IGroupsRepository {
   constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
-  async listGroups(churchId?: string): Promise<MockGroup[]> {
-    return this.db.listGroups(churchId);
+  async listGroups(): Promise<MockGroup[]> {
+    return this.db.listGroups();
   }
 
   async getGroupById(id: string): Promise<MockGroup | null> {
