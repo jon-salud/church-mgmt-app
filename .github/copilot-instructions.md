@@ -187,5 +187,5 @@ pnpm test:e2e:mock    # E2E tests
 - Remember to rebuild after certain dep changes
 - Verify environment variables when OAuth flows fail
 - Check port conflicts if E2E tests fail unexpectedly
-- All entities require `churchId` for multi-tenancy
+- Remember: all entities require `churchId` for multi-tenancy
 - Use `hasRole()` utility for role-based UI logic
