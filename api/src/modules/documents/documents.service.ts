@@ -1,5 +1,6 @@
 import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DATA_STORE, DataStore } from '../../datastore';
+import { DOCUMENTS_REPOSITORY, IDocumentsRepository } from './documents.repository.interface';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { randomUUID } from 'node:crypto';
@@ -7,7 +8,10 @@ import { MAX_FILE_SIZE_BYTES } from '../../common/constants';
 
 @Injectable()
 export class DocumentsService {
-  constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
+  constructor(
+    @Inject(DOCUMENTS_REPOSITORY) private readonly documentsRepository: IDocumentsRepository,
+    @Inject(DATA_STORE) private readonly db: DataStore
+  ) {}
 
   async list(userId: string) {
     const church = await this.db.getChurch();
@@ -18,7 +22,7 @@ export class DocumentsService {
       .filter((r: { churchId: string }) => r.churchId === church.id)
       .map((r: { roleId: string }) => r.roleId);
 
-    return this.db.listDocuments(church.id, userRoleIds);
+    return this.documentsRepository.listDocuments(church.id, userRoleIds);
   }
 
   async getDetail(id: string, userId: string) {
@@ -30,7 +34,7 @@ export class DocumentsService {
       .filter((r: { churchId: string }) => r.churchId === church.id)
       .map((r: { roleId: string }) => r.roleId);
 
-    const doc = await this.db.getDocumentWithPermissions(id, userRoleIds);
+    const doc = await this.documentsRepository.getDocumentWithPermissions(id, userRoleIds);
     if (!doc) throw new NotFoundException('Document not found or access denied');
 
     return doc;
@@ -65,7 +69,7 @@ export class DocumentsService {
     // Convert file to base64
     const fileData = file.buffer.toString('base64');
 
-    return this.db.createDocument(
+    return this.documentsRepository.createDocument(
       church.id,
       userId,
       file.filename,
@@ -91,28 +95,34 @@ export class DocumentsService {
       }
     }
 
-    const doc = await this.db.updateDocument(id, dto.title, dto.description, dto.roleIds, userId);
+    const doc = await this.documentsRepository.updateDocument(
+      id,
+      dto.title,
+      dto.description,
+      dto.roleIds,
+      userId
+    );
     if (!doc) throw new NotFoundException('Document not found');
 
     return doc;
   }
 
   async delete(id: string, userId: string) {
-    const deleted = await this.db.deleteDocument(id, userId);
+    const deleted = await this.documentsRepository.deleteDocument(id, userId);
     if (!deleted) throw new NotFoundException('Document not found');
 
     return { success: true, message: 'Document archived' };
   }
 
   async hardDelete(id: string, userId: string) {
-    const deleted = await this.db.hardDeleteDocument(id, userId);
+    const deleted = await this.documentsRepository.hardDeleteDocument(id, userId);
     if (!deleted) throw new NotFoundException('Document not found');
 
     return { success: true, message: 'Document permanently deleted' };
   }
 
   async undelete(id: string, userId: string) {
-    const restored = await this.db.undeleteDocument(id, userId);
+    const restored = await this.documentsRepository.undeleteDocument(id, userId);
     if (!restored) throw new NotFoundException('Document not found or not deleted');
 
     return { success: true, message: 'Document restored' };
@@ -120,7 +130,7 @@ export class DocumentsService {
 
   async listDeleted() {
     const church = await this.db.getChurch();
-    return this.db.listDeletedDocuments(church.id);
+    return this.documentsRepository.listDeletedDocuments(church.id);
   }
 
   async getDownloadUrl(id: string, userId: string): Promise<{ url: string; expiresAt: string }> {
@@ -132,7 +142,7 @@ export class DocumentsService {
       .filter((r: { churchId: string }) => r.churchId === church.id)
       .map((r: { roleId: string }) => r.roleId);
 
-    const doc = await this.db.getDocumentWithPermissions(id, userRoleIds);
+    const doc = await this.documentsRepository.getDocumentWithPermissions(id, userRoleIds);
     if (!doc) throw new NotFoundException('Document not found or access denied');
 
     // Generate a time-limited token (valid for 1 hour)
@@ -155,7 +165,7 @@ export class DocumentsService {
       .filter((r: { churchId: string }) => r.churchId === church.id)
       .map((r: { roleId: string }) => r.roleId);
 
-    const doc = await this.db.getDocumentWithPermissions(id, userRoleIds);
+    const doc = await this.documentsRepository.getDocumentWithPermissions(id, userRoleIds);
     if (!doc) throw new NotFoundException('Document not found or access denied');
 
     // Decode base64 to buffer
