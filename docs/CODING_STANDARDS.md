@@ -49,6 +49,14 @@ about for all developers.
 - **Data Transfer Objects (DTOs):** Use DTOs with `class-validator` decorators for all incoming
   request bodies. This ensures that data is validated before it reaches the service layer.
 
+### 4.1.1 Dependency Injection
+
+- **Token Convention:** Use Symbols for injection tokens to avoid naming conflicts. Format: `export const TOKEN_NAME = Symbol('TOKEN_NAME');`
+- **Provider Registration:** Register providers in the module's providers array using the `useClass` pattern for implementations.
+- **Repository Interfaces:** Every module with data access must define an interface for its repository (e.g., `IUsersRepository`) and inject it via a token.
+- **Service Interfaces:** For cross-module services, define minimal interfaces to enforce ISP.
+- **Test Expectations:** Unit tests for services must mock external dependencies (repositories, other services) using the injection tokens. Avoid booting the full `AppModule` in unit tests.
+
 ### 4.2. Naming Conventions
 
 - **Files:** Use kebab-case for filenames (e.g., `users.controller.ts`).

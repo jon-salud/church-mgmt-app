@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "node16",
     "target": "es2019",
-    "moduleResolution": "node",
+    "moduleResolution": "node16",
     "declaration": true,
     "sourceMap": true,
     "outDir": "./dist",
@@ -10,11 +10,7 @@
     "experimentalDecorators": true,
     "strict": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"]
-    }
+    "esModuleInterop": true
   },
   "include": ["src/**/*", "test/**/*"]
 }
