@@ -328,6 +328,27 @@ explicitly querying for audit/compliance purposes.
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
 
+### Table: `pastoral_care_tickets`
+
+- `id` (UUID, Primary Key)
+- `churchId` (UUID, FK -> `churches.id`, Not Null)
+- `authorId` (UUID, FK -> `users.id`, Not Null)
+- `assigneeId` (UUID, FK -> `users.id`)
+- `title` (Text, Not Null)
+- `description` (Text, Not Null)
+- `status` (Enum: 'NEW', 'ASSIGNED', 'IN_PROGRESS', 'RESOLVED')
+- `priority` (Enum: 'LOW', 'NORMAL', 'HIGH', 'URGENT')
+- `createdAt` (Timestamp, Not Null)
+- `updatedAt` (Timestamp, Not Null)
+
+### Table: `pastoral_care_comments`
+
+- `id` (UUID, Primary Key)
+- `ticketId` (UUID, FK -> `pastoral_care_tickets.id`, Not Null)
+- `authorId` (UUID, FK -> `users.id`, Not Null)
+- `body` (Text, Not Null)
+- `createdAt` (Timestamp, Not Null)
+
 ---
 
 ## 5. Persona-Specific Tables

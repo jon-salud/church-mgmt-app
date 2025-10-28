@@ -50,7 +50,7 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - **E2E Testing:**
     - Combined prayer.spec.ts and requests.spec.ts into comprehensive prayer-requests.spec.ts
       covering both prayer wall functionality and prayer requests through the general requests form
-    - Write Playwright E2E tests for the confidential pastoral care user flows.
+    - Write Playwright E2E tests for the confidential pastoral care user flows (pastoral-care.spec.ts).
 - Child Check-In and Safety feature
 - UI Improvements (Theme Switching, Sidebar Navigation, UI Automation IDs)
 - **Documentation Reconciliation:**
