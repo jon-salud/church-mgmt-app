@@ -38,11 +38,11 @@ When a user submits a prompt to the AI Agent:
 9. **Commit and push feature branch**
    - Commit and push the feature changes with a proper title and description.
 
-10. **Create separate branch/PR for source-of-truth updates**
-    - After feature development is complete, create a new branch from main specifically for updating source-of-truth documents
-    - Update all relevant files in `docs/source-of-truth/` to reflect the new/updated features
-    - Ask the user to confirm each update to keep them informed
-    - Submit as a separate PR for review
+10. **Update source-of-truth documents in the same feature branch/PR**
+    - As part of the feature branch, update all relevant files in `docs/source-of-truth/` to reflect the new or updated features.
+    - Make documentation updates in separate commits from code changes for clarity.
+    - Ask the user to confirm each documentation update to keep them informed.
+    - Ensure that both code and documentation changes are reviewed and merged together in the same PR to keep the codebase and docs in sync.
 
 11. **Review and align USER_MANUAL.md**
     - Consider reprioritizing the backlog logically based on project knowledge. Review and align #file:../docs/USER_MANUAL.md with the latest progress.
