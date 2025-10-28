@@ -20,11 +20,11 @@ export default async function PastoralCareDashboard() {
   ];
 
   return (
-    <main>
+    <div>
       <PageHeader title="Pastoral Care" />
       <div className="container mx-auto p-4">
         <PastoralCareClientPage data={combinedData} requestTypes={requestTypes} user={me.user} />
       </div>
-    </main>
+    </div>
   );
 }
