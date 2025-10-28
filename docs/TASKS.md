@@ -175,6 +175,15 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ### 🔄 In Progress
 
+- **Sprint 1: Dependency Injection & Repository Pattern Foundation**
+  - ✅ **USER_REPOSITORY Abstraction:** Created IUsersRepository interface with USER_REPOSITORY token, UsersDataStoreRepository adapter, and refactored UsersService to inject repository instead of DATA_STORE
+  - ✅ **INotificationSender Abstraction:** Created INotificationSender interface with NOTIFICATION_SENDER token, ConsoleNotificationSender implementation, and refactored NotificationsService to inject sender
+  - ✅ **Unit Tests for Users:** Converted heavy e2e tests to fast unit tests (10 tests) mocking IUsersRepository for UsersService
+  - ✅ **Unit Tests for Notifications:** Added unit tests (2 tests) mocking INotificationSender for NotificationsService
+  - ✅ **Coding Standards Update:** Added DI patterns section to CODING_STANDARDS.md with token conventions, provider patterns, interface requirements, and test expectations
+  - ✅ **Refactoring Checklist:** Created REFACTORING_CHECKLIST.md with comprehensive sprint tracking and completion status
+  - ✅ **TypeScript Modernization:** Updated api/tsconfig.json to use node16 module resolution, removed deprecated baseUrl/paths, eliminated deprecation warnings
+
 ### 📝 Backlog / Upcoming
 
 ## Phase 1: Complete Core Initial Release Features
