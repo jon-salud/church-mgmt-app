@@ -43,11 +43,11 @@ export class UsersService {
   async bulkImport(emails: string[], actorUserId: string) {
     // Get the user's church ID
     const user = await this.repo.getUserProfile(actorUserId);
-    if (!user || !user.churchId) {
+    if (!user?.churchId) {
       throw new Error('User must be associated with a church');
     }
 
     // Use the invitations service to send bulk invitations
-    return this.repo.bulkCreateInvitations(user.churchId, emails, actorUserId, undefined, 'member');
+    return this.repo.bulkCreateInvitations(user.churchId, emails, undefined, actorUserId, 'member');
   }
 }

@@ -115,8 +115,8 @@ describe('UsersService', () => {
     expect(repo.bulkCreateInvitations).toHaveBeenCalledWith(
       'church-1',
       ['email@example.com'],
-      'actor-1',
       undefined,
+      'actor-1',
       'member'
     );
     expect(result).toEqual(mockInvitations);

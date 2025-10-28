@@ -40,8 +40,8 @@ export interface IUsersRepository {
   bulkCreateInvitations(
     churchId: string,
     emails: string[],
+    roleId: string | undefined,
     actorUserId: string,
-    roleId?: string,
     type?: 'team' | 'member'
   ): Promise<unknown[]>;
 }

@@ -43,8 +43,8 @@ export class UsersDataStoreRepository implements IUsersRepository {
   bulkCreateInvitations(
     churchId: string,
     emails: string[],
+    roleId: string | undefined,
     actorUserId: string,
-    roleId?: string,
     type?: 'team' | 'member'
   ) {
     return this.db.bulkCreateInvitations(churchId, emails, roleId, actorUserId, type);
