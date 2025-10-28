@@ -22,6 +22,8 @@ redirected to the login page (`/login`). The login page provides options for OAu
 - **/prayer**: The public Prayer Wall where members can view and submit prayer requests.
   - **/prayer/moderation**: The dashboard for administrators to approve or deny pending prayer
     requests.
+- **/pastoral-care**: The dashboard for viewing and managing pastoral care tickets (staff/admin only).
+  - **/pastoral-care/new**: The form for creating new pastoral care tickets (staff/admin only).
 - **/requests**: The unified form for members to submit various types of requests to the church
   staff.
   - **/requests/dashboard**: The dashboard for administrators to manage and track all submitted
@@ -57,3 +59,11 @@ Admin users can access archived (soft-deleted) records for recovery:
   - Added Archive & Recovery section with navigation paths
   - Documented routes for viewing archived members, events, and roles
   - Added admin-only recovery functionality paths
+
+### v1.0.1 - Pastoral Care Navigation
+
+- **Date**: 2025-10-28
+- **Changes**:
+  - Added pastoral care navigation paths
+  - Documented `/pastoral-care` dashboard and `/pastoral-care/new` ticket creation routes
+  - Added role-based access notes (staff/admin only)

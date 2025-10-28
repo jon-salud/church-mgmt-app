@@ -40,6 +40,7 @@ The initial release of the platform will focus on the following core functionali
 - **Member & Household Management:** A central directory of all church members, organized by
   households.
 - **Prayer Request System:** A moderated module for members to submit and view prayer requests.
+- **Pastoral Care System:** A confidential ticket system for staff to manage sensitive pastoral care matters and member support needs.
 - **General Request Management:** A flexible system for managing various internal requests from
   members to church staff.
 - **Event & Service Check-in:** A system for tracking attendance at services and events.

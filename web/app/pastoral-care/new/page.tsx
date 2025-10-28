@@ -11,15 +11,24 @@ export default function NewTicketPage() {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState('NORMAL');
+  const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setIsSubmitting(true);
+
     try {
       const newTicket = await clientApi.createPastoralCareTicket({ title, description, priority });
       router.push(`/pastoral-care/${newTicket.id}`);
     } catch (error) {
       console.error('Failed to create ticket:', error);
-      alert('Failed to create ticket: ' + (error instanceof Error ? error.message : String(error)));
+      setError(
+        error instanceof Error ? error.message : 'Failed to create ticket. Please try again.'
+      );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -29,6 +38,13 @@ export default function NewTicketPage() {
       <p className="text-gray-600">
         Your request is confidential and will only be seen by the pastoral care team.
       </p>
+
+      {error && (
+        <div className="p-4 bg-red-50 border border-red-200 rounded-md">
+          <p className="text-red-800 text-sm">{error}</p>
+        </div>
+      )}
+
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="title" className="block text-sm font-medium text-gray-700">
@@ -69,8 +85,8 @@ export default function NewTicketPage() {
             <option value="URGENT">Urgent</option>
           </select>
         </div>
-        <Button id="new-ticket-submit-button" type="submit">
-          Submit
+        <Button id="new-ticket-submit-button" type="submit" disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Submit'}
         </Button>
       </form>
     </div>

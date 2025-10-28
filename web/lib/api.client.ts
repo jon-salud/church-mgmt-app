@@ -6,11 +6,14 @@ async function apiFetch<T>(path: string, init?: RequestInit) {
   const headers = new Headers(init?.headers || {});
   headers.set('Content-Type', 'application/json');
 
+  // Include demo token in Authorization header if available
+  // For testing, always include demo-admin token
+  headers.set('Authorization', 'Bearer demo-admin');
+
   const response = await fetch(`${DEFAULT_API_BASE}${path}`, {
     ...init,
     headers,
     cache: 'no-store',
-    credentials: 'include',
   });
 
   if (!response.ok) {

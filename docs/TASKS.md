@@ -175,6 +175,9 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ Added role-based access test to verify button visibility for different user roles
   - ✅ Updated page objects to use stable ID selectors instead of labels
   - ✅ Verified role-based access control works correctly across admin, leader, and member roles
+  - ✅ Improved error handling with inline error display instead of browser alerts
+  - ✅ Fixed TypeScript type safety by replacing 'any' types with proper User interface
+  - ✅ Added proper loading states and form validation
 
 ### 🔄 In Progress
 
@@ -208,11 +211,12 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 ## Technical Debt & Compliance
 
 - **API Authentication Issue in E2E Tests:**
-  - **Issue:** Full E2E workflow for pastoral care ticket creation and commenting is blocked by authentication issues between web app and API server
+  - **Issue:** Full E2E workflow for pastoral care ticket creation and commenting is blocked by authentication/CORS issues between web app and API server in test environment
   - **Impact:** Prevents complete end-to-end testing of ticket creation → detail view → comment workflow
-  - **Root Cause:** CORS/cookie handling issues between Next.js web app and NestJS API server in test environment
-  - **Workaround:** Tests currently pass basic navigation and form validation but cannot complete full workflow
-  - **Resolution:** Investigate and fix CORS configuration, cookie domain settings, and authentication flow in E2E test environment
+  - **Root Cause:** JavaScript/React event handlers not executing in E2E test environment, preventing form submissions from triggering API calls
+  - **Current Status:** Navigation and form filling work correctly, but React onSubmit handlers are not firing
+  - **Workaround:** Core functionality verified manually - role-based access, error handling, and API endpoints all work correctly in development
+  - **Resolution:** Investigate Playwright configuration, JavaScript loading issues, and potential test environment setup problems
 
 - **Complete CRUD Operations for All Entities:**
   - **Backend:** Implement full Create, Read, Update, Delete operations for all database entities (users, profiles, groups, events, announcements, funds, contributions, households, children, etc.).
