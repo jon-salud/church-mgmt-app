@@ -167,7 +167,7 @@ export function EventsClient({ events, members, groups, me }: EventsClientProps)
                 </div>
                 <div className="flex items-center gap-3">
                   <span className="rounded-full border border-border px-3 py-1 text-xs uppercase tracking-wide text-muted-foreground">
-                    {event.visibility}
+                    {event.deletedAt ? 'Archived' : event.visibility}
                   </span>
                   <a
                     id={`download-csv-link-${event.id}`}
