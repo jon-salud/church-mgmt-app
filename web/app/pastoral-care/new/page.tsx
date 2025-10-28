@@ -73,11 +73,10 @@ export default function NewTicketPage() {
             Priority
           </label>
           <select
-            id="new-ticket-priority-select"
+            id="priority"
             value={priority}
             onChange={e => setPriority(e.target.value)}
             className="w-full p-2 border rounded-md"
-            aria-label="Priority"
           >
             <option value="LOW">Low</option>
             <option value="NORMAL">Normal</option>

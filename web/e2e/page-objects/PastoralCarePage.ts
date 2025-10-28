@@ -26,7 +26,7 @@ export class NewPastoralCareTicketPage extends BasePage {
     super(page);
     this.titleInput = page.locator('#new-ticket-title-input');
     this.descriptionInput = page.locator('#new-ticket-description-textarea');
-    this.prioritySelect = page.locator('#new-ticket-priority-select');
+    this.prioritySelect = page.locator('#priority');
     this.submitButton = page.locator('#new-ticket-submit-button');
   }
 

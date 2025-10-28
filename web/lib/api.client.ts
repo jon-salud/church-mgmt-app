@@ -6,13 +6,19 @@ async function apiFetch<T>(path: string, init?: RequestInit) {
   const headers = new Headers(init?.headers || {});
   headers.set('Content-Type', 'application/json');
 
-  // Include demo token in Authorization header if available
-  // For testing, always include demo-admin token
-  headers.set('Authorization', 'Bearer demo-admin');
+  // Include demo token in Authorization header for testing environments
+  // In production, authentication is handled via cookies
+  if (
+    process.env.NODE_ENV === 'test' ||
+    process.env.NEXT_PUBLIC_API_BASE_URL?.includes('localhost')
+  ) {
+    headers.set('Authorization', 'Bearer demo-admin');
+  }
 
   const response = await fetch(`${DEFAULT_API_BASE}${path}`, {
     ...init,
     headers,
+    credentials: 'include', // Required for cookie-based authentication in production
     cache: 'no-store',
   });
 
