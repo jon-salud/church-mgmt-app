@@ -1,24 +1,23 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DATA_STORE, DataStore } from '../../datastore';
-import { IDocumentsRepository } from './documents.repository.interface';
-import { MockDocument } from '../../mock/mock-data';
+import { IDocumentsRepository, Document } from './documents.repository.interface';
 
 @Injectable()
 export class DocumentsDataStoreRepository implements IDocumentsRepository {
   constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
-  async listDocuments(churchId: string, userRoleIds: string[]): Promise<MockDocument[]> {
+  async listDocuments(churchId: string, userRoleIds: string[]): Promise<Document[]> {
     return this.db.listDocuments(churchId, userRoleIds);
   }
 
-  async getDocument(id: string): Promise<MockDocument | undefined> {
+  async getDocument(id: string): Promise<Document | undefined> {
     return this.db.getDocument(id);
   }
 
   async getDocumentWithPermissions(
     id: string,
     userRoleIds: string[]
-  ): Promise<(MockDocument & { permissions: string[] }) | undefined> {
+  ): Promise<(Document & { permissions: string[] }) | undefined> {
     return this.db.getDocumentWithPermissions(id, userRoleIds);
   }
 
@@ -32,7 +31,7 @@ export class DocumentsDataStoreRepository implements IDocumentsRepository {
     fileData: string,
     roleIds: string[],
     actorUserId: string
-  ): Promise<MockDocument> {
+  ): Promise<Document> {
     return this.db.createDocument(
       churchId,
       uploaderProfileId,
@@ -52,7 +51,7 @@ export class DocumentsDataStoreRepository implements IDocumentsRepository {
     description: string | undefined,
     roleIds: string[] | undefined,
     actorUserId: string
-  ): Promise<MockDocument | undefined> {
+  ): Promise<Document | undefined> {
     return this.db.updateDocument(id, title, description, roleIds, actorUserId);
   }
 
@@ -68,7 +67,7 @@ export class DocumentsDataStoreRepository implements IDocumentsRepository {
     return this.db.undeleteDocument(id, actorUserId);
   }
 
-  async listDeletedDocuments(churchId: string): Promise<MockDocument[]> {
+  async listDeletedDocuments(churchId: string): Promise<Document[]> {
     return this.db.listDeletedDocuments(churchId);
   }
 }
