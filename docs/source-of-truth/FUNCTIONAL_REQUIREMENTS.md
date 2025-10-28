@@ -262,6 +262,50 @@ main dashboard.
 
 ---
 
+## A.7. Pastoral Care Management
+
+This feature provides confidential pastoral care ticket management for church staff to handle sensitive member care needs.
+
+### A.7.1. Create Pastoral Care Tickets (Staff/Admin)
+
+- **FR-PAST-001:** Staff and admin users shall be able to create confidential pastoral care tickets with title, description, and priority level.
+- **FR-PAST-002:** The ticket creation form shall include priority options: LOW, NORMAL, HIGH, URGENT with NORMAL as the default.
+- **FR-PAST-003:** Tickets shall be automatically assigned NEW status upon creation.
+- **FR-PAST-004:** Form validation shall require both title and description fields to be non-empty.
+- **FR-PAST-005:** Users shall receive immediate feedback upon successful ticket creation with navigation to the ticket details.
+
+### A.7.2. View and Manage Tickets (Staff/Admin)
+
+- **FR-PAST-006:** Staff and admin users shall have access to a list view of all pastoral care tickets.
+- **FR-PAST-007:** Tickets shall display key information: title, status, priority, creation date, and last update.
+- **FR-PAST-008:** Staff shall be able to update ticket status: NEW, ASSIGNED, IN_PROGRESS, RESOLVED.
+- **FR-PAST-009:** Staff shall be able to update ticket priority levels.
+- **FR-PAST-010:** Staff shall be able to assign tickets to other staff members.
+- **FR-PAST-011:** Tickets shall be sorted by priority (URGENT first) and then by creation date (newest first).
+
+### A.7.3. Ticket Comments and Communication (Staff/Admin)
+
+- **FR-PAST-012:** Staff shall be able to add internal comments to pastoral care tickets for communication and documentation.
+- **FR-PAST-013:** Comments shall be threaded and display chronologically with author and timestamp.
+- **FR-PAST-014:** Comment text shall be required and support multi-line input.
+- **FR-PAST-015:** All comments shall be confidential and visible only to staff/admin users.
+
+### A.7.4. Access Control and Security
+
+- **FR-PAST-016:** Pastoral care tickets and comments shall be accessible only to users with Staff or Admin roles.
+- **FR-PAST-017:** Regular members shall not have access to pastoral care features.
+- **FR-PAST-018:** All access to pastoral care data shall be logged for audit purposes.
+- **FR-PAST-019:** The system shall enforce role-based access control at both UI and API levels.
+
+### A.7.5. User Experience and Navigation
+
+- **FR-PAST-020:** Pastoral care features shall be accessible through the main navigation sidebar for authorized users.
+- **FR-PAST-021:** The ticket creation form shall provide clear instructions and validation feedback.
+- **FR-PAST-022:** Error states shall be handled gracefully with user-friendly error messages.
+- **FR-PAST-023:** The interface shall be responsive and accessible on mobile devices.
+
+---
+
 _The remaining sections and Part B (System Administration) are omitted for brevity but are
 understood to be included in the full document._
 

@@ -537,7 +537,103 @@ This section covers endpoints related to general requests.
 
 ---
 
-## 4. Events and Volunteer Management
+## 4. Pastoral Care
+
+This section covers endpoints related to confidential pastoral care ticket management for church staff.
+
+### Pastoral Care Tickets
+
+#### GET /pastoral-care/tickets
+
+- **Description:** Retrieves a list of all pastoral care tickets for the church. (Staff/Admin only)
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    [
+      {
+        "id": "ticket-uuid",
+        "churchId": "church-uuid",
+        "authorId": "user-uuid",
+        "assigneeId": "user-uuid",
+        "title": "Confidential pastoral matter",
+        "description": "Detailed description of the pastoral care need",
+        "status": "NEW|ASSIGNED|IN_PROGRESS|RESOLVED",
+        "priority": "LOW|NORMAL|HIGH|URGENT",
+        "createdAt": "2024-01-15T10:30:00Z",
+        "updatedAt": "2024-01-15T10:30:00Z"
+      }
+    ]
+    ```
+
+#### POST /pastoral-care/tickets
+
+- **Description:** Creates a new pastoral care ticket. (Staff/Admin only)
+- **Request Body:**
+
+  ```json
+  {
+    "title": "string (required)",
+    "description": "string (required)",
+    "priority": "LOW|NORMAL|HIGH|URGENT (optional, defaults to NORMAL)"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** The newly created pastoral care ticket object.
+
+#### GET /pastoral-care/tickets/:id
+
+- **Description:** Retrieves a specific pastoral care ticket by ID. (Staff/Admin only)
+- **URL Parameters:**
+  - `id`: The UUID of the pastoral care ticket
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** The pastoral care ticket object with full details.
+
+#### PATCH /pastoral-care/tickets/:id
+
+- **Description:** Updates a pastoral care ticket. (Staff/Admin only)
+- **URL Parameters:**
+  - `id`: The UUID of the pastoral care ticket
+- **Request Body:**
+
+  ```json
+  {
+    "status": "NEW|ASSIGNED|IN_PROGRESS|RESOLVED (optional)",
+    "priority": "LOW|NORMAL|HIGH|URGENT (optional)",
+    "assigneeId": "user-uuid (optional)"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** The updated pastoral care ticket object.
+
+### Pastoral Care Comments
+
+#### POST /pastoral-care/tickets/:id/comments
+
+- **Description:** Adds a comment to a pastoral care ticket. (Staff/Admin only)
+- **URL Parameters:**
+  - `id`: The UUID of the pastoral care ticket
+- **Request Body:**
+
+  ```json
+  {
+    "body": "string (required)"
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `201 Created`
+  - **Content:** The newly created comment object.
+
+---
+
+## 5. Events and Volunteer Management
 
 This section covers endpoints related to managing church events and volunteer coordination.
 

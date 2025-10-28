@@ -155,7 +155,18 @@ capabilities without altering data isolation or privacy commitments.
 - **Public Visibility:** Approved prayer requests shall be displayed on a "Prayer Wall" accessible
   to all authenticated members.
 
-#### 3.2.3. General Request Management
+#### 3.2.3. Pastoral Care Management
+
+- **Confidential Ticket System:** Church staff shall have access to a confidential ticket system for managing sensitive pastoral care needs that require privacy and professional handling.
+- **Role-Based Access Control:** Only users with Staff or Admin roles shall be able to access pastoral care features, ensuring confidentiality and appropriate professional boundaries.
+- **Ticket Creation:** Staff shall be able to create pastoral care tickets with title, detailed description, and priority levels (LOW, NORMAL, HIGH, URGENT).
+- **Ticket Status Management:** Staff shall be able to update ticket status through a defined workflow: NEW → ASSIGNED → IN_PROGRESS → RESOLVED.
+- **Staff Assignment:** Tickets can be assigned to specific staff members for follow-up and responsibility tracking.
+- **Internal Communication:** Staff shall be able to add threaded comments to tickets for internal documentation and coordination.
+- **Priority-Based Organization:** Tickets shall be organized by priority level, with urgent matters receiving appropriate attention.
+- **Audit Trail:** All access to pastoral care data shall be logged for accountability and compliance purposes.
+
+#### 3.2.4. General Request Management
 
 - **Configurable Request Types:** Church Administrators shall be able to define custom types of
   requests that members can submit (e.g., "Pastoral Visit," "Request Information," "Building
