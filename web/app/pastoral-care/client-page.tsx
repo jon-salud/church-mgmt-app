@@ -1,6 +1,5 @@
 'use client';
 import { useState, useMemo } from 'react';
-import Link from 'next/link';
 import {
   Table,
   TableBody,
@@ -32,14 +31,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { RequestType } from '@/lib/types';
+import { RequestType, User } from '@/lib/types';
+import { hasRole } from '@/lib/utils';
 
 export function PastoralCareClientPage({
   data: initialData,
   requestTypes: initialRequestTypes,
+  user,
 }: {
   data: any[];
   requestTypes: RequestType[];
+  user: User;
 }) {
   const [data] = useState(initialData);
   const [selectedItem, setSelectedItem] = useState<any>(null);
@@ -81,17 +83,30 @@ export function PastoralCareClientPage({
     return result;
   }, [data, statusFilter, typeFilter, sortOrder]);
 
+  const hasAdminOrLeaderRole = hasRole(user?.roles, 'admin') || hasRole(user?.roles, 'leader');
+
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
         <h1 className="text-2xl font-bold">Pastoral Care & Requests</h1>
-        <Link
-          id="new-request-link"
-          href="/requests"
-          className="inline-flex items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
-        >
-          New Request
-        </Link>
+        <div className="flex gap-2">
+          <a
+            id="new-request-link"
+            href="/requests"
+            className="inline-flex items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+          >
+            New Request
+          </a>
+          {hasAdminOrLeaderRole && (
+            <a
+              id="new-ticket-link"
+              href="/pastoral-care/new"
+              className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+            >
+              New Ticket
+            </a>
+          )}
+        </div>
       </div>
       <div className="flex space-x-4">
         <Select value={statusFilter} onValueChange={setStatusFilter}>

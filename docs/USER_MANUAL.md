@@ -92,7 +92,28 @@ members.
 4. As you work on the request, be sure to update its status so that everyone is aware of its
    progress.
 
-### 3.5. How to Use the Event Check-in System
+### 3.5. How to Manage Pastoral Care Tickets
+
+The **Pastoral Care** system provides a confidential way for church staff to manage sensitive matters and support needs. This feature is only available to users with Administrator or Leader roles.
+
+#### Creating Pastoral Care Tickets
+
+1. Navigate to the **Pastoral Care** page from the main menu.
+2. Click the **"New Ticket"** button (only visible to staff/admin users).
+3. Fill out the ticket form with:
+   - **Title:** A brief summary of the matter
+   - **Description:** Detailed information about the situation
+   - **Priority:** Set the urgency level (Low, Normal, High, Urgent)
+4. Click **"Create Ticket"** to submit the confidential ticket.
+
+#### Managing Pastoral Care Tickets
+
+1. From the **Pastoral Care** dashboard, you can view all tickets and their current status.
+2. Click on any ticket to view its details and add comments for internal staff communication.
+3. Update ticket status as you work on resolving the matter.
+4. All pastoral care tickets are completely confidential and only visible to staff members.
+
+### 3.6. How to Use the Event Check-in System
 
 The **Check-in** feature allows you to track attendance for any church event, from Sunday services
 to classes and small groups.
@@ -110,7 +131,7 @@ Events can be archived instead of permanently deleted to maintain historical rec
 - **View Archived Events:** Use the event filters to show archived events.
 - **Recover an Event:** Administrators can recover archived events to make them active again.
 
-### 3.6. How to Manage Roles and Permissions
+### 3.7. How to Manage Roles and Permissions
 
 Roles and permissions are central to how the Church Management System controls access to features and information. A **role** defines a set of responsibilities or access rights (such as "Administrator," "Group Leader," or "Member"), while **permissions** determine what actions users in each role can perform—like managing events, viewing giving records, or editing group memberships. Administrators can create custom roles tailored to their church's needs and assign them to members, ensuring that everyone has the appropriate level of access and responsibility.
 
@@ -122,7 +143,7 @@ Roles can be archived when no longer needed while preserving historical data:
 - **View Archived Roles:** Check the "Show archived roles" option to see roles that have been archived.
 - **Recover a Role:** Administrators can recover archived roles to make them available for assignment again.
 
-### 3.7. How to Manage Group Resources
+### 3.8. How to Manage Group Resources
 
 Church administrators and group leaders can share useful resources (links to articles, videos, study materials, etc.) with their small groups.
 
