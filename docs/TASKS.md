@@ -172,10 +172,7 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ Improved error handling with inline error display instead of browser alerts
   - ✅ Fixed TypeScript type safety by replacing 'any' types with proper User interface
   - ✅ Added proper loading states and form validation
-
-### 🔄 In Progress
-
-- **Sprint 1: Dependency Injection & Repository Pattern Foundation**
+- ✅ **Sprint 1: Dependency Injection & Repository Pattern Foundation**
   - ✅ **USER_REPOSITORY Abstraction:** Created IUsersRepository interface with USER_REPOSITORY token, UsersDataStoreRepository adapter, and refactored UsersService to inject repository instead of DATA_STORE
   - ✅ **INotificationSender Abstraction:** Created INotificationSender interface with NOTIFICATION_SENDER token, ConsoleNotificationSender implementation, and refactored NotificationsService to inject sender
   - ✅ **Unit Tests for Users:** Converted heavy e2e tests to fast unit tests (10 tests) mocking IUsersRepository for UsersService
@@ -183,6 +180,16 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ **Coding Standards Update:** Added DI patterns section to CODING_STANDARDS.md with token conventions, provider patterns, interface requirements, and test expectations
   - ✅ **Refactoring Checklist:** Created REFACTORING_CHECKLIST.md with comprehensive sprint tracking and completion status
   - ✅ **TypeScript Modernization:** Updated api/tsconfig.json to use node16 module resolution, removed deprecated baseUrl/paths, eliminated deprecation warnings
+- ✅ **Sprint 2: Documents & Groups Repository Patterns**
+  - ✅ **DOCUMENTS_REPOSITORY Abstraction:** Created IDocumentsRepository interface with DOCUMENTS_REPOSITORY token, DocumentsDataStoreRepository adapter, and refactored DocumentsService to inject repository instead of DATA_STORE
+  - ✅ **GROUPS_REPOSITORY Abstraction:** Created IGroupsRepository interface with GROUPS_REPOSITORY token, GroupsDataStoreRepository adapter, and refactored GroupsService to inject repository instead of DATA_STORE
+  - ✅ **Unit Tests for Documents:** Added comprehensive unit tests (12 tests) mocking IDocumentsRepository for DocumentsService covering all CRUD operations and permission filtering
+  - ✅ **Unit Tests for Groups:** Verified existing unit tests (8 tests) work with repository injection for GroupsService
+  - ✅ **Backward Compatibility:** Ensured all existing functionality preserved through repository pattern implementation
+  - ✅ **Test Validation:** All 123 tests pass across 20 test suites confirming no regressions introduced
+  - ✅ **Code Quality Improvements:** Addressed review points by replacing direct MockData imports with abstract interfaces (Document, Group, GroupMember, UserSummary, GroupResource) in repository interfaces for better decoupling and future implementation flexibility
+
+### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming
 
