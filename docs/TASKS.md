@@ -315,7 +315,7 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 **Priority:** Medium - Church growth and outreach
 
-#### Now (Vistor: Q1 Post-MVP)
+#### Now (Visitor: Q1 Post-MVP)
 
 - **Backend:** Implement public registration APIs and visitor data management
 - **Frontend:** Create public event registration flows without authentication
