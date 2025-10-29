@@ -96,6 +96,17 @@ This document tracks the progress of the NestJS API refactoring project to intro
 - [x] **Performance Optimization** - Laid foundation for independent scaling of read and write operations
 - [x] **All Tests Pass** - 10/10 audit tests passing with no regressions introduced
 
+## Sprint 6B: Advanced Patterns & Optimizations (Future)
+
+**Status:** 📋 **PLANNED** - Advanced patterns for future implementation
+**Priority:** Low - Nice-to-have architectural improvements
+**Dependencies:** Sprint 6 CQRS foundation
+
+- [ ] **Event Sourcing** - Consider for audit-heavy operations (requires CQRS foundation)
+- [ ] **Caching Layer** - Add Redis/memory caching for performance (requires CQRS foundation)
+- [ ] **Circuit Breaker** - Implement resilience patterns (requires CQRS foundation)
+- [ ] **Metrics & Monitoring** - Add application metrics (requires CQRS foundation)
+
 ## Sprint 7: Migration & Cleanup
 - [ ] **Prisma Integration** - Complete Prisma datastore implementation
 - [ ] **Database Migrations** - Ensure schema compatibility
