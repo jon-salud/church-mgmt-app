@@ -24,8 +24,6 @@ import {
   MockRole,
   mockRoles,
   DefaultRoleSlug,
-  MembershipStatus,
-  AttendanceStatus,
   MockAuditLog,
   mockAuditLogs,
   mockChurches,
@@ -50,7 +48,40 @@ import {
   MockDocumentPermission,
   mockDocumentPermissions,
   MockPushSubscription,
+  MemberJoinMethod,
+  MaritalStatus,
+  BackgroundCheckStatus,
 } from '../mock/mock-data';
+import {
+  PastoralCareTicketCreateInput,
+  PastoralCareTicketUpdateInput,
+  PastoralCareCommentCreateInput,
+  AttendanceInput,
+  ContributionInput,
+  ContributionUpdateInput,
+  UserCreateInput,
+  UserUpdateInput,
+  UserDeleteInput,
+  GroupMemberCreateInput,
+  GroupMemberUpdateInput,
+  GroupMemberRemoveInput,
+  GroupResourceCreateInput,
+  GroupResourceUpdateInput,
+  GroupResourceDeleteInput,
+  EventCreateInput,
+  EventUpdateInput,
+  EventDeleteInput,
+  EventVolunteerRoleCreateInput,
+  EventVolunteerRoleUpdateInput,
+  EventVolunteerSignupCreateInput,
+  RoleCreateInput,
+  RoleUpdateInput,
+  RoleDeleteInput,
+  AuditLogFilter,
+  AuditLogCreateInput,
+  AnnouncementCreateInput,
+  AnnouncementUpdateInput,
+} from '../types/input-types';
 
 interface EventVolunteerRole {
   id: string;
@@ -63,36 +94,6 @@ interface EventVolunteerSignup {
   id: string;
   volunteerRoleId: string;
   userId: string;
-}
-
-interface PastoralCareTicketCreateInput {
-  churchId: string;
-  title: string;
-  description: string;
-  priority?: string;
-  authorId: string;
-  actorUserId: string;
-}
-
-interface PastoralCareTicketUpdateInput {
-  status?: string;
-  assigneeId?: string;
-  actorUserId: string;
-}
-
-interface PastoralCareCommentCreateInput {
-  ticketId: string;
-  body: string;
-  authorId: string;
-  actorUserId: string;
-}
-
-interface AttendanceInput {
-  eventId: string;
-  userId: string;
-  status: AttendanceStatus;
-  note?: string;
-  recordedBy?: string;
 }
 
 interface UserPayload extends Omit<MockUser, 'roles'> {
@@ -111,237 +112,6 @@ interface UserPayload extends Omit<MockUser, 'roles'> {
     name: string;
     role?: string;
   }>;
-}
-
-interface ContributionInput {
-  memberId: string;
-  amount: number;
-  date: string;
-  fundId?: string;
-  method: MockContribution['method'];
-  note?: string;
-  recordedBy?: string;
-}
-
-interface ContributionUpdateInput {
-  memberId?: string;
-  amount?: number;
-  date?: string;
-  fundId?: string | null;
-  method?: MockContribution['method'];
-  note?: string | null;
-  actorUserId: string;
-}
-
-interface UserCreateInput {
-  primaryEmail: string;
-  firstName: string;
-  lastName: string;
-  phone?: string;
-  address?: string;
-  notes?: string;
-  status?: MockUser['status'];
-  roleIds?: string[];
-  actorUserId: string;
-  membershipStatus?: string;
-  joinMethod?: string;
-  joinDate?: string;
-  previousChurch?: string;
-  baptismDate?: string;
-  spiritualGifts?: string[];
-  coursesAttended?: string[];
-  maritalStatus?: string;
-  occupation?: string;
-  school?: string;
-  gradeLevel?: string;
-  graduationYear?: number;
-  skillsAndInterests?: string[];
-  backgroundCheckStatus?: string;
-  backgroundCheckDate?: string;
-  onboardingComplete?: boolean;
-  emergencyContactName?: string;
-  emergencyContactPhone?: string;
-  allergiesOrMedicalNotes?: string;
-  parentalConsentOnFile?: boolean;
-  pastoralNotes?: string;
-}
-
-interface UserUpdateInput {
-  primaryEmail?: string;
-  firstName?: string;
-  lastName?: string;
-  phone?: string;
-  address?: string;
-  notes?: string;
-  status?: MockUser['status'];
-  roleIds?: string[];
-  actorUserId: string;
-  membershipStatus?: string;
-  joinMethod?: string;
-  joinDate?: string;
-  previousChurch?: string;
-  baptismDate?: string;
-  spiritualGifts?: string[];
-  coursesAttended?: string[];
-  maritalStatus?: string;
-  occupation?: string;
-  school?: string;
-  gradeLevel?: string;
-  graduationYear?: number;
-  skillsAndInterests?: string[];
-  backgroundCheckStatus?: string;
-  backgroundCheckDate?: string;
-  onboardingComplete?: boolean;
-  emergencyContactName?: string;
-  emergencyContactPhone?: string;
-  allergiesOrMedicalNotes?: string;
-  parentalConsentOnFile?: boolean;
-  pastoralNotes?: string;
-}
-
-interface UserDeleteInput {
-  actorUserId: string;
-}
-
-interface GroupMemberCreateInput {
-  userId: string;
-  role?: MockGroupMember['role'];
-  status?: MembershipStatus;
-  joinedAt?: string;
-  actorUserId: string;
-}
-
-interface GroupMemberUpdateInput {
-  role?: MockGroupMember['role'];
-  status?: MembershipStatus;
-  actorUserId: string;
-}
-
-interface GroupMemberRemoveInput {
-  actorUserId: string;
-}
-
-interface GroupResourceCreateInput {
-  title: string;
-  url: string;
-  actorUserId: string;
-}
-
-interface GroupResourceUpdateInput {
-  title?: string;
-  url?: string;
-  actorUserId: string;
-}
-
-interface GroupResourceDeleteInput {
-  actorUserId: string;
-}
-
-interface EventCreateInput {
-  title: string;
-  description?: string;
-  startAt: string;
-  endAt?: string;
-  location?: string;
-  visibility?: MockEvent['visibility'];
-  groupId?: string;
-  tags?: string[];
-  actorUserId: string;
-}
-
-interface EventUpdateInput {
-  title?: string;
-  description?: string;
-  startAt?: string;
-  endAt?: string;
-  location?: string;
-  visibility?: MockEvent['visibility'];
-  groupId?: string | null;
-  tags?: string[];
-  actorUserId: string;
-}
-
-interface EventDeleteInput {
-  actorUserId: string;
-}
-
-interface EventVolunteerRoleCreateInput {
-  eventId: string;
-  name: string;
-  needed: number;
-}
-
-interface EventVolunteerRoleUpdateInput {
-  name?: string;
-  needed?: number;
-}
-
-interface EventVolunteerSignupCreateInput {
-  volunteerRoleId: string;
-  userId: string;
-}
-
-interface RoleCreateInput {
-  name: string;
-  description?: string;
-  permissions?: string[];
-  actorUserId: string;
-  slug?: string;
-}
-
-interface RoleUpdateInput {
-  name?: string;
-  description?: string | null;
-  permissions?: string[];
-  actorUserId: string;
-}
-
-interface RoleDeleteInput {
-  actorUserId: string;
-  reassignRoleId?: string;
-}
-
-interface AuditLogFilter {
-  churchId?: string;
-  actorUserId?: string;
-  entity?: string;
-  entityId?: string;
-  from?: string;
-  to?: string;
-  page?: number;
-  pageSize?: number;
-}
-
-interface AuditLogCreateInput {
-  churchId?: string;
-  actorUserId: string;
-  action: string;
-  entity: string;
-  entityId?: string;
-  summary: string;
-  diff?: Record<string, unknown>;
-  metadata?: Record<string, unknown>;
-  createdAt?: string;
-}
-
-interface AnnouncementCreateInput {
-  title: string;
-  body: string;
-  audience: MockAnnouncement['audience'];
-  groupIds?: string[];
-  publishAt?: string;
-  expireAt?: string | null;
-  actorUserId: string;
-}
-
-interface AnnouncementUpdateInput {
-  title?: string;
-  body?: string;
-  audience?: MockAnnouncement['audience'];
-  groupIds?: string[];
-  publishAt?: string;
-  expireAt?: string | null;
-  actorUserId: string;
 }
 
 function clone<T>(value: T): T {
@@ -741,14 +511,21 @@ export class InMemoryDataStore {
 
     // Update additional profile fields
     if (input.membershipStatus !== undefined)
-      user.profile.membershipStatus = input.membershipStatus as any;
-    if (input.joinMethod !== undefined) user.profile.joinMethod = input.joinMethod as any;
+      user.profile.membershipStatus = input.membershipStatus as
+        | 'Inquirer'
+        | 'Attender'
+        | 'Member'
+        | 'Paused'
+        | 'Inactive';
+    if (input.joinMethod !== undefined)
+      user.profile.joinMethod = input.joinMethod as MemberJoinMethod;
     if (input.joinDate !== undefined) user.profile.joinDate = input.joinDate;
     if (input.previousChurch !== undefined) user.profile.previousChurch = input.previousChurch;
     if (input.baptismDate !== undefined) user.profile.baptismDate = input.baptismDate;
     if (input.spiritualGifts !== undefined) user.profile.spiritualGifts = input.spiritualGifts;
     if (input.coursesAttended !== undefined) user.profile.coursesAttended = input.coursesAttended;
-    if (input.maritalStatus !== undefined) user.profile.maritalStatus = input.maritalStatus as any;
+    if (input.maritalStatus !== undefined)
+      user.profile.maritalStatus = input.maritalStatus as MaritalStatus;
     if (input.occupation !== undefined) user.profile.occupation = input.occupation;
     if (input.school !== undefined) user.profile.school = input.school;
     if (input.gradeLevel !== undefined) user.profile.gradeLevel = input.gradeLevel;
@@ -756,7 +533,7 @@ export class InMemoryDataStore {
     if (input.skillsAndInterests !== undefined)
       user.profile.skillsAndInterests = input.skillsAndInterests;
     if (input.backgroundCheckStatus !== undefined)
-      user.profile.backgroundCheckStatus = input.backgroundCheckStatus as any;
+      user.profile.backgroundCheckStatus = input.backgroundCheckStatus as BackgroundCheckStatus;
     if (input.backgroundCheckDate !== undefined)
       user.profile.backgroundCheckDate = input.backgroundCheckDate;
     if (input.onboardingComplete !== undefined)
@@ -2368,7 +2145,7 @@ export class InMemoryDataStore {
     );
 
     const actorName = this.getUserName(actorUserId);
-    this.createAuditLog({
+    await this.createAuditLog({
       actorUserId,
       action: 'requestType.reordered',
       entity: 'requestType',
