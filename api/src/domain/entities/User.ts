@@ -75,18 +75,26 @@ export class User {
   }
 
   private static deepFreezeProfile(profile: UserProfile): Readonly<UserProfile> {
-    // Deep freeze arrays within the profile
-    const frozenProfile = { ...profile };
-    if (frozenProfile.spiritualGifts) {
-      frozenProfile.spiritualGifts = Object.freeze([...frozenProfile.spiritualGifts]);
+    // Recursively deep freeze the profile object
+    return User.deepFreeze({ ...profile });
+  }
+
+  /**
+   * Recursively deep-freezes an object and all nested arrays/objects.
+   */
+  private static deepFreeze<T>(obj: T): T {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
     }
-    if (frozenProfile.coursesAttended) {
-      frozenProfile.coursesAttended = Object.freeze([...frozenProfile.coursesAttended]);
-    }
-    if (frozenProfile.skillsAndInterests) {
-      frozenProfile.skillsAndInterests = Object.freeze([...frozenProfile.skillsAndInterests]);
-    }
-    return Object.freeze(frozenProfile);
+    // Freeze properties before freezing self
+    Object.getOwnPropertyNames(obj).forEach(prop => {
+      // @ts-ignore
+      const value = obj[prop];
+      if (value && typeof value === 'object') {
+        User.deepFreeze(value);
+      }
+    });
+    return Object.freeze(obj);
   }
 
   static create(props: Omit<UserProps, 'deletedAt'>): User {
@@ -97,6 +105,13 @@ export class User {
       throw new Error('Last name is required');
     }
     return new User(props);
+  }
+
+  /**
+   * Creates default roles for a new user in the specified church.
+   */
+  static createDefaultRoles(churchId: ChurchId): readonly UserRole[] {
+    return Object.freeze([{ churchId: churchId.value, roleId: 'role-member' }]);
   }
 
   /**

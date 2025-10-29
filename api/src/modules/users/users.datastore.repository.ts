@@ -84,7 +84,7 @@ export class UsersDataStoreRepository implements IUsersRepository {
       status: profile.status || 'active',
       createdAt: new Date(profile.createdAt),
       lastLoginAt: profile.lastLoginAt ? new Date(profile.lastLoginAt) : undefined,
-      roles: profile.roles || [],
+      roles: profile.roles,
       profile: profile.profile,
       deletedAt: profile.deletedAt ? new Date(profile.deletedAt) : undefined,
     });

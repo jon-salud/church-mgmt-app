@@ -39,7 +39,7 @@ export class UsersService {
       churchId,
       status: 'invited',
       createdAt: new Date(),
-      roles: [{ churchId: churchId.value, roleId: 'role-member' }], // Default role
+      roles: User.createDefaultRoles(churchId),
       profile: {
         firstName: input.firstName,
         lastName: input.lastName,
