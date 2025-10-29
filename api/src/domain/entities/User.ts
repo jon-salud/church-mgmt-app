@@ -84,6 +84,11 @@ export class User {
     return new User(props);
   }
 
+  /**
+   * Reconstructs a User entity from already-validated persistence data (e.g., database records).
+   * This bypasses validation. Use only when loading from storage.
+   * For new entities requiring validation, use User.create().
+   */
   static from(props: UserProps): User {
     return new User(props);
   }

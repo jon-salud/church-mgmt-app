@@ -94,7 +94,7 @@ export class GroupsDataStoreRepository implements IGroupsRepository {
       meetingTime: group.meetingTime,
       tags: group.tags || [],
       leaderId: group.leaderUserId ? UserId.create(group.leaderUserId) : undefined,
-      createdAt: new Date(), // Mock data doesn't have createdAt, so use current date
+      createdAt: group.createdAt ? new Date(group.createdAt) : new Date('2024-01-01T00:00:00Z'), // Use mock data's createdAt, or consistent fallback date
       deletedAt: group.deletedAt ? new Date(group.deletedAt) : undefined,
     });
   }

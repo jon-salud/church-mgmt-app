@@ -67,20 +67,25 @@ export class UsersDataStoreRepository implements IUsersRepository {
   }
 
   private mapToUser(profile: any): User {
+    if (
+      !profile.roles ||
+      !Array.isArray(profile.roles) ||
+      profile.roles.length === 0 ||
+      !profile.roles[0].churchId
+    ) {
+      throw new Error(
+        `Cannot determine churchId for user profile with id=${profile.id}. profile.roles: ${JSON.stringify(profile.roles)}`
+      );
+    }
     return User.from({
       id: UserId.create(profile.id),
       primaryEmail: Email.create(profile.primaryEmail),
-      churchId: ChurchId.create(profile.roles?.[0]?.churchId || 'church-acc'),
+      churchId: ChurchId.create(profile.roles[0].churchId),
       status: profile.status || 'active',
       createdAt: new Date(profile.createdAt),
       lastLoginAt: profile.lastLoginAt ? new Date(profile.lastLoginAt) : undefined,
       roles: profile.roles || [],
-      profile: profile.profile || {
-        firstName: '',
-        lastName: '',
-        householdId: '',
-        householdRole: 'Head',
-      },
+      profile: profile.profile,
       deletedAt: profile.deletedAt ? new Date(profile.deletedAt) : undefined,
     });
   }
