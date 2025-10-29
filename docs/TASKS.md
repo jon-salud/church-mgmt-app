@@ -280,6 +280,13 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - **Frontend:** Add privacy settings UI, data export functionality, and consent management interfaces.
   - **Audit:** Ensure all personal data handling complies with GDPR requirements including lawful basis for processing.
 
+## Sprint 6 Advanced Patterns Backlog
+
+- **Event Sourcing** - Consider for audit-heavy operations (deprioritized from Sprint 6 scope)
+- **Caching Layer** - Add Redis/memory caching for performance (deprioritized from Sprint 6 scope)
+- **Circuit Breaker** - Implement resilience patterns (deprioritized from Sprint 6 scope)
+- **Metrics & Monitoring** - Add application metrics (deprioritized from Sprint 6 scope)
+
 ## Post-MVP (Future Releases)
 
 - **System Administration Application (Epic):**
