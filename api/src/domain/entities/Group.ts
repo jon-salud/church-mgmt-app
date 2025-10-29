@@ -12,7 +12,7 @@ export interface GroupProps {
   type?: string;
   meetingDay?: string;
   meetingTime?: string;
-  tags?: string[];
+  tags?: readonly string[];
   deletedAt?: Date;
 }
 
@@ -26,7 +26,7 @@ export class Group {
   readonly type?: string;
   readonly meetingDay?: string;
   readonly meetingTime?: string;
-  readonly tags?: string[];
+  readonly tags?: readonly string[];
   readonly deletedAt?: Date;
 
   private constructor(props: GroupProps) {
@@ -39,7 +39,7 @@ export class Group {
     this.type = props.type;
     this.meetingDay = props.meetingDay;
     this.meetingTime = props.meetingTime;
-    this.tags = props.tags;
+    this.tags = props.tags ? Object.freeze([...props.tags]) : undefined;
     this.deletedAt = props.deletedAt;
   }
 

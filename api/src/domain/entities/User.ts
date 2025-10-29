@@ -16,14 +16,14 @@ export interface UserProfile {
   joinDate?: string;
   previousChurch?: string;
   baptismDate?: string;
-  spiritualGifts?: string[];
-  coursesAttended?: string[];
+  spiritualGifts?: readonly string[];
+  coursesAttended?: readonly string[];
   maritalStatus?: string;
   occupation?: string;
   school?: string;
   gradeLevel?: string;
   graduationYear?: number;
-  skillsAndInterests?: string[];
+  skillsAndInterests?: readonly string[];
   backgroundCheckStatus?: string;
   backgroundCheckDate?: string;
   onboardingComplete?: boolean;
@@ -46,8 +46,8 @@ export interface UserProps {
   status: 'active' | 'invited';
   createdAt: Date;
   lastLoginAt?: Date;
-  roles: UserRole[];
-  profile: UserProfile;
+  roles: readonly UserRole[];
+  profile: Readonly<UserProfile>;
   deletedAt?: Date;
 }
 
@@ -58,8 +58,8 @@ export class User {
   readonly status: 'active' | 'invited';
   readonly createdAt: Date;
   readonly lastLoginAt?: Date;
-  readonly roles: UserRole[];
-  readonly profile: UserProfile;
+  readonly roles: readonly UserRole[];
+  readonly profile: Readonly<UserProfile>;
   readonly deletedAt?: Date;
 
   private constructor(props: UserProps) {
@@ -69,9 +69,24 @@ export class User {
     this.status = props.status;
     this.createdAt = props.createdAt;
     this.lastLoginAt = props.lastLoginAt;
-    this.roles = props.roles;
-    this.profile = props.profile;
+    this.roles = Object.freeze([...props.roles]); // Deep freeze the array
+    this.profile = User.deepFreezeProfile(props.profile);
     this.deletedAt = props.deletedAt;
+  }
+
+  private static deepFreezeProfile(profile: UserProfile): Readonly<UserProfile> {
+    // Deep freeze arrays within the profile
+    const frozenProfile = { ...profile };
+    if (frozenProfile.spiritualGifts) {
+      frozenProfile.spiritualGifts = Object.freeze([...frozenProfile.spiritualGifts]);
+    }
+    if (frozenProfile.coursesAttended) {
+      frozenProfile.coursesAttended = Object.freeze([...frozenProfile.coursesAttended]);
+    }
+    if (frozenProfile.skillsAndInterests) {
+      frozenProfile.skillsAndInterests = Object.freeze([...frozenProfile.skillsAndInterests]);
+    }
+    return Object.freeze(frozenProfile);
   }
 
   static create(props: Omit<UserProps, 'deletedAt'>): User {
