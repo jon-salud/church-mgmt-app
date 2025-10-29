@@ -247,6 +247,18 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ **OBSERVABILITY_PERFORMANCE.md:** 700+ lines performance characteristics including per-operation cost analysis (0.07-0.15ms overhead), scalability characteristics, memory profiling, optimization techniques (retention policy, lazy evaluation, sampling), load testing results, environment-specific tuning, capacity planning, troubleshooting
   - ✅ **REFACTORING_CHECKLIST.md Update:** Marked Sprint 6B.5 complete with full documentation of all 6 guides
 
+- ✅ **Sprint 6B.6: OpenTelemetry Integration**
+  - ✅ **OpenTelemetry SDK Setup:** Installed @opentelemetry/api, @opentelemetry/sdk-node, exporters (Prometheus, Jaeger), and auto-instrumentations
+  - ✅ **SDK Configuration:** Created opentelemetry.ts with NodeSDK initialization, resource detection, Prometheus exporter (port 9464), Jaeger exporter, and graceful shutdown
+  - ✅ **Application Bootstrap:** Updated main.ts to initialize OpenTelemetry SDK before NestJS app startup
+  - ✅ **OpenTelemetry Service:** Created OpenTelemetryService and OpenTelemetryModule for Meter/Tracer dependency injection
+  - ✅ **ObservabilityService Refactor:** Migrated from custom metrics to OpenTelemetry instruments (histograms, counters) while maintaining backward compatibility
+  - ✅ **Audit Services Integration:** Updated AuditLogCommandService and AuditLogQueryService to use OpenTelemetry spans instead of custom span tracking
+  - ✅ **Module Integration:** Added OpenTelemetryModule to AuditModule for proper dependency injection
+  - ✅ **Type Safety:** Added ObservabilityMetrics interface and fixed all TypeScript compilation errors
+  - ✅ **Build Validation:** All code compiles successfully with OpenTelemetry integration
+  - ✅ **Backward Compatibility:** Maintained existing ObservabilityService API for seamless migration
+
 ### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming

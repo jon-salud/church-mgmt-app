@@ -10,9 +10,10 @@ import { FileEventStoreService } from '../../event-store/file-event-store.servic
 import { CacheFactory } from '../../common/cache-store.factory';
 import { ResilienceModule } from '../../resilience/resilience.module';
 import { ObservabilityModule } from '../../observability/observability.module';
+import { OpenTelemetryModule } from '../opentelemetry/opentelemetry.module';
 
 @Module({
-  imports: [ResilienceModule, ObservabilityModule],
+  imports: [ResilienceModule, ObservabilityModule, OpenTelemetryModule],
   controllers: [AuditController],
   providers: [
     AuditService,

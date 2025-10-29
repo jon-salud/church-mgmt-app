@@ -5,6 +5,7 @@ import { CACHE_STORE, ICacheStore } from '../../common/cache-store.interface';
 import { IAuditLogCommands, AuditLogReadModel, AuditLogCreateInput } from './audit.interfaces';
 import { AuditLogQueryService } from './audit-query.service';
 import { ObservabilityService } from '../../observability/observability.service';
+import { OpenTelemetryService } from '../opentelemetry/opentelemetry.service';
 
 @Injectable()
 export class AuditLogCommandService implements IAuditLogCommands {
@@ -18,16 +19,21 @@ export class AuditLogCommandService implements IAuditLogCommands {
     @Inject(CACHE_STORE)
     private readonly cacheStore: ICacheStore,
     private readonly auditQueryService: AuditLogQueryService,
-    private readonly observability: ObservabilityService
+    private readonly observability: ObservabilityService,
+    private readonly otelService: OpenTelemetryService
   ) {}
 
   async createAuditLog(input: AuditLogCreateInput): Promise<AuditLogReadModel> {
-    // Start observability span for command
-    const spanId = this.observability.startSpan('audit.createAuditLog', {
-      entity: input.entity,
-      entityId: input.entityId,
-      action: input.action,
+    // Start OpenTelemetry span for command
+    const tracer = this.otelService.tracer;
+    const span = tracer.startSpan('audit.createAuditLog', {
+      attributes: {
+        entity: input.entity,
+        entityId: input.entityId,
+        action: input.action,
+      },
     });
+    const startTime = Date.now();
 
     try {
       const auditLog = await this.dataStore.createAuditLog(input);
@@ -76,12 +82,17 @@ export class AuditLogCommandService implements IAuditLogCommands {
       };
 
       // Record successful command
-      const spanResult = this.observability.endSpan(spanId, 'success');
-      this.observability.recordCQRSCommand('createAuditLog', spanResult.durationMs, true);
+      const durationMs = Date.now() - startTime;
+      span.setStatus({ code: 1 }); // OK
+      span.end();
+      this.observability.recordCQRSCommand('createAuditLog', durationMs, true);
 
       return result;
     } catch (error) {
-      const { durationMs } = this.observability.endSpan(spanId, 'error', (error as Error).message);
+      const durationMs = Date.now() - startTime;
+      span.recordException(error as Error);
+      span.setStatus({ code: 2, message: (error as Error).message }); // ERROR
+      span.end();
       this.observability.recordCQRSCommand('createAuditLog', durationMs, false);
       throw error;
     }

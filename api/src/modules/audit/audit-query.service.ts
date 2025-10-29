@@ -5,6 +5,7 @@ import { ICircuitBreaker, CIRCUIT_BREAKER } from '../../common/circuit-breaker.i
 import { IAuditLogQueries, AuditLogQueryResult, AuditLogReadModel } from './audit.interfaces';
 import { ListAuditQueryDto } from './dto/list-audit-query.dto';
 import { ObservabilityService } from '../../observability/observability.service';
+import { OpenTelemetryService } from '../opentelemetry/opentelemetry.service';
 
 @Injectable()
 export class AuditLogQueryService implements IAuditLogQueries {
@@ -18,16 +19,21 @@ export class AuditLogQueryService implements IAuditLogQueries {
     private readonly cacheStore: ICacheStore,
     @Inject(CIRCUIT_BREAKER)
     private readonly circuitBreaker: ICircuitBreaker,
-    private readonly observability: ObservabilityService
+    private readonly observability: ObservabilityService,
+    private readonly otelService: OpenTelemetryService
   ) {}
 
   async listAuditLogs(query: ListAuditQueryDto): Promise<AuditLogQueryResult> {
-    // Start observability span for query
-    const spanId = this.observability.startSpan('audit.listAuditLogs', {
-      page: query.page,
-      pageSize: query.pageSize,
-      entity: query.entity,
+    // Start OpenTelemetry span for query
+    const tracer = this.otelService.tracer;
+    const span = tracer.startSpan('audit.listAuditLogs', {
+      attributes: {
+        page: query.page,
+        pageSize: query.pageSize,
+        entity: query.entity,
+      },
     });
+    const startTime = Date.now();
 
     try {
       // Generate cache key from query parameters
@@ -38,7 +44,10 @@ export class AuditLogQueryService implements IAuditLogQueries {
       const cached = await this.cacheStore.get<AuditLogQueryResult>(cacheKey, { namespace });
       if (cached) {
         this.logger.debug(`Cache hit for audit logs: ${cacheKey}`);
-        this.observability.endSpan(spanId, 'success');
+        const durationMs = Date.now() - startTime;
+        span.setStatus({ code: 1 }); // OK
+        span.end();
+        this.observability.recordCQRSQuery('listAuditLogs', durationMs, cached.items.length);
         return cached;
       }
 
@@ -80,16 +89,17 @@ export class AuditLogQueryService implements IAuditLogQueries {
       await this.cacheStore.set(cacheKey, result, { namespace, ttl: this.cacheTTL });
 
       // Record CQRS query metrics
-      const spanResult = this.observability.endSpan(spanId, 'success');
-      this.observability.recordCQRSQuery(
-        'listAuditLogs',
-        spanResult.durationMs,
-        result.items.length
-      );
+      const durationMs = Date.now() - startTime;
+      span.setStatus({ code: 1 }); // OK
+      span.end();
+      this.observability.recordCQRSQuery('listAuditLogs', durationMs, result.items.length);
 
       return result;
     } catch (error) {
-      const { durationMs } = this.observability.endSpan(spanId, 'error', (error as Error).message);
+      const durationMs = Date.now() - startTime;
+      span.recordException(error as Error);
+      span.setStatus({ code: 2, message: (error as Error).message }); // ERROR
+      span.end();
       this.observability.recordCQRSQuery('listAuditLogs', durationMs, 0);
       throw error;
     }

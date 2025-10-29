@@ -8,8 +8,17 @@ import { createAppLogger } from './common/logger/app-logger';
 import { MetricsService } from './modules/observability/metrics.service';
 import { initSentry } from './common/observability/sentry';
 import { MAX_FILE_SIZE_BYTES } from './common/constants';
+import { sdk } from './opentelemetry';
 
 async function bootstrap() {
+  // Initialize OpenTelemetry SDK first
+  try {
+    await sdk.start();
+    console.log('OpenTelemetry SDK initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize OpenTelemetry SDK:', error);
+  }
+
   const { logger: appLogger, pino } = createAppLogger();
   const adapter = new FastifyAdapter({ logger: pino });
   const app = await NestFactory.create<NestFastifyApplication>(AppModule, adapter, {
