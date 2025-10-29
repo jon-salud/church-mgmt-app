@@ -56,9 +56,17 @@ export class TestCollectionBuilder<T> {
   /**
    * Create multiple instances using the same base builder
    */
-  createMultiple(baseBuilder: TestBuilder<T>, count: number): this {
+  createMultiple(
+    baseBuilder: TestBuilder<T>,
+    count: number,
+    customizer?: (builder: TestBuilder<T>, index: number) => void
+  ): this {
     for (let i = 0; i < count; i++) {
-      this.builders.push(baseBuilder.clone());
+      const clone = baseBuilder.clone();
+      if (customizer) {
+        customizer(clone, i);
+      }
+      this.builders.push(clone);
     }
     return this;
   }

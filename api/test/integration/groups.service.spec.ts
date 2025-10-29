@@ -129,7 +129,7 @@ describe('GroupsService (Integration)', () => {
           churchId: ChurchId.create(mockGroup.churchId),
           name: mockGroup.name,
           description: mockGroup.description || '',
-          type: mockGroup.type as any,
+          type: mockGroup.type,
           meetingDay: mockGroup.meetingDay,
           meetingTime: mockGroup.meetingTime,
           tags: mockGroup.tags || [],

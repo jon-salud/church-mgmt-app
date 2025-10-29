@@ -87,7 +87,7 @@ export class UserBuilder extends TestBuilder<User> {
 
   clone(): UserBuilder {
     const clone = new UserBuilder();
-    clone.data = { ...this.data };
+    clone.data = JSON.parse(JSON.stringify(this.data));
     return clone;
   }
 }

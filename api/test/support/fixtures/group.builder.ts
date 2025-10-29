@@ -75,7 +75,7 @@ export class GroupBuilder extends TestBuilder<Group> {
 
   clone(): GroupBuilder {
     const clone = new GroupBuilder();
-    clone.data = { ...this.data };
+    clone.data = JSON.parse(JSON.stringify(this.data));
     return clone;
   }
 }

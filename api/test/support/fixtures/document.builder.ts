@@ -82,7 +82,7 @@ export class DocumentBuilder extends TestBuilder<Document> {
 
   clone(): DocumentBuilder {
     const clone = new DocumentBuilder();
-    clone.data = { ...this.data };
+    clone.data = JSON.parse(JSON.stringify(this.data));
     return clone;
   }
 }

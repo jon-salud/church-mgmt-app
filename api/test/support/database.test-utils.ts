@@ -136,9 +136,7 @@ export class TestDatabase {
    * Reset the shared database instance
    */
   static reset(): void {
-    if (TestDatabase.instance) {
-      TestDatabase.instance = new MockInMemoryDataStore();
-    }
+    TestDatabase.instance = new MockInMemoryDataStore();
   }
 
   /**

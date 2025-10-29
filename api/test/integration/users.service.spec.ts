@@ -106,7 +106,7 @@ describe('UsersService (Integration)', () => {
           id: UserId.create(mockUser.id),
           primaryEmail: Email.create(mockUser.primaryEmail),
           churchId: ChurchId.create(mockUser.churchId),
-          status: mockUser.status as any,
+          status: mockUser.status as 'active' | 'invited',
           createdAt: new Date(),
           roles: User.createDefaultRoles(ChurchId.create(mockUser.churchId)),
           profile: {
