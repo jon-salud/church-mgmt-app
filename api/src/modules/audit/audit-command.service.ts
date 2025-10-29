@@ -1,21 +1,32 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DATA_STORE, DataStore } from '../../datastore';
-import { IAuditLogCommands, AuditLogCreateInput, AuditLogReadModel } from './audit.interfaces';
+import { IAuditLogCommands, AuditLogReadModel, AuditLogCreateInput } from './audit.interfaces';
 
-/**
- * CQRS Command Service for audit log write operations
- */
 @Injectable()
 export class AuditLogCommandService implements IAuditLogCommands {
-  constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
+  constructor(
+    @Inject(DATA_STORE)
+    private readonly dataStore: DataStore
+  ) {}
 
   async createAuditLog(input: AuditLogCreateInput): Promise<AuditLogReadModel> {
-    const result = await this.db.createAuditLog(input);
-    // Transform to read model format
+    const auditLog = await this.dataStore.createAuditLog(input);
+
+    // Transform to read model with actor resolution
     return {
-      ...result,
-      actor: await this.db.getUserById(result.actorUserId),
-      diff: result.diff as Record<string, { previous: unknown; newValue: unknown }> | undefined,
+      id: auditLog.id,
+      churchId: auditLog.churchId,
+      actorUserId: auditLog.actorUserId,
+      actor: auditLog.actorUserId
+        ? await this.dataStore.getUserById(auditLog.actorUserId)
+        : undefined,
+      action: auditLog.action,
+      entity: auditLog.entity,
+      entityId: auditLog.entityId,
+      summary: auditLog.summary,
+      diff: auditLog.diff as Record<string, { previous: unknown; newValue: unknown }>,
+      metadata: auditLog.metadata,
+      createdAt: auditLog.createdAt,
     };
   }
 }

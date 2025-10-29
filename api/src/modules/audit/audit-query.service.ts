@@ -1,24 +1,38 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DATA_STORE, DataStore } from '../../datastore';
+import { IAuditLogQueries, AuditLogQueryResult, AuditLogReadModel } from './audit.interfaces';
 import { ListAuditQueryDto } from './dto/list-audit-query.dto';
-import { IAuditLogQueries, AuditLogQueryResult } from './audit.interfaces';
 
-/**
- * CQRS Query Service for audit log read operations
- */
 @Injectable()
 export class AuditLogQueryService implements IAuditLogQueries {
-  constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
+  constructor(
+    @Inject(DATA_STORE)
+    private readonly dataStore: DataStore
+  ) {}
 
   async listAuditLogs(query: ListAuditQueryDto): Promise<AuditLogQueryResult> {
-    const result = await this.db.listAuditLogs(query);
-    // Transform to ensure correct types
+    const auditLogs = await this.dataStore.listAuditLogs(query);
+
+    // Transform to read models with actor resolution
+    const items: AuditLogReadModel[] = await Promise.all(
+      auditLogs.items.map(async (log: any) => ({
+        id: log.id,
+        churchId: log.churchId,
+        actorUserId: log.actorUserId,
+        actor: log.actorUserId ? await this.dataStore.getUserById(log.actorUserId) : undefined,
+        action: log.action,
+        entity: log.entity,
+        entityId: log.entityId,
+        summary: log.summary,
+        diff: log.diff as Record<string, { previous: unknown; newValue: unknown }>,
+        metadata: log.metadata,
+        createdAt: log.createdAt,
+      }))
+    );
+
     return {
-      ...result,
-      items: result.items.map(item => ({
-        ...item,
-        diff: item.diff as Record<string, { previous: unknown; newValue: unknown }> | undefined,
-      })),
+      items,
+      meta: auditLogs.meta,
     };
   }
 }

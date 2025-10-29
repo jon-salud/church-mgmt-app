@@ -1,5 +1,6 @@
 import { Controller, ForbiddenException, Get, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuditService } from './audit.service';
 import { AuditLogQueryService } from './audit-query.service';
 import { ListAuditQueryDto } from './dto/list-audit-query.dto';
 import { AuthGuard } from '../auth/auth.guard';
@@ -10,7 +11,10 @@ import { objectResponse } from '../../common/openapi/schemas';
 @ApiBearerAuth()
 @Controller('audit')
 export class AuditController {
-  constructor(private readonly auditQueryService: AuditLogQueryService) {}
+  constructor(
+    private readonly auditService: AuditService,
+    private readonly auditLogQueryService: AuditLogQueryService
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'List audit log entries' })
@@ -21,6 +25,6 @@ export class AuditController {
     if (!isAdmin) {
       throw new ForbiddenException('Admin role required to view audit logs');
     }
-    return this.auditQueryService.listAuditLogs(query);
+    return this.auditLogQueryService.listAuditLogs(query);
   }
 }

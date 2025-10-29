@@ -5,7 +5,7 @@ import { AuditLogCreateInput } from '../../src/modules/audit/audit.interfaces';
 
 describe('AuditLogCommandService', () => {
   let service: AuditLogCommandService;
-  let mockDataStore: jest.Mocked<any>;
+  let mockDataStore: any;
 
   beforeEach(async () => {
     mockDataStore = {
@@ -33,33 +33,28 @@ describe('AuditLogCommandService', () => {
   describe('createAuditLog', () => {
     it('should create audit log and return read model with actor', async () => {
       const input: AuditLogCreateInput = {
-        actorUserId: 'user-123',
-        action: 'user.created',
-        entity: 'user',
-        entityId: 'user-456',
+        actorUserId: 'user1',
+        action: 'CREATE',
+        entity: 'User',
+        entityId: 'user1',
         summary: 'User created',
-        metadata: { some: 'data' },
       };
-
       const mockAuditLog = {
-        id: 'audit-1',
-        churchId: 'church-1',
-        actorUserId: 'user-123',
-        action: 'user.created',
-        entity: 'user',
-        entityId: 'user-456',
+        id: '1',
+        churchId: 'church1',
+        actorUserId: 'user1',
+        action: 'CREATE',
+        entity: 'User',
+        entityId: 'user1',
         summary: 'User created',
-        metadata: { some: 'data' },
+        diff: {},
+        metadata: {},
         createdAt: '2023-01-01T00:00:00Z',
       };
-
       const mockUser = {
-        id: 'user-123',
-        primaryEmail: 'test@example.com',
-        profile: {
-          firstName: 'John',
-          lastName: 'Doe',
-        },
+        id: 'user1',
+        primaryEmail: 'user@example.com',
+        profile: { firstName: 'John', lastName: 'Doe' },
       };
 
       mockDataStore.createAuditLog.mockResolvedValue(mockAuditLog);
@@ -68,51 +63,48 @@ describe('AuditLogCommandService', () => {
       const result = await service.createAuditLog(input);
 
       expect(mockDataStore.createAuditLog).toHaveBeenCalledWith(input);
-      expect(mockDataStore.getUserById).toHaveBeenCalledWith('user-123');
+      expect(mockDataStore.getUserById).toHaveBeenCalledWith('user1');
       expect(result).toEqual({
-        ...mockAuditLog,
+        id: '1',
+        churchId: 'church1',
+        actorUserId: 'user1',
         actor: mockUser,
-        diff: undefined,
+        action: 'CREATE',
+        entity: 'User',
+        entityId: 'user1',
+        summary: 'User created',
+        diff: {},
+        metadata: {},
+        createdAt: '2023-01-01T00:00:00Z',
       });
     });
 
-    it('should handle audit log with diff data', async () => {
+    it('should handle audit log creation without actor', async () => {
       const input: AuditLogCreateInput = {
-        actorUserId: 'user-123',
-        action: 'user.updated',
-        entity: 'user',
-        entityId: 'user-456',
-        summary: 'User updated',
-        diff: { name: { previous: 'Old Name', newValue: 'New Name' } },
+        actorUserId: 'system',
+        action: 'SYSTEM',
+        entity: 'System',
+        summary: 'System maintenance',
       };
-
       const mockAuditLog = {
-        id: 'audit-1',
-        churchId: 'church-1',
-        actorUserId: 'user-123',
-        action: 'user.updated',
-        entity: 'user',
-        entityId: 'user-456',
-        summary: 'User updated',
-        diff: { name: { previous: 'Old Name', newValue: 'New Name' } },
+        id: '1',
+        churchId: 'church1',
+        actorUserId: 'system',
+        action: 'SYSTEM',
+        entity: 'System',
+        summary: 'System maintenance',
+        diff: {},
+        metadata: {},
         createdAt: '2023-01-01T00:00:00Z',
       };
 
-      const mockUser = {
-        id: 'user-123',
-        primaryEmail: 'test@example.com',
-        profile: {
-          firstName: 'John',
-          lastName: 'Doe',
-        },
-      };
-
       mockDataStore.createAuditLog.mockResolvedValue(mockAuditLog);
-      mockDataStore.getUserById.mockResolvedValue(mockUser);
+      mockDataStore.getUserById.mockResolvedValue(null); // System user might not exist
 
       const result = await service.createAuditLog(input);
 
-      expect(result.diff).toEqual({ name: { previous: 'Old Name', newValue: 'New Name' } });
+      expect(mockDataStore.getUserById).toHaveBeenCalledWith('system');
+      expect(result.actor).toBeNull();
     });
   });
 });

@@ -6,15 +6,7 @@ import { AuditLogCommandService } from './audit-command.service';
 
 @Module({
   controllers: [AuditController],
-  providers: [
-    AuditService, // Keep for backward compatibility
-    AuditLogQueryService,
-    AuditLogCommandService,
-  ],
-  exports: [
-    AuditService, // Keep for backward compatibility
-    AuditLogQueryService,
-    AuditLogCommandService,
-  ],
+  providers: [AuditService, AuditLogQueryService, AuditLogCommandService],
+  exports: [AuditService, AuditLogQueryService, AuditLogCommandService],
 })
 export class AuditModule {}
