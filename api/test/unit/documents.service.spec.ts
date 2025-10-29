@@ -3,6 +3,10 @@ import { IDocumentsRepository } from '../../src/modules/documents/documents.repo
 import { DataStore } from '../../src/datastore';
 import { createDataStoreMock } from '../support/datastore.mock';
 import { MockDocument, MockChurch, MockUser } from '../../src/mock/mock-data';
+import { Document } from '../../src/domain/entities/Document';
+import { DocumentId } from '../../src/domain/value-objects/DocumentId';
+import { ChurchId } from '../../src/domain/value-objects/ChurchId';
+import { UserId } from '../../src/domain/value-objects/UserId';
 
 const createDocumentsRepositoryMock = (): jest.Mocked<IDocumentsRepository> => ({
   listDocuments: jest.fn().mockResolvedValue([]),
@@ -42,17 +46,44 @@ describe('DocumentsService', () => {
         householdRole: 'Head',
       },
     };
-    const mockDocs: MockDocument[] = [{ id: 'doc-1' } as MockDocument];
+    const mockDoc = Document.reconstruct({
+      id: DocumentId.create('doc-1'),
+      churchId: ChurchId.create('church-1'),
+      uploaderProfileId: UserId.create('user-1'),
+      fileName: 'test.pdf',
+      fileType: 'application/pdf',
+      title: 'Test Doc',
+      description: 'Test description',
+      storageKey: 'key',
+      fileData: 'data',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
     store.getChurch.mockResolvedValue(mockChurch);
     store.getUserById.mockResolvedValue(mockUser);
-    repo.listDocuments.mockResolvedValue(mockDocs);
+    repo.listDocuments.mockResolvedValue([mockDoc]);
 
     const result = await service.list('user-1');
 
     expect(store.getChurch).toHaveBeenCalled();
     expect(store.getUserById).toHaveBeenCalledWith('user-1');
-    expect(repo.listDocuments).toHaveBeenCalledWith('church-1', ['role-1']);
-    expect(result).toEqual(mockDocs);
+    expect(repo.listDocuments).toHaveBeenCalledWith(ChurchId.create('church-1'), ['role-1']);
+    expect(result).toEqual([
+      {
+        id: 'doc-1',
+        churchId: 'church-1',
+        uploaderProfileId: 'user-1',
+        fileName: 'test.pdf',
+        fileType: 'application/pdf',
+        title: 'Test Doc',
+        description: 'Test description',
+        storageKey: 'key',
+        fileData: 'data',
+        createdAt: mockDoc.createdAt.toISOString(),
+        updatedAt: mockDoc.updatedAt.toISOString(),
+        deletedAt: undefined,
+      },
+    ]);
   });
 
   it('throws error if user not found in list', async () => {
@@ -65,7 +96,20 @@ describe('DocumentsService', () => {
   it('gets document detail with permissions', async () => {
     const mockChurch = { id: 'church-1' };
     const mockUser = { id: 'user-1', roles: [{ churchId: 'church-1', roleId: 'role-1' }] };
-    const mockDoc = { id: 'doc-1' };
+    const mockDoc = {
+      id: DocumentId.create('doc-1'),
+      churchId: ChurchId.create('church-1'),
+      uploaderProfileId: UserId.create('user-1'),
+      fileName: 'test.pdf',
+      fileType: 'application/pdf',
+      title: 'Test Doc',
+      description: 'Test description',
+      storageKey: 'key',
+      fileData: 'data',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      permissions: ['role-1'],
+    };
     store.getChurch.mockResolvedValue(mockChurch as any);
     store.getUserById.mockResolvedValue(mockUser as any);
     repo.getDocumentWithPermissions.mockResolvedValue(mockDoc as any);
@@ -74,8 +118,24 @@ describe('DocumentsService', () => {
 
     expect(store.getChurch).toHaveBeenCalled();
     expect(store.getUserById).toHaveBeenCalledWith('user-1');
-    expect(repo.getDocumentWithPermissions).toHaveBeenCalledWith('doc-1', ['role-1']);
-    expect(result).toEqual(mockDoc);
+    expect(repo.getDocumentWithPermissions).toHaveBeenCalledWith(DocumentId.create('doc-1'), [
+      'role-1',
+    ]);
+    expect(result).toEqual({
+      id: 'doc-1',
+      churchId: 'church-1',
+      uploaderProfileId: 'user-1',
+      fileName: 'test.pdf',
+      fileType: 'application/pdf',
+      title: 'Test Doc',
+      description: 'Test description',
+      storageKey: 'key',
+      fileData: 'data',
+      createdAt: mockDoc.createdAt.toISOString(),
+      updatedAt: mockDoc.updatedAt.toISOString(),
+      deletedAt: undefined,
+      permissions: ['role-1'],
+    });
   });
 
   it('throws error if document not found in getDetail', async () => {
@@ -96,11 +156,23 @@ describe('DocumentsService', () => {
     const mockRole = { id: 'role-1', churchId: 'church-1' };
     const file = { filename: 'test.pdf', mimetype: 'application/pdf', buffer: Buffer.from('test') };
     const dto = { title: 'Test Doc', description: 'Desc', roleIds: ['role-1'] };
-    const mockDoc = { id: 'doc-1' };
+    const mockDoc = Document.reconstruct({
+      id: DocumentId.create('doc-1'),
+      churchId: ChurchId.create('church-1'),
+      uploaderProfileId: UserId.create('user-1'),
+      fileName: 'test.pdf',
+      fileType: 'application/pdf',
+      title: 'Test Doc',
+      description: 'Desc',
+      storageKey: 'key',
+      fileData: 'dGVzdA==', // base64 of 'test'
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
     store.getChurch.mockResolvedValue(mockChurch as any);
     store.getUserById.mockResolvedValue(mockUser as any);
     store.getRole.mockResolvedValue(mockRole as any);
-    repo.createDocument.mockResolvedValue(mockDoc as any);
+    repo.createDocument.mockResolvedValue(mockDoc);
 
     const result = await service.create(file, dto, 'user-1');
 
@@ -108,17 +180,30 @@ describe('DocumentsService', () => {
     expect(store.getUserById).toHaveBeenCalledWith('user-1');
     expect(store.getRole).toHaveBeenCalledWith('role-1');
     expect(repo.createDocument).toHaveBeenCalledWith(
-      'church-1',
-      'user-1',
+      ChurchId.create('church-1'),
+      UserId.create('user-1'),
       'test.pdf',
       'application/pdf',
       'Test Doc',
       'Desc',
       expect.any(String), // base64 data
       ['role-1'],
-      'user-1'
+      UserId.create('user-1')
     );
-    expect(result).toEqual(mockDoc);
+    expect(result).toEqual({
+      id: 'doc-1',
+      churchId: 'church-1',
+      uploaderProfileId: 'user-1',
+      fileName: 'test.pdf',
+      fileType: 'application/pdf',
+      title: 'Test Doc',
+      description: 'Desc',
+      storageKey: 'key',
+      fileData: 'dGVzdA==',
+      createdAt: mockDoc.createdAt.toISOString(),
+      updatedAt: mockDoc.updatedAt.toISOString(),
+      deletedAt: undefined,
+    });
   });
 
   it('throws error if file too large', async () => {
@@ -166,23 +251,48 @@ describe('DocumentsService', () => {
     const mockChurch = { id: 'church-1' };
     const mockRole = { id: 'role-1', churchId: 'church-1' };
     const dto = { title: 'Updated Title', roleIds: ['role-1'] };
-    const mockDoc = { id: 'doc-1', title: 'Updated Title' };
+    const mockDoc = Document.reconstruct({
+      id: DocumentId.create('doc-1'),
+      churchId: ChurchId.create('church-1'),
+      uploaderProfileId: UserId.create('user-1'),
+      fileName: 'test.pdf',
+      fileType: 'application/pdf',
+      title: 'Updated Title',
+      description: 'Description',
+      storageKey: 'key',
+      fileData: 'data',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
     store.getChurch.mockResolvedValue(mockChurch as any);
     store.getRole.mockResolvedValue(mockRole as any);
-    repo.updateDocument.mockResolvedValue(mockDoc as any);
+    repo.updateDocument.mockResolvedValue(mockDoc);
 
     const result = await service.update('doc-1', dto, 'user-1');
 
     expect(store.getChurch).toHaveBeenCalled();
     expect(store.getRole).toHaveBeenCalledWith('role-1');
     expect(repo.updateDocument).toHaveBeenCalledWith(
-      'doc-1',
+      DocumentId.create('doc-1'),
       'Updated Title',
       undefined,
       ['role-1'],
-      'user-1'
+      UserId.create('user-1')
     );
-    expect(result).toEqual(mockDoc);
+    expect(result).toEqual({
+      id: 'doc-1',
+      churchId: 'church-1',
+      uploaderProfileId: 'user-1',
+      fileName: 'test.pdf',
+      fileType: 'application/pdf',
+      title: 'Updated Title',
+      description: 'Description',
+      storageKey: 'key',
+      fileData: 'data',
+      createdAt: mockDoc.createdAt.toISOString(),
+      updatedAt: mockDoc.updatedAt.toISOString(),
+      deletedAt: undefined,
+    });
   });
 
   it('throws error if document not found in update', async () => {
@@ -200,7 +310,10 @@ describe('DocumentsService', () => {
 
     const result = await service.delete('doc-1', 'user-1');
 
-    expect(repo.deleteDocument).toHaveBeenCalledWith('doc-1', 'user-1');
+    expect(repo.deleteDocument).toHaveBeenCalledWith(
+      DocumentId.create('doc-1'),
+      UserId.create('user-1')
+    );
     expect(result).toEqual({ success: true, message: 'Document archived' });
   });
 
@@ -215,7 +328,10 @@ describe('DocumentsService', () => {
 
     const result = await service.hardDelete('doc-1', 'user-1');
 
-    expect(repo.hardDeleteDocument).toHaveBeenCalledWith('doc-1', 'user-1');
+    expect(repo.hardDeleteDocument).toHaveBeenCalledWith(
+      DocumentId.create('doc-1'),
+      UserId.create('user-1')
+    );
     expect(result).toEqual({ success: true, message: 'Document permanently deleted' });
   });
 
@@ -224,34 +340,81 @@ describe('DocumentsService', () => {
 
     const result = await service.undelete('doc-1', 'user-1');
 
-    expect(repo.undeleteDocument).toHaveBeenCalledWith('doc-1', 'user-1');
+    expect(repo.undeleteDocument).toHaveBeenCalledWith(
+      DocumentId.create('doc-1'),
+      UserId.create('user-1')
+    );
     expect(result).toEqual({ success: true, message: 'Document restored' });
   });
 
   it('lists deleted documents', async () => {
     const mockChurch = { id: 'church-1' };
-    const mockDocs = [{ id: 'doc-1' }];
+    const mockDoc = Document.reconstruct({
+      id: DocumentId.create('doc-1'),
+      churchId: ChurchId.create('church-1'),
+      uploaderProfileId: UserId.create('user-1'),
+      fileName: 'test.pdf',
+      fileType: 'application/pdf',
+      title: 'Test Doc',
+      description: 'Description',
+      storageKey: 'key',
+      fileData: 'data',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
     store.getChurch.mockResolvedValue(mockChurch as any);
-    repo.listDeletedDocuments.mockResolvedValue(mockDocs as any);
+    repo.listDeletedDocuments.mockResolvedValue([mockDoc]);
 
     const result = await service.listDeleted();
 
     expect(store.getChurch).toHaveBeenCalled();
-    expect(repo.listDeletedDocuments).toHaveBeenCalledWith('church-1');
-    expect(result).toEqual(mockDocs);
+    expect(repo.listDeletedDocuments).toHaveBeenCalledWith(ChurchId.create('church-1'));
+    expect(result).toEqual([
+      {
+        id: 'doc-1',
+        churchId: 'church-1',
+        uploaderProfileId: 'user-1',
+        fileName: 'test.pdf',
+        fileType: 'application/pdf',
+        title: 'Test Doc',
+        description: 'Description',
+        storageKey: 'key',
+        fileData: 'data',
+        createdAt: mockDoc.createdAt.toISOString(),
+        updatedAt: mockDoc.updatedAt.toISOString(),
+        deletedAt: undefined,
+      },
+    ]);
   });
 
   it('gets download url with permissions', async () => {
     const mockChurch = { id: 'church-1' };
     const mockUser = { id: 'user-1', roles: [{ churchId: 'church-1', roleId: 'role-1' }] };
-    const mockDoc = { id: 'doc-1', fileData: 'base64data' };
+    const mockDoc = Document.reconstruct({
+      id: DocumentId.create('doc-1'),
+      churchId: ChurchId.create('church-1'),
+      uploaderProfileId: UserId.create('user-1'),
+      fileName: 'test.pdf',
+      fileType: 'application/pdf',
+      title: 'Test Doc',
+      description: 'Test description',
+      storageKey: 'key',
+      fileData: 'base64data',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
     store.getChurch.mockResolvedValue(mockChurch as any);
     store.getUserById.mockResolvedValue(mockUser as any);
-    repo.getDocumentWithPermissions.mockResolvedValue(mockDoc as any);
+    repo.getDocumentWithPermissions.mockResolvedValue({
+      ...mockDoc,
+      permissions: ['role-1'],
+    } as any);
 
     const result = await service.getDownloadUrl('doc-1', 'user-1');
 
-    expect(repo.getDocumentWithPermissions).toHaveBeenCalledWith('doc-1', ['role-1']);
+    expect(repo.getDocumentWithPermissions).toHaveBeenCalledWith(DocumentId.create('doc-1'), [
+      'role-1',
+    ]);
     expect(result.url).toMatch(/\/api\/v1\/documents\/doc-1\/download\?token=.+/);
     expect(result.expiresAt).toBeDefined();
   });
@@ -259,18 +422,31 @@ describe('DocumentsService', () => {
   it('downloads file with permissions', async () => {
     const mockChurch = { id: 'church-1' };
     const mockUser = { id: 'user-1', roles: [{ churchId: 'church-1', roleId: 'role-1' }] };
-    const mockDoc = {
-      id: 'doc-1',
+    const mockDoc = Document.reconstruct({
+      id: DocumentId.create('doc-1'),
+      churchId: ChurchId.create('church-1'),
+      uploaderProfileId: UserId.create('user-1'),
       fileName: 'test.pdf',
+      fileType: 'application/pdf',
+      title: 'Test Doc',
+      description: 'Test description',
+      storageKey: 'key',
       fileData: Buffer.from('test').toString('base64'),
-    };
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
     store.getChurch.mockResolvedValue(mockChurch as any);
     store.getUserById.mockResolvedValue(mockUser as any);
-    repo.getDocumentWithPermissions.mockResolvedValue(mockDoc as any);
+    repo.getDocumentWithPermissions.mockResolvedValue({
+      ...mockDoc,
+      permissions: ['role-1'],
+    } as any);
 
     const result = await service.downloadFile('doc-1', 'user-1');
 
-    expect(repo.getDocumentWithPermissions).toHaveBeenCalledWith('doc-1', ['role-1']);
+    expect(repo.getDocumentWithPermissions).toHaveBeenCalledWith(DocumentId.create('doc-1'), [
+      'role-1',
+    ]);
     expect(result.fileName).toBe('test.pdf');
     expect(result.data).toEqual(Buffer.from('test'));
   });

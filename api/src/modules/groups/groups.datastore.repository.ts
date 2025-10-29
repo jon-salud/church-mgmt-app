@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { DATA_STORE, DataStore } from '../../datastore';
 import {
   IGroupsRepository,
-  Group,
   GroupMember,
   UserSummary,
   GroupResource,
@@ -13,55 +12,61 @@ import {
   GroupResourceUpdateInput,
   GroupResourceDeleteInput,
 } from './groups.repository.interface';
+import { Group } from '../../domain/entities/Group';
+import { GroupId } from '../../domain/value-objects/GroupId';
+import { UserId } from '../../domain/value-objects/UserId';
+import { ChurchId } from '../../domain/value-objects/ChurchId';
 
 @Injectable()
 export class GroupsDataStoreRepository implements IGroupsRepository {
   constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
   async listGroups(): Promise<Group[]> {
-    return this.db.listGroups();
+    const groups = await this.db.listGroups();
+    return groups.map(group => this.mapToGroup(group));
   }
 
-  async getGroupById(id: string): Promise<Group | null> {
-    return this.db.getGroupById(id);
+  async getGroupById(id: GroupId): Promise<Group | null> {
+    const group = await this.db.getGroupById(id.value);
+    return group ? this.mapToGroup(group) : null;
   }
 
-  async getGroupMembers(groupId: string): Promise<Array<GroupMember & { user: UserSummary }>> {
-    return this.db.getGroupMembers(groupId);
+  async getGroupMembers(groupId: GroupId): Promise<Array<GroupMember & { user: UserSummary }>> {
+    return this.db.getGroupMembers(groupId.value);
   }
 
   async addGroupMember(
-    groupId: string,
+    groupId: GroupId,
     input: GroupMemberCreateInput
   ): Promise<GroupMember & { user: UserSummary }> {
-    return this.db.addGroupMember(groupId, input);
+    return this.db.addGroupMember(groupId.value, input);
   }
 
   async updateGroupMember(
-    groupId: string,
-    userId: string,
+    groupId: GroupId,
+    userId: UserId,
     input: GroupMemberUpdateInput
   ): Promise<(GroupMember & { user: UserSummary | null }) | null> {
-    return this.db.updateGroupMember(groupId, userId, input);
+    return this.db.updateGroupMember(groupId.value, userId.value, input);
   }
 
   async removeGroupMember(
-    groupId: string,
-    userId: string,
+    groupId: GroupId,
+    userId: UserId,
     input: GroupMemberRemoveInput
   ): Promise<{ success: boolean }> {
-    return this.db.removeGroupMember(groupId, userId, input);
+    return this.db.removeGroupMember(groupId.value, userId.value, input);
   }
 
-  async getGroupResources(groupId: string): Promise<GroupResource[]> {
-    return this.db.getGroupResources(groupId);
+  async getGroupResources(groupId: GroupId): Promise<GroupResource[]> {
+    return this.db.getGroupResources(groupId.value);
   }
 
   async createGroupResource(
-    groupId: string,
+    groupId: GroupId,
     input: GroupResourceCreateInput
   ): Promise<GroupResource> {
-    return this.db.createGroupResource(groupId, input);
+    return this.db.createGroupResource(groupId.value, input);
   }
 
   async updateGroupResource(
@@ -76,5 +81,21 @@ export class GroupsDataStoreRepository implements IGroupsRepository {
     input: GroupResourceDeleteInput
   ): Promise<{ success: boolean }> {
     return this.db.deleteGroupResource(resourceId, input);
+  }
+
+  private mapToGroup(group: any): Group {
+    return Group.reconstruct({
+      id: GroupId.create(group.id),
+      churchId: ChurchId.create(group.churchId),
+      name: group.name,
+      description: group.description,
+      type: group.type,
+      meetingDay: group.meetingDay,
+      meetingTime: group.meetingTime,
+      tags: group.tags || [],
+      leaderId: group.leaderUserId ? UserId.create(group.leaderUserId) : undefined,
+      createdAt: new Date(), // Mock data doesn't have createdAt, so use current date
+      deletedAt: group.deletedAt ? new Date(group.deletedAt) : undefined,
+    });
   }
 }

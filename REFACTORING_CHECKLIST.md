@@ -48,12 +48,20 @@ This document tracks the progress of the NestJS API refactoring project to intro
 - [x] **CI/CD Integration** - Use in-memory store for faster CI tests
 - [x] **Data Seeding** - Implement mock data seeding for in-memory store
 
-## Sprint 4: Domain Layer Extraction
-- [ ] **Domain Entities** - Extract User, Document, Group domain objects
-- [ ] **Value Objects** - Create immutable value objects (Email, ChurchId, etc.)
-- [ ] **Domain Services** - Extract business logic into domain services
-- [ ] **Repository Interfaces** - Move to domain layer with pure interfaces
-- [ ] **Application Services** - Refactor services to use domain objects
+## Sprint 4: Domain Layer Extraction ✅ COMPLETED & MERGED
+
+**Status:** ✅ **COMPLETED & MERGED** - Successfully merged into main branch
+**Date Completed:** October 29, 2025
+**Tests:** 158/158 passing (100% coverage on domain layer)
+**Review:** All feedback addressed and resolved
+
+- [x] **Domain Entities** - Extract User, Document, Group domain objects with immutability and soft deletes
+- [x] **Value Objects** - Create immutable value objects (Email, ChurchId, UserId, DocumentId, GroupId) with validation
+- [x] **Domain Services** - Extract business logic into domain services with relationship logic
+- [x] **Repository Interfaces** - Updated to use domain types while maintaining backwards compatibility
+- [x] **Application Services** - Refactored services to convert between DTOs and domain objects
+- [x] **Unit Tests** - Comprehensive tests for all domain objects and updated service tests
+- [x] **Backwards Compatibility** - All 158 API tests pass, no breaking changes to external APIs
 
 ## Sprint 5: Enhanced Testing Infrastructure
 - [ ] **Integration Tests** - Add tests that use real repositories with in-memory store
@@ -85,11 +93,11 @@ This document tracks the progress of the NestJS API refactoring project to intro
 - [ ] **Backwards Compatibility** - Existing APIs unchanged
 
 ## Current Status
-- **Completed Sprints:** 1 (Core DI Abstractions) ✅ MERGED, 2 (Repository Pattern Expansion) ✅ MERGED, 3 (In-Memory Datastore Implementation) ✅ MERGED
-- **In Progress:** Sprint 4 (Domain Layer Extraction)
-- **Next Priority:** Extract User, Document, Group domain objects
+- **Completed Sprints:** 1 (Core DI Abstractions) ✅ MERGED, 2 (Repository Pattern Expansion) ✅ MERGED, 3 (In-Memory Datastore Implementation) ✅ MERGED, 4 (Domain Layer Extraction) ✅ MERGED
+- **In Progress:** Sprint 5 (Enhanced Testing Infrastructure)
+- **Next Priority:** Add integration tests with real repositories and in-memory store
 - **Blockers:** None identified
-- **Estimated Completion:** Sprint 4 completion within next session
+- **Estimated Completion:** Sprint 5 completion within next session
 
 ## Notes
 - All changes maintain runtime behavior and API compatibility

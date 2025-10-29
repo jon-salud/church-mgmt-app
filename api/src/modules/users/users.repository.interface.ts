@@ -1,47 +1,23 @@
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-
-export interface UserProfile {
-  id: string;
-  churchId: string;
-  primaryEmail: string;
-  status: string;
-  createdAt: string;
-  roles: Record<string, unknown>[];
-  profile: Record<string, unknown>;
-  groups?: Record<string, unknown>[];
-  attendance?: Record<string, unknown>[];
-  contributions?: Record<string, unknown>[];
-  household?: Record<string, unknown>;
-}
-
-export interface UserListItem {
-  id: string;
-  primaryEmail: string;
-  status: string;
-  createdAt: string;
-  roles: Record<string, unknown>[];
-  profile: Record<string, unknown>;
-  groups: Record<string, unknown>[];
-}
+import { User } from '../../domain/entities/User';
+import { UserId } from '../../domain/value-objects/UserId';
+import { ChurchId } from '../../domain/value-objects/ChurchId';
 
 export interface IUsersRepository {
-  listUsers(query?: string): Promise<UserListItem[]>;
-  getUserProfile(id: string): Promise<UserProfile | null>;
-  createUser(input: CreateUserDto & { actorUserId: string }): Promise<UserProfile>;
-  updateUser(
-    id: string,
-    input: UpdateUserDto & { actorUserId: string }
-  ): Promise<UserProfile | null>;
-  deleteUser(id: string, input: { actorUserId: string }): Promise<{ success: boolean }>;
-  hardDeleteUser(id: string, input: { actorUserId: string }): Promise<unknown>;
-  undeleteUser(id: string, input: { actorUserId: string }): Promise<unknown>;
-  listDeletedUsers(query?: string): Promise<UserListItem[]>;
+  listUsers(query?: string): Promise<User[]>;
+  getUserProfile(id: UserId): Promise<User | null>;
+  createUser(user: User, actorUserId: UserId): Promise<User>;
+  updateUser(id: UserId, input: UpdateUserDto & { actorUserId: UserId }): Promise<User | null>;
+  deleteUser(id: UserId, input: { actorUserId: UserId }): Promise<{ success: boolean }>;
+  hardDeleteUser(id: UserId, input: { actorUserId: UserId }): Promise<unknown>;
+  undeleteUser(id: UserId, input: { actorUserId: UserId }): Promise<unknown>;
+  listDeletedUsers(query?: string): Promise<User[]>;
   bulkCreateInvitations(
-    churchId: string,
+    churchId: ChurchId,
     emails: string[],
     roleId: string | undefined,
-    actorUserId: string,
+    actorUserId: UserId,
     type?: 'team' | 'member'
   ): Promise<unknown[]>;
 }
