@@ -83,18 +83,19 @@ export class DocumentsService {
 
     // Convert file to base64
     const fileData = file.buffer.toString('base64');
+    const userIdObj = UserId.create(userId);
 
     return this.documentsRepository
       .createDocument(
         ChurchId.create(church.id),
-        UserId.create(userId),
+        userIdObj,
         file.filename,
         file.mimetype,
         dto.title,
         dto.description,
         fileData,
         dto.roleIds,
-        UserId.create(userId)
+        userIdObj
       )
       .then(doc => this.toDocumentResponse(doc));
   }

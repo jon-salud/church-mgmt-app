@@ -66,7 +66,7 @@ export class UsersDataStoreRepository implements IUsersRepository {
     return this.db.bulkCreateInvitations(churchId.value, emails, roleId, actorUserId.value, type);
   }
 
-  private mapToUser(profile: any): User {
+  private mapToUser = (profile: any): User => {
     if (
       !profile.roles ||
       !Array.isArray(profile.roles) ||
@@ -88,7 +88,7 @@ export class UsersDataStoreRepository implements IUsersRepository {
       profile: profile.profile,
       deletedAt: profile.deletedAt ? new Date(profile.deletedAt) : undefined,
     });
-  }
+  };
 
   private mapToCreateUserDto(
     user: User,

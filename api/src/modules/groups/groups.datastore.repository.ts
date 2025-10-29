@@ -19,6 +19,8 @@ import { ChurchId } from '../../domain/value-objects/ChurchId';
 
 @Injectable()
 export class GroupsDataStoreRepository implements IGroupsRepository {
+  private readonly DEFAULT_CREATED_AT = new Date('2024-01-01T00:00:00Z');
+
   constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
   async listGroups(): Promise<Group[]> {
@@ -94,7 +96,7 @@ export class GroupsDataStoreRepository implements IGroupsRepository {
       meetingTime: group.meetingTime,
       tags: group.tags || [],
       leaderId: group.leaderUserId ? UserId.create(group.leaderUserId) : undefined,
-      createdAt: group.createdAt ? new Date(group.createdAt) : new Date('2024-01-01T00:00:00Z'), // Use mock data's createdAt, or consistent fallback date
+      createdAt: group.createdAt ? new Date(group.createdAt) : this.DEFAULT_CREATED_AT, // Use mock data's createdAt, or consistent fallback date
       deletedAt: group.deletedAt ? new Date(group.deletedAt) : undefined,
     });
   }

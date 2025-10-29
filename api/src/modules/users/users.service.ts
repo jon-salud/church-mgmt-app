@@ -32,7 +32,6 @@ export class UsersService {
     const userId = UserId.create(randomUUID());
     const email = Email.create(input.primaryEmail);
     const churchId = user.churchId; // Get from actor's church
-    const actorIdForRepo = UserId.create(actorUserId);
 
     const newUser = User.create({
       id: userId,
@@ -50,7 +49,7 @@ export class UsersService {
       },
     });
 
-    const createdUser = await this.repo.createUser(newUser, actorIdForRepo);
+    const createdUser = await this.repo.createUser(newUser, actorId);
     return this.toUserResponse(createdUser);
   }
 
