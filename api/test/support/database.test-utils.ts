@@ -12,6 +12,7 @@ interface MockUser {
     firstName: string;
     lastName: string;
   };
+  roles?: Array<{ churchId: string; roleId: string }>;
 }
 
 interface MockGroup {
@@ -29,7 +30,7 @@ interface MockDocument {
 /**
  * Simple in-memory database for testing
  */
-class MockInMemoryDataStore {
+export class MockInMemoryDataStore {
   private users: Map<string, MockUser> = new Map();
   private groups: Map<string, MockGroup> = new Map();
   private documents: Map<string, MockDocument> = new Map();

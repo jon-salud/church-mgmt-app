@@ -9,6 +9,7 @@ import { User } from '../../src/domain/entities/User';
 import { Email } from '../../src/domain/value-objects/Email';
 import { ChurchId } from '../../src/domain/value-objects/ChurchId';
 import { TestDatabase } from '../support';
+import { DomainMappers } from '../support/utils/domain-mappers';
 
 describe('UsersService (Integration)', () => {
   let service: UsersService;
@@ -28,12 +29,12 @@ describe('UsersService (Integration)', () => {
           status: string;
           profile: { firstName: string; lastName: string; phone?: string };
         }[] = await db.listUsers();
-        return mockUsers.map(mockUser => this.toDomainUser(mockUser));
+        return mockUsers.map(mockUser => DomainMappers.toDomainUser(mockUser));
       }
 
       async getUserProfile(id: UserId): Promise<User | null> {
         const mockUser = await db.getUserById(id.value);
-        return mockUser ? this.toDomainUser(mockUser) : null;
+        return mockUser ? DomainMappers.toDomainUser(mockUser) : null;
       }
 
       async createUser(user: User, actorUserId: UserId): Promise<User> {
@@ -63,7 +64,7 @@ describe('UsersService (Integration)', () => {
           },
         };
         await db.updateUser(id.value, updatedMockUser);
-        return this.toDomainUser(updatedMockUser);
+        return DomainMappers.toDomainUser(updatedMockUser);
       }
 
       async deleteUser(id: UserId, input: { actorUserId: UserId }): Promise<{ success: boolean }> {
@@ -93,29 +94,6 @@ describe('UsersService (Integration)', () => {
       ): Promise<unknown[]> {
         // Mock implementation - return empty array
         return [];
-      }
-
-      private toDomainUser(mockUser: {
-        id: string;
-        primaryEmail: string;
-        churchId: string;
-        status: string;
-        profile: { firstName: string; lastName: string; phone?: string };
-        roles?: Array<{ churchId: string; roleId: string }>;
-      }): User {
-        return User.create({
-          id: UserId.create(mockUser.id),
-          primaryEmail: Email.create(mockUser.primaryEmail),
-          churchId: ChurchId.create(mockUser.churchId),
-          status: mockUser.status as 'active' | 'invited',
-          createdAt: new Date(),
-          roles: mockUser.roles || User.createDefaultRoles(ChurchId.create(mockUser.churchId)),
-          profile: {
-            ...mockUser.profile,
-            householdId: '',
-            householdRole: 'Head',
-          },
-        });
       }
     }
 

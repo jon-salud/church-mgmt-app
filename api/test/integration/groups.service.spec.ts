@@ -10,6 +10,7 @@ import { UserId } from '../../src/domain/value-objects/UserId';
 import { Group } from '../../src/domain/entities/Group';
 import { ChurchId } from '../../src/domain/value-objects/ChurchId';
 import { TestDatabase } from '../support';
+import { DomainMappers } from '../support/utils/domain-mappers';
 
 describe('GroupsService (Integration)', () => {
   let service: GroupsService;
@@ -33,12 +34,12 @@ describe('GroupsService (Integration)', () => {
           tags?: string[];
           leaderId?: string;
         }[] = await db.listGroups();
-        return mockGroups.map(mockGroup => this.toDomainGroup(mockGroup));
+        return mockGroups.map(mockGroup => DomainMappers.toDomainGroup(mockGroup));
       }
 
       async getGroupById(id: GroupId): Promise<Group | null> {
         const mockGroup = await db.getGroupById(id.value);
-        return mockGroup ? this.toDomainGroup(mockGroup) : null;
+        return mockGroup ? DomainMappers.toDomainGroup(mockGroup) : null;
       }
 
       async getGroupMembers(groupId: GroupId): Promise<any[]> {
@@ -111,31 +112,6 @@ describe('GroupsService (Integration)', () => {
       async deleteGroupResource(resourceId: string, input: any): Promise<{ success: boolean }> {
         // Mock implementation
         return { success: true };
-      }
-
-      private toDomainGroup(mockGroup: {
-        id: string;
-        name: string;
-        churchId: string;
-        description?: string;
-        type: string;
-        meetingDay?: string;
-        meetingTime?: string;
-        tags?: string[];
-        leaderId?: string;
-      }): Group {
-        return Group.create({
-          id: GroupId.create(mockGroup.id),
-          churchId: ChurchId.create(mockGroup.churchId),
-          name: mockGroup.name,
-          description: mockGroup.description,
-          type: mockGroup.type,
-          meetingDay: mockGroup.meetingDay,
-          meetingTime: mockGroup.meetingTime,
-          tags: mockGroup.tags || [],
-          leaderId: mockGroup.leaderId ? UserId.create(mockGroup.leaderId) : undefined,
-          createdAt: new Date(),
-        });
       }
     }
 

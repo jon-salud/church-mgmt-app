@@ -9,23 +9,31 @@ import { deepCloneData } from '../utils/clone.utils';
  * Builder for creating User domain entities in tests
  */
 export class UserBuilder extends TestBuilder<User> {
-  constructor() {
+  private constructor(data?: Partial<UserProps>) {
     super();
-    // Set defaults
-    this.withData({
-      id: UserId.create('user-1'),
-      churchId: ChurchId.create('church-1'),
-      primaryEmail: Email.create('test@example.com'),
-      status: 'active',
-      createdAt: new Date('2025-01-01T00:00:00Z'),
-      roles: [],
-      profile: {
-        firstName: 'John',
-        lastName: 'Doe',
-        householdId: 'household-1',
-        householdRole: 'member',
-      },
-    } as Partial<UserProps>);
+    if (data) {
+      this.data = data;
+    } else {
+      // Set defaults
+      this.withData({
+        id: UserId.create('user-1'),
+        churchId: ChurchId.create('church-1'),
+        primaryEmail: Email.create('test@example.com'),
+        status: 'active',
+        createdAt: new Date('2025-01-01T00:00:00Z'),
+        roles: [],
+        profile: {
+          firstName: 'John',
+          lastName: 'Doe',
+          householdId: 'household-1',
+          householdRole: 'member',
+        },
+      } as Partial<UserProps>);
+    }
+  }
+
+  static create(): UserBuilder {
+    return new UserBuilder();
   }
 
   withId(id: string): this {
@@ -87,9 +95,7 @@ export class UserBuilder extends TestBuilder<User> {
   }
 
   clone(): UserBuilder {
-    const clone = new UserBuilder();
-    clone.data = deepCloneData(this.data);
-    return clone;
+    return new UserBuilder(deepCloneData(this.data));
   }
 }
 
@@ -98,7 +104,7 @@ export class UserBuilder extends TestBuilder<User> {
  */
 export class UserFixtures {
   static admin(): UserBuilder {
-    return new UserBuilder()
+    return UserBuilder.create()
       .withId('admin-user')
       .withEmail('admin@church.com')
       .withName('Admin', 'User')
@@ -106,7 +112,7 @@ export class UserFixtures {
   }
 
   static leader(): UserBuilder {
-    return new UserBuilder()
+    return UserBuilder.create()
       .withId('leader-user')
       .withEmail('leader@church.com')
       .withName('Leader', 'User')
@@ -114,7 +120,7 @@ export class UserFixtures {
   }
 
   static member(): UserBuilder {
-    return new UserBuilder()
+    return UserBuilder.create()
       .withId('member-user')
       .withEmail('member@church.com')
       .withName('Member', 'User')
@@ -122,7 +128,7 @@ export class UserFixtures {
   }
 
   static invited(): UserBuilder {
-    return new UserBuilder()
+    return UserBuilder.create()
       .withId('invited-user')
       .withEmail('invited@church.com')
       .withName('Invited', 'User')

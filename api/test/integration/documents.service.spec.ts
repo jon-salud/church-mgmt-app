@@ -10,6 +10,7 @@ import { ChurchId } from '../../src/domain/value-objects/ChurchId';
 import { UserId } from '../../src/domain/value-objects/UserId';
 import { Document } from '../../src/domain/entities/Document';
 import { TestDatabase } from '../support';
+import { DomainMappers } from '../support/utils/domain-mappers';
 
 describe('DocumentsService (Integration)', () => {
   let service: DocumentsService;
@@ -37,12 +38,12 @@ describe('DocumentsService (Integration)', () => {
         }[] = await db.listDocuments();
         return mockDocuments
           .filter(doc => doc.churchId === churchId.value)
-          .map(mockDoc => this.toDomainDocument(mockDoc));
+          .map(mockDoc => DomainMappers.toDomainDocument(mockDoc));
       }
 
       async getDocument(id: DocumentId): Promise<Document | undefined> {
         const mockDoc = await db.getDocumentById(id.value);
-        return mockDoc ? this.toDomainDocument(mockDoc) : undefined;
+        return mockDoc ? DomainMappers.toDomainDocument(mockDoc) : undefined;
       }
 
       async getDocumentWithPermissions(
@@ -53,7 +54,7 @@ describe('DocumentsService (Integration)', () => {
         if (!mockDoc) return undefined;
 
         return {
-          ...this.toDomainDocument(mockDoc),
+          ...DomainMappers.toDomainDocument(mockDoc),
           permissions: ['read', 'write'], // Mock permissions
         };
       }
@@ -83,7 +84,7 @@ describe('DocumentsService (Integration)', () => {
           updatedAt: new Date(),
         };
         await db.createDocument(mockDoc);
-        return this.toDomainDocument(mockDoc);
+        return DomainMappers.toDomainDocument(mockDoc);
       }
 
       async updateDocument(
@@ -98,12 +99,12 @@ describe('DocumentsService (Integration)', () => {
 
         const updatedMockDoc = {
           ...mockDoc,
-          title: title || mockDoc.title,
-          description: description || mockDoc.description,
+          title: title !== undefined ? title : mockDoc.title,
+          description: description !== undefined ? description : mockDoc.description,
           updatedAt: new Date(),
         };
         await db.updateDocument(id.value, updatedMockDoc);
-        return this.toDomainDocument(updatedMockDoc);
+        return DomainMappers.toDomainDocument(updatedMockDoc);
       }
 
       async deleteDocument(id: DocumentId, actorUserId: UserId): Promise<boolean> {
@@ -123,34 +124,6 @@ describe('DocumentsService (Integration)', () => {
       async listDeletedDocuments(churchId: ChurchId): Promise<Document[]> {
         // Mock - return empty array
         return [];
-      }
-
-      private toDomainDocument(mockDoc: {
-        id: string;
-        churchId: string;
-        uploaderProfileId: string;
-        fileName: string;
-        fileType: string;
-        title: string;
-        description?: string;
-        storageKey: string;
-        fileData: string;
-        createdAt: Date;
-        updatedAt: Date;
-      }): Document {
-        return Document.reconstruct({
-          id: DocumentId.create(mockDoc.id),
-          churchId: ChurchId.create(mockDoc.churchId),
-          uploaderProfileId: UserId.create(mockDoc.uploaderProfileId),
-          fileName: mockDoc.fileName,
-          fileType: mockDoc.fileType,
-          title: mockDoc.title,
-          description: mockDoc.description,
-          storageKey: mockDoc.storageKey,
-          fileData: mockDoc.fileData,
-          createdAt: mockDoc.createdAt,
-          updatedAt: mockDoc.updatedAt,
-        });
       }
     }
 
