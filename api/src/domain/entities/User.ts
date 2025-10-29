@@ -88,7 +88,7 @@ export class User {
     }
     // Freeze properties before freezing self
     Object.getOwnPropertyNames(obj).forEach(prop => {
-      // @ts-ignore
+      // @ts-expect-error - Dynamic property access on unknown object type
       const value = obj[prop];
       if (value && typeof value === 'object') {
         User.deepFreeze(value);
