@@ -1,7 +1,6 @@
 import { Group } from '../../domain/entities/Group';
 import { GroupId } from '../../domain/value-objects/GroupId';
 import { UserId } from '../../domain/value-objects/UserId';
-import { ChurchId } from '../../domain/value-objects/ChurchId';
 
 export interface GroupMember {
   userId: string;

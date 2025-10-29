@@ -33,7 +33,7 @@ When a user submits a prompt to the AI Agent:
    - Ensure no build failures and run all tests to validate the changes.
 
 8. **Update TASKS.md**
-   - Mark completed tasks as done in #file:../docs/TASKS.md. Add any technical debts to the backlog.
+   - #file:../docs/TASKS.md should be updated to the completed items when done. Add any technical debts to the backlog.
 
 9. **Commit and push feature branch**
    - Commit and push the feature changes with a proper title and description.

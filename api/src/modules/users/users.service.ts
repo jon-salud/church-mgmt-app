@@ -5,7 +5,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '../../domain/entities/User';
 import { UserId } from '../../domain/value-objects/UserId';
 import { Email } from '../../domain/value-objects/Email';
-import { ChurchId } from '../../domain/value-objects/ChurchId';
 import { randomUUID } from 'crypto';
 
 @Injectable()

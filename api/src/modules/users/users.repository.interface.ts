@@ -1,4 +1,3 @@
-import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from '../../domain/entities/User';
 import { UserId } from '../../domain/value-objects/UserId';

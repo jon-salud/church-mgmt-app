@@ -1,6 +1,7 @@
 import { DocumentId } from '../value-objects/DocumentId';
 import { ChurchId } from '../value-objects/ChurchId';
 import { UserId } from '../value-objects/UserId';
+import { randomUUID } from 'node:crypto';
 
 export interface DocumentProps {
   id: DocumentId;
@@ -60,7 +61,7 @@ export class Document {
     }
     return new Document({
       ...props,
-      id: DocumentId.create(crypto.randomUUID()),
+      id: DocumentId.create(randomUUID()),
       createdAt: new Date(),
       updatedAt: new Date(),
     });
