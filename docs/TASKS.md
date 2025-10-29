@@ -227,6 +227,17 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ **Performance Optimization:** Laid foundation for independent scaling of read and write operations
   - ✅ **All Tests Pass:** 10/10 audit tests passing with no regressions introduced
 
+- ✅ **Sprint 6B.4: Advanced Observability & Metrics**
+  - ✅ **ObservabilityService:** Centralized metrics collection for event store, circuit breaker, and CQRS with span tracing
+  - ✅ **Metrics Categories:** Track event store operations (append/query/rebuild), circuit breaker state transitions/failures/recoveries, and CQRS command/query execution
+  - ✅ **Span Tracing:** startSpan() creates tracked spans with operation name and attributes, endSpan() returns duration and operation name with status tracking
+  - ✅ **Metrics Calculation:** On-demand average calculation for operations with success/failure tracking, 100% coverage
+  - ✅ **Unit Tests:** 25 comprehensive tests covering all metrics types, span operations, edge cases, and 1000+ operation handling
+  - ✅ **Audit Integration:** Injected ObservabilityService into AuditLogQueryService and AuditLogCommandService with CQRS recording
+  - ✅ **Test Updates:** Updated audit service unit tests (4/4 command, 4/4 query tests) to verify observability calls
+  - ✅ **Module DI:** Created ObservabilityModule for dependency injection, integrated with AuditModule
+  - ✅ **Production Ready:** Fully typed, error handling, concurrent operations support, proper metric calculations
+
 ### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming

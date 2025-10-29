@@ -6,13 +6,13 @@ import { AuditLogCommandService } from './audit-command.service';
 import { AuditProjectionsService } from './projections.service';
 import { EVENT_STORE } from '../../common/event-store.interface';
 import { CACHE_STORE } from '../../common/cache-store.interface';
-import { CIRCUIT_BREAKER } from '../../common/circuit-breaker.interface';
 import { FileEventStoreService } from '../../event-store/file-event-store.service';
 import { CacheFactory } from '../../common/cache-store.factory';
 import { ResilienceModule } from '../../resilience/resilience.module';
+import { ObservabilityModule } from '../../observability/observability.module';
 
 @Module({
-  imports: [ResilienceModule],
+  imports: [ResilienceModule, ObservabilityModule],
   controllers: [AuditController],
   providers: [
     AuditService,
@@ -33,7 +33,7 @@ import { ResilienceModule } from '../../resilience/resilience.module';
     AuditLogQueryService,
     AuditLogCommandService,
     AuditProjectionsService,
-    CIRCUIT_BREAKER,
+    ResilienceModule,
   ],
 })
 export class AuditModule {}

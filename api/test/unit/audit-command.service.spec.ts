@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuditLogCommandService } from '../../src/modules/audit/audit-command.service';
 import { AuditLogQueryService } from '../../src/modules/audit/audit-query.service';
+import { ObservabilityService } from '../../src/observability/observability.service';
 import { DATA_STORE } from '../../src/datastore';
 import { EVENT_STORE } from '../../src/common/event-store.interface';
 import { CACHE_STORE } from '../../src/common/cache-store.interface';
@@ -15,6 +16,7 @@ describe('AuditLogCommandService', () => {
   let mockCacheStore: any;
   let mockCircuitBreaker: any;
   let mockQueryService: any;
+  let mockObservability: any;
 
   beforeEach(async () => {
     mockDataStore = {
@@ -48,6 +50,12 @@ describe('AuditLogCommandService', () => {
       invalidateCache: jest.fn(),
     };
 
+    mockObservability = {
+      startSpan: jest.fn().mockReturnValue('span-1'),
+      endSpan: jest.fn().mockReturnValue({ durationMs: 10, operationName: 'test' }),
+      recordCQRSCommand: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuditLogCommandService,
@@ -70,6 +78,10 @@ describe('AuditLogCommandService', () => {
         {
           provide: AuditLogQueryService,
           useValue: mockQueryService,
+        },
+        {
+          provide: ObservabilityService,
+          useValue: mockObservability,
         },
       ],
     }).compile();
@@ -120,6 +132,9 @@ describe('AuditLogCommandService', () => {
       expect(mockDataStore.getUserById).toHaveBeenCalledWith('user1');
       expect(mockEventStore.append).toHaveBeenCalled();
       expect(mockQueryService.invalidateCache).toHaveBeenCalled();
+      expect(mockObservability.startSpan).toHaveBeenCalled();
+      expect(mockObservability.endSpan).toHaveBeenCalledWith('span-1', 'success');
+      expect(mockObservability.recordCQRSCommand).toHaveBeenCalledWith('createAuditLog', 10, true);
       expect(result).toEqual({
         id: '1',
         churchId: 'church1',
@@ -166,6 +181,24 @@ describe('AuditLogCommandService', () => {
       expect(mockEventStore.append).toHaveBeenCalled();
       expect(mockQueryService.invalidateCache).toHaveBeenCalled();
       expect(result.actor).toBeNull();
+    });
+
+    it('should record failed command when error occurs', async () => {
+      const input: AuditLogCreateInput = {
+        actorUserId: 'user1',
+        action: 'CREATE',
+        entity: 'User',
+        entityId: 'user1',
+        summary: 'User created',
+        churchId: 'church1',
+      };
+
+      const error = new Error('Database error');
+      mockDataStore.createAuditLog.mockRejectedValue(error);
+      mockObservability.endSpan.mockReturnValue({ durationMs: 50, operationName: 'test' });
+
+      await expect(service.createAuditLog(input)).rejects.toThrow('Database error');
+      expect(mockObservability.recordCQRSCommand).toHaveBeenCalledWith('createAuditLog', 50, false);
     });
   });
 });

@@ -4,6 +4,7 @@ import { CACHE_STORE, ICacheStore } from '../../common/cache-store.interface';
 import { ICircuitBreaker, CIRCUIT_BREAKER } from '../../common/circuit-breaker.interface';
 import { IAuditLogQueries, AuditLogQueryResult, AuditLogReadModel } from './audit.interfaces';
 import { ListAuditQueryDto } from './dto/list-audit-query.dto';
+import { ObservabilityService } from '../../observability/observability.service';
 
 @Injectable()
 export class AuditLogQueryService implements IAuditLogQueries {
@@ -16,59 +17,82 @@ export class AuditLogQueryService implements IAuditLogQueries {
     @Inject(CACHE_STORE)
     private readonly cacheStore: ICacheStore,
     @Inject(CIRCUIT_BREAKER)
-    private readonly circuitBreaker: ICircuitBreaker
+    private readonly circuitBreaker: ICircuitBreaker,
+    private readonly observability: ObservabilityService
   ) {}
 
   async listAuditLogs(query: ListAuditQueryDto): Promise<AuditLogQueryResult> {
-    // Generate cache key from query parameters
-    const cacheKey = this.buildCacheKey(query);
-    const namespace = 'audit-logs'; // Global namespace since churchId is not in query
+    // Start observability span for query
+    const spanId = this.observability.startSpan('audit.listAuditLogs', {
+      page: query.page,
+      pageSize: query.pageSize,
+      entity: query.entity,
+    });
 
-    // Try to get from cache first
-    const cached = await this.cacheStore.get<AuditLogQueryResult>(cacheKey, { namespace });
-    if (cached) {
-      this.logger.debug(`Cache hit for audit logs: ${cacheKey}`);
-      return cached;
+    try {
+      // Generate cache key from query parameters
+      const cacheKey = this.buildCacheKey(query);
+      const namespace = 'audit-logs'; // Global namespace since churchId is not in query
+
+      // Try to get from cache first
+      const cached = await this.cacheStore.get<AuditLogQueryResult>(cacheKey, { namespace });
+      if (cached) {
+        this.logger.debug(`Cache hit for audit logs: ${cacheKey}`);
+        this.observability.endSpan(spanId, 'success');
+        return cached;
+      }
+
+      this.logger.debug(`Cache miss for audit logs: ${cacheKey}, querying datastore`);
+
+      // Query datastore with circuit breaker protection
+      // Fallback: return empty audit logs if circuit is open
+      const auditLogs = await this.circuitBreaker.execute(
+        () => this.dataStore.listAuditLogs(query),
+        () => ({
+          items: [],
+          meta: { total: 0, page: query.page || 1, pageSize: query.pageSize || 50 },
+        })
+      );
+
+      // Transform to read models with actor resolution
+      const items: AuditLogReadModel[] = await Promise.all(
+        auditLogs.items.map(async (log: any) => ({
+          id: log.id,
+          churchId: log.churchId,
+          actorUserId: log.actorUserId,
+          actor: log.actorUserId ? await this.dataStore.getUserById(log.actorUserId) : undefined,
+          action: log.action,
+          entity: log.entity,
+          entityId: log.entityId,
+          summary: log.summary,
+          diff: log.diff as Record<string, { previous: unknown; newValue: unknown }>,
+          metadata: log.metadata,
+          createdAt: log.createdAt,
+        }))
+      );
+
+      const result: AuditLogQueryResult = {
+        items,
+        meta: auditLogs.meta,
+      };
+
+      // Cache the result
+      await this.cacheStore.set(cacheKey, result, { namespace, ttl: this.cacheTTL });
+
+      // Record CQRS query metrics
+      const spanResult = this.observability.endSpan(spanId, 'success');
+      this.observability.recordCQRSQuery(
+        'listAuditLogs',
+        spanResult.durationMs,
+        result.items.length
+      );
+
+      return result;
+    } catch (error) {
+      const { durationMs } = this.observability.endSpan(spanId, 'error', (error as Error).message);
+      this.observability.recordCQRSQuery('listAuditLogs', durationMs, 0);
+      throw error;
     }
-
-    this.logger.debug(`Cache miss for audit logs: ${cacheKey}, querying datastore`);
-
-    // Query datastore with circuit breaker protection
-    // Fallback: return empty audit logs if circuit is open
-    const auditLogs = await this.circuitBreaker.execute(
-      () => this.dataStore.listAuditLogs(query),
-      () => ({
-        items: [],
-        meta: { total: 0, page: query.page || 1, pageSize: query.pageSize || 50 },
-      })
-    );
-
-    // Transform to read models with actor resolution
-    const items: AuditLogReadModel[] = await Promise.all(
-      auditLogs.items.map(async (log: any) => ({
-        id: log.id,
-        churchId: log.churchId,
-        actorUserId: log.actorUserId,
-        actor: log.actorUserId ? await this.dataStore.getUserById(log.actorUserId) : undefined,
-        action: log.action,
-        entity: log.entity,
-        entityId: log.entityId,
-        summary: log.summary,
-        diff: log.diff as Record<string, { previous: unknown; newValue: unknown }>,
-        metadata: log.metadata,
-        createdAt: log.createdAt,
-      }))
-    );
-
-    const result: AuditLogQueryResult = {
-      items,
-      meta: auditLogs.meta,
-    };
-
-    // Cache the result
-    await this.cacheStore.set(cacheKey, result, { namespace, ttl: this.cacheTTL });
-
-    return result;
   }
 
   /**

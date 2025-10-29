@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuditLogQueryService } from '../../src/modules/audit/audit-query.service';
+import { ObservabilityService } from '../../src/observability/observability.service';
 import { DATA_STORE } from '../../src/datastore';
 import { CACHE_STORE } from '../../src/common/cache-store.interface';
 import { CIRCUIT_BREAKER } from '../../src/common/circuit-breaker.interface';
@@ -11,6 +12,7 @@ describe('AuditLogQueryService', () => {
   let mockDataStore: any;
   let mockCacheStore: any;
   let mockCircuitBreaker: any;
+  let mockObservability: any;
 
   beforeEach(async () => {
     mockDataStore = {
@@ -38,6 +40,12 @@ describe('AuditLogQueryService', () => {
       setHalfOpenSuccessThreshold: jest.fn(),
     };
 
+    mockObservability = {
+      startSpan: jest.fn().mockReturnValue('span-1'),
+      endSpan: jest.fn().mockReturnValue({ durationMs: 10, operationName: 'test' }),
+      recordCQRSQuery: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuditLogQueryService,
@@ -52,6 +60,10 @@ describe('AuditLogQueryService', () => {
         {
           provide: CIRCUIT_BREAKER,
           useValue: mockCircuitBreaker,
+        },
+        {
+          provide: ObservabilityService,
+          useValue: mockObservability,
         },
       ],
     }).compile();
@@ -91,11 +103,19 @@ describe('AuditLogQueryService', () => {
 
       mockDataStore.listAuditLogs.mockResolvedValue(mockAuditLogs);
       mockDataStore.getUserById.mockResolvedValue(mockUser);
+      mockCacheStore.get.mockResolvedValue(null); // Cache miss
 
       const result = await service.listAuditLogs(query);
 
       expect(mockDataStore.listAuditLogs).toHaveBeenCalledWith(query);
       expect(mockDataStore.getUserById).toHaveBeenCalledWith('user1');
+      expect(mockObservability.startSpan).toHaveBeenCalledWith('audit.listAuditLogs', {
+        page: 1,
+        pageSize: 10,
+        entity: undefined,
+      });
+      expect(mockObservability.endSpan).toHaveBeenCalledWith('span-1', 'success');
+      expect(mockObservability.recordCQRSQuery).toHaveBeenCalledWith('listAuditLogs', 10, 1);
       expect(result).toEqual({
         items: [
           {
@@ -142,6 +162,18 @@ describe('AuditLogQueryService', () => {
 
       expect(mockDataStore.getUserById).not.toHaveBeenCalled();
       expect(result.items[0].actor).toBeUndefined();
+    });
+
+    it('should record failed query when error occurs', async () => {
+      const query: ListAuditQueryDto = { page: 1, pageSize: 10 };
+      mockCacheStore.get.mockResolvedValue(null); // Cache miss
+      const error = new Error('Database error');
+      mockDataStore.listAuditLogs.mockRejectedValue(error);
+      mockObservability.endSpan.mockReturnValue({ durationMs: 50, operationName: 'test' });
+
+      await expect(service.listAuditLogs(query)).rejects.toThrow('Database error');
+      expect(mockObservability.recordCQRSQuery).toHaveBeenCalledWith('listAuditLogs', 50, 0);
+      expect(mockObservability.endSpan).toHaveBeenCalledWith('span-1', 'error', 'Database error');
     });
   });
 });
