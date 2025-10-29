@@ -20,6 +20,9 @@ export {
   DocumentFixtures,
 } from './fixtures';
 
+// Clone utilities
+export { deepCloneData } from './utils/clone.utils';
+
 // Existing utilities
 export { createDataStoreMock } from './datastore.mock';
 export { getAuthToken } from './get-auth-token';

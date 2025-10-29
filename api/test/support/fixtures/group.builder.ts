@@ -3,6 +3,7 @@ import { GroupId } from '../../../src/domain/value-objects/GroupId';
 import { ChurchId } from '../../../src/domain/value-objects/ChurchId';
 import { UserId } from '../../../src/domain/value-objects/UserId';
 import { TestBuilder } from './base.builder';
+import { deepCloneData } from '../utils/clone.utils';
 
 /**
  * Builder for creating Group domain entities in tests
@@ -73,37 +74,9 @@ export class GroupBuilder extends TestBuilder<Group> {
     return Group.reconstruct(props);
   }
 
-  private deepCloneData(data: any): any {
-    if (data instanceof Date) {
-      return new Date(data.getTime());
-    }
-    if (data instanceof GroupId) {
-      return GroupId.create(data.value);
-    }
-    if (data instanceof ChurchId) {
-      return ChurchId.create(data.value);
-    }
-    if (data instanceof UserId) {
-      return UserId.create(data.value);
-    }
-    if (Array.isArray(data)) {
-      return data.map(item => this.deepCloneData(item));
-    }
-    if (data !== null && typeof data === 'object') {
-      const cloned: any = {};
-      for (const key in data) {
-        if (data.hasOwnProperty(key)) {
-          cloned[key] = this.deepCloneData(data[key]);
-        }
-      }
-      return cloned;
-    }
-    return data;
-  }
-
   clone(): GroupBuilder {
     const clone = new GroupBuilder();
-    clone.data = this.deepCloneData(this.data);
+    clone.data = deepCloneData(this.data);
     return clone;
   }
 }
