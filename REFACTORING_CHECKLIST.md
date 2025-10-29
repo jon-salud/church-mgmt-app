@@ -64,11 +64,46 @@ This document tracks the progress of the NestJS API refactoring project to intro
 - [x] **Backwards Compatibility** - All 158 API tests pass, no breaking changes to external APIs
 
 ## Sprint 5: Enhanced Testing Infrastructure
-- [ ] **Integration Tests** - Add tests that use real repositories with in-memory store
-- [ ] **Test Fixtures** - Create reusable test data builders
-- [ ] **Test Utilities** - Helper functions for common test scenarios
-- [ ] **CI Performance** - Ensure all tests run under 2 minutes
-- [ ] **Test Coverage** - Maintain 90%+ coverage across all modules
+
+**Status:** **IN PROGRESS** - Planning phase complete, ready for implementation
+**Estimated Start:** October 29, 2025
+**Goal:** Build comprehensive integration testing infrastructure with reusable fixtures and utilities
+**Success Criteria:** 90%+ test coverage, <2min test execution, integration tests for all major workflows
+
+### Integration Tests (Priority: High)
+- [ ] **Repository Integration Tests** - Test real repositories with in-memory store instead of mocks
+- [ ] **Service Integration Tests** - Test services with real dependencies (repositories + in-memory store)
+- [ ] **Controller Integration Tests** - Test full request/response cycles with real services
+- [ ] **Cross-Module Integration Tests** - Test interactions between users, groups, documents, events
+- [ ] **Data Consistency Tests** - Verify data integrity across related entities (user-group relationships)
+
+### Test Fixtures (Priority: High)
+- [ ] **Entity Builders** - Create fluent builder pattern for User, Group, Document, Event entities
+- [ ] **Domain Object Builders** - Builders for domain entities with proper validation
+- [ ] **DTO Builders** - Builders for request/response DTOs with realistic data
+- [ ] **Relationship Builders** - Builders for complex relationships (user memberships, event attendance)
+- [ ] **Fixture Collections** - Pre-built collections of related entities for common scenarios
+
+### Test Utilities (Priority: Medium)
+- [ ] **Test Database Helpers** - Utilities for setting up/cleaning in-memory test databases
+- [ ] **Authentication Helpers** - Utilities for creating authenticated test contexts
+- [ ] **HTTP Request Builders** - Utilities for building test HTTP requests with proper headers
+- [ ] **Assertion Helpers** - Custom matchers for common domain assertions
+- [ ] **Time/Date Helpers** - Utilities for testing time-sensitive functionality
+
+### CI Performance Optimization (Priority: Medium)
+- [ ] **Parallel Test Execution** - Configure Jest to run tests in parallel where safe
+- [ ] **Test Categorization** - Separate fast unit tests from slower integration tests
+- [ ] **Selective Test Running** - Allow running only affected tests in CI
+- [ ] **Performance Monitoring** - Add test execution time tracking and alerts
+- [ ] **Test Result Caching** - Cache test results for unchanged code paths
+
+### Test Coverage Improvement (Priority: High)
+- [ ] **Datastore Layer Coverage** - Improve coverage for MockDataStoreAdapter and PrismaDataStore
+- [ ] **Controller Layer Coverage** - Add tests for error handling and edge cases in controllers
+- [ ] **Service Layer Coverage** - Test error scenarios and business rule validations
+- [ ] **DTO Validation Coverage** - Test input validation and transformation edge cases
+- [ ] **Integration Flow Coverage** - Test complete user journeys and data flows
 
 ## Sprint 6: Advanced Patterns & Optimizations
 - [ ] **CQRS Pattern** - Separate read/write models where beneficial
