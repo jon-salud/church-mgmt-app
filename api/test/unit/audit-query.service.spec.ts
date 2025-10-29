@@ -1,16 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuditLogQueryService } from '../../src/modules/audit/audit-query.service';
 import { DATA_STORE } from '../../src/datastore';
+import { CACHE_STORE } from '../../src/common/cache-store.interface';
 import { ListAuditQueryDto } from '../../src/modules/audit/dto/list-audit-query.dto';
 
 describe('AuditLogQueryService', () => {
   let service: AuditLogQueryService;
   let mockDataStore: any;
+  let mockCacheStore: any;
 
   beforeEach(async () => {
     mockDataStore = {
       listAuditLogs: jest.fn(),
       getUserById: jest.fn(),
+    };
+
+    mockCacheStore = {
+      get: jest.fn(),
+      set: jest.fn(),
+      delete: jest.fn(),
+      clear: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -19,6 +28,10 @@ describe('AuditLogQueryService', () => {
         {
           provide: DATA_STORE,
           useValue: mockDataStore,
+        },
+        {
+          provide: CACHE_STORE,
+          useValue: mockCacheStore,
         },
       ],
     }).compile();

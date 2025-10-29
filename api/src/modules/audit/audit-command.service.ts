@@ -1,15 +1,22 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DATA_STORE, DataStore } from '../../datastore';
 import { IEventStore, EVENT_STORE } from '../../common/event-store.interface';
+import { CACHE_STORE, ICacheStore } from '../../common/cache-store.interface';
 import { IAuditLogCommands, AuditLogReadModel, AuditLogCreateInput } from './audit.interfaces';
+import { AuditLogQueryService } from './audit-query.service';
 
 @Injectable()
 export class AuditLogCommandService implements IAuditLogCommands {
+  private readonly logger = new Logger(AuditLogCommandService.name);
+
   constructor(
     @Inject(DATA_STORE)
     private readonly dataStore: DataStore,
     @Inject(EVENT_STORE)
-    private readonly eventStore: IEventStore
+    private readonly eventStore: IEventStore,
+    @Inject(CACHE_STORE)
+    private readonly cacheStore: ICacheStore,
+    private readonly auditQueryService: AuditLogQueryService
   ) {}
 
   async createAuditLog(input: AuditLogCreateInput): Promise<AuditLogReadModel> {
@@ -37,6 +44,9 @@ export class AuditLogCommandService implements IAuditLogCommands {
         },
       });
     }
+
+    // Invalidate cache since new audit log was created
+    await this.auditQueryService.invalidateCache();
 
     // Transform to read model with actor resolution
     return {
