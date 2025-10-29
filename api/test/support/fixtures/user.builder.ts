@@ -5,6 +5,39 @@ import { Email } from '../../../src/domain/value-objects/Email';
 import { TestBuilder } from './base.builder';
 
 /**
+ * Deep clone function for builder data that preserves value object instances and Dates.
+ */
+function deepCloneData(obj: any): any {
+  if (obj === null || typeof obj !== 'object') {
+    return obj;
+  }
+  // Handle Date
+  if (obj instanceof Date) {
+    return new Date(obj.getTime());
+  }
+  // Handle value objects
+  if (obj instanceof UserId) {
+    return UserId.create(obj.value);
+  }
+  if (obj instanceof ChurchId) {
+    return ChurchId.create(obj.value);
+  }
+  if (obj instanceof Email) {
+    return Email.create(obj.value);
+  }
+  // Handle Array
+  if (Array.isArray(obj)) {
+    return obj.map(deepCloneData);
+  }
+  // Handle plain object
+  const cloned: any = {};
+  for (const key of Object.keys(obj)) {
+    cloned[key] = deepCloneData(obj[key]);
+  }
+  return cloned;
+}
+
+/**
  * Builder for creating User domain entities in tests
  */
 export class UserBuilder extends TestBuilder<User> {
@@ -87,7 +120,7 @@ export class UserBuilder extends TestBuilder<User> {
 
   clone(): UserBuilder {
     const clone = new UserBuilder();
-    clone.data = JSON.parse(JSON.stringify(this.data));
+    clone.data = deepCloneData(this.data);
     return clone;
   }
 }

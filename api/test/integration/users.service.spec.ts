@@ -101,6 +101,7 @@ describe('UsersService (Integration)', () => {
         churchId: string;
         status: string;
         profile: { firstName: string; lastName: string; phone?: string };
+        roles?: Array<{ churchId: string; roleId: string }>;
       }): User {
         return User.create({
           id: UserId.create(mockUser.id),
@@ -108,7 +109,7 @@ describe('UsersService (Integration)', () => {
           churchId: ChurchId.create(mockUser.churchId),
           status: mockUser.status as 'active' | 'invited',
           createdAt: new Date(),
-          roles: User.createDefaultRoles(ChurchId.create(mockUser.churchId)),
+          roles: mockUser.roles || User.createDefaultRoles(ChurchId.create(mockUser.churchId)),
           profile: {
             ...mockUser.profile,
             householdId: '',
@@ -140,6 +141,7 @@ describe('UsersService (Integration)', () => {
       primaryEmail: 'admin@test.com',
       churchId: 'church-test-001',
       status: 'active',
+      roles: [{ churchId: 'church-test-001', roleId: 'role-admin' }],
       profile: { firstName: 'Admin', lastName: 'User' },
     };
     await db.createUser(actorUser);
@@ -169,6 +171,7 @@ describe('UsersService (Integration)', () => {
       primaryEmail: 'admin@test.com',
       churchId: 'church-test-001',
       status: 'active',
+      roles: [{ churchId: 'church-test-001', roleId: 'role-admin' }],
       profile: { firstName: 'Admin', lastName: 'User' },
     };
 
@@ -181,6 +184,7 @@ describe('UsersService (Integration)', () => {
       primaryEmail: 'user1@test.com',
       churchId: 'church-test-001',
       status: 'active',
+      roles: [{ churchId: 'church-test-001', roleId: 'role-member' }],
       profile: { firstName: 'User', lastName: 'One' },
     };
     const user2 = {
@@ -188,6 +192,7 @@ describe('UsersService (Integration)', () => {
       primaryEmail: 'user2@test.com',
       churchId: 'church-test-001',
       status: 'active',
+      roles: [{ churchId: 'church-test-001', roleId: 'role-member' }],
       profile: { firstName: 'User', lastName: 'Two' },
     };
 
@@ -211,6 +216,7 @@ describe('UsersService (Integration)', () => {
       primaryEmail: 'admin@test.com',
       churchId: 'church-test-001',
       status: 'active',
+      roles: [{ churchId: 'church-test-001', roleId: 'role-admin' }],
       profile: { firstName: 'Admin', lastName: 'User' },
     };
 
@@ -245,6 +251,7 @@ describe('UsersService (Integration)', () => {
       primaryEmail: 'admin@test.com',
       churchId: 'church-test-001',
       status: 'active',
+      roles: [{ churchId: 'church-test-001', roleId: 'role-admin' }],
       profile: { firstName: 'Admin', lastName: 'User' },
     };
 

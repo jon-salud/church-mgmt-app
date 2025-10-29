@@ -145,7 +145,7 @@ describe('DocumentsService (Integration)', () => {
           fileName: mockDoc.fileName,
           fileType: mockDoc.fileType,
           title: mockDoc.title,
-          description: mockDoc.description || '',
+          description: mockDoc.description,
           storageKey: mockDoc.storageKey,
           fileData: mockDoc.fileData,
           createdAt: mockDoc.createdAt,
