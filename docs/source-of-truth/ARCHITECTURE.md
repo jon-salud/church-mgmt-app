@@ -141,3 +141,36 @@ The following diagram illustrates the high-level structure of the system with pe
 | • Visitor (Profiles, Interactions, Nurture Workflows)               |
 +----------------------------------------------------------------------+
 ```
+
+## 5. Data Layer Architecture
+
+The system implements a flexible data layer abstraction that supports multiple storage backends for different environments and use cases.
+
+### 5.1. DataStore Interface
+
+- **Purpose:** Provides a unified interface for all data operations across the application, ensuring consistent API regardless of the underlying storage mechanism.
+- **Implementation:** The `DataStore` interface wraps all `MockDatabaseService` methods with Promise-based async operations, enabling seamless switching between storage backends.
+- **Benefits:** Allows for easy testing, development, and future migration to different database systems without changing business logic.
+
+### 5.2. Storage Backends
+
+The system supports multiple data store implementations controlled by the `DATA_MODE` environment variable:
+
+- **Mock Mode (`DATA_MODE=mock`):** Default development mode using in-memory data structures pre-populated with canonical seeded test data (see `mock-data.ts`). This mode is ideal for local development and manual testing, as it provides a predictable, repeatable dataset and supports features like soft delete and audit logging. Data is reset to the seed state on each server restart.
+- **Memory Mode (`DATA_MODE=memory`):** High-performance, empty in-memory implementation intended for automated CI/CD testing and scenarios requiring fast, isolated data operations without persistence or seeded data. Unlike Mock Mode, Memory Mode starts with no preloaded data, ensuring a clean slate for each test run. Data is ephemeral and lost on server restart.
+- **Prisma Mode (`DATA_MODE=prisma`):** Production-ready PostgreSQL database integration using Prisma ORM for persistent data storage and complex queries.
+- **Prisma Mode (`DATA_MODE=prisma`):** Production-ready PostgreSQL database integration using Prisma ORM for persistent data storage and complex queries.
+
+### 5.3. Repository Pattern
+
+The system implements repository abstractions for domain-specific data access:
+
+- **Purpose:** Decouples business logic from data access patterns, enabling easier testing and future database migrations.
+- **Implementation:** Each domain (Users, Documents, Groups) has dedicated repository interfaces with dependency injection tokens.
+- **Benefits:** Provides clean separation of concerns, improved testability, and flexible data access strategies.
+
+### 5.4. Data Isolation & Multi-tenancy
+
+- **Church-Level Scoping:** All data operations are scoped by `churchId` to ensure complete isolation between church clients.
+- **Soft Delete:** All entities support soft delete functionality with `deletedAt` timestamps for audit trails and data recovery.
+- **Audit Logging:** All data modifications are logged to maintain compliance and operational visibility.

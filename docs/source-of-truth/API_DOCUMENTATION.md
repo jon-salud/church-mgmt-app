@@ -16,9 +16,20 @@ The API is protected and requires an authenticated session. All requests must in
 session cookie. The `@CurrentUser` decorator provides the user context, and all data is
 automatically scoped by the user's `churchId`.
 
+## 3. Configuration
+
+### Environment Variables
+
+The API behavior can be configured through environment variables:
+
+- **DATA_MODE:** Controls the data storage backend
+  - `mock` (default): Uses in-memory mock data for development and testing
+  - `memory`: Uses high-performance in-memory data store for fast testing scenarios
+  - `prisma`: Uses PostgreSQL database with Prisma ORM for production
+
 ---
 
-## 3. API Endpoints
+## 4. API Endpoints
 
 ### Member & User Management
 
