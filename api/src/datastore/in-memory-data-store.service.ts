@@ -177,6 +177,11 @@ export class InMemoryDataStore {
     this.logger.log('Seeding in-memory data store with mock data...');
 
     // Clone and assign mock data
+    // We clone the canonical mock data arrays here to ensure that mutations to the in-memory store
+    // do not affect the original mock data. This provides isolation between test runs and prevents
+    // accidental side effects if the mock data is imported elsewhere. If this is ever proven unnecessary
+    // (e.g., if the mock data is only ever used here and the store is always instantiated fresh), this
+    // could be replaced with direct assignment for performance, but cloning is a defensive measure.
     this.users = clone(mockUsers);
     this.households = clone(mockHouseholds);
     this.roles = clone(mockRoles);
@@ -464,14 +469,10 @@ export class InMemoryDataStore {
     if (!user) return null;
 
     // Handle email uniqueness check
-    if (
-      input.primaryEmail &&
-      input.primaryEmail.toLowerCase() !== user.primaryEmail.toLowerCase()
-    ) {
+    if (input.primaryEmail) {
+      const newEmail = input.primaryEmail;
       const emailTaken = this.users.some(
-        record =>
-          record.id !== id &&
-          record.primaryEmail.toLowerCase() === input.primaryEmail!.toLowerCase()
+        record => record.id !== id && record.primaryEmail.toLowerCase() === newEmail.toLowerCase()
       );
       if (emailTaken) {
         throw new Error('A user with that email already exists');
@@ -1815,7 +1816,9 @@ export class InMemoryDataStore {
 
   async recordAttendance(input: AttendanceInput) {
     const event = this.events.find(e => e.id === input.eventId);
-    if (!event) return null;
+    if (!event) {
+      throw new Error('Event not found');
+    }
     const existing = event.attendance.find(a => a.userId === input.userId);
     if (existing) {
       existing.status = input.status;

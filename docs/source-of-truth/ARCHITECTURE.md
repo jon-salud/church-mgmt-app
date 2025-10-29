@@ -156,8 +156,9 @@ The system implements a flexible data layer abstraction that supports multiple s
 
 The system supports multiple data store implementations controlled by the `DATA_MODE` environment variable:
 
-- **Mock Mode (`DATA_MODE=mock`):** Default development mode using in-memory data structures with seeded test data. Provides fast startup and consistent test environments.
-- **Memory Mode (`DATA_MODE=memory`):** High-performance in-memory implementation for CI/CD testing and scenarios requiring fast data operations without persistence.
+- **Mock Mode (`DATA_MODE=mock`):** Default development mode using in-memory data structures pre-populated with canonical seeded test data (see `mock-data.ts`). This mode is ideal for local development and manual testing, as it provides a predictable, repeatable dataset and supports features like soft delete and audit logging. Data is reset to the seed state on each server restart.
+- **Memory Mode (`DATA_MODE=memory`):** High-performance, empty in-memory implementation intended for automated CI/CD testing and scenarios requiring fast, isolated data operations without persistence or seeded data. Unlike Mock Mode, Memory Mode starts with no preloaded data, ensuring a clean slate for each test run. Data is ephemeral and lost on server restart.
+- **Prisma Mode (`DATA_MODE=prisma`):** Production-ready PostgreSQL database integration using Prisma ORM for persistent data storage and complex queries.
 - **Prisma Mode (`DATA_MODE=prisma`):** Production-ready PostgreSQL database integration using Prisma ORM for persistent data storage and complex queries.
 
 ### 5.3. Repository Pattern
