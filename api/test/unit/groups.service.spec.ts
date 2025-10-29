@@ -9,6 +9,10 @@ import {
   MockUser,
   MockEvent,
 } from '../../src/mock/mock-data';
+import { Group } from '../../src/domain/entities/Group';
+import { GroupId } from '../../src/domain/value-objects/GroupId';
+import { ChurchId } from '../../src/domain/value-objects/ChurchId';
+import { UserId } from '../../src/domain/value-objects/UserId';
 
 const createGroupsRepositoryMock = (): jest.Mocked<IGroupsRepository> => ({
   listGroups: jest.fn().mockResolvedValue([]),
@@ -35,17 +39,42 @@ describe('GroupsService', () => {
   });
 
   it('lists groups', async () => {
-    const mockGroups: MockGroup[] = [{ id: 'group-1' } as MockGroup];
-    repo.listGroups.mockResolvedValue(mockGroups);
+    const mockGroup = Group.reconstruct({
+      id: GroupId.create('group-1'),
+      name: 'Test Group',
+      churchId: ChurchId.create('church-1'),
+      leaderId: UserId.create('user-1'),
+      createdAt: new Date(),
+    });
+    repo.listGroups.mockResolvedValue([mockGroup]);
 
     const result = await service.list();
 
     expect(repo.listGroups).toHaveBeenCalledWith();
-    expect(result).toEqual(mockGroups);
+    expect(result).toEqual([
+      {
+        id: 'group-1',
+        churchId: 'church-1',
+        name: 'Test Group',
+        description: undefined,
+        type: undefined,
+        meetingDay: undefined,
+        meetingTime: undefined,
+        tags: [],
+        leaderUserId: 'user-1',
+        deletedAt: undefined,
+      },
+    ]);
   });
 
   it('returns group detail with members, events, and resources', async () => {
-    const mockGroup: MockGroup = { id: 'group-1' } as MockGroup;
+    const mockGroup = Group.reconstruct({
+      id: GroupId.create('group-1'),
+      name: 'Test Group',
+      churchId: ChurchId.create('church-1'),
+      leaderId: UserId.create('user-1'),
+      createdAt: new Date(),
+    });
     const mockMembers: Array<MockGroupMember & { user: MockUser }> = [];
     const mockEvents: MockEvent[] = [{ id: 'event-1', startAt: '2024-01-01' } as MockEvent];
     const mockResources: MockGroupResource[] = [{ id: 'resource-1' } as MockGroupResource];
@@ -56,12 +85,21 @@ describe('GroupsService', () => {
 
     const result = await service.detail('group-1');
 
-    expect(repo.getGroupById).toHaveBeenCalledWith('group-1');
-    expect(repo.getGroupMembers).toHaveBeenCalledWith('group-1');
+    expect(repo.getGroupById).toHaveBeenCalledWith(GroupId.create('group-1'));
+    expect(repo.getGroupMembers).toHaveBeenCalledWith(GroupId.create('group-1'));
     expect(store.listEventsByGroupId).toHaveBeenCalledWith('group-1');
-    expect(repo.getGroupResources).toHaveBeenCalledWith('group-1');
+    expect(repo.getGroupResources).toHaveBeenCalledWith(GroupId.create('group-1'));
     expect(result).toEqual({
-      ...mockGroup,
+      id: 'group-1',
+      churchId: 'church-1',
+      name: 'Test Group',
+      description: undefined,
+      type: undefined,
+      meetingDay: undefined,
+      meetingTime: undefined,
+      tags: [],
+      leaderUserId: 'user-1',
+      deletedAt: undefined,
       members: mockMembers,
       events: mockEvents,
       resources: mockResources,
@@ -84,7 +122,7 @@ describe('GroupsService', () => {
 
     const result = await service.members('group-1');
 
-    expect(repo.getGroupMembers).toHaveBeenCalledWith('group-1');
+    expect(repo.getGroupMembers).toHaveBeenCalledWith(GroupId.create('group-1'));
     expect(result).toEqual(mockMembers);
   });
 
@@ -98,7 +136,7 @@ describe('GroupsService', () => {
 
     const result = await service.addMember('group-1', input, 'actor-1');
 
-    expect(repo.addGroupMember).toHaveBeenCalledWith('group-1', {
+    expect(repo.addGroupMember).toHaveBeenCalledWith(GroupId.create('group-1'), {
       ...input,
       actorUserId: 'actor-1',
     });
@@ -115,10 +153,14 @@ describe('GroupsService', () => {
 
     const result = await service.updateMember('group-1', 'user-1', input, 'actor-1');
 
-    expect(repo.updateGroupMember).toHaveBeenCalledWith('group-1', 'user-1', {
-      ...input,
-      actorUserId: 'actor-1',
-    });
+    expect(repo.updateGroupMember).toHaveBeenCalledWith(
+      GroupId.create('group-1'),
+      UserId.create('user-1'),
+      {
+        ...input,
+        actorUserId: 'actor-1',
+      }
+    );
     expect(result).toEqual(mockMember);
   });
 
@@ -127,9 +169,13 @@ describe('GroupsService', () => {
 
     const result = await service.removeMember('group-1', 'user-1', 'actor-1');
 
-    expect(repo.removeGroupMember).toHaveBeenCalledWith('group-1', 'user-1', {
-      actorUserId: 'actor-1',
-    });
+    expect(repo.removeGroupMember).toHaveBeenCalledWith(
+      GroupId.create('group-1'),
+      UserId.create('user-1'),
+      {
+        actorUserId: 'actor-1',
+      }
+    );
     expect(result).toEqual({ success: true });
   });
 
@@ -139,7 +185,7 @@ describe('GroupsService', () => {
 
     const result = await service.resources('group-1');
 
-    expect(repo.getGroupResources).toHaveBeenCalledWith('group-1');
+    expect(repo.getGroupResources).toHaveBeenCalledWith(GroupId.create('group-1'));
     expect(result).toEqual(mockResources);
   });
 
@@ -150,7 +196,7 @@ describe('GroupsService', () => {
 
     const result = await service.createResource('group-1', input, 'actor-1');
 
-    expect(repo.createGroupResource).toHaveBeenCalledWith('group-1', {
+    expect(repo.createGroupResource).toHaveBeenCalledWith(GroupId.create('group-1'), {
       ...input,
       actorUserId: 'actor-1',
     });

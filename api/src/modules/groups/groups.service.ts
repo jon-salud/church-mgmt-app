@@ -5,6 +5,9 @@ import { AddGroupMemberDto } from './dto/add-group-member.dto';
 import { UpdateGroupMemberDto } from './dto/update-group-member.dto';
 import { CreateGroupResourceDto } from './dto/create-group-resource.dto';
 import { UpdateGroupResourceDto } from './dto/update-group-resource.dto';
+import { Group } from '../../domain/entities/Group';
+import { GroupId } from '../../domain/value-objects/GroupId';
+import { UserId } from '../../domain/value-objects/UserId';
 
 @Injectable()
 export class GroupsService {
@@ -14,19 +17,21 @@ export class GroupsService {
   ) {}
 
   async list() {
-    return this.groupsRepository.listGroups();
+    const groups = await this.groupsRepository.listGroups();
+    return groups.map(group => this.toGroupResponse(group));
   }
 
   async detail(id: string) {
-    const group = await this.groupsRepository.getGroupById(id);
+    const groupId = GroupId.create(id);
+    const group = await this.groupsRepository.getGroupById(groupId);
     if (!group) return null;
     const [members, events, resources] = await Promise.all([
-      this.groupsRepository.getGroupMembers(id),
+      this.groupsRepository.getGroupMembers(groupId),
       this.db.listEventsByGroupId(id),
-      this.groupsRepository.getGroupResources(id),
+      this.groupsRepository.getGroupResources(groupId),
     ]);
     return {
-      ...group,
+      ...this.toGroupResponse(group),
       members,
       events: events.sort((a, b) => String(a.startAt).localeCompare(String(b.startAt))),
       resources,
@@ -34,11 +39,13 @@ export class GroupsService {
   }
 
   async members(id: string) {
-    return this.groupsRepository.getGroupMembers(id);
+    const groupId = GroupId.create(id);
+    return this.groupsRepository.getGroupMembers(groupId);
   }
 
   async addMember(groupId: string, input: AddGroupMemberDto, actorUserId: string) {
-    return this.groupsRepository.addGroupMember(groupId, { ...input, actorUserId });
+    const groupIdObj = GroupId.create(groupId);
+    return this.groupsRepository.addGroupMember(groupIdObj, { ...input, actorUserId });
   }
 
   async updateMember(
@@ -47,19 +54,28 @@ export class GroupsService {
     input: UpdateGroupMemberDto,
     actorUserId: string
   ) {
-    return this.groupsRepository.updateGroupMember(groupId, userId, { ...input, actorUserId });
+    const groupIdObj = GroupId.create(groupId);
+    const userIdObj = UserId.create(userId);
+    return this.groupsRepository.updateGroupMember(groupIdObj, userIdObj, {
+      ...input,
+      actorUserId,
+    });
   }
 
   async removeMember(groupId: string, userId: string, actorUserId: string) {
-    return this.groupsRepository.removeGroupMember(groupId, userId, { actorUserId });
+    const groupIdObj = GroupId.create(groupId);
+    const userIdObj = UserId.create(userId);
+    return this.groupsRepository.removeGroupMember(groupIdObj, userIdObj, { actorUserId });
   }
 
   async resources(groupId: string) {
-    return this.groupsRepository.getGroupResources(groupId);
+    const groupIdObj = GroupId.create(groupId);
+    return this.groupsRepository.getGroupResources(groupIdObj);
   }
 
   async createResource(groupId: string, input: CreateGroupResourceDto, actorUserId: string) {
-    return this.groupsRepository.createGroupResource(groupId, { ...input, actorUserId });
+    const groupIdObj = GroupId.create(groupId);
+    return this.groupsRepository.createGroupResource(groupIdObj, { ...input, actorUserId });
   }
 
   async updateResource(resourceId: string, input: UpdateGroupResourceDto, actorUserId: string) {
@@ -68,5 +84,20 @@ export class GroupsService {
 
   async deleteResource(resourceId: string, actorUserId: string) {
     return this.groupsRepository.deleteGroupResource(resourceId, { actorUserId });
+  }
+
+  private toGroupResponse(group: Group) {
+    return {
+      id: group.id.value,
+      churchId: group.churchId.value,
+      name: group.name,
+      description: group.description,
+      type: group.type,
+      meetingDay: group.meetingDay,
+      meetingTime: group.meetingTime,
+      tags: group.tags || [],
+      leaderUserId: group.leaderId?.value,
+      deletedAt: group.deletedAt?.toISOString(),
+    };
   }
 }

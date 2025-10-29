@@ -1,10 +1,18 @@
 import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { DATA_STORE, DataStore } from '../../datastore';
-import { DOCUMENTS_REPOSITORY, IDocumentsRepository } from './documents.repository.interface';
+import {
+  DOCUMENTS_REPOSITORY,
+  IDocumentsRepository,
+  DocumentWithPermissions,
+} from './documents.repository.interface';
 import { CreateDocumentDto } from './dto/create-document.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { randomUUID } from 'node:crypto';
 import { MAX_FILE_SIZE_BYTES } from '../../common/constants';
+import { DocumentId } from '../../domain/value-objects/DocumentId';
+import { ChurchId } from '../../domain/value-objects/ChurchId';
+import { UserId } from '../../domain/value-objects/UserId';
+import { Document } from '../../domain/entities/Document';
 
 @Injectable()
 export class DocumentsService {
@@ -22,7 +30,11 @@ export class DocumentsService {
       .filter((r: { churchId: string }) => r.churchId === church.id)
       .map((r: { roleId: string }) => r.roleId);
 
-    return this.documentsRepository.listDocuments(church.id, userRoleIds);
+    const documents = await this.documentsRepository.listDocuments(
+      ChurchId.create(church.id),
+      userRoleIds
+    );
+    return documents.map(doc => this.toDocumentResponse(doc));
   }
 
   async getDetail(id: string, userId: string) {
@@ -34,10 +46,13 @@ export class DocumentsService {
       .filter((r: { churchId: string }) => r.churchId === church.id)
       .map((r: { roleId: string }) => r.roleId);
 
-    const doc = await this.documentsRepository.getDocumentWithPermissions(id, userRoleIds);
+    const doc = await this.documentsRepository.getDocumentWithPermissions(
+      DocumentId.create(id),
+      userRoleIds
+    );
     if (!doc) throw new NotFoundException('Document not found or access denied');
 
-    return doc;
+    return this.toDocumentWithPermissionsResponse(doc);
   }
 
   async create(
@@ -68,18 +83,21 @@ export class DocumentsService {
 
     // Convert file to base64
     const fileData = file.buffer.toString('base64');
+    const userIdObj = UserId.create(userId);
 
-    return this.documentsRepository.createDocument(
-      church.id,
-      userId,
-      file.filename,
-      file.mimetype,
-      dto.title,
-      dto.description,
-      fileData,
-      dto.roleIds,
-      userId
-    );
+    return this.documentsRepository
+      .createDocument(
+        ChurchId.create(church.id),
+        userIdObj,
+        file.filename,
+        file.mimetype,
+        dto.title,
+        dto.description,
+        fileData,
+        dto.roleIds,
+        userIdObj
+      )
+      .then(doc => this.toDocumentResponse(doc));
   }
 
   async update(id: string, dto: UpdateDocumentDto, userId: string) {
@@ -96,33 +114,42 @@ export class DocumentsService {
     }
 
     const doc = await this.documentsRepository.updateDocument(
-      id,
+      DocumentId.create(id),
       dto.title,
       dto.description,
       dto.roleIds,
-      userId
+      UserId.create(userId)
     );
     if (!doc) throw new NotFoundException('Document not found');
 
-    return doc;
+    return this.toDocumentResponse(doc);
   }
 
   async delete(id: string, userId: string) {
-    const deleted = await this.documentsRepository.deleteDocument(id, userId);
+    const deleted = await this.documentsRepository.deleteDocument(
+      DocumentId.create(id),
+      UserId.create(userId)
+    );
     if (!deleted) throw new NotFoundException('Document not found');
 
     return { success: true, message: 'Document archived' };
   }
 
   async hardDelete(id: string, userId: string) {
-    const deleted = await this.documentsRepository.hardDeleteDocument(id, userId);
+    const deleted = await this.documentsRepository.hardDeleteDocument(
+      DocumentId.create(id),
+      UserId.create(userId)
+    );
     if (!deleted) throw new NotFoundException('Document not found');
 
     return { success: true, message: 'Document permanently deleted' };
   }
 
   async undelete(id: string, userId: string) {
-    const restored = await this.documentsRepository.undeleteDocument(id, userId);
+    const restored = await this.documentsRepository.undeleteDocument(
+      DocumentId.create(id),
+      UserId.create(userId)
+    );
     if (!restored) throw new NotFoundException('Document not found or not deleted');
 
     return { success: true, message: 'Document restored' };
@@ -130,7 +157,10 @@ export class DocumentsService {
 
   async listDeleted() {
     const church = await this.db.getChurch();
-    return this.documentsRepository.listDeletedDocuments(church.id);
+    const documents = await this.documentsRepository.listDeletedDocuments(
+      ChurchId.create(church.id)
+    );
+    return documents.map(doc => this.toDocumentResponse(doc));
   }
 
   async getDownloadUrl(id: string, userId: string): Promise<{ url: string; expiresAt: string }> {
@@ -142,7 +172,10 @@ export class DocumentsService {
       .filter((r: { churchId: string }) => r.churchId === church.id)
       .map((r: { roleId: string }) => r.roleId);
 
-    const doc = await this.documentsRepository.getDocumentWithPermissions(id, userRoleIds);
+    const doc = await this.documentsRepository.getDocumentWithPermissions(
+      DocumentId.create(id),
+      userRoleIds
+    );
     if (!doc) throw new NotFoundException('Document not found or access denied');
 
     // Generate a time-limited token (valid for 1 hour)
@@ -165,7 +198,10 @@ export class DocumentsService {
       .filter((r: { churchId: string }) => r.churchId === church.id)
       .map((r: { roleId: string }) => r.roleId);
 
-    const doc = await this.documentsRepository.getDocumentWithPermissions(id, userRoleIds);
+    const doc = await this.documentsRepository.getDocumentWithPermissions(
+      DocumentId.create(id),
+      userRoleIds
+    );
     if (!doc) throw new NotFoundException('Document not found or access denied');
 
     // Decode base64 to buffer
@@ -174,6 +210,41 @@ export class DocumentsService {
     return {
       fileName: doc.fileName,
       data,
+    };
+  }
+
+  private toDocumentResponse(doc: Document) {
+    return {
+      id: doc.id.value,
+      churchId: doc.churchId.value,
+      uploaderProfileId: doc.uploaderProfileId.value,
+      fileName: doc.fileName,
+      fileType: doc.fileType,
+      title: doc.title,
+      description: doc.description,
+      storageKey: doc.storageKey,
+      fileData: doc.fileData,
+      createdAt: doc.createdAt.toISOString(),
+      updatedAt: doc.updatedAt.toISOString(),
+      deletedAt: doc.deletedAt?.toISOString(),
+    };
+  }
+
+  private toDocumentWithPermissionsResponse(doc: DocumentWithPermissions) {
+    return {
+      id: doc.id.value,
+      churchId: doc.churchId.value,
+      uploaderProfileId: doc.uploaderProfileId.value,
+      fileName: doc.fileName,
+      fileType: doc.fileType,
+      title: doc.title,
+      description: doc.description,
+      storageKey: doc.storageKey,
+      fileData: doc.fileData,
+      createdAt: doc.createdAt.toISOString(),
+      updatedAt: doc.updatedAt.toISOString(),
+      deletedAt: doc.deletedAt?.toISOString(),
+      permissions: doc.permissions,
     };
   }
 }

@@ -1,17 +1,6 @@
-// Abstract entity interfaces (decoupled from mock data)
-export interface Group {
-  id: string;
-  churchId: string;
-  name: string;
-  description?: string;
-  type: string;
-  meetingDay?: string;
-  meetingTime?: string;
-  tags: string[];
-  leaderUserId?: string;
-  members: GroupMember[];
-  deletedAt?: string;
-}
+import { Group } from '../../domain/entities/Group';
+import { GroupId } from '../../domain/value-objects/GroupId';
+import { UserId } from '../../domain/value-objects/UserId';
 
 export interface GroupMember {
   userId: string;
@@ -63,24 +52,24 @@ export const GROUPS_REPOSITORY = Symbol('GROUPS_REPOSITORY');
 
 export interface IGroupsRepository {
   listGroups(): Promise<Group[]>;
-  getGroupById(id: string): Promise<Group | null>;
-  getGroupMembers(groupId: string): Promise<Array<GroupMember & { user: UserSummary }>>;
+  getGroupById(id: GroupId): Promise<Group | null>;
+  getGroupMembers(groupId: GroupId): Promise<Array<GroupMember & { user: UserSummary }>>;
   addGroupMember(
-    groupId: string,
+    groupId: GroupId,
     input: GroupMemberCreateInput
   ): Promise<GroupMember & { user: UserSummary }>;
   updateGroupMember(
-    groupId: string,
-    userId: string,
+    groupId: GroupId,
+    userId: UserId,
     input: GroupMemberUpdateInput
   ): Promise<(GroupMember & { user: UserSummary | null }) | null>;
   removeGroupMember(
-    groupId: string,
-    userId: string,
+    groupId: GroupId,
+    userId: UserId,
     input: GroupMemberRemoveInput
   ): Promise<{ success: boolean }>;
-  getGroupResources(groupId: string): Promise<GroupResource[]>;
-  createGroupResource(groupId: string, input: GroupResourceCreateInput): Promise<GroupResource>;
+  getGroupResources(groupId: GroupId): Promise<GroupResource[]>;
+  createGroupResource(groupId: GroupId, input: GroupResourceCreateInput): Promise<GroupResource>;
   updateGroupResource(resourceId: string, input: GroupResourceUpdateInput): Promise<GroupResource>;
   deleteGroupResource(
     resourceId: string,

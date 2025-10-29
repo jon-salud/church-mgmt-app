@@ -1,73 +1,122 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DATA_STORE, DataStore } from '../../datastore';
-import { IDocumentsRepository, Document } from './documents.repository.interface';
+import { IDocumentsRepository, DocumentWithPermissions } from './documents.repository.interface';
+import { Document } from '../../domain/entities/Document';
+import { DocumentId } from '../../domain/value-objects/DocumentId';
+import { ChurchId } from '../../domain/value-objects/ChurchId';
+import { UserId } from '../../domain/value-objects/UserId';
 
 @Injectable()
 export class DocumentsDataStoreRepository implements IDocumentsRepository {
   constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
-  async listDocuments(churchId: string, userRoleIds: string[]): Promise<Document[]> {
-    return this.db.listDocuments(churchId, userRoleIds);
+  async listDocuments(churchId: ChurchId, userRoleIds: string[]): Promise<Document[]> {
+    const documents = await this.db.listDocuments(churchId.value, userRoleIds);
+    return documents.map(doc => this.mapToDocument(doc));
   }
 
-  async getDocument(id: string): Promise<Document | undefined> {
-    return this.db.getDocument(id);
+  async getDocument(id: DocumentId): Promise<Document | undefined> {
+    const doc = await this.db.getDocument(id.value);
+    return doc ? this.mapToDocument(doc) : undefined;
   }
 
   async getDocumentWithPermissions(
-    id: string,
+    id: DocumentId,
     userRoleIds: string[]
-  ): Promise<(Document & { permissions: string[] }) | undefined> {
-    return this.db.getDocumentWithPermissions(id, userRoleIds);
+  ): Promise<DocumentWithPermissions | undefined> {
+    const doc = await this.db.getDocumentWithPermissions(id.value, userRoleIds);
+    return doc
+      ? {
+          id: DocumentId.create(doc.id),
+          churchId: ChurchId.create(doc.churchId),
+          uploaderProfileId: UserId.create(doc.uploaderProfileId),
+          fileName: doc.fileName,
+          fileType: doc.fileType,
+          title: doc.title,
+          description: doc.description,
+          storageKey: doc.storageKey,
+          fileData: doc.fileData,
+          createdAt: new Date(doc.createdAt),
+          updatedAt: new Date(doc.updatedAt),
+          deletedAt: doc.deletedAt ? new Date(doc.deletedAt) : undefined,
+          permissions: doc.permissions,
+        }
+      : undefined;
   }
 
   async createDocument(
-    churchId: string,
-    uploaderProfileId: string,
+    churchId: ChurchId,
+    uploaderProfileId: UserId,
     fileName: string,
     fileType: string,
     title: string,
     description: string | undefined,
     fileData: string,
     roleIds: string[],
-    actorUserId: string
+    actorUserId: UserId
   ): Promise<Document> {
-    return this.db.createDocument(
-      churchId,
-      uploaderProfileId,
+    const doc = await this.db.createDocument(
+      churchId.value,
+      uploaderProfileId.value,
       fileName,
       fileType,
       title,
       description,
       fileData,
       roleIds,
-      actorUserId
+      actorUserId.value
     );
+    return this.mapToDocument(doc);
   }
 
   async updateDocument(
-    id: string,
+    id: DocumentId,
     title: string | undefined,
     description: string | undefined,
     roleIds: string[] | undefined,
-    actorUserId: string
+    actorUserId: UserId
   ): Promise<Document | undefined> {
-    return this.db.updateDocument(id, title, description, roleIds, actorUserId);
+    const doc = await this.db.updateDocument(
+      id.value,
+      title,
+      description,
+      roleIds,
+      actorUserId.value
+    );
+    return doc ? this.mapToDocument(doc) : undefined;
   }
 
-  async deleteDocument(id: string, actorUserId: string): Promise<boolean> {
-    return this.db.deleteDocument(id, actorUserId);
+  async deleteDocument(id: DocumentId, actorUserId: UserId): Promise<boolean> {
+    return this.db.deleteDocument(id.value, actorUserId.value);
   }
 
-  async hardDeleteDocument(id: string, actorUserId: string): Promise<boolean> {
-    return this.db.hardDeleteDocument(id, actorUserId);
+  async hardDeleteDocument(id: DocumentId, actorUserId: UserId): Promise<boolean> {
+    return this.db.hardDeleteDocument(id.value, actorUserId.value);
   }
 
-  async undeleteDocument(id: string, actorUserId: string): Promise<boolean> {
-    return this.db.undeleteDocument(id, actorUserId);
+  async undeleteDocument(id: DocumentId, actorUserId: UserId): Promise<boolean> {
+    return this.db.undeleteDocument(id.value, actorUserId.value);
   }
 
-  async listDeletedDocuments(churchId: string): Promise<Document[]> {
-    return this.db.listDeletedDocuments(churchId);
+  async listDeletedDocuments(churchId: ChurchId): Promise<Document[]> {
+    const documents = await this.db.listDeletedDocuments(churchId.value);
+    return documents.map(doc => this.mapToDocument(doc));
+  }
+
+  private mapToDocument(doc: any): Document {
+    return Document.reconstruct({
+      id: DocumentId.create(doc.id),
+      churchId: ChurchId.create(doc.churchId),
+      uploaderProfileId: UserId.create(doc.uploaderProfileId),
+      fileName: doc.fileName,
+      fileType: doc.fileType,
+      title: doc.title,
+      description: doc.description,
+      storageKey: doc.storageKey,
+      fileData: doc.fileData,
+      createdAt: new Date(doc.createdAt),
+      updatedAt: new Date(doc.updatedAt),
+      deletedAt: doc.deletedAt ? new Date(doc.deletedAt) : undefined,
+    });
   }
 }

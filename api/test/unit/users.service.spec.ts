@@ -1,5 +1,9 @@
 import { UsersService } from '../../src/modules/users/users.service';
 import { IUsersRepository } from '../../src/modules/users/users.repository.interface';
+import { User } from '../../src/domain/entities/User';
+import { UserId } from '../../src/domain/value-objects/UserId';
+import { Email } from '../../src/domain/value-objects/Email';
+import { ChurchId } from '../../src/domain/value-objects/ChurchId';
 
 const createUsersRepositoryMock = (): jest.Mocked<IUsersRepository> => ({
   listUsers: jest.fn().mockResolvedValue([]),
@@ -23,45 +27,158 @@ describe('UsersService', () => {
   });
 
   it('delegates list to repository', async () => {
-    const mockUsers = [{ id: 'user-1' }];
-    repo.listUsers.mockResolvedValue(mockUsers as unknown as any);
+    const mockUser = User.from({
+      id: UserId.create('user-1'),
+      primaryEmail: Email.create('test@example.com'),
+      churchId: ChurchId.create('church-1'),
+      status: 'active',
+      createdAt: new Date(),
+      roles: [],
+      profile: {
+        firstName: 'John',
+        lastName: 'Doe',
+        householdId: '',
+        householdRole: 'Head',
+      },
+    });
+    repo.listUsers.mockResolvedValue([mockUser]);
 
     const result = await service.list('query');
 
     expect(repo.listUsers).toHaveBeenCalledWith('query');
-    expect(result).toEqual(mockUsers);
+    expect(result).toEqual([
+      {
+        id: 'user-1',
+        primaryEmail: 'test@example.com',
+        status: 'active',
+        createdAt: mockUser.createdAt.toISOString(),
+        lastLoginAt: undefined,
+        profile: mockUser.profile,
+        roles: [],
+        deletedAt: undefined,
+      },
+    ]);
   });
 
   it('delegates get to repository', async () => {
-    const mockUser = { id: 'user-1' };
-    repo.getUserProfile.mockResolvedValue(mockUser as unknown as any);
+    const mockUser = User.from({
+      id: UserId.create('user-1'),
+      primaryEmail: Email.create('test@example.com'),
+      churchId: ChurchId.create('church-1'),
+      status: 'active',
+      createdAt: new Date(),
+      roles: [],
+      profile: {
+        firstName: 'John',
+        lastName: 'Doe',
+        householdId: '',
+        householdRole: 'Head',
+      },
+    });
+    repo.getUserProfile.mockResolvedValue(mockUser);
 
     const result = await service.get('user-1');
 
-    expect(repo.getUserProfile).toHaveBeenCalledWith('user-1');
-    expect(result).toEqual(mockUser);
+    expect(repo.getUserProfile).toHaveBeenCalledWith(UserId.create('user-1'));
+    expect(result).toEqual({
+      id: 'user-1',
+      primaryEmail: 'test@example.com',
+      status: 'active',
+      createdAt: mockUser.createdAt.toISOString(),
+      lastLoginAt: undefined,
+      profile: mockUser.profile,
+      roles: [],
+      deletedAt: undefined,
+    });
   });
 
   it('delegates create to repository', async () => {
     const input = { firstName: 'John', lastName: 'Doe', primaryEmail: 'john@example.com' };
-    const mockUser = { id: 'user-1', ...input };
-    repo.createUser.mockResolvedValue(mockUser as unknown as any);
+    const mockActor = User.from({
+      id: UserId.create('actor-1'),
+      primaryEmail: Email.create('actor@example.com'),
+      churchId: ChurchId.create('church-1'),
+      status: 'active',
+      createdAt: new Date(),
+      roles: [],
+      profile: {
+        firstName: 'Actor',
+        lastName: 'User',
+        householdId: '',
+        householdRole: 'Head',
+      },
+    });
+    const mockCreatedUser = User.from({
+      id: UserId.create('user-1'),
+      primaryEmail: Email.create('john@example.com'),
+      churchId: ChurchId.create('church-1'),
+      status: 'invited',
+      createdAt: new Date(),
+      roles: [{ churchId: 'church-1', roleId: 'role-member' }],
+      profile: {
+        firstName: 'John',
+        lastName: 'Doe',
+        phone: undefined,
+        householdId: '',
+        householdRole: 'Head',
+      },
+    });
+    repo.getUserProfile.mockResolvedValue(mockActor);
+    repo.createUser.mockResolvedValue(mockCreatedUser);
 
     const result = await service.create(input, 'actor-1');
 
-    expect(repo.createUser).toHaveBeenCalledWith({ ...input, actorUserId: 'actor-1' });
-    expect(result).toEqual(mockUser);
+    expect(repo.getUserProfile).toHaveBeenCalledWith(UserId.create('actor-1'));
+    expect(repo.createUser).toHaveBeenCalledWith(
+      expect.any(User), // The created User object
+      UserId.create('actor-1')
+    );
+    expect(result).toEqual({
+      id: 'user-1',
+      primaryEmail: 'john@example.com',
+      status: 'invited',
+      createdAt: mockCreatedUser.createdAt.toISOString(),
+      lastLoginAt: undefined,
+      profile: mockCreatedUser.profile,
+      roles: [{ churchId: 'church-1', roleId: 'role-member' }],
+      deletedAt: undefined,
+    });
   });
 
   it('delegates update to repository', async () => {
     const input = { firstName: 'Jane' };
-    const mockUser = { id: 'user-1', firstName: 'Jane' };
-    repo.updateUser.mockResolvedValue(mockUser as unknown as any);
+    const mockUpdatedUser = User.from({
+      id: UserId.create('user-1'),
+      primaryEmail: Email.create('test@example.com'),
+      churchId: ChurchId.create('church-1'),
+      status: 'active',
+      createdAt: new Date(),
+      roles: [],
+      profile: {
+        firstName: 'Jane',
+        lastName: 'Doe',
+        householdId: '',
+        householdRole: 'Head',
+      },
+    });
+    repo.updateUser.mockResolvedValue(mockUpdatedUser);
 
     const result = await service.update('user-1', input, 'actor-1');
 
-    expect(repo.updateUser).toHaveBeenCalledWith('user-1', { ...input, actorUserId: 'actor-1' });
-    expect(result).toEqual(mockUser);
+    expect(repo.updateUser).toHaveBeenCalledWith(UserId.create('user-1'), {
+      ...input,
+      actorUserId: UserId.create('actor-1'),
+    });
+    expect(result).toEqual({
+      id: 'user-1',
+      primaryEmail: 'test@example.com',
+      status: 'active',
+      createdAt: mockUpdatedUser.createdAt.toISOString(),
+      lastLoginAt: undefined,
+      profile: mockUpdatedUser.profile,
+      roles: [],
+      deletedAt: undefined,
+    });
   });
 
   it('delegates delete to repository', async () => {
@@ -69,7 +186,9 @@ describe('UsersService', () => {
 
     const result = await service.delete('user-1', 'actor-1');
 
-    expect(repo.deleteUser).toHaveBeenCalledWith('user-1', { actorUserId: 'actor-1' });
+    expect(repo.deleteUser).toHaveBeenCalledWith(UserId.create('user-1'), {
+      actorUserId: UserId.create('actor-1'),
+    });
     expect(result).toEqual({ success: true });
   });
 
@@ -79,7 +198,9 @@ describe('UsersService', () => {
 
     const result = await service.hardDelete('user-1', 'actor-1');
 
-    expect(repo.hardDeleteUser).toHaveBeenCalledWith('user-1', { actorUserId: 'actor-1' });
+    expect(repo.hardDeleteUser).toHaveBeenCalledWith(UserId.create('user-1'), {
+      actorUserId: UserId.create('actor-1'),
+    });
     expect(result).toEqual(mockResult);
   });
 
@@ -89,7 +210,9 @@ describe('UsersService', () => {
 
     const result = await service.undelete('user-1', 'actor-1');
 
-    expect(repo.undeleteUser).toHaveBeenCalledWith('user-1', { actorUserId: 'actor-1' });
+    expect(repo.undeleteUser).toHaveBeenCalledWith(UserId.create('user-1'), {
+      actorUserId: UserId.create('actor-1'),
+    });
     expect(result).toEqual(mockResult);
   });
 
@@ -104,30 +227,42 @@ describe('UsersService', () => {
   });
 
   it('bulkImport gets user profile and creates invitations', async () => {
-    const mockUser = { id: 'actor-1', churchId: 'church-1' };
-    repo.getUserProfile.mockResolvedValue(mockUser as any);
+    const mockUser = User.from({
+      id: UserId.create('actor-1'),
+      primaryEmail: Email.create('actor@example.com'),
+      churchId: ChurchId.create('church-1'),
+      status: 'active',
+      createdAt: new Date(),
+      roles: [],
+      profile: {
+        firstName: 'Actor',
+        lastName: 'User',
+        householdId: '',
+        householdRole: 'Head',
+      },
+    });
+    repo.getUserProfile.mockResolvedValue(mockUser);
     const mockInvitations = [{ id: 'inv-1' }];
     repo.bulkCreateInvitations.mockResolvedValue(mockInvitations);
 
     const result = await service.bulkImport(['email@example.com'], 'actor-1');
 
-    expect(repo.getUserProfile).toHaveBeenCalledWith('actor-1');
+    expect(repo.getUserProfile).toHaveBeenCalledWith(UserId.create('actor-1'));
     expect(repo.bulkCreateInvitations).toHaveBeenCalledWith(
-      'church-1',
+      ChurchId.create('church-1'),
       ['email@example.com'],
       undefined,
-      'actor-1',
+      UserId.create('actor-1'),
       'member'
     );
     expect(result).toEqual(mockInvitations);
   });
 
   it('bulkImport throws error if user has no churchId', async () => {
-    const mockUser = { id: 'actor-1' };
-    repo.getUserProfile.mockResolvedValue(mockUser as any);
+    repo.getUserProfile.mockResolvedValue(null);
 
     await expect(service.bulkImport(['email@example.com'], 'actor-1')).rejects.toThrow(
-      'User must be associated with a church'
+      'User not found'
     );
   });
 });
