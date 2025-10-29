@@ -2,12 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AuditLogQueryService } from '../../src/modules/audit/audit-query.service';
 import { DATA_STORE } from '../../src/datastore';
 import { CACHE_STORE } from '../../src/common/cache-store.interface';
+import { CIRCUIT_BREAKER } from '../../src/common/circuit-breaker.interface';
+import { CircuitBreakerState } from '../../src/common/circuit-breaker-state.enum';
 import { ListAuditQueryDto } from '../../src/modules/audit/dto/list-audit-query.dto';
 
 describe('AuditLogQueryService', () => {
   let service: AuditLogQueryService;
   let mockDataStore: any;
   let mockCacheStore: any;
+  let mockCircuitBreaker: any;
 
   beforeEach(async () => {
     mockDataStore = {
@@ -22,6 +25,19 @@ describe('AuditLogQueryService', () => {
       clear: jest.fn(),
     };
 
+    mockCircuitBreaker = {
+      execute: jest.fn((fn, fallback) => {
+        // Default: execute the function normally, allowing tests to override
+        return fn();
+      }),
+      getState: jest.fn().mockReturnValue(CircuitBreakerState.CLOSED),
+      getMetrics: jest.fn(),
+      reset: jest.fn(),
+      setFailureThreshold: jest.fn(),
+      setTimeout: jest.fn(),
+      setHalfOpenSuccessThreshold: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuditLogQueryService,
@@ -32,6 +48,10 @@ describe('AuditLogQueryService', () => {
         {
           provide: CACHE_STORE,
           useValue: mockCacheStore,
+        },
+        {
+          provide: CIRCUIT_BREAKER,
+          useValue: mockCircuitBreaker,
         },
       ],
     }).compile();

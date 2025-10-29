@@ -4,6 +4,8 @@ import { AuditLogQueryService } from '../../src/modules/audit/audit-query.servic
 import { DATA_STORE } from '../../src/datastore';
 import { EVENT_STORE } from '../../src/common/event-store.interface';
 import { CACHE_STORE } from '../../src/common/cache-store.interface';
+import { CIRCUIT_BREAKER } from '../../src/common/circuit-breaker.interface';
+import { CircuitBreakerState } from '../../src/common/circuit-breaker-state.enum';
 import { AuditLogCreateInput } from '../../src/modules/audit/audit.interfaces';
 
 describe('AuditLogCommandService', () => {
@@ -11,6 +13,7 @@ describe('AuditLogCommandService', () => {
   let mockDataStore: any;
   let mockEventStore: any;
   let mockCacheStore: any;
+  let mockCircuitBreaker: any;
   let mockQueryService: any;
 
   beforeEach(async () => {
@@ -31,6 +34,16 @@ describe('AuditLogCommandService', () => {
       clear: jest.fn(),
     };
 
+    mockCircuitBreaker = {
+      execute: jest.fn((fn, fallback) => fn()),
+      getState: jest.fn().mockReturnValue(CircuitBreakerState.CLOSED),
+      getMetrics: jest.fn(),
+      reset: jest.fn(),
+      setFailureThreshold: jest.fn(),
+      setTimeout: jest.fn(),
+      setHalfOpenSuccessThreshold: jest.fn(),
+    };
+
     mockQueryService = {
       invalidateCache: jest.fn(),
     };
@@ -49,6 +62,10 @@ describe('AuditLogCommandService', () => {
         {
           provide: CACHE_STORE,
           useValue: mockCacheStore,
+        },
+        {
+          provide: CIRCUIT_BREAKER,
+          useValue: mockCircuitBreaker,
         },
         {
           provide: AuditLogQueryService,

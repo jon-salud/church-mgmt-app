@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { DATA_STORE, DataStore } from '../../datastore';
 import { CACHE_STORE, ICacheStore } from '../../common/cache-store.interface';
+import { ICircuitBreaker, CIRCUIT_BREAKER } from '../../common/circuit-breaker.interface';
 import { IAuditLogQueries, AuditLogQueryResult, AuditLogReadModel } from './audit.interfaces';
 import { ListAuditQueryDto } from './dto/list-audit-query.dto';
 
@@ -13,7 +14,9 @@ export class AuditLogQueryService implements IAuditLogQueries {
     @Inject(DATA_STORE)
     private readonly dataStore: DataStore,
     @Inject(CACHE_STORE)
-    private readonly cacheStore: ICacheStore
+    private readonly cacheStore: ICacheStore,
+    @Inject(CIRCUIT_BREAKER)
+    private readonly circuitBreaker: ICircuitBreaker
   ) {}
 
   async listAuditLogs(query: ListAuditQueryDto): Promise<AuditLogQueryResult> {
@@ -30,8 +33,15 @@ export class AuditLogQueryService implements IAuditLogQueries {
 
     this.logger.debug(`Cache miss for audit logs: ${cacheKey}, querying datastore`);
 
-    // Query datastore if not in cache
-    const auditLogs = await this.dataStore.listAuditLogs(query);
+    // Query datastore with circuit breaker protection
+    // Fallback: return empty audit logs if circuit is open
+    const auditLogs = await this.circuitBreaker.execute(
+      () => this.dataStore.listAuditLogs(query),
+      () => ({
+        items: [],
+        meta: { total: 0, page: query.page || 1, pageSize: query.pageSize || 50 },
+      })
+    );
 
     // Transform to read models with actor resolution
     const items: AuditLogReadModel[] = await Promise.all(

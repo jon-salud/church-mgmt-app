@@ -6,10 +6,13 @@ import { AuditLogCommandService } from './audit-command.service';
 import { AuditProjectionsService } from './projections.service';
 import { EVENT_STORE } from '../../common/event-store.interface';
 import { CACHE_STORE } from '../../common/cache-store.interface';
+import { CIRCUIT_BREAKER } from '../../common/circuit-breaker.interface';
 import { FileEventStoreService } from '../../event-store/file-event-store.service';
 import { CacheFactory } from '../../common/cache-store.factory';
+import { ResilienceModule } from '../../resilience/resilience.module';
 
 @Module({
+  imports: [ResilienceModule],
   controllers: [AuditController],
   providers: [
     AuditService,
@@ -25,6 +28,12 @@ import { CacheFactory } from '../../common/cache-store.factory';
       useFactory: () => CacheFactory.create(process.env.CACHE_MODE || 'memory'),
     },
   ],
-  exports: [AuditService, AuditLogQueryService, AuditLogCommandService, AuditProjectionsService],
+  exports: [
+    AuditService,
+    AuditLogQueryService,
+    AuditLogCommandService,
+    AuditProjectionsService,
+    CIRCUIT_BREAKER,
+  ],
 })
 export class AuditModule {}
