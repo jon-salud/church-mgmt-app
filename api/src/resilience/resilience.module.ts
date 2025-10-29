@@ -21,7 +21,7 @@ import { CircuitBreakerFactory } from './circuit-breaker-factory';
     CircuitBreakerService,
     {
       provide: CIRCUIT_BREAKER,
-      useFactory: (config?: { mode?: string }) => {
+      useFactory: () => {
         const mode = (process.env.CIRCUIT_BREAKER_MODE as 'enabled' | 'disabled') || 'enabled';
         const circuitBreaker = CircuitBreakerFactory.create(mode);
 

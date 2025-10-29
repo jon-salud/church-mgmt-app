@@ -23,7 +23,7 @@ export class InMemoryCacheService implements ICacheStore {
   private cache = new Map<string, CacheEntry<unknown>>();
   private stats = { hits: 0, misses: 0 };
   private readonly maxSize = 1000; // Maximum number of cache entries
-  private cleanupInterval: NodeJS.Timeout | null = null;
+  private cleanupInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor() {
     // Start cleanup routine to remove expired entries every 60 seconds

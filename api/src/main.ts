@@ -14,8 +14,10 @@ async function bootstrap() {
   // Initialize OpenTelemetry SDK first
   try {
     await sdk.start();
+    // eslint-disable-next-line no-console
     console.log('OpenTelemetry SDK initialized successfully');
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error('Failed to initialize OpenTelemetry SDK:', error);
   }
 

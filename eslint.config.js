@@ -113,6 +113,10 @@ export default [
         global: 'readonly',
         structuredClone: 'readonly',
         URL: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
       },
     },
     rules: {

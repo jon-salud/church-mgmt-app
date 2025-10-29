@@ -3,7 +3,6 @@ import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentation
 import { PrometheusExporter } from '@opentelemetry/exporter-prometheus';
 import { JaegerExporter } from '@opentelemetry/exporter-jaeger';
 import { detectResources } from '@opentelemetry/resources';
-import { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 
 // Create resource with service information
 const resource = detectResources();
