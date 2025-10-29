@@ -592,7 +592,7 @@ export class InMemoryDataStore {
   }
 
   async getUserProfile(id: string) {
-    const user = this.getUserById(id);
+    const user = await this.getUserById(id);
     if (!user) return null;
     const groups = this.groups
       .filter(group => group.members.some(member => member.userId === id))
@@ -674,7 +674,7 @@ export class InMemoryDataStore {
     const actorName = this.getUserName(input.actorUserId);
     const targetName = this.getUserName(user.id);
     const roleSummaries = roles.map(role => this.buildUserRolePayload(role).role);
-    this.createAuditLog({
+    await this.createAuditLog({
       actorUserId: input.actorUserId,
       action: 'user.created',
       entity: 'user',
@@ -686,22 +686,104 @@ export class InMemoryDataStore {
         roles: roleSummaries,
       },
     });
-    return this.getUserProfile(user.id);
+    return await this.getUserProfile(user.id);
   }
 
   async updateUser(id: string, input: UserUpdateInput) {
     const user = this.users.find(record => record.id === id);
     if (!user) return null;
-    // ... (implementation continues with all the update logic)
-    // For brevity, I'll implement a simplified version focusing on core functionality
 
-    if (input.primaryEmail) user.primaryEmail = input.primaryEmail;
-    if (input.firstName) user.profile.firstName = input.firstName;
-    if (input.lastName) user.profile.lastName = input.lastName;
+    // Handle email uniqueness check
+    if (
+      input.primaryEmail &&
+      input.primaryEmail.toLowerCase() !== user.primaryEmail.toLowerCase()
+    ) {
+      const emailTaken = this.users.some(
+        record =>
+          record.id !== id &&
+          record.primaryEmail.toLowerCase() === input.primaryEmail!.toLowerCase()
+      );
+      if (emailTaken) {
+        throw new Error('A user with that email already exists');
+      }
+    }
+
+    // Update primary fields
+    if (input.primaryEmail !== undefined) user.primaryEmail = input.primaryEmail;
+    if (input.status !== undefined) user.status = input.status;
+
+    // Update roles if provided
+    if (input.roleIds !== undefined) {
+      const churchId = user.roles.length > 0 ? user.roles[0].churchId : (await this.getChurch()).id;
+      const roleIdsSource =
+        input.roleIds && input.roleIds.length
+          ? Array.from(new Set(input.roleIds))
+          : [this.getDefaultRoleId('member')];
+      user.roles = roleIdsSource.map(identifier => ({
+        churchId,
+        roleId: this.resolveRoleId(identifier),
+      }));
+    }
+
+    // Update profile fields
+    if (input.firstName !== undefined) user.profile.firstName = input.firstName;
+    if (input.lastName !== undefined) user.profile.lastName = input.lastName;
     if (input.phone !== undefined) user.profile.phone = input.phone;
     if (input.notes !== undefined) user.profile.notes = input.notes;
 
-    return this.getUserProfile(user.id);
+    // Handle address - update household
+    if (input.address !== undefined) {
+      const household = this.households.find(h => h.id === user.profile.householdId);
+      if (household) {
+        household.address = input.address;
+      }
+    }
+
+    // Update additional profile fields
+    if (input.membershipStatus !== undefined)
+      user.profile.membershipStatus = input.membershipStatus as any;
+    if (input.joinMethod !== undefined) user.profile.joinMethod = input.joinMethod as any;
+    if (input.joinDate !== undefined) user.profile.joinDate = input.joinDate;
+    if (input.previousChurch !== undefined) user.profile.previousChurch = input.previousChurch;
+    if (input.baptismDate !== undefined) user.profile.baptismDate = input.baptismDate;
+    if (input.spiritualGifts !== undefined) user.profile.spiritualGifts = input.spiritualGifts;
+    if (input.coursesAttended !== undefined) user.profile.coursesAttended = input.coursesAttended;
+    if (input.maritalStatus !== undefined) user.profile.maritalStatus = input.maritalStatus as any;
+    if (input.occupation !== undefined) user.profile.occupation = input.occupation;
+    if (input.school !== undefined) user.profile.school = input.school;
+    if (input.gradeLevel !== undefined) user.profile.gradeLevel = input.gradeLevel;
+    if (input.graduationYear !== undefined) user.profile.graduationYear = input.graduationYear;
+    if (input.skillsAndInterests !== undefined)
+      user.profile.skillsAndInterests = input.skillsAndInterests;
+    if (input.backgroundCheckStatus !== undefined)
+      user.profile.backgroundCheckStatus = input.backgroundCheckStatus as any;
+    if (input.backgroundCheckDate !== undefined)
+      user.profile.backgroundCheckDate = input.backgroundCheckDate;
+    if (input.onboardingComplete !== undefined)
+      user.profile.onboardingComplete = input.onboardingComplete;
+    if (input.emergencyContactName !== undefined)
+      user.profile.emergencyContactName = input.emergencyContactName;
+    if (input.emergencyContactPhone !== undefined)
+      user.profile.emergencyContactPhone = input.emergencyContactPhone;
+    if (input.allergiesOrMedicalNotes !== undefined)
+      user.profile.allergiesOrMedicalNotes = input.allergiesOrMedicalNotes;
+    if (input.parentalConsentOnFile !== undefined)
+      user.profile.parentalConsentOnFile = input.parentalConsentOnFile;
+    if (input.pastoralNotes !== undefined) user.profile.pastoralNotes = input.pastoralNotes;
+
+    // Create audit log
+    await this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'user.updated',
+      entity: 'user',
+      entityId: user.id,
+      summary: `${this.getUserName(input.actorUserId)} updated ${this.getUserName(user.id)}'s profile`,
+      metadata: {
+        userId: user.id,
+      },
+    });
+
+    return await this.getUserProfile(user.id);
   }
 
   async deleteUser(id: string, _input: UserDeleteInput) {
@@ -1758,7 +1840,7 @@ export class InMemoryDataStore {
     };
     this.requests.push(request);
     const actorName = this.getUserName(actorUserId);
-    this.createAuditLog({
+    await this.createAuditLog({
       actorUserId,
       action: 'request.created',
       entity: 'request',
@@ -1802,7 +1884,7 @@ export class InMemoryDataStore {
     };
     this.requestTypes.push(newRequestType);
     const actorName = this.getUserName(actorUserId);
-    this.createAuditLog({
+    await this.createAuditLog({
       actorUserId,
       action: 'requestType.created',
       entity: 'requestType',
@@ -1823,7 +1905,7 @@ export class InMemoryDataStore {
     const oldName = requestType.name;
     requestType.name = name;
     const actorName = this.getUserName(actorUserId);
-    this.createAuditLog({
+    await this.createAuditLog({
       actorUserId,
       action: 'requestType.updated',
       entity: 'requestType',
@@ -2000,7 +2082,7 @@ export class InMemoryDataStore {
       updatedAt: new Date().toISOString(),
     };
     this.children.push(child);
-    this.createAuditLog({
+    await this.createAuditLog({
       actorUserId: data.actorUserId,
       action: 'child.created',
       entity: 'child',
@@ -2049,7 +2131,7 @@ export class InMemoryDataStore {
     }
     if (Object.keys(diff).length > 0) {
       child.updatedAt = new Date().toISOString();
-      this.createAuditLog({
+      await this.createAuditLog({
         actorUserId: data.actorUserId,
         action: 'child.updated',
         entity: 'child',
@@ -2070,7 +2152,7 @@ export class InMemoryDataStore {
       return { success: false };
     }
     const [removed] = this.children.splice(index, 1);
-    this.createAuditLog({
+    await this.createAuditLog({
       actorUserId,
       action: 'child.deleted',
       entity: 'child',
@@ -2136,7 +2218,7 @@ export class InMemoryDataStore {
       status: 'pending',
     };
     this.checkins.push(checkin);
-    this.createAuditLog({
+    await this.createAuditLog({
       actorUserId: data.actorUserId,
       action: 'checkin.created',
       entity: 'checkin',
@@ -2187,7 +2269,7 @@ export class InMemoryDataStore {
       checkin.checkedOutBy = data.checkedOutBy;
     }
     if (Object.keys(diff).length > 0) {
-      this.createAuditLog({
+      await this.createAuditLog({
         actorUserId: data.actorUserId,
         action: 'checkin.updated',
         entity: 'checkin',
@@ -2234,7 +2316,7 @@ export class InMemoryDataStore {
     }
     requestType.status = 'archived';
     const actorName = this.getUserName(actorUserId);
-    this.createAuditLog({
+    await this.createAuditLog({
       actorUserId,
       action: 'requestType.archived',
       entity: 'requestType',
@@ -2251,7 +2333,7 @@ export class InMemoryDataStore {
     }
     requestType.status = status;
     const actorName = this.getUserName(actorUserId);
-    this.createAuditLog({
+    await this.createAuditLog({
       actorUserId,
       action: 'requestType.status.updated',
       entity: 'requestType',
