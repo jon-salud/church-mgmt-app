@@ -275,6 +275,14 @@ export interface DemoSession {
   provider: 'google' | 'facebook' | 'demo';
 }
 
+export interface MockPushSubscription {
+  id: string;
+  endpoint: string;
+  keys: { p256dh: string; auth: string };
+  userId: string;
+  createdAt: string;
+}
+
 const today = new Date();
 
 const makeDate = (offsetDays: number, hour = 10): string => {
