@@ -46,7 +46,9 @@ export const sdk = new NodeSDK({
 process.on('SIGTERM', () => {
   sdk
     .shutdown()
+    // eslint-disable-next-line no-console
     .then(() => console.log('OpenTelemetry SDK shut down successfully'))
+    // eslint-disable-next-line no-console
     .catch(error => console.error('Error shutting down OpenTelemetry SDK', error))
     .finally(() => process.exit(0));
 });
@@ -54,7 +56,9 @@ process.on('SIGTERM', () => {
 process.on('SIGINT', () => {
   sdk
     .shutdown()
+    // eslint-disable-next-line no-console
     .then(() => console.log('OpenTelemetry SDK shut down successfully'))
+    // eslint-disable-next-line no-console
     .catch(error => console.error('Error shutting down OpenTelemetry SDK', error))
     .finally(() => process.exit(0));
 });
