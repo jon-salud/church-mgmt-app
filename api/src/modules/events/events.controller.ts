@@ -34,7 +34,7 @@ import { SuccessResponseDto } from '../../common/dto/success-response.dto';
 @ApiBearerAuth()
 @Controller('events')
 export class EventsController {
-  public eventsService: EventsService;
+  eventsService: EventsService;
 
   constructor(eventsService: EventsService) {
     this.eventsService = eventsService;

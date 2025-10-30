@@ -29,7 +29,7 @@ import { arrayOfObjectsResponse, objectResponse } from '../../common/openapi/sch
 @ApiBearerAuth()
 @Controller('roles')
 export class RolesController {
-  public rolesService: RolesService;
+  rolesService: RolesService;
 
   constructor(rolesService: RolesService) {
     this.rolesService = rolesService;

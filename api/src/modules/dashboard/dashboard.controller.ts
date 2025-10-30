@@ -9,7 +9,7 @@ import { objectResponse } from '../../common/openapi/schemas';
 @ApiBearerAuth()
 @Controller('dashboard')
 export class DashboardController {
-  public dashboardService: DashboardService;
+  dashboardService: DashboardService;
 
   constructor(dashboardService: DashboardService) {
     this.dashboardService = dashboardService;

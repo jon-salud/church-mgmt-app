@@ -35,7 +35,7 @@ import { SuccessResponseDto } from '../../common/dto/success-response.dto';
 @ApiBearerAuth()
 @Controller('documents')
 export class DocumentsController {
-  public documentsService: DocumentsService;
+  documentsService: DocumentsService;
 
   constructor(documentsService: DocumentsService) {
     this.documentsService = documentsService;

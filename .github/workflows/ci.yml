@@ -86,6 +86,8 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Build API
+        run: pnpm -C api build
       - name: Run API tests with coverage
         run: pnpm -C api test
 
