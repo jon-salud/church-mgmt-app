@@ -27,7 +27,7 @@ export async function bootstrapApp(customize?: (builder: any) => Promise<void> |
   try {
     // attempt to load compiled app module first
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const dist = await import('../../dist/src/modules/app.module');
+    const dist = require('../../dist/src/modules/app.module');
     const AppModuleDist = dist?.AppModule;
     if (AppModuleDist) {
       builder = Test.createTestingModule({ imports: [AppModuleDist] });

@@ -46,6 +46,9 @@ export class InMemoryCacheService implements ICacheStore {
       return undefined;
     }
 
+    // Update access time for LRU
+    entry.createdAt = Date.now();
+
     this.stats.hits++;
     return entry.value;
   }

@@ -40,7 +40,9 @@ process.env.DATA_MODE = process.env.DATA_MODE ?? 'mock';
 
 // Flag to indicate unit tests (not e2e) for conditional patching
 // Check if we're running unit/integration tests by looking for test files
-const isUnitTestRun = process.argv.some(arg => arg.includes('/unit/') || arg.includes('unit/auth.guard.spec.ts'));
+const isUnitTestRun = process.argv.some(
+  arg => arg.includes('/unit/') || arg.includes('unit/auth.guard.spec.ts')
+);
 
 (globalThis as any).__isUnitTest = isUnitTestRun;
 
