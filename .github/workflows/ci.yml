@@ -90,6 +90,8 @@ jobs:
         run: pnpm -C api prisma:generate
       - name: Clean previous build
         run: rm -rf api/dist
+      - name: Kill any lingering processes
+        run: pkill -9 node || true
       - name: Build API
         run: pnpm -C api build
       - name: Run API tests with coverage
