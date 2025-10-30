@@ -59,6 +59,10 @@ export class AuditLogCommandService implements IAuditLogCommands {
             metadata: input.metadata,
           },
         });
+      } else {
+        this.logger.warn(
+          `Skipping event store append for audit log creation - churchId is required but not provided. Entity: ${input.entity}, EntityId: ${input.entityId}, Action: ${input.action}`
+        );
       }
 
       // Invalidate cache since new audit log was created

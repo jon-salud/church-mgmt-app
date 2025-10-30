@@ -74,10 +74,7 @@ export class InMemoryCacheService implements ICacheStore {
   async clear(): Promise<void> {
     this.cache.clear();
     this.stats = { hits: 0, misses: 0 };
-    if (this.cleanupInterval) {
-      clearInterval(this.cleanupInterval);
-      this.cleanupInterval = null;
-    }
+    this.stopCleanupRoutine();
   }
 
   async getStats(): Promise<{ hits: number; misses: number; size: number; entries: number }> {
@@ -99,10 +96,7 @@ export class InMemoryCacheService implements ICacheStore {
   }
 
   onModuleDestroy(): void {
-    if (this.cleanupInterval) {
-      clearInterval(this.cleanupInterval);
-      this.cleanupInterval = null;
-    }
+    this.stopCleanupRoutine();
   }
 
   /**
@@ -148,5 +142,15 @@ export class InMemoryCacheService implements ICacheStore {
         this.logger.debug(`Cleaned up ${removed} expired cache entries`);
       }
     }, 60000); // Run every 60 seconds
+  }
+
+  /**
+   * Stop the cleanup routine
+   */
+  private stopCleanupRoutine(): void {
+    if (this.cleanupInterval) {
+      clearInterval(this.cleanupInterval);
+      this.cleanupInterval = null;
+    }
   }
 }

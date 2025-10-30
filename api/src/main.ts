@@ -8,11 +8,12 @@ import { createAppLogger } from './common/logger/app-logger';
 import { MetricsService } from './modules/observability/metrics.service';
 import { initSentry } from './common/observability/sentry';
 import { MAX_FILE_SIZE_BYTES } from './common/constants';
-import { sdk } from './opentelemetry';
+import { initializeOpenTelemetry } from './opentelemetry';
 
 async function bootstrap() {
   // Initialize OpenTelemetry SDK first
   try {
+    const sdk = await initializeOpenTelemetry();
     await sdk.start();
     // eslint-disable-next-line no-console
     console.log('OpenTelemetry SDK initialized successfully');

@@ -1,4 +1,5 @@
 import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
+import { randomUUID } from 'crypto';
 import { OpenTelemetryService } from '../modules/opentelemetry/opentelemetry.service';
 import { ObservabilityMetrics } from '../types';
 
@@ -292,7 +293,7 @@ export class ObservabilityService {
    * Start a traced span for an operation
    */
   startSpan(operationName: string, attributes?: Record<string, any>): string {
-    const spanId = `${operationName}-${Date.now()}-${Math.random()}`;
+    const spanId = `${operationName}-${Date.now()}-${randomUUID()}`;
     this.spans.set(spanId, {
       operationName,
       startTime: Date.now(),

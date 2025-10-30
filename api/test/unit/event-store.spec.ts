@@ -1,7 +1,5 @@
 import { FileEventStoreService } from '../../src/event-store/file-event-store.service';
-import { DomainEvent } from '../../src/common/event-store.interface';
 import * as fs from 'fs/promises';
-import * as path from 'path';
 
 describe('Event Store (Unit Tests)', () => {
   let eventStore: FileEventStoreService;
@@ -26,7 +24,7 @@ describe('Event Store (Unit Tests)', () => {
 
   describe('append', () => {
     it('should append a domain event to the store', async () => {
-      const event = await eventStore.append({
+      await eventStore.append({
         aggregateId: 'church-1',
         aggregateType: 'AuditLog',
         eventType: 'AuditLogCreated',
@@ -39,13 +37,14 @@ describe('Event Store (Unit Tests)', () => {
         },
       });
 
-      expect(event).toHaveProperty('id');
-      expect(event.id).toBeTruthy();
-      expect(event.aggregateId).toBe('church-1');
-      expect(event.aggregateType).toBe('AuditLog');
-      expect(event.eventType).toBe('AuditLogCreated');
-      expect(event.version).toBe(1);
-      expect(event.data.action).toBe('CREATE');
+      const result = await eventStore.query();
+      expect(result.events[0]).toHaveProperty('id');
+      expect(result.events[0].id).toBeTruthy();
+      expect(result.events[0].aggregateId).toBe('church-1');
+      expect(result.events[0].aggregateType).toBe('AuditLog');
+      expect(result.events[0].eventType).toBe('AuditLogCreated');
+      expect(result.events[0].version).toBe(1);
+      expect(result.events[0].data.action).toBe('CREATE');
     });
 
     it('should generate a unique ID for each event', async () => {

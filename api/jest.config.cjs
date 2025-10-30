@@ -2,7 +2,9 @@ module.exports = {
   testEnvironment: 'node',
   roots: ['<rootDir>/test'],
   moduleFileExtensions: ['ts', 'js'],
-  transform: { '^.+\\.(t|j)s$': 'ts-jest' },
+  transform: {
+    '^.+\\.ts$': 'ts-jest',
+  },
   collectCoverage: true,
   coverageDirectory: '<rootDir>/coverage',
   coverageReporters: ['text', 'lcov'],
