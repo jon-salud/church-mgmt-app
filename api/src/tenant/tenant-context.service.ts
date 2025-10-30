@@ -18,10 +18,8 @@ export class TenantContextService {
 
     // For now, extract from header or default to 'default-tenant'
     // In production, this would be more sophisticated
-    const tenantId = this.extractTenantId(request);
-
     return {
-      tenantId,
+      tenantId: this.extractTenantId(request),
       // databaseUrl would be resolved from tenant metadata in system DB
     };
   }
@@ -61,7 +59,7 @@ export class TenantContextService {
    * Get tenant database URL from system metadata
    * In a real implementation, this would query the system database
    */
-  async getTenantDatabaseUrl(tenantId: string): Promise<string> {
+  async getTenantDatabaseUrl(_tenantId: string): Promise<string> {
     // For now, use environment variable
     // In production, this would query system DB for tenant metadata
     const baseUrl = process.env.DATABASE_URL;

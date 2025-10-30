@@ -339,6 +339,20 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
     - Move away from pnpm workspaces for API testing
     - Implement Jest configuration workarounds for pnpm workspaces
 
+### Epic: Migrate API test runner to Vitest (developer-experience)
+
+- **Motivation:** pnpm workspace + Jest + ts-jest leads to unreliable transformer resolution ("Module ts-jest not found") in local dev and some CI environments. Migrating to Vitest (or an alternative runner) reduces friction, speeds up local test runs, and avoids fragile transformer/workarounds.
+- **Scope:** Replace Jest+ts-jest for `api/` with Vitest (or a compatible runner), migrate tests and test utilities, update CI workflows, and verify coverage reporting parity.
+- **Acceptance criteria:**
+  - All `api/` tests run locally with `pnpm -C api test` using Vitest.
+  - CI workflows updated to run Vitest and collect coverage reports comparable to Jest's current output.
+  - Developer docs (`docs/SETUP.md`) updated with usage and migration notes.
+- **Risks & Mitigations:**
+  - Test semantics differences between Jest and Vitest — mitigate by running both runners in parallel during migration, and updating tests where API differences exist.
+  - Coverage reporting differences — use c8/nyc-compatible tools or Vitest's built-in coverage support configured to generate lcov for CI.
+- **Estimated effort:** 2-3 days for a single developer (migrate, test, CI), depending on test complexity and mocking utilities.
+
+
 ## Sprint 6 Advanced Patterns Backlog
 
 - **Event Sourcing** - Consider for audit-heavy operations (deprioritized from Sprint 6 scope)

@@ -3,7 +3,9 @@ module.exports = {
   roots: ['<rootDir>/test'],
   moduleFileExtensions: ['ts', 'js'],
   transform: {
-    '^.+\\.ts$': 'ts-jest',
+    // Use a local wrapper so Jest can resolve ts-jest correctly inside pnpm
+    // workspaces where package hoisting can confuse module resolution.
+    '^.+\\.ts$': '<rootDir>/test/ts-jest-wrapper.cjs',
   },
   collectCoverage: true,
   coverageDirectory: '<rootDir>/coverage',

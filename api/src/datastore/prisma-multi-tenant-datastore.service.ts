@@ -1,4 +1,4 @@
-import { Injectable, Logger, Inject, ExecutionContext } from '@nestjs/common';
+import { Injectable, Logger, ExecutionContext } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { TenantPrismaService, SystemPrismaService } from '../prisma/prisma-multi-tenant.service';
 import { TenantContextService } from '../tenant/tenant-context.service';
@@ -139,7 +139,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     });
   }
 
-  async deleteUser(id: string, input: UserDeleteInput): Promise<{ success: boolean }> {
+  async deleteUser(id: string, _input: UserDeleteInput): Promise<{ success: boolean }> {
     const client = await this.getTenantClient();
     const user = await client.user.findUnique({
       where: { id },
@@ -327,7 +327,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     });
   }
 
-  async deleteEvent(id: string, input: EventDeleteInput): Promise<{ success: boolean }> {
+  async deleteEvent(id: string, _input: EventDeleteInput): Promise<{ success: boolean }> {
     const client = await this.getTenantClient();
     const event = await client.event.findUnique({
       where: { id },
@@ -1207,7 +1207,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     });
   }
 
-  async createRequest(input: any, actorUserId: string): Promise<any> {
+  async createRequest(input: any, _actorUserId: string): Promise<any> {
     const client = await this.getTenantClient();
     return client.request.create({
       data: input,
@@ -1268,7 +1268,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     description: string | undefined,
     fileData: string,
     _roleIds: string[],
-    actorUserId: string
+    _actorUserId: string
   ): Promise<any> {
     const client = await this.getTenantClient();
     return client.document.create({
@@ -1295,7 +1295,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     title: string | undefined,
     description: string | undefined,
     _roleIds: string[] | undefined,
-    actorUserId: string
+    _actorUserId: string
   ): Promise<any> {
     const client = await this.getTenantClient();
     return client.document.update({
@@ -1719,7 +1719,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     return { success: true };
   }
 
-  async updateRequestType(id: string, name: string, actorUserId: string): Promise<any> {
+  async updateRequestType(id: string, name: string, _actorUserId: string): Promise<any> {
     const client = await this.getTenantClient();
     return client.requestType.update({
       where: { id },
@@ -2243,7 +2243,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     roleId: string | undefined,
     actorUserId: string,
     type: 'team' | 'member' = 'team',
-    context?: ExecutionContext
+    _context?: ExecutionContext
   ): Promise<any[]> {
     const invitations: any[] = [];
     const errors: string[] = [];

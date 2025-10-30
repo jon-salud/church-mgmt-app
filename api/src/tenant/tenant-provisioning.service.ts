@@ -8,7 +8,7 @@ export interface TenantCreationRequest {
   adminEmail: string;
   adminName: string;
   plan?: string;
-  region?: string;
+  region?: string; // optional, kept for compatibility but not persisted to schema
 }
 
 export interface TenantCreationResponse {
@@ -27,7 +27,7 @@ export class TenantProvisioningService {
    * Create a new tenant with dedicated database
    */
   async createTenant(request: TenantCreationRequest): Promise<TenantCreationResponse> {
-    const { name, subdomain, adminEmail, adminName, plan = 'free', region = 'us-east-1' } = request;
+    const { name, subdomain, adminEmail, adminName, plan = 'free' } = request;
 
     // Generate unique tenant ID
     const tenantId = this.generateTenantId();
@@ -41,46 +41,51 @@ export class TenantProvisioningService {
       throw new Error(`Subdomain '${subdomain}' is already taken`);
     }
 
-    // Generate database URL for the tenant
-    const databaseUrl = await this.createTenantDatabase(tenantId, region);
+    // Generate database name & URL for the tenant
+    const databaseName = `churchapp_${tenantId}`;
+    const databaseUrl = await this.createTenantDatabase(databaseName);
 
-    // Create tenant record in system metadata
-    const tenant = await this.systemPrisma.tenant.create({
+    // Create tenant record in system metadata (note: schema expects databaseName)
+    await this.systemPrisma.tenant.create({
       data: {
         id: tenantId,
         name,
         subdomain,
+        databaseName,
         databaseUrl,
         plan,
-        region,
         status: 'provisioning',
         settings: {
           create: {
-            maxUsers: plan === 'free' ? 50 : plan === 'pro' ? 500 : 5000,
-            maxStorageGb: plan === 'free' ? 1 : plan === 'pro' ? 10 : 100,
-            features: this.getPlanFeatures(plan),
+            // schema has a Json `features` field; include plan limits here
+            features: {
+              maxUsers: plan === 'free' ? 50 : plan === 'pro' ? 500 : 5000,
+              maxStorageGb: plan === 'free' ? 1 : plan === 'pro' ? 10 : 100,
+              planFeatures: this.getPlanFeatures(plan),
+            },
           },
         },
         usage: {
           create: {
-            databaseSizeBytes: 0,
-            userCount: 0,
-            storageUsedBytes: 0,
+            databaseSizeMb: 0,
+            activeUsers: 0,
+            storageUsedMb: 0,
           },
         },
       },
     });
 
     // Create system admin user for the tenant
+    // NOTE: system-schema.SystemUser does not include tenantId/name/apiToken fields —
+    // store only the supported fields. The generated adminToken is returned to the caller
+    // for initial setup but not persisted in SystemUser (consider a separate tokens table
+    // for production)
     const adminToken = this.generateAdminToken();
     await this.systemPrisma.systemUser.create({
       data: {
-        tenantId,
         email: adminEmail,
-        name: adminName,
         role: 'admin',
         status: 'active',
-        apiToken: adminToken,
       },
     });
 
@@ -124,10 +129,10 @@ export class TenantProvisioningService {
       data: { status: 'deprovisioned' },
     });
 
-    // Log the deprovisioning
+    // Log the deprovisioning. SystemAuditLog schema uses actorId rather than tenantId.
     await this.systemPrisma.systemAuditLog.create({
       data: {
-        tenantId,
+        actorId: null,
         action: 'tenant_deprovisioned',
         entity: 'tenant',
         entityId: tenantId,
@@ -154,7 +159,7 @@ export class TenantProvisioningService {
   /**
    * Update tenant settings
    */
-  async updateTenantSettings(tenantId: string, settings: Partial<any>) {
+  async updateTenantSettings(tenantId: string, settings: Partial<Record<string, unknown>>) {
     return this.systemPrisma.tenantSettings.update({
       where: { tenantId },
       data: settings,
@@ -173,7 +178,7 @@ export class TenantProvisioningService {
   /**
    * Update tenant usage metrics
    */
-  async updateTenantUsage(tenantId: string, usage: Partial<any>) {
+  async updateTenantUsage(tenantId: string, usage: Partial<Record<string, unknown>>) {
     return this.systemPrisma.tenantUsage.update({
       where: { tenantId },
       data: usage,
@@ -188,7 +193,7 @@ export class TenantProvisioningService {
     return `admin_${randomBytes(16).toString('hex')}`;
   }
 
-  private async createTenantDatabase(tenantId: string, region: string): Promise<string> {
+  private async createTenantDatabase(databaseName: string): Promise<string> {
     // In a real implementation, this would:
     // 1. Call cloud provider API (AWS RDS, Google Cloud SQL, etc.)
     // 2. Create a new database instance
@@ -199,7 +204,7 @@ export class TenantProvisioningService {
     // This would be replaced with actual cloud database provisioning
     const dbHost = process.env.DB_HOST || 'localhost';
     const dbPort = process.env.DB_PORT || '5432';
-    const dbName = `churchapp_${tenantId}`;
+    const dbName = databaseName;
     const dbUser = process.env.DB_USER || 'postgres';
     const dbPassword = process.env.DB_PASSWORD || 'password';
 
@@ -209,8 +214,8 @@ export class TenantProvisioningService {
   private async initializeTenantDatabase(
     databaseUrl: string,
     tenantId: string,
-    adminEmail: string,
-    adminName: string
+    _adminEmail: string,
+    _adminName: string
   ): Promise<void> {
     // In a real implementation, this would:
     // 1. Run Prisma migrations on the new database

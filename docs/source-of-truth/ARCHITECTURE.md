@@ -182,9 +182,7 @@ The system implements repository abstractions for domain-specific data access:
 - **Implementation:** Each domain (Users, Documents, Groups) has dedicated repository interfaces with dependency injection tokens.
 - **Benefits:** Provides clean separation of concerns, improved testability, and flexible data access strategies.
 
-### 5.4. Data Isolation & Multi-tenancy
-
-### 5.4. Data Isolation & Multi-tenancy
+-### 5.4. Data Isolation & Multi-tenancy
 
 - **Physical Data Segregation:** Each tenant (church) has its own dedicated PostgreSQL database, ensuring complete isolation and GDPR compliance.
 - **System Metadata Database:** Central database for tenant management, settings, usage tracking, and cross-tenant operations.
