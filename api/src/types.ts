@@ -47,3 +47,31 @@ export interface Request {
     };
   };
 }
+
+export interface ObservabilityMetrics {
+  eventStore: {
+    appendCount: number;
+    appendTotalDurationMs: number;
+    appendAvgDurationMs: number;
+    queryCount: number;
+    queryTotalDurationMs: number;
+    queryAvgDurationMs: number;
+    rebuildCount: number;
+    rebuildTotalDurationMs: number;
+    rebuildAvgDurationMs: number;
+  };
+  circuitBreaker: {
+    stateTransitionCount: number;
+    failureCount: number;
+    recoveryCount: number;
+  };
+  cqrs: {
+    commandCount: number;
+    commandTotalDurationMs: number;
+    commandAvgDurationMs: number;
+    queryCount: number;
+    queryTotalDurationMs: number;
+    queryAvgDurationMs: number;
+  };
+  timestamp: string;
+}

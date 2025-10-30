@@ -21,6 +21,7 @@ import { RequestsModule } from './requests/requests.module';
 import { InvitationsModule } from './invitations/invitations.module';
 import { DocumentsModule } from './documents/documents.module';
 import { TenantModule } from '../tenant/tenant.module';
+import { OpenTelemetryModule } from './opentelemetry/opentelemetry.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { TenantModule } from '../tenant/tenant.module';
     InvitationsModule,
     DocumentsModule,
     TenantModule,
+    OpenTelemetryModule,
   ],
 })
 export class AppModule {}
