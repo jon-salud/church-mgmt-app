@@ -376,13 +376,18 @@ export class MockDatabaseService {
 
   private hydrateAuditLogSnapshot() {
     try {
-      const persisted = this.auditPersistence.load();
-      if (Array.isArray(persisted) && persisted.length > 0) {
-        this.auditLogs = persisted.map(log => clone(log));
-        this.logger.log(`Loaded ${this.auditLogs.length} audit log entries from disk.`);
-        return;
+      // Guard against missing persistence adapter in some test bootstraps
+      if (this.auditPersistence && typeof this.auditPersistence.load === 'function') {
+        const persisted = this.auditPersistence.load();
+        if (Array.isArray(persisted) && persisted.length > 0) {
+          this.auditLogs = persisted.map(log => clone(log));
+          this.logger.log(`Loaded ${this.auditLogs.length} audit log entries from disk.`);
+          return;
+        }
+        if (typeof this.auditPersistence.save === 'function') {
+          this.auditPersistence.save(this.auditLogs);
+        }
       }
-      this.auditPersistence.save(this.auditLogs);
     } catch (error) {
       this.logger.warn('Falling back to in-memory audit log only; persistence unavailable.');
       if (error instanceof Error) {
@@ -393,7 +398,9 @@ export class MockDatabaseService {
 
   private persistAuditLogs() {
     try {
-      this.auditPersistence.save(this.auditLogs);
+      if (this.auditPersistence && typeof this.auditPersistence.save === 'function') {
+        this.auditPersistence.save(this.auditLogs);
+      }
     } catch (error) {
       this.logger.error(
         'Failed to persist audit logs after mutation.',

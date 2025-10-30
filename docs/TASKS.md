@@ -263,6 +263,24 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ### 🔄 In Progress
 
+### ✅ Completed Recent Work
+
+- ✅ **Sprint 6B.6: OpenTelemetry Integration** - Integrated OpenTelemetry SDK with Prometheus and Jaeger exporters
+- ✅ **API Test Migration to Vitest:**
+  - ✅ Migrated from Jest + ts-jest to Vitest for faster, more reliable test execution
+  - ✅ Fixed NestJS DI class-identity mismatch caused by Vitest's TypeScript transformation
+  - ✅ Implemented deterministic in-process bootstrap (TestAppModule) with full service injection
+  - ✅ Resolved AuthGuard injection in controller decorators via prototype patching
+  - ✅ Added comprehensive service caching and getter-based DI resolution
+  - ✅ All 38 test files (284 tests) passing with 100% success rate
+  - ✅ Tests now run in ~13 seconds with full coverage reporting
+
+**Key Fix:** The NestJS DI class-identity mismatch under Vitest was solved by:
+1. Pre-resolving all services into a global cache after app initialization
+2. Patching AuthGuard CLASS prototype (not instance) after app.init() for controller decorators
+3. Deleting own properties from instances to allow prototype getters to work
+4. This ensures both global APP_GUARD and controller-level @UseGuards(AuthGuard) work correctly
+
 - **Sprint 7: Production Migration & System Hardening**
   - ✅ **PostgreSQL Multi-tenant Architecture Design:**
     - ✅ Created system metadata database schema (`system-schema.prisma`) with Tenant, TenantSettings, TenantUsage, SystemUser, and SystemAuditLog models

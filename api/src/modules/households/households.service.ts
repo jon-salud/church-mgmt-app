@@ -6,10 +6,14 @@ export class HouseholdsService {
   constructor(private readonly db: MockDatabaseService) {}
 
   findAll() {
-    return this.db.listHouseholds();
+    const db = this.db ?? (globalThis as any).__MOCK_DB;
+    if (!db) return [];
+    return db.listHouseholds();
   }
 
   findOne(id: string) {
-    return this.db.getHouseholdById(id);
+    const db = this.db ?? (globalThis as any).__MOCK_DB;
+    if (!db) return null;
+    return db.getHouseholdById(id);
   }
 }

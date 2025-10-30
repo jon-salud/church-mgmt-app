@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../src/modules/app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { bootstrapTestApp } from './support/e2e-bootstrap';
 
 describe('Events (e2e-light)', () => {
   let app: NestFastifyApplication;
@@ -8,14 +9,14 @@ describe('Events (e2e-light)', () => {
   let targetGroupId: string;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
-    const adapter = new FastifyAdapter();
-    app = moduleRef.createNestApplication<NestFastifyApplication>(adapter);
-    app.setGlobalPrefix('api/v1');
-    await app.init();
-    await adapter.getInstance().ready();
+    const result = await bootstrapTestApp();
+    app = result.app;
 
-    const groupsResponse = await app.inject({ method: 'GET', url: '/api/v1/groups' });
+    const groupsResponse = await app.inject({
+      method: 'GET',
+      url: '/api/v1/groups',
+      headers: { authorization: 'Bearer demo-admin' },
+    });
     targetGroupId = groupsResponse.json()[0]?.id;
   });
 
@@ -79,6 +80,7 @@ describe('Events (e2e-light)', () => {
     const res = await app.inject({
       method: 'POST',
       url: '/api/v1/events/event-sunday-service/attendance',
+      headers: { authorization: 'Bearer demo-admin' },
       payload: { userId: 'user-member-2', status: 'checkedIn' },
     });
     expect([200, 201]).toContain(res.statusCode);

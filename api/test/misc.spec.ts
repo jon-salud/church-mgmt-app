@@ -1,17 +1,12 @@
-import { Test } from '@nestjs/testing';
-import { AppModule } from '../src/modules/app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { bootstrapTestApp } from './support/e2e-bootstrap';
 
 describe('Misc Endpoints (e2e-light)', () => {
   let app: NestFastifyApplication;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
-    const adapter = new FastifyAdapter();
-    app = moduleRef.createNestApplication<NestFastifyApplication>(adapter);
-    app.setGlobalPrefix('api/v1');
-    await app.init();
-    await adapter.getInstance().ready();
+    const result = await bootstrapTestApp();
+    app = result.app;
   });
 
   afterAll(async () => {
@@ -19,7 +14,11 @@ describe('Misc Endpoints (e2e-light)', () => {
   });
 
   it('GET /announcements should include reads array', async () => {
-    const res = await app.inject({ method: 'GET', url: '/api/v1/announcements' });
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/v1/announcements',
+      headers: { authorization: 'Bearer demo-admin' },
+    });
     expect(res.statusCode).toBe(200);
     expect(res.json()[0]).toHaveProperty('reads');
   });
@@ -28,6 +27,7 @@ describe('Misc Endpoints (e2e-light)', () => {
     const res = await app.inject({
       method: 'POST',
       url: '/api/v1/announcements/announcement-fundraiser/read',
+      headers: { authorization: 'Bearer demo-admin' },
     });
     expect([200, 201]).toContain(res.statusCode);
     expect(res.json()).toHaveProperty('announcementId', 'announcement-fundraiser');
@@ -37,6 +37,7 @@ describe('Misc Endpoints (e2e-light)', () => {
     const res = await app.inject({
       method: 'POST',
       url: '/api/v1/giving/contributions',
+      headers: { authorization: 'Bearer demo-admin' },
       payload: {
         memberId: 'user-member-3',
         amount: 25,
@@ -55,7 +56,11 @@ describe('Misc Endpoints (e2e-light)', () => {
   });
 
   it('GET /dashboard/summary should surface snapshot', async () => {
-    const res = await app.inject({ method: 'GET', url: '/api/v1/dashboard/summary' });
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/v1/dashboard/summary',
+      headers: { authorization: 'Bearer demo-admin' },
+    });
     expect(res.statusCode).toBe(200);
     const body = res.json();
     expect(body).toHaveProperty('memberCount');
@@ -63,7 +68,11 @@ describe('Misc Endpoints (e2e-light)', () => {
   });
 
   it('GET /audit should 200 with paged payload for admins', async () => {
-    const res = await app.inject({ method: 'GET', url: '/api/v1/audit' });
+    const res = await app.inject({
+      method: 'GET',
+      url: '/api/v1/audit',
+      headers: { authorization: 'Bearer demo-admin' },
+    });
     expect(res.statusCode).toBe(200);
     const body = res.json();
     expect(Array.isArray(body.items)).toBe(true);

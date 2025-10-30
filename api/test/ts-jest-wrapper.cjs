@@ -1,11 +1,21 @@
 // Wrapper to locate ts-jest reliably in pnpm workspaces.
-// Jest expects a transformer module; calling createTransformer() from ts-jest
-// returns the transformer. Using require.resolve helps Node find the package
-// even with pnpm's hoisted/virtual store layout.
-const tsJestPath = require.resolve('ts-jest');
-const tsJest = require(tsJestPath);
+// Try a normal require first; if that fails, resolve the package.json and
+// require the main entry explicitly. This avoids brittle, versioned paths.
+const path = require('path');
+
+let tsJest;
+try {
+  // Prefer standard resolution
+  tsJest = require('ts-jest');
+} catch (err) {
+  // Fallback: resolve package.json, then require the package main file
+  const pkgPath = require.resolve('ts-jest/package.json');
+  const pkg = require(pkgPath);
+  const pkgDir = path.dirname(pkgPath);
+  const mainFile = pkg.main || 'dist/index.js';
+  tsJest = require(path.join(pkgDir, mainFile));
+}
 
 module.exports = tsJest.createTransformer({
-  // Let ts-jest pick up tsconfig from project root
   tsconfig: '<rootDir>/tsconfig.json',
 });

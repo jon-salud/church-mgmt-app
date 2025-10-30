@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { MockDatabaseService } from '../../mock/mock-database.service';
 
 @Injectable()
 export class SettingsService {
-  constructor(private readonly db: MockDatabaseService) {}
+  constructor(@Inject(MockDatabaseService) private readonly db: MockDatabaseService) {}
 
   async getSettings(churchId: string) {
     // Get or initialize church settings

@@ -1,17 +1,11 @@
-import { Test } from '@nestjs/testing';
-import { AppModule } from '../src/modules/app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { bootstrapTestApp } from './support/e2e-bootstrap';
 
 describe('Roles (e2e-light)', () => {
   let app: NestFastifyApplication;
-
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
-    const adapter = new FastifyAdapter();
-    app = moduleRef.createNestApplication<NestFastifyApplication>(adapter);
-    app.setGlobalPrefix('api/v1');
-    await app.init();
-    await adapter.getInstance().ready();
+    const result = await bootstrapTestApp();
+    app = result.app;
   });
 
   afterAll(async () => {

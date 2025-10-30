@@ -1,10 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { MockDatabaseService } from '../mock/mock-database.service';
 import { DataStore } from './data-store.types';
 
 @Injectable()
 export class MockDataStoreAdapter implements DataStore {
-  constructor(private readonly mock: MockDatabaseService) {}
+  constructor(@Inject(MockDatabaseService) private readonly mock: MockDatabaseService) {}
 
   async getChurch() {
     return this.mock.getChurch();

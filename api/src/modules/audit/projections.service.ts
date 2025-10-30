@@ -1,5 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { DomainEvent, IEventStore } from '../../common/event-store.interface';
+import { Injectable, Logger, Inject } from '@nestjs/common';
+import { DomainEvent, IEventStore, EVENT_STORE } from '../../common/event-store.interface';
 
 /**
  * Audit Log Projections Service
@@ -14,7 +14,7 @@ import { DomainEvent, IEventStore } from '../../common/event-store.interface';
 export class AuditProjectionsService {
   private readonly logger = new Logger(AuditProjectionsService.name);
 
-  constructor(private readonly eventStore: IEventStore) {}
+  constructor(@Inject(EVENT_STORE) private readonly eventStore: IEventStore) {}
 
   /**
    * Rebuild audit log read model from events for a specific church.
