@@ -87,7 +87,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
       - name: Run API tests with coverage
-        run: pnpm -C api test -- --coverage --runInBand
+        run: pnpm -C api test
 
   test_web:
     name: Web e2e smoke

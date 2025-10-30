@@ -188,7 +188,7 @@ async function bootstrap() {
         let instance: any = undefined;
         try {
           instance = this._app.get(cls, { strict: false });
-        } catch (e) {
+        } catch {
           // ignore
         }
 
