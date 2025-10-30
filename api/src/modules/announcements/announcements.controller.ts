@@ -27,11 +27,7 @@ import { arrayOfObjectsResponse, objectResponse } from '../../common/openapi/sch
 @ApiBearerAuth()
 @Controller('announcements')
 export class AnnouncementsController {
-  announcementsService: AnnouncementsService;
-
-  constructor(announcementsService: AnnouncementsService) {
-    this.announcementsService = announcementsService;
-  }
+  constructor(private announcementsService: AnnouncementsService) {}
 
   @Get()
   @ApiOperation({ summary: 'List announcements' })

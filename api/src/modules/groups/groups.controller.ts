@@ -31,11 +31,7 @@ import { SuccessResponseDto } from '../../common/dto/success-response.dto';
 @ApiBearerAuth()
 @Controller('groups')
 export class GroupsController {
-  groupsService: GroupsService;
-
-  constructor(groupsService: GroupsService) {
-    this.groupsService = groupsService;
-  }
+  constructor(private groupsService: GroupsService) {}
 
   @Get()
   @ApiOperation({ summary: 'List groups' })
