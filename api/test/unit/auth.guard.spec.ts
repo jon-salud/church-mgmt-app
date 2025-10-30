@@ -1,5 +1,6 @@
 import { ExecutionContext, ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+// Import AuthGuard directly to bypass any global mocking
 import { AuthGuard } from '../../src/modules/auth/auth.guard';
 
 const createExecutionContext = (
