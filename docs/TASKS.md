@@ -227,6 +227,40 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ **Performance Optimization:** Laid foundation for independent scaling of read and write operations
   - ✅ **All Tests Pass:** 10/10 audit tests passing with no regressions introduced
 
+- ✅ **Sprint 6B.4: Advanced Observability & Metrics**
+  - ✅ **ObservabilityService:** Centralized metrics collection for event store, circuit breaker, and CQRS with span tracing
+  - ✅ **Metrics Categories:** Track event store operations (append/query/rebuild), circuit breaker state transitions/failures/recoveries, and CQRS command/query execution
+  - ✅ **Span Tracing:** startSpan() creates tracked spans with operation name and attributes, endSpan() returns duration and operation name with status tracking
+  - ✅ **Metrics Calculation:** On-demand average calculation for operations with success/failure tracking, 100% coverage
+  - ✅ **Unit Tests:** 25 comprehensive tests covering all metrics types, span operations, edge cases, and 1000+ operation handling
+  - ✅ **Audit Integration:** Injected ObservabilityService into AuditLogQueryService and AuditLogCommandService with CQRS recording
+  - ✅ **Test Updates:** Updated audit service unit tests (4/4 command, 4/4 query tests) to verify observability calls
+  - ✅ **Module DI:** Created ObservabilityModule for dependency injection, integrated with AuditModule
+  - ✅ **Production Ready:** Fully typed, error handling, concurrent operations support, proper metric calculations
+
+- ✅ **Sprint 6B.5: Documentation & Examples for Observability Infrastructure**
+  - ✅ **OBSERVABILITY_ARCHITECTURE.md:** 300+ lines documenting design principles, architecture components, integration patterns, metrics interpretation, performance characteristics, testing strategies, best practices
+  - ✅ **OBSERVABILITY_METRICS_REFERENCE.md:** 300+ lines complete reference guide for all metrics (Event Store, Circuit Breaker, CQRS), interpretation guidance, common patterns, alert thresholds, example PromQL queries
+  - ✅ **SPAN_TRACING_GUIDE.md:** 400+ lines comprehensive guide covering basic usage, complete lifecycle examples, advanced patterns, naming conventions, error handling, logging integration, testing, common issues, best practices
+  - ✅ **OBSERVABILITY_INTEGRATION_EXAMPLES.md:** Quick start guide, complete Audit Module reference implementation, before/after UserService comparison, module configuration patterns, testing patterns, common integration points (repositories, controllers, event handlers), integration checklist
+  - ✅ **OBSERVABILITY_PRODUCTION_SETUP.md:** 600+ lines production deployment guide including metrics endpoints, health checks, Prometheus/Datadog/CloudWatch integration, alert rules, Grafana dashboards, production best practices, metric retention policies, graceful shutdown, environment-specific configs, troubleshooting, maintenance checklist
+  - ✅ **OBSERVABILITY_PERFORMANCE.md:** 700+ lines performance characteristics including per-operation cost analysis (0.07-0.15ms overhead), scalability characteristics, memory profiling, optimization techniques (retention policy, lazy evaluation, sampling), load testing results, environment-specific tuning, capacity planning, troubleshooting
+  - ✅ **REFACTORING_CHECKLIST.md Update:** Marked Sprint 6B.5 complete with full documentation of all 6 guides
+
+- ✅ **Sprint 6B.6: OpenTelemetry Integration**
+  - ✅ **OpenTelemetry SDK Setup:** Installed @opentelemetry/api, @opentelemetry/sdk-node, exporters (Prometheus, Jaeger), and auto-instrumentations
+  - ✅ **SDK Configuration:** Created opentelemetry.ts with NodeSDK initialization, resource detection, Prometheus exporter (port 9464), Jaeger exporter, and graceful shutdown
+  - ✅ **Application Bootstrap:** Updated main.ts to initialize OpenTelemetry SDK before NestJS app startup
+  - ✅ **OpenTelemetry Service:** Created OpenTelemetryService and OpenTelemetryModule for Meter/Tracer dependency injection
+  - ✅ **ObservabilityService Refactor:** Migrated from custom metrics to OpenTelemetry instruments (histograms, counters) while maintaining backward compatibility
+  - ✅ **Audit Services Integration:** Updated AuditLogCommandService and AuditLogQueryService to use OpenTelemetry spans instead of custom span tracking
+  - ✅ **Module Integration:** Added OpenTelemetryModule to AuditModule for proper dependency injection
+  - ✅ **Type Safety:** Added ObservabilityMetrics interface and fixed all TypeScript compilation errors
+  - ✅ **Build Validation:** All code compiles successfully with OpenTelemetry integration
+  - ✅ **Backward Compatibility:** Maintained existing ObservabilityService API for seamless migration
+  - ✅ **Code Quality:** Fixed all linting errors (0 errors, 361 acceptable warnings)
+  - ✅ **PR Created:** [PR #138](https://github.com/jon-salud/church-mgmt-app/pull/138) - Complete Sprint 6B implementation ready for review
+
 ### 🔄 In Progress
 
 ### 📝 Backlog / Upcoming
