@@ -61,16 +61,12 @@ const shutdownOpenTelemetry = async () => {
 process.on('SIGTERM', () => {
   shutdownOpenTelemetry()
     // eslint-disable-next-line no-console
-    .then(() => console.log('OpenTelemetry SDK shut down successfully'))
-    // eslint-disable-next-line no-console
     .catch((error: unknown) => console.error('Error shutting down OpenTelemetry SDK', error))
     .finally(() => process.exit(0));
 });
 
 process.on('SIGINT', () => {
   shutdownOpenTelemetry()
-    // eslint-disable-next-line no-console
-    .then(() => console.log('OpenTelemetry SDK shut down successfully'))
     // eslint-disable-next-line no-console
     .catch((error: unknown) => console.error('Error shutting down OpenTelemetry SDK', error))
     .finally(() => process.exit(0));
