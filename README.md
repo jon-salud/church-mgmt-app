@@ -7,7 +7,7 @@ This monorepo packages a complete walkthrough of the PRD using mock data only. Y
 | **API**   | NestJS (Fastify), in-memory mock store, OAuth-style demo login, OpenAPI docs           |
 | **Web**   | Next.js App Router + React + Tailwind + PWA service worker + shadcn-style UI seeds     |
 | **Data**  | Members, groups (with resource sharing), events, announcements, giving, seeded sessions, soft delete (no Postgres required) |
-| **Tests** | Jest (API smoke) and Playwright (dashboard e2e), with CI linting and formatting checks |
+| **Tests** | Vitest (API) and Playwright (dashboard e2e), with CI linting and formatting checks |
 
 ---
 
@@ -33,7 +33,7 @@ For the fastest demo experience, use GitHub Codespaces:
 
    ### Option C: Manual startup
 
-   - Open a terminal and run: `cd api && DATA_MODE=mock pnpm dev`
+   - Open a terminal and run: `cd api && DATA_MODE=mock pnpm dev --watch`
    - Open another terminal and run: `cd web && pnpm dev`
 
 4. **Find the Ports panel**: Look at the bottom of VS Code for a "PORTS" tab (next to TERMINAL,
@@ -100,7 +100,7 @@ API runtime toggles:
 - `SENTRY_DSN` and optional `SENTRY_TRACES_SAMPLE_RATE` enable error reporting to Sentry.
 - `AUDIT_LOG_FILE` overrides the persisted audit trail location (`storage/audit-log.json` by
   default).
-- `AUDIT_LOG_PERSIST=false` disables audit log writes (automatically disabled during Jest runs).
+- `AUDIT_LOG_PERSIST=false` disables audit log writes (automatically disabled during Vitest runs).
 
 ---
 
@@ -146,10 +146,10 @@ Examples:
 
 ```bash
 # Unix/macOS
-DATA_MODE=mock pnpm -C api dev          # explicit mock mode
+DATA_MODE=mock pnpm -C api dev --watch          # explicit mock mode
 
 # Windows (PowerShell)
-$Env:DATA_MODE = "mock"; pnpm -C api dev
+$Env:DATA_MODE = "mock"; pnpm -C api dev --watch
 ```
 
 The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those exports for convenience.
@@ -219,10 +219,10 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 | Start API dev server (mock)        | `pnpm dev:api:mock`                   |
 | Build API                          | `pnpm -C api build`                   |
 | Run API unit/integration tests     | `pnpm -C api test`                    |
-| Run API tests with coverage        | `pnpm -C api test -- --coverage`      |
+| Run API tests with coverage        | `pnpm -C api test`                     |
 | Start web dev server               | `pnpm -C web dev`                     |
 | Build web for prod                 | `pnpm -C web build`                   |
-| Install Playwright browsers        | `pnpm -C web exec playwright install` |
+| Install Playwright browsers        | `pnpm -C web exec playwright install --with-deps chromium` |
 | Run Playwright smoke (mock)        | `pnpm test:e2e:mock`                  |
 | One-shot E2E (boot API/Web + test) | `pnpm test:e2e`                       |
 | Lint code                          | `pnpm lint`                           |
@@ -318,8 +318,8 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 | ---------------------------------- | -------------------------------------------------------------------------------------------- |
 | `@fastify/static` missing          | Run `pnpm -C api install` (already in `package.json`).                                       |
 | TypeScript packages missing in web | `pnpm -C web install` ensures `@types/node`, `@types/react`, `@types/react-dom` are present. |
-| API shows ESM module errors        | Ensure `api/tsconfig.json` still targets `"module": "commonjs"` and rerun `pnpm -C api dev`. |
-| Playwright needs browsers          | `pnpm -C web exec playwright install` installs the chromium snapshot.                        |
+| API shows ESM module errors        | Ensure `api/tsconfig.json` still targets `"module": "commonjs"` and rerun `pnpm -C api dev --watch`. |
+| Playwright needs browsers          | `pnpm -C web exec playwright install --with-deps chromium` installs the chromium snapshot.                        |
 
 Enjoy the demo, and feel free to swap the mock layer for Prisma + Postgres when you’re ready for
 production data.

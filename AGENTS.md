@@ -18,30 +18,43 @@ quality.
 ## Development Workflow
 
 1. **Understand the Task:**
-   - Begin by reading the `TASKS.md` file to understand the current state of the project and the
-     backlog.
-   - Cross-reference the `PRD.md` to ensure a deep understanding of the feature requirements and
-     acceptance criteria.
-   - Ask clarifying questions (`request_user_input`) to resolve any ambiguities.
+   - Begin by reading the `TASKS.md` file to understand the current state of the project and the backlog.
+   - Cross-reference the source of truth documents (all files in `docs/source-of-truth/`) to ensure a deep understanding of the feature requirements and acceptance criteria.
+   - Ask clarifying questions to resolve any ambiguities and achieve zero doubt about requirements.
 
 2. **Formulate a Plan:**
-   - Create a detailed, step-by-step plan using `set_plan`.
-   - The plan must include a final submission step.
+   - Create a detailed, step-by-step plan based on the source of truth documents.
+   - Review the plan for robustness, identifying potential challenges and outlining workarounds and solutions.
+   - Present the plan to the user, highlighting any risks, and wait for explicit approval before proceeding.
+   - The plan must include a final documentation update and submission step.
 
-3. **Execute and Verify:**
-   - Work through the plan step-by-step.
-   - After each modification to the codebase, verify the changes using read-only tools like
-     `read_file` or `ls`.
+3. **Define Tests First (TDD):**
+   - Before implementing any code changes, write or update tests to define the expected behavior.
+   - Use existing test files and add new ones if insufficient coverage.
+   - Ensure tests cover happy path, edge cases, and error conditions.
+   - Run tests to confirm they fail initially (red phase).
 
-4. **Update Documentation:**
-   - Update `TASKS.md` to reflect the progress of the task (e.g., moving it from "In Progress" to
-     "Completed").
-   - If the changes impact the product's features or requirements, update `PRD.md` accordingly.
+4. **Execute and Verify:**
+   - Upon approval, implement the plan, making tests pass (green phase).
+   - Write minimal code to satisfy test requirements.
+   - Refactor code while keeping tests passing (refactor phase).
+   - After each modification to the codebase, verify the changes using read-only tools like `read_file` or `ls`.
+
+5. **Test Implementation:**
+   - Ensure no build failures and run all tests to validate the changes.
+   - Verify that all existing functionality still works correctly.
+
+6. **Update Documentation:**
+   - Update `TASKS.md` to reflect the progress of the task (e.g., moving it from "In Progress" to "Completed").
+   - As part of the same branch/PR, update all relevant files in `docs/source-of-truth/` to reflect the new or updated features.
+   - Make documentation updates in separate commits from code changes for clarity.
+   - Ask the user to confirm each documentation update to keep them informed.
+   - If changes impact the product's features or requirements, update `PRD.md` and `USER_MANUAL.md` accordingly.
    - Append any new findings or follow-up tasks to the backlog in `TASKS.md`.
 
-5. **Submit the Work:**
-   - Once all steps are complete and verified, submit the changes using `submit` with a clear and
-     descriptive commit message.
+7. **Submit the Work:**
+   - Once all steps are complete and verified, commit and push the feature changes with a clear and descriptive commit message.
+   - Ensure that both code and documentation changes are reviewed and merged together in the same PR to keep the codebase and docs in sync.
 
 ## Technical Guidelines
 
@@ -61,7 +74,7 @@ quality.
     and `MockDataStoreAdapter`.
 - **Testing:**
   - Build: `pnpm -r build`
-  - API tests: `pnpm -C api test`
+  - API tests: `pnpm -C api test` (uses Vitest)
   - End-to-end tests: `pnpm test:e2e:mock`
   - To run a single E2E test: `pnpm -C web test:e2e <path_to_spec_file>`
 - **Code Quality:**
@@ -73,7 +86,7 @@ quality.
     skipped if necessary, and the reason should be noted.
 - **Authentication:**
   - E2E tests bypass the login UI by setting the `demo_token` cookie to `demo-admin`.
-  - The web app requires Auth0 environment variables in `web/.env.local`.
+  - The web app uses OAuth with Google/Facebook providers.
 - **Styling:** Follow the existing theme and styling conventions using Tailwind CSS and shadcn/ui
   components.
 - **UI Automation:** All interactive elements must have a unique `id` attribute to facilitate

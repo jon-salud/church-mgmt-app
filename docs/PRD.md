@@ -74,7 +74,7 @@ by a `churchId` on all relevant tables.
 - **Frontend:** Next.js (React, TypeScript)
 - **Database:** PostgreSQL with Prisma ORM
 - **Styling:** Tailwind CSS with shadcn/ui
-- **Testing:** Jest (backend), Playwright (end-to-end)
+- **Testing:** Vitest (backend), Playwright (end-to-end)
 
 ### 4.3. Data Model
 
