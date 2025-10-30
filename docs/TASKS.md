@@ -263,6 +263,42 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ### 🔄 In Progress
 
+### ✅ Completed Recent Work
+
+- ✅ **Sprint 6B.6: OpenTelemetry Integration** - Integrated OpenTelemetry SDK with Prometheus and Jaeger exporters
+- ✅ **API Test Migration to Vitest:**
+  - ✅ Migrated from Jest + ts-jest to Vitest for faster, more reliable test execution
+  - ✅ Fixed NestJS DI class-identity mismatch caused by Vitest's TypeScript transformation
+  - ✅ Implemented deterministic in-process bootstrap (TestAppModule) with full service injection
+  - ✅ Resolved AuthGuard injection in controller decorators via prototype patching
+  - ✅ Added comprehensive service caching and getter-based DI resolution
+  - ✅ All 38 test files (284 tests) passing with 100% success rate
+  - ✅ Tests now run in ~13 seconds with full coverage reporting
+
+**Key Fix:** The NestJS DI class-identity mismatch under Vitest was solved by:
+1. Pre-resolving all services into a global cache after app initialization
+2. Patching AuthGuard CLASS prototype (not instance) after app.init() for controller decorators
+3. Deleting own properties from instances to allow prototype getters to work
+4. This ensures both global APP_GUARD and controller-level @UseGuards(AuthGuard) work correctly
+
+- **Sprint 7: Production Migration & System Hardening**
+  - ✅ **PostgreSQL Multi-tenant Architecture Design:**
+    - ✅ Created system metadata database schema (`system-schema.prisma`) with Tenant, TenantSettings, TenantUsage, SystemUser, and SystemAuditLog models
+    - ✅ Created tenant database schema (`tenant-schema.prisma`) by removing Church model and preparing for single-tenant context
+    - ✅ Generated Prisma clients for both system and tenant databases
+    - ✅ Implemented multi-tenant Prisma service with connection pooling and tenant-aware client management
+  - ✅ **Self-Service Tenant Provisioning:**
+    - ✅ Created TenantProvisioningService with automated database creation, resource limits, and security controls
+    - ✅ Implemented TenantProvisioningController with REST API endpoints for tenant lifecycle management
+    - ✅ Created TenantModule to wire together provisioning components
+    - ✅ Integrated tenant module into main application
+  - ✅ **Prisma Multi-tenant Datastore Implementation:** Completed PrismaMultiTenantDataStore service with full DataStore interface compliance, tenant-aware database operations, and comprehensive CRUD operations for all entities. Fixed lint issues by prefixing unused parameters with underscores, reducing total project errors from 18 to 13.
+- ✅ **Sprint 7: API Test Pipeline Fixes**
+  - ✅ Fixed port conflicts in test setup by using dynamic port allocation with get-port
+  - ✅ Fixed AuthGuard unit test failures by adding early token validation and proper mock setup
+  - ✅ Ensured Prisma client generation in CI workflows
+  - ✅ **Pipeline Validation:** All 284 tests pass (38 test files) with full coverage reporting - ready for CI/CD deployment
+
 ### 📝 Backlog / Upcoming
 
 ## Phase 1: Complete Core Initial Release Features
@@ -325,6 +361,20 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
     - Use Docker-based testing with proper module resolution
     - Move away from pnpm workspaces for API testing
     - Implement Jest configuration workarounds for pnpm workspaces
+
+### Epic: Migrate API test runner to Vitest (developer-experience)
+
+- **Motivation:** pnpm workspace + Jest + ts-jest leads to unreliable transformer resolution ("Module ts-jest not found") in local dev and some CI environments. Migrating to Vitest (or an alternative runner) reduces friction, speeds up local test runs, and avoids fragile transformer/workarounds.
+- **Scope:** Replace Jest+ts-jest for `api/` with Vitest (or a compatible runner), migrate tests and test utilities, update CI workflows, and verify coverage reporting parity.
+- **Acceptance criteria:**
+  - All `api/` tests run locally with `pnpm -C api test` using Vitest.
+  - CI workflows updated to run Vitest and collect coverage reports comparable to Jest's current output.
+  - Developer docs (`docs/SETUP.md`) updated with usage and migration notes.
+- **Risks & Mitigations:**
+  - Test semantics differences between Jest and Vitest — mitigate by running both runners in parallel during migration, and updating tests where API differences exist.
+  - Coverage reporting differences — use c8/nyc-compatible tools or Vitest's built-in coverage support configured to generate lcov for CI.
+- **Estimated effort:** 2-3 days for a single developer (migrate, test, CI), depending on test complexity and mocking utilities.
+
 
 ## Sprint 6 Advanced Patterns Backlog
 

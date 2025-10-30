@@ -1,0 +1,313 @@
+// Tenant database schema - replicated per tenant
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("TENANT_DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  primaryEmail String    @unique
+  status       String    @default("active")
+  createdAt    DateTime  @default(now())
+  lastLoginAt  DateTime?
+  profile      Profile?
+  oauth        OAuthAccount[]
+  churches     ChurchUser[]
+  attendances  Attendance[]
+  contributions Contribution[]
+  reads        AnnouncementRead[]
+  auditLogs    AuditLog[] @relation("ActorLogs")
+  sessions     DemoSession[]
+  groupMembers GroupMember[]
+  checkins     Checkin[]
+  pushSubscriptions PushSubscription[]
+  prayerRequests PrayerRequest[]
+  prayers Prayer[]
+  authoredPastoralCareTickets PastoralCareTicket[] @relation("AuthoredTickets")
+  assignedPastoralCareTickets PastoralCareTicket[] @relation("AssignedTickets")
+  pastoralCareComments PastoralCareComment[]
+  volunteerSignups EventVolunteerSignup[]
+}
+
+model Household {
+  id          String   @id @default(cuid())
+  name        String
+  address     String?
+  phoneNumber String?
+  anniversaryDate DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  profiles    Profile[]
+  children    Child[]
+}
+
+model Child {
+  id            String    @id @default(cuid())
+  householdId   String
+  fullName      String
+  dateOfBirth   DateTime
+  allergies     String?
+  medicalNotes  String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  household     Household @relation(fields: [householdId], references: [id])
+  checkins      Checkin[]
+}
+
+model Profile {
+  userId                String    @id
+  firstName             String
+  lastName              String
+  phone                 String?
+  birthday              DateTime?
+  photoUrl              String?
+  notes                 String?
+  householdId           String
+  householdRole         String    @default("Head")
+  membershipStatus      String?
+  joinMethod            String?
+  joinDate              DateTime?
+  previousChurch        String?
+  baptismDate           DateTime?
+  spiritualGifts        String?
+  coursesAttended       String?
+  maritalStatus         String?
+  occupation            String?
+  school                String?
+  gradeLevel            String?
+  graduationYear        Int?
+  skillsAndInterests    String?
+  backgroundCheckStatus String?
+  backgroundCheckDate   DateTime?
+  onboardingComplete    Boolean?
+  emergencyContactName  String?
+  emergencyContactPhone String?
+  allergiesOrMedicalNotes String?
+  parentalConsentOnFile Boolean?
+  pastoralNotes         String?
+  user                  User      @relation(fields: [userId], references: [id])
+  household             Household @relation(fields: [householdId], references: [id])
+}
+
+model OAuthAccount {
+  id             String   @id @default(cuid())
+  provider       String
+  providerUserId String
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  @@unique([provider, providerUserId])
+}
+
+model ChurchUser {
+  userId   String
+  role     String    @default("Member")
+  user     User    @relation(fields: [userId], references: [id])
+  joinedAt DateTime @default(now())
+  @@id([userId])
+}
+
+model Group {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  type        String
+  meetingDay  String?
+  meetingTime String?
+  tags        String?
+  members     GroupMember[]
+}
+
+model GroupMember {
+  groupId  String
+  userId   String
+  role     String @default("Member")
+  status   String @default("Active")
+  joinedAt DateTime @default(now())
+  group    Group  @relation(fields: [groupId], references: [id])
+  user     User   @relation(fields: [userId], references: [id])
+  @@id([groupId, userId])
+}
+
+model Event {
+  id             String               @id @default(cuid())
+  title          String
+  description    String?
+  startAt        DateTime
+  endAt          DateTime
+  location       String?
+  visibility     String               @default("private")
+  groupId        String?
+  attendances    Attendance[]
+  checkins       Checkin[]
+  volunteerRoles EventVolunteerRole[]
+}
+
+model Attendance {
+  eventId    String
+  userId     String
+  status     String   @default("checkedIn")
+  note       String?
+  recordedBy String?
+  recordedAt DateTime @default(now())
+  event      Event    @relation(fields: [eventId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+  @@id([eventId, userId])
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  title     String
+  body      String
+  audience  String   @default("all")
+  groupIds  String?
+  publishAt DateTime @default(now())
+  expireAt  DateTime?
+  reads     AnnouncementRead[]
+}
+
+model AnnouncementRead {
+  announcementId String
+  userId         String
+  readAt         DateTime @default(now())
+  announcement   Announcement @relation(fields: [announcementId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
+  @@id([announcementId, userId])
+}
+
+model Fund {
+  id       String  @id @default(cuid())
+  name     String
+  contributions Contribution[]
+}
+
+model Contribution {
+  id        String   @id @default(cuid())
+  memberId  String
+  date      DateTime
+  amount    Decimal
+  method    String
+  fundId    String?
+  note      String?
+  member    User    @relation(fields: [memberId], references: [id])
+  fund      Fund?   @relation(fields: [fundId], references: [id])
+}
+
+model AuditLog {
+  id          String   @id @default(cuid())
+  actorUserId String?
+  action      String
+  entity      String
+  entityId    String
+  diff        String?
+  createdAt   DateTime @default(now())
+  actor       User?    @relation("ActorLogs", fields: [actorUserId], references: [id])
+}
+
+model DemoSession {
+  token     String   @id
+  userId    String
+  provider  String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Settings {
+  id             String   @id @default(cuid())
+  optionalFields String?
+}
+
+model Checkin {
+  id                      String    @id @default(cuid())
+  childId                 String
+  eventId                 String
+  checkinTime             DateTime  @default(now())
+  checkoutTime            DateTime?
+  status                  String
+  confirmedById           String?
+  parentConfirmationTime  DateTime?
+  child                   Child     @relation(fields: [childId], references: [id])
+  event                   Event     @relation(fields: [eventId], references: [id])
+  confirmedBy             User?     @relation(fields: [confirmedById], references: [id])
+}
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userId    String
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model PrayerRequest {
+  id              String   @id @default(cuid())
+  title           String
+  description     String
+  isAnonymous     Boolean  @default(false)
+  authorId        String?
+  managementToken String?  @unique
+  status          String   @default("PENDING_APPROVAL")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  author          User?    @relation(fields: [authorId], references: [id])
+  prayers         Prayer[]
+}
+
+model Prayer {
+  prayerRequestId String
+  userId          String
+  createdAt       DateTime      @default(now())
+  prayerRequest   PrayerRequest @relation(fields: [prayerRequestId], references: [id])
+  user            User          @relation(fields: [userId], references: [id])
+
+  @@id([prayerRequestId, userId])
+}
+
+model PastoralCareTicket {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  status      String   @default("NEW")
+  priority    String   @default("NORMAL")
+  authorId    String
+  assigneeId  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  author      User     @relation("AuthoredTickets", fields: [authorId], references: [id])
+  assignee    User?    @relation("AssignedTickets", fields: [assigneeId], references: [id])
+  comments    PastoralCareComment[]
+}
+
+model PastoralCareComment {
+  id        String             @id @default(cuid())
+  ticketId  String
+  authorId  String
+  body      String
+  createdAt DateTime           @default(now())
+  ticket    PastoralCareTicket @relation(fields: [ticketId], references: [id])
+  author    User               @relation(fields: [authorId], references: [id])
+}
+
+model EventVolunteerRole {
+  id        String   @id @default(cuid())
+  eventId   String
+  name      String
+  needed    Int
+  event     Event    @relation(fields: [eventId], references: [id])
+  signups   EventVolunteerSignup[]
+}
+
+model EventVolunteerSignup {
+  id               String   @id @default(cuid())
+  volunteerRoleId  String
+  userId           String
+  role             EventVolunteerRole @relation(fields: [volunteerRoleId], references: [id])
+  user             User     @relation(fields: [userId], references: [id])
+
+  @@unique([volunteerRoleId, userId])
+}

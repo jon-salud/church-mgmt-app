@@ -31,7 +31,7 @@ import { SuccessResponseDto } from '../../common/dto/success-response.dto';
 @ApiBearerAuth()
 @Controller('users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(private usersService: UsersService) {}
 
   @Get()
   @ApiOperation({ summary: 'List users' })

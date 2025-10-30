@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { AppModule } from '../src/modules/app.module';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { bootstrapTestApp } from './support/e2e-bootstrap';
 
 describe('Users (e2e-light)', () => {
   let app: NestFastifyApplication;
@@ -9,12 +10,8 @@ describe('Users (e2e-light)', () => {
   let leaderRoleId: string;
 
   beforeAll(async () => {
-    const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
-    const adapter = new FastifyAdapter();
-    app = moduleRef.createNestApplication<NestFastifyApplication>(adapter);
-    app.setGlobalPrefix('api/v1');
-    await app.init();
-    await adapter.getInstance().ready();
+    const result = await bootstrapTestApp();
+    app = result.app;
 
     const rolesResponse = await app.inject({
       method: 'GET',
@@ -30,12 +27,16 @@ describe('Users (e2e-light)', () => {
   });
 
   afterAll(async () => {
-    await app.inject({
-      method: 'DELETE',
-      url: `/api/v1/users/${createdUserId}`,
-      headers: { authorization: 'Bearer demo-admin' },
-    });
-    await app.close();
+    if (app && typeof app.inject === 'function') {
+      await app.inject({
+        method: 'DELETE',
+        url: `/api/v1/users/${createdUserId}`,
+        headers: { authorization: 'Bearer demo-admin' },
+      });
+    }
+    if (app && typeof app.close === 'function') {
+      await app.close();
+    }
   });
 
   it('GET /users should 200', async () => {
