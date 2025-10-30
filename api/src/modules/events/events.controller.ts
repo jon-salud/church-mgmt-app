@@ -34,7 +34,7 @@ import { SuccessResponseDto } from '../../common/dto/success-response.dto';
 @ApiBearerAuth()
 @Controller('events')
 export class EventsController {
-  constructor(private readonly eventsService: EventsService) {}
+  constructor(public eventsService: EventsService) {}
 
   @Get()
   @ApiOperation({ summary: 'List events' })

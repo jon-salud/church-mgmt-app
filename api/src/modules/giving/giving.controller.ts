@@ -32,7 +32,7 @@ import { arrayOfObjectsResponse, objectResponse } from '../../common/openapi/sch
 @ApiBearerAuth()
 @Controller('giving')
 export class GivingController {
-  constructor(private readonly givingService: GivingService) {}
+  constructor(public givingService: GivingService) {}
 
   @Get('funds')
   @ApiOperation({ summary: 'List giving funds' })

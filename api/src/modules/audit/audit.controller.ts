@@ -12,8 +12,8 @@ import { objectResponse } from '../../common/openapi/schemas';
 @Controller('audit')
 export class AuditController {
   constructor(
-    private readonly auditService: AuditService,
-    private readonly auditLogQueryService: AuditLogQueryService
+    public auditService: AuditService,
+    public auditLogQueryService: AuditLogQueryService
   ) {}
 
   @Get()

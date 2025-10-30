@@ -1,4 +1,5 @@
 import { ExecutionContext, ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { AuthGuard } from '../../src/modules/auth/auth.guard';
 
 const createExecutionContext = (
@@ -19,13 +20,13 @@ const createExecutionContext = (
 
 describe('AuthGuard', () => {
   const authService = {
-    resolveAuthBearer: jest.fn(),
+    resolveAuthBearer: vi.fn(),
   } as any;
 
   const guard = new AuthGuard(authService);
 
   beforeEach(() => {
-    jest.resetAllMocks();
+    vi.clearAllMocks();
   });
 
   it('attaches verified session to the request', async () => {
