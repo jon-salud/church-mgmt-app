@@ -229,6 +229,19 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ### 🔄 In Progress
 
+- **Sprint 7: Production Migration & System Hardening**
+  - ✅ **PostgreSQL Multi-tenant Architecture Design:**
+    - ✅ Created system metadata database schema (`system-schema.prisma`) with Tenant, TenantSettings, TenantUsage, SystemUser, and SystemAuditLog models
+    - ✅ Created tenant database schema (`tenant-schema.prisma`) by removing Church model and preparing for single-tenant context
+    - ✅ Generated Prisma clients for both system and tenant databases
+    - ✅ Implemented multi-tenant Prisma service with connection pooling and tenant-aware client management
+  - ✅ **Self-Service Tenant Provisioning:**
+    - ✅ Created TenantProvisioningService with automated database creation, resource limits, and security controls
+    - ✅ Implemented TenantProvisioningController with REST API endpoints for tenant lifecycle management
+    - ✅ Created TenantModule to wire together provisioning components
+    - ✅ Integrated tenant module into main application
+  - 🔄 **Prisma Multi-tenant Datastore Implementation:** Started PrismaMultiTenantDataStore service with tenant-aware database operations
+
 ### 📝 Backlog / Upcoming
 
 ## Phase 1: Complete Core Initial Release Features

@@ -20,6 +20,7 @@ import { PrayerModule } from './prayer/prayer.module';
 import { RequestsModule } from './requests/requests.module';
 import { InvitationsModule } from './invitations/invitations.module';
 import { DocumentsModule } from './documents/documents.module';
+import { TenantModule } from '../tenant/tenant.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { DocumentsModule } from './documents/documents.module';
     RequestsModule,
     InvitationsModule,
     DocumentsModule,
+    TenantModule,
   ],
 })
 export class AppModule {}
