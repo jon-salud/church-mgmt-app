@@ -11,11 +11,7 @@ import { ApiTags, ApiBearerAuth } from '@nestjs/swagger';
 @UseGuards(AuthGuard)
 @Controller('requests')
 export class RequestsController {
-  public requestsService: RequestsService;
-
-  constructor(requestsService: RequestsService) {
-    this.requestsService = requestsService;
-  }
+  constructor(readonly requestsService: RequestsService) {}
 
   @Post()
   create(@Body() createRequestDto: CreateRequestDto, @CurrentUser() user: User) {

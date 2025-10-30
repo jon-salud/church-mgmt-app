@@ -9,11 +9,7 @@ import { objectResponse } from '../../common/openapi/schemas';
 @ApiBearerAuth()
 @Controller('dashboard')
 export class DashboardController {
-  public dashboardService: DashboardService;
-
-  constructor(dashboardService: DashboardService) {
-    this.dashboardService = dashboardService;
-  }
+  constructor(readonly dashboardService: DashboardService) {}
 
   @Get('summary')
   @ApiOperation({ summary: 'Get dashboard summary snapshot' })
