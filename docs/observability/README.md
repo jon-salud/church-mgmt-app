@@ -161,7 +161,7 @@ See [OBSERVABILITY_PERFORMANCE.md](./OBSERVABILITY_PERFORMANCE.md) for detailed 
 ## 🔗 Related Documentation
 
 - [CODING_STANDARDS.md](../CODING_STANDARDS.md) - Dependency injection patterns
-- [REFACTORING_CHECKLIST.md](../../REFACTORING_CHECKLIST.md) - Sprint 6B progress
+- [REFACTORING_CHECKLIST.md](../REFACTORING_CHECKLIST.md) - Sprint 6B progress
 - [TASKS.md](../TASKS.md) - Project tasks and status
 
 ## 📞 Questions?

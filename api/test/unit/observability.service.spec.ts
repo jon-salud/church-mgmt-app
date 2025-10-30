@@ -163,7 +163,6 @@ describe('ObservabilityService (Unit Tests)', () => {
 
     it('should clean up spans after ending', () => {
       const spanId1 = service.startSpan('Operation1');
-      const spanId2 = service.startSpan('Operation2');
 
       service.endSpan(spanId1);
 
