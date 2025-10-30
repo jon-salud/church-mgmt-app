@@ -128,7 +128,7 @@
 
 #### Build Tools
 - **@nestjs/cli** v10.4.5 - NestJS CLI
-- **ts-jest** v29.4.5 - Jest/TypeScript compiler
+- **ts-jest** v29.4.5 - Jest/TypeScript compiler (legacy dependency)
 - **ts-node** v10.9.2 - TypeScript execution
 - **autoprefixer** v10.4.20 - CSS vendor prefixes
 - **postcss** v8.4.47 - CSS transformation
