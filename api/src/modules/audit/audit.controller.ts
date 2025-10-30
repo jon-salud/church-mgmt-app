@@ -14,10 +14,7 @@ export class AuditController {
   public auditService: AuditService;
   public auditLogQueryService: AuditLogQueryService;
 
-  constructor(
-    auditService: AuditService,
-    auditLogQueryService: AuditLogQueryService
-  ) {
+  constructor(auditService: AuditService, auditLogQueryService: AuditLogQueryService) {
     this.auditService = auditService;
     this.auditLogQueryService = auditLogQueryService;
   }

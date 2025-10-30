@@ -57,31 +57,31 @@ async function bootstrap() {
       // We patch the most commonly failing controllers observed in test runs.
       // If additional controllers surface, add them to this map.
       // NOTE: use require to avoid ESM/TS resolution differences at runtime.
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+
       const { RolesController } = require('./modules/roles/roles.controller');
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+
       const { RolesService } = require('./modules/roles/roles.service');
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+
       const { DocumentsController } = require('./modules/documents/documents.controller');
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+
       const { DocumentsService } = require('./modules/documents/documents.service');
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+
       const {
         PastoralCareController,
       } = require('./modules/pastoral-care/pastoral-care.controller');
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+
       const { PastoralCareService } = require('./modules/pastoral-care/pastoral-care.service');
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+
       const { EventsController } = require('./modules/events/events.controller');
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+
       const { EventsService } = require('./modules/events/events.service');
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+
       const { UsersController } = require('./modules/users/users.controller');
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+
       const { UsersService } = require('./modules/users/users.service');
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+
       const { RequestsController } = require('./modules/requests/requests.controller');
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
+
       const { RequestsService } = require('./modules/requests/requests.service');
 
       const patchPairs: Array<[any, any, string]> = [
