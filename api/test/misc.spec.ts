@@ -10,7 +10,9 @@ describe('Misc Endpoints (e2e-light)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    if (app && typeof app.close === 'function') {
+      await app.close();
+    }
   });
 
   it('GET /announcements should include reads array', async () => {

@@ -11,7 +11,9 @@ describe('Pastoral Care (e2e-light)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    if (app && typeof app.close === 'function') {
+      await app.close();
+    }
   });
 
   it('POST /pastoral-care/tickets should create a ticket', async () => {

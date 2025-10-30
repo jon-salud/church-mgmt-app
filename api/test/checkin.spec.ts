@@ -59,7 +59,9 @@ describe('Checkin (e2e-light)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    if (app && typeof app.close === 'function') {
+      await app.close();
+    }
   });
 
   beforeEach(() => {

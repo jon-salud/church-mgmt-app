@@ -32,7 +32,11 @@ import { arrayOfObjectsResponse, objectResponse } from '../../common/openapi/sch
 @ApiBearerAuth()
 @Controller('giving')
 export class GivingController {
-  constructor(public givingService: GivingService) {}
+  public givingService: GivingService;
+
+  constructor(givingService: GivingService) {
+    this.givingService = givingService;
+  }
 
   @Get('funds')
   @ApiOperation({ summary: 'List giving funds' })

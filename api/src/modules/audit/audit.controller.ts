@@ -11,10 +11,16 @@ import { objectResponse } from '../../common/openapi/schemas';
 @ApiBearerAuth()
 @Controller('audit')
 export class AuditController {
+  public auditService: AuditService;
+  public auditLogQueryService: AuditLogQueryService;
+
   constructor(
-    public auditService: AuditService,
-    public auditLogQueryService: AuditLogQueryService
-  ) {}
+    auditService: AuditService,
+    auditLogQueryService: AuditLogQueryService
+  ) {
+    this.auditService = auditService;
+    this.auditLogQueryService = auditLogQueryService;
+  }
 
   @Get()
   @ApiOperation({ summary: 'List audit log entries' })

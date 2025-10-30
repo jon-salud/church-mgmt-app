@@ -14,7 +14,9 @@ describe('Documents (e2e)', () => {
   });
 
   afterAll(async () => {
-    await app.close();
+    if (app && typeof app.close === 'function') {
+      await app.close();
+    }
   });
 
   it('GET /documents should list documents user has permission to view', async () => {

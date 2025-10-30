@@ -18,7 +18,11 @@ import { objectResponse, arrayOfObjectsResponse } from '../../common/openapi/sch
 @ApiBearerAuth()
 @Controller('pastoral-care')
 export class PastoralCareController {
-  constructor(public pastoralCareService: PastoralCareService) {}
+  public pastoralCareService: PastoralCareService;
+
+  constructor(pastoralCareService: PastoralCareService) {
+    this.pastoralCareService = pastoralCareService;
+  }
 
   @Post('tickets')
   @ApiOperation({ summary: 'Create a pastoral care ticket' })

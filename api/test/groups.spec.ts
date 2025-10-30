@@ -40,12 +40,16 @@ describe('Groups (e2e-light)', () => {
   });
 
   afterAll(async () => {
-    await app.inject({
-      method: 'DELETE',
-      url: `/api/v1/users/${createdUserId}`,
-      headers: { authorization: 'Bearer demo-admin' },
-    });
-    await app.close();
+    if (app && typeof app.inject === 'function') {
+      await app.inject({
+        method: 'DELETE',
+        url: `/api/v1/users/${createdUserId}`,
+        headers: { authorization: 'Bearer demo-admin' },
+      });
+    }
+    if (app && typeof app.close === 'function') {
+      await app.close();
+    }
   });
 
   it('GET /groups should 200', async () => {

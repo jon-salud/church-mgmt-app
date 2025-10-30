@@ -35,7 +35,11 @@ import { SuccessResponseDto } from '../../common/dto/success-response.dto';
 @ApiBearerAuth()
 @Controller('documents')
 export class DocumentsController {
-  constructor(public documentsService: DocumentsService) {}
+  public documentsService: DocumentsService;
+
+  constructor(documentsService: DocumentsService) {
+    this.documentsService = documentsService;
+  }
 
   @Get()
   @ApiOperation({ summary: 'List documents the user has permission to view' })
