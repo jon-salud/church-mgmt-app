@@ -64,9 +64,16 @@ The system will be powered by a single, unified backend API. This API-first appr
 all business logic is centralized, consistent, and can be consumed by any number of frontend
 applications.
 
+## 3. Backend Architecture
+
+The system will be powered by a single, unified backend API. This API-first approach ensures that
+all business logic is centralized, consistent, and can be consumed by any number of frontend
+applications.
+
 - **Unified API:** A single NestJS application will serve as the backend for both the `web` and
   `admin` frontends. This reduces code duplication and ensures all data modifications go through the
   same business logic and validation rules.
+- **Multi-tenant Architecture:** The system implements physical data segregation with separate PostgreSQL databases per tenant for maximum security and GDPR compliance. A system metadata database manages tenant lifecycle, settings, and cross-tenant analytics.
 - **Robust Authorization:** The API will be responsible for enforcing all access control. It will
   use a role-based access control (RBAC) system that can distinguish between different user roles
   with granular permissions and data scoping.
@@ -82,8 +89,10 @@ applications.
 - **Data Scoping:** Beyond basic church-level isolation, the system implements ministry-specific
   and functional-area scoping to ensure users only access data relevant to their responsibilities.
   This includes time-bound access for governance functions and privacy-preserving data filtering.
-- **Database:** A single PostgreSQL database will be used, with every table containing a `churchId`
-  column to ensure strict data-tenancy and isolation between church clients.
+- **Database Architecture:** 
+  - **System Metadata Database:** PostgreSQL database containing tenant management, settings, usage metrics, and system audit logs
+  - **Tenant Databases:** Separate PostgreSQL databases per tenant, ensuring complete data isolation and GDPR compliance
+  - **Connection Management:** Tenant-aware Prisma clients with connection pooling and automatic database routing
 
 ## 4. Architectural Diagram
 
@@ -129,10 +138,15 @@ The following diagram illustrates the high-level structure of the system with pe
                                      v
 +----------------------------------------------------------------------+
 |                                                                      |
-|                     PostgreSQL DATABASE (Single DB)                  |
-|          (Strict data tenancy enforced via `churchId` column)        |
+|                     PostgreSQL DATABASES (Multi-tenant)             |
+|          (Physical segregation: System DB + Per-tenant DBs)          |
 |                                                                      |
-| Schema Areas:                                                       |
+| System Metadata Database:                                           |
+| • Tenant Management (Tenant, TenantSettings, TenantUsage)           |
+| • System Users & Audit Logs (SystemUser, SystemAuditLog)            |
+| • Cross-tenant Analytics & Billing Data                             |
+|                                                                      |
+| Tenant Databases (1 per church):                                    |
 | • Core Entities (Users, Profiles, Groups, Events)                   |
 | • Governance (Documents, Approvals, Acknowledgments)                |
 | • Volunteer (Availability, Templates, Assignments)                  |
@@ -170,6 +184,11 @@ The system implements repository abstractions for domain-specific data access:
 
 ### 5.4. Data Isolation & Multi-tenancy
 
-- **Church-Level Scoping:** All data operations are scoped by `churchId` to ensure complete isolation between church clients.
+### 5.4. Data Isolation & Multi-tenancy
+
+- **Physical Data Segregation:** Each tenant (church) has its own dedicated PostgreSQL database, ensuring complete isolation and GDPR compliance.
+- **System Metadata Database:** Central database for tenant management, settings, usage tracking, and cross-tenant operations.
+- **Tenant-Aware Data Access:** Prisma services automatically route database operations to the correct tenant database based on request context.
+- **Connection Pooling:** Efficient connection management with pgBouncer for optimal performance across multiple tenant databases.
 - **Soft Delete:** All entities support soft delete functionality with `deletedAt` timestamps for audit trails and data recovery.
 - **Audit Logging:** All data modifications are logged to maintain compliance and operational visibility.
