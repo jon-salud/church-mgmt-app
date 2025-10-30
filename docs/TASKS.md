@@ -305,6 +305,15 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ## Phase 2: Admin Experience & Polish
 
+- **Complete CRUD Operations for All Entities:**
+  - **Backend:** Implement full Create, Read, Update, Delete operations for missing database entities (groups, announcements, funds, contributions, households, children).
+  - **Soft Delete Implementation:** Extend soft delete functionality to remaining entities to maintain data integrity and audit trails.
+    - **Current Status:** Schema includes `deletedAt` fields for all tables. Users and events have full soft delete (create/update/delete/listDeleted/undelete). Some join tables (group_members, document_permissions, announcement_audiences) have soft delete.
+    - **Missing:** Groups, announcements, funds, contributions, households, and children lack delete operations entirely.
+  - **Frontend:** Implement soft delete UI for all entities (show archived items, recovery buttons, "Archived" status badges).
+    - **Current Status:** Events have basic soft delete UI (show archived checkbox, recover button, "Archived" status badge).
+    - **Missing:** All other entities lack soft delete UI and admin controls for viewing/managing archived items.
+
 - **Admin Experience Enhancements:**
   - **Backend:** Implement API endpoints for CRUD operations on custom member profile fields.
   - **Backend:** Add an endpoint to allow assigning a request to a specific staff member.
@@ -318,15 +327,6 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 - **Check-in Location Management:**
   - **Backend:** CRUD endpoints for managing check-in locations.
   - **Frontend:** Admin interface for creating and managing check-in locations used in attendance tracking.
-
-- **Complete CRUD Operations for All Entities:**
-  - **Backend:** Implement full Create, Read, Update, Delete operations for missing database entities (groups, announcements, funds, contributions, households, children).
-  - **Soft Delete Implementation:** Extend soft delete functionality to remaining entities to maintain data integrity and audit trails.
-    - **Current Status:** Schema includes `deletedAt` fields for all tables. Users and events have full soft delete (create/update/delete/listDeleted/undelete). Some join tables (group_members, document_permissions, announcement_audiences) have soft delete.
-    - **Missing:** Groups, announcements, funds, contributions, households, and children lack delete operations entirely.
-  - **Frontend:** Implement soft delete UI for all entities (show archived items, recovery buttons, "Archived" status badges).
-    - **Current Status:** Events have basic soft delete UI (show archived checkbox, recover button, "Archived" status badge).
-    - **Missing:** All other entities lack soft delete UI and admin controls for viewing/managing archived items.
 
 ## Phase 3: Developer Experience & Infrastructure
 
@@ -350,38 +350,6 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - **Frontend:** Add privacy settings UI, data export functionality, and consent management interfaces.
   - **Audit:** Ensure all personal data handling complies with GDPR requirements including lawful basis for processing.
 
-- **Jest/pnpm Workspace Module Resolution Issue:**
-  - **Issue:** Jest cannot resolve `ts-jest` module in pnpm workspace environment despite proper installation
-  - **Impact:** Local and CI API tests fail with "Module ts-jest not found" error, preventing test execution
-  - **Root Cause:** pnpm workspace module resolution conflicts with Jest's module loading mechanism
-  - **Current Status:** Code builds successfully, all review feedback addressed, branch ready for merge
-  - **Workaround:** Force merge required due to tooling limitation (not code issue)
-  - **Resolution Options:** 
-    - Switch to alternative test runners (Vitest, ts-node with custom runner)
-    - Use Docker-based testing with proper module resolution
-    - Move away from pnpm workspaces for API testing
-    - Implement Jest configuration workarounds for pnpm workspaces
-
-### Epic: Migrate API test runner to Vitest (developer-experience)
-
-- **Motivation:** pnpm workspace + Jest + ts-jest leads to unreliable transformer resolution ("Module ts-jest not found") in local dev and some CI environments. Migrating to Vitest (or an alternative runner) reduces friction, speeds up local test runs, and avoids fragile transformer/workarounds.
-- **Scope:** Replace Jest+ts-jest for `api/` with Vitest (or a compatible runner), migrate tests and test utilities, update CI workflows, and verify coverage reporting parity.
-- **Acceptance criteria:**
-  - All `api/` tests run locally with `pnpm -C api test` using Vitest.
-  - CI workflows updated to run Vitest and collect coverage reports comparable to Jest's current output.
-  - Developer docs (`docs/SETUP.md`) updated with usage and migration notes.
-- **Risks & Mitigations:**
-  - Test semantics differences between Jest and Vitest — mitigate by running both runners in parallel during migration, and updating tests where API differences exist.
-  - Coverage reporting differences — use c8/nyc-compatible tools or Vitest's built-in coverage support configured to generate lcov for CI.
-- **Estimated effort:** 2-3 days for a single developer (migrate, test, CI), depending on test complexity and mocking utilities.
-
-
-## Sprint 6 Advanced Patterns Backlog
-
-- **Event Sourcing** - Consider for audit-heavy operations (deprioritized from Sprint 6 scope)
-- **Caching Layer** - Add Redis/memory caching for performance (deprioritized from Sprint 6 scope)
-- **Circuit Breaker** - Implement resilience patterns (deprioritized from Sprint 6 scope)
-- **Metrics & Monitoring** - Add application metrics (deprioritized from Sprint 6 scope)
 
 ## Post-MVP (Future Releases)
 
