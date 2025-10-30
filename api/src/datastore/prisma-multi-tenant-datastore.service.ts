@@ -760,7 +760,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
 
   // Placeholder implementations for remaining methods
   // These would need full implementation based on the Prisma schema
-  async getChurch(context?: ExecutionContext): Promise<any> {
+  async getChurch(_context?: ExecutionContext): Promise<any> {
     // Return default church - in multi-tenant, this might be tenant-specific
     return {
       id: 'default-church',
@@ -1021,23 +1021,22 @@ export class PrismaMultiTenantDataStore implements DataStore {
   async getDashboardSnapshot(churchId: string, context?: ExecutionContext): Promise<any> {
     const client = await this.getTenantClient(context);
 
-    const [memberCount, groupCount, upcomingEvents, unreadAnnouncements, recentContributions] =
-      await Promise.all([
-        client.user.count({ where: { deletedAt: null } }),
-        client.group.count({ where: { deletedAt: null } }),
-        client.event.count({
-          where: {
-            deletedAt: null,
-            startAt: { gte: new Date() },
-          },
-        }),
-        client.announcement.count(), // Would need complex query for unread
-        client.contribution.findMany({
-          where: {
-            date: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
-          },
-        }),
-      ]);
+    const [_memberCount, _groupCount, _upcomingEvents, , recentContributions] = await Promise.all([
+      client.user.count({ where: { deletedAt: null } }),
+      client.group.count({ where: { deletedAt: null } }),
+      client.event.count({
+        where: {
+          deletedAt: null,
+          startAt: { gte: new Date() },
+        },
+      }),
+      client.announcement.count(), // Would need complex query for unread
+      client.contribution.findMany({
+        where: {
+          date: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) },
+        },
+      }),
+    ]);
 
     const totalGivingLast30 = recentContributions.reduce(
       (sum: number, c: any) => sum + c.amount,
@@ -1045,9 +1044,9 @@ export class PrismaMultiTenantDataStore implements DataStore {
     );
 
     return {
-      memberCount,
-      groupCount,
-      upcomingEvents,
+      memberCount: _memberCount,
+      groupCount: _groupCount,
+      upcomingEvents: _upcomingEvents,
       unreadAnnouncements: 0, // Placeholder
       totalGivingLast30,
     };
@@ -1056,7 +1055,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
   async createSession(
     email: string,
     provider: 'google' | 'facebook' | 'demo',
-    requestedRole?: string
+    _requestedRole?: string
   ): Promise<any> {
     // Sessions might be handled differently in multi-tenant setup
     // For now, return a mock session
@@ -1071,7 +1070,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     };
   }
 
-  async getSessionByToken(token?: string, context?: ExecutionContext): Promise<any> {
+  async getSessionByToken(token?: string, _context?: ExecutionContext): Promise<any> {
     // Sessions might be handled differently in multi-tenant setup
     if (!token) return null;
     return null; // Placeholder
@@ -1219,7 +1218,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     });
   }
 
-  async listRequestTypes(churchId: string): Promise<any[]> {
+  async listRequestTypes(_churchId: string): Promise<any[]> {
     const client = await this.getTenantClient();
     return client.requestType.findMany();
   }
@@ -1240,7 +1239,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     });
   }
 
-  async listDocuments(churchId: string, userRoleIds: string[]): Promise<any[]> {
+  async listDocuments(churchId: string, _userRoleIds: string[]): Promise<any[]> {
     const client = await this.getTenantClient();
     return client.document.findMany({
       where: { churchId, deletedAt: null },
@@ -1268,7 +1267,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     title: string,
     description: string | undefined,
     fileData: string,
-    roleIds: string[],
+    _roleIds: string[],
     actorUserId: string
   ): Promise<any> {
     const client = await this.getTenantClient();
@@ -1295,7 +1294,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     id: string,
     title: string | undefined,
     description: string | undefined,
-    roleIds: string[] | undefined,
+    _roleIds: string[] | undefined,
     actorUserId: string
   ): Promise<any> {
     const client = await this.getTenantClient();
@@ -1312,7 +1311,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     });
   }
 
-  async deleteDocument(id: string, actorUserId: string): Promise<boolean> {
+  async deleteDocument(id: string, _actorUserId: string): Promise<boolean> {
     const client = await this.getTenantClient();
     const document = await client.document.findUnique({
       where: { id },
@@ -1331,8 +1330,8 @@ export class PrismaMultiTenantDataStore implements DataStore {
 
   async getDocumentDownloadUrl(
     id: string,
-    userId: string,
-    context?: ExecutionContext
+    _userId: string,
+    _context?: ExecutionContext
   ): Promise<any> {
     // This would generate a signed URL for document download
     // For now, return a placeholder
@@ -1342,8 +1341,8 @@ export class PrismaMultiTenantDataStore implements DataStore {
     };
   }
 
-  async downloadDocument(id: string, userId: string, context?: ExecutionContext): Promise<any> {
-    const client = await this.getTenantClient(context);
+  async downloadDocument(id: string, _userId: string, _context?: ExecutionContext): Promise<any> {
+    const client = await this.getTenantClient(_context);
     const document = await client.document.findUnique({
       where: { id },
     });
@@ -1408,7 +1407,10 @@ export class PrismaMultiTenantDataStore implements DataStore {
     });
   }
 
-  async deleteChild(id: string, { actorUserId }: { actorUserId: string }): Promise<any> {
+  async deleteChild(
+    id: string,
+    { actorUserId: _actorUserId }: { actorUserId: string }
+  ): Promise<any> {
     const client = await this.getTenantClient();
     await client.child.delete({
       where: { id },
@@ -1943,7 +1945,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
 
   async getDocumentWithPermissions(
     id: string,
-    userRoleIds: string[],
+    _userRoleIds: string[],
     context?: ExecutionContext
   ): Promise<any> {
     const client = await this.getTenantClient(context);
@@ -1961,7 +1963,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     const permissions = document.permissions.map((p: any) => p.roleId);
 
     // Check if user has permission
-    const hasPermission = permissions.some((roleId: string) => userRoleIds.includes(roleId));
+    const hasPermission = permissions.some((roleId: string) => _userRoleIds.includes(roleId));
     if (!hasPermission) return undefined;
 
     return { ...document, permissions };
@@ -1969,7 +1971,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
 
   async hardDeleteDocument(
     id: string,
-    actorUserId: string,
+    _actorUserId: string,
     context?: ExecutionContext
   ): Promise<boolean> {
     const client = await this.getTenantClient(context);
@@ -1994,7 +1996,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
 
   async undeleteDocument(
     id: string,
-    actorUserId: string,
+    _actorUserId: string,
     context?: ExecutionContext
   ): Promise<boolean> {
     const client = await this.getTenantClient(context);
@@ -2243,7 +2245,6 @@ export class PrismaMultiTenantDataStore implements DataStore {
     type: 'team' | 'member' = 'team',
     context?: ExecutionContext
   ): Promise<any[]> {
-    const client = await this.getTenantClient(context);
     const invitations: any[] = [];
     const errors: string[] = [];
 
