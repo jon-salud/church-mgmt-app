@@ -114,6 +114,7 @@ try {
 import fs from 'fs';
 import path from 'path';
 import { spawn, ChildProcess } from 'child_process';
+import getPort from 'get-port';
 
 async function waitForServer(url: string, timeout = 10000) {
   const start = Date.now();
@@ -141,7 +142,7 @@ async function waitForServer(url: string, timeout = 10000) {
 // to a noop app so tests that don't depend on the HTTP server remain unaffected.
 const distMain = path.resolve(__dirname, '../dist/src/main.js');
 if (fs.existsSync(distMain)) {
-  const port = process.env.PORT ? Number(process.env.PORT) : 3001;
+  const port = await getPort();
   const child = spawn(process.execPath, [distMain], {
     env: {
       ...process.env,

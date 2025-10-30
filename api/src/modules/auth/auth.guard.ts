@@ -55,6 +55,13 @@ export class AuthGuard implements CanActivate {
     const cookieHeader = normaliseHeader(request.headers['cookie']);
     const cookieToken = request.cookies?.[SESSION_COOKIE_NAME] ?? extractCookieToken(cookieHeader);
     const token = headerToken ?? xSessionToken ?? cookieToken;
+
+    if (!token) {
+      throw new UnauthorizedException(
+        'Missing or invalid credentials. Provide a Bearer JWT from the OAuth login flow or an allowed demo token.'
+      );
+    }
+
     // Recognize demo tokens used by e2e/unit tests and map to deterministic
     // user roles so tests that use 'Bearer demo-admin' / 'Bearer demo-member'
     // behave consistently regardless of the test bootstrap wiring.
