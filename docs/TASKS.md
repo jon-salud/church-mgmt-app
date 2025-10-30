@@ -314,6 +314,18 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - **Frontend:** Add privacy settings UI, data export functionality, and consent management interfaces.
   - **Audit:** Ensure all personal data handling complies with GDPR requirements including lawful basis for processing.
 
+- **Jest/pnpm Workspace Module Resolution Issue:**
+  - **Issue:** Jest cannot resolve `ts-jest` module in pnpm workspace environment despite proper installation
+  - **Impact:** Local and CI API tests fail with "Module ts-jest not found" error, preventing test execution
+  - **Root Cause:** pnpm workspace module resolution conflicts with Jest's module loading mechanism
+  - **Current Status:** Code builds successfully, all review feedback addressed, branch ready for merge
+  - **Workaround:** Force merge required due to tooling limitation (not code issue)
+  - **Resolution Options:** 
+    - Switch to alternative test runners (Vitest, ts-node with custom runner)
+    - Use Docker-based testing with proper module resolution
+    - Move away from pnpm workspaces for API testing
+    - Implement Jest configuration workarounds for pnpm workspaces
+
 ## Sprint 6 Advanced Patterns Backlog
 
 - **Event Sourcing** - Consider for audit-heavy operations (deprioritized from Sprint 6 scope)
