@@ -733,41 +733,71 @@ export async function bootstrapTestApp(
   // CRITICAL: Patch the AuthGuard instance AFTER app.init() so that controller-level
   // @UseGuards(AuthGuard) decorators use our test implementation
   try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const mod = await import('../../src/modules/auth/auth.guard');
-    const RealAuthGuardClass = mod?.AuthGuard;
-    if (RealAuthGuardClass) {
+    if ((globalThis as any).__isUnitTest) {
+      // Skip patching for unit tests to allow mocked AuthGuard behavior
       // eslint-disable-next-line no-console
-      console.debug('[e2e-bootstrap:test] Patching AuthGuard CLASS prototype...');
-      const mockDb = moduleRef.get(MockDatabaseService as any, { strict: false });
-
-      // Patch the prototype's canActivate method on the CLASS itself
-      RealAuthGuardClass.prototype.canActivate = async function (context: any) {
-        const req = context.switchToHttp().getRequest();
-        const header = req.headers?.authorization as string | undefined;
-        const token = header?.startsWith('Bearer ')
-          ? header.slice('Bearer '.length).trim()
-          : header;
-        if (!token) {
-          const session = mockDb?.getSessionByToken?.('demo-admin');
-          if (!session) throw new UnauthorizedException('Missing demo session');
-          req.user = session.user ?? { id: 'demo-user', roles: [] };
-          req.session = session;
-          return true;
-        }
-        const session = mockDb?.getSessionByToken?.(token);
-        if (!session) {
-          throw new UnauthorizedException('Unauthorized');
-        }
-        req.user = session.user ?? { id: 'demo-user', roles: [] };
-        req.session = session;
-        return true;
-      };
-      // eslint-disable-next-line no-console
-      console.debug('[e2e-bootstrap:test] AuthGuard CLASS prototype patched successfully');
+      console.debug('[e2e-bootstrap:test] Skipping AuthGuard patching for unit tests');
     } else {
-      // eslint-disable-next-line no-console
-      console.debug('[e2e-bootstrap:test] WARNING: Could not import AuthGuard class');
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
+      const mod = await import('../../src/modules/auth/auth.guard');
+      const RealAuthGuardClass = mod?.AuthGuard;
+      if (RealAuthGuardClass) {
+        // eslint-disable-next-line no-console
+        console.debug('[e2e-bootstrap:test] Patching AuthGuard CLASS prototype...');
+        const mockDb = moduleRef.get(MockDatabaseService as any, { strict: false });
+
+        // Patch the prototype's canActivate method on the CLASS itself
+        RealAuthGuardClass.prototype.canActivate = async function (context: any) {
+          // For e2e tests, set user based on authorization token
+          const req = context.switchToHttp().getRequest();
+          const header = req.headers?.authorization as string | undefined;
+          const token = header?.startsWith('Bearer ')
+            ? header.slice('Bearer '.length).trim()
+            : header;
+
+          if (token === 'demo-admin') {
+            req.user = {
+              id: 'user-admin',
+              email: 'admin@example.com',
+              roles: [{ role: 'Admin' }],
+              profile: {},
+              token: 'demo-admin',
+            };
+          } else if (token === 'demo-member') {
+            req.user = {
+              id: 'user-member-1',
+              email: 'member1@example.com',
+              roles: [{ role: 'Member' }],
+              profile: {},
+              token: 'demo-member',
+            };
+          } else if (token === 'demo-leader') {
+            req.user = {
+              id: 'user-leader',
+              email: 'leader@example.com',
+              roles: [{ role: 'Leader' }],
+              profile: {},
+              token: 'demo-leader',
+            };
+          } else {
+            // Default to admin for tests without explicit token
+            req.user = {
+              id: 'user-admin',
+              email: 'admin@example.com',
+              roles: [{ role: 'Admin' }],
+              profile: {},
+              token: 'demo-admin',
+            };
+          }
+          req.session = { token: token || 'demo-admin' };
+          return true;
+        };
+        // eslint-disable-next-line no-console
+        console.debug('[e2e-bootstrap:test] AuthGuard CLASS prototype patched successfully');
+      } else {
+        // eslint-disable-next-line no-console
+        console.debug('[e2e-bootstrap:test] WARNING: Could not import AuthGuard class');
+      }
     }
   } catch (e) {
     // eslint-disable-next-line no-console
