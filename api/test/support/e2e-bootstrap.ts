@@ -938,6 +938,13 @@ export async function bootstrapTestApp(
             }
             return result;
           },
+          set(value: unknown) {
+            // NestJS DI may try to set the service via the property. Store it in cache.
+            if (!(globalThis as any).__TEST_SERVICE_CACHE) {
+              (globalThis as any).__TEST_SERVICE_CACHE = {};
+            }
+            (globalThis as any).__TEST_SERVICE_CACHE[svcName] = value;
+          },
           configurable: true,
         };
 
