@@ -5,7 +5,7 @@ API_PORT=${API_PORT:-3001}
 WEB_PORT=${WEB_PORT:-3000}
 DATA_MODE=${DATA_MODE:-mock}
 export DATA_MODE
-export NODE_ENV=test
+export NODE_ENV=development
 
 API_PID=""
 WEB_PID=""
