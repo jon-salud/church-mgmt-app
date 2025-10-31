@@ -51,13 +51,8 @@ done
 
 # Start Web
 echo "Starting Web..."
-if [[ -d "web/.next" ]]; then
-  echo "Using production build..."
-  pnpm -C web start >/tmp/web-dev.log 2>&1 &
-else
-  echo "Using development server..."
-  pnpm -C web dev >/tmp/web-dev.log 2>&1 &
-fi
+echo "Using development server..."
+pnpm -C web dev >/tmp/web-dev.log 2>&1 &
 WEB_PID=$!
 echo "Web started (pid $WEB_PID)"
 

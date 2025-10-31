@@ -51,7 +51,7 @@ trap { Cleanup; exit 1 }
 
 # Start API
 Write-Host "Starting API..."
-$apiProc = Start-Process pnpm -ArgumentList '-C', 'api', 'start' -RedirectStandardOutput $apiLog -RedirectStandardError $apiLog -PassThru
+$apiProc = Start-Process pnpm -ArgumentList '-C', 'api', 'dev' -RedirectStandardOutput $apiLog -RedirectStandardError $apiLog -PassThru
 Start-Sleep -Seconds 1
 Write-Host "API started (pid $($apiProc.Id))"
 
@@ -60,11 +60,11 @@ Write-Host "Waiting for API on port 3001..."
 for ($i = 1; $i -le 30; $i++) {
   try {
     Invoke-RestMethod -Uri "http://localhost:3001/api/v1/dashboard/summary" -Headers @{ Authorization = 'Bearer demo-admin' } -TimeoutSec 2 | Out-Null
-    Write-Host "✓ API ready"
+    Write-Host "[OK] API ready"
     break
   } catch {
     if ($i -eq 30) {
-      Write-Host "✗ API failed to start after 30 attempts"
+      Write-Host "[FAIL] API failed to start after 30 attempts"
       Write-Host "--- API logs ---"
       Get-Content $apiLog -ErrorAction SilentlyContinue | Select-Object -Last 50
       Cleanup
@@ -88,11 +88,11 @@ Write-Host "Waiting for Web on port 3000..."
 for ($i = 1; $i -le 30; $i++) {
   try {
     Invoke-RestMethod -Uri "http://localhost:3000/dashboard" -TimeoutSec 2 | Out-Null
-    Write-Host "✓ Web ready"
+    Write-Host "[OK] Web ready"
     break
   } catch {
     if ($i -eq 30) {
-      Write-Host "✗ Web failed to start after 30 attempts"
+      Write-Host "[FAIL] Web failed to start after 30 attempts"
       Write-Host "--- Web logs ---"
       Get-Content $webLog -ErrorAction SilentlyContinue | Select-Object -Last 50
       Cleanup
@@ -104,7 +104,7 @@ for ($i = 1; $i -le 30; $i++) {
 }
 
 Write-Host ""
-Write-Host "✓ Services ready, running Playwright..."
+Write-Host "[OK] Services ready, running Playwright..."
 Write-Host ""
 
 # Run tests
