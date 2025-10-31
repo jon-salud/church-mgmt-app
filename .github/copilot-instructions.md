@@ -7,6 +7,7 @@ This guide outlines the standardized workflow for AI agents when handling user p
 1. **Certainty Before Action:** Achieve absolute certainty of the user's expectations and goals before starting any work. Ask clarifying questions to confirm assumptions, even if the task seems clear. The goal is to achieve zero doubt about the requirements.
 2. **Codebase as Source of Truth:** The actual codebase files are the source of truth for the current code state. If documentation like `TASKS.md` is out of sync, the code prevails, and the documentation must be updated.
 3. **User Request Supersedes:** Always prioritize the user's current, explicit request over any conflicting information in this document or other project files.
+4. **Regression Prevention (MUST):** Before making any code changes, systematically review where methods, functions, or components are used to identify dependencies. If fundamental changes risk breaking existing functionality, introduce new implementations or update incrementally to ensure no regressions. Use tools like `list_code_usages`, `grep_search`, or `semantic_search` for dependency analysis, and validate through comprehensive testing and builds.
 
 ## Workflow Steps
 
@@ -19,6 +20,7 @@ When a user submits a prompt to the AI Agent:
 
 2. **Formulate a Plan**
    - Create a detailed, step-by-step plan based on the source of truth documents
+   - Review usages of any methods, functions, or components to be changed using tools like `list_code_usages`, `grep_search`, or `semantic_search` to prevent regressions
    - Review the plan for robustness, identifying potential challenges and outlining workarounds and solutions
    - Present the plan to the user, highlighting any risks, and wait for explicit approval before proceeding
    - The plan must include a final documentation update and submission step
