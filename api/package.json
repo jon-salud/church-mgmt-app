@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nest start --watch -e \"node -r tsconfig-paths/register\"",
     "build": "nest build && tsc-alias",
-    "start": "node -r tsconfig-paths/register dist/main.js",
+    "start": "node -r tsconfig-paths/register dist/src/main.js",
     "test": "vitest run --run --coverage",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
