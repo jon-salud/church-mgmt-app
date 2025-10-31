@@ -34,7 +34,7 @@ echo "API started (pid $API_PID)"
 # Wait for API to be ready
 echo "Waiting for API on port $API_PORT..."
 for attempt in {1..30}; do
-  if curl -sf "http://localhost:${API_PORT}/api/v1/dashboard/summary" >/dev/null 2>&1; then
+  if curl -sf -H "Authorization: Bearer demo-admin" "http://localhost:${API_PORT}/api/v1/dashboard/summary" >/dev/null 2>&1; then
     echo "✓ API ready"
     break
   fi
