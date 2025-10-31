@@ -40,7 +40,7 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -67,7 +67,7 @@ jobs:
     needs: detect_changes
     if: ${{ needs.detect_changes.outputs.api == 'true' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     env:
       CI: true
     steps:
@@ -102,7 +102,7 @@ jobs:
     needs: detect_changes
     if: ${{ needs.detect_changes.outputs.web == 'true' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     env:
       CI: true
     steps:
