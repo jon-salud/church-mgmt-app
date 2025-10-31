@@ -9,34 +9,27 @@ export class BasePage {
   }
 
   async goto(url: string) {
-    // Get current cookies to understand auth state
-    const currentCookies = await this.page.context().cookies();
-    const demoTokenCookie = currentCookies.find(c => c.name === 'demo_token');
-
-    // If no demo token exists, set it (defensive)
-    if (!demoTokenCookie) {
-      await this.page.context().addCookies([
-        {
-          name: 'demo_token',
-          value: 'demo-admin',
-          url: 'http://localhost:3000',
-        },
-        {
-          name: 'session_provider',
-          value: 'demo',
-          url: 'http://localhost:3000',
-        },
-      ]);
-    }
+    // Always ensure auth cookies are set before navigation
+    // This handles both first-time access and cookie refresh on navigation
+    await this.page.context().addCookies([
+      {
+        name: 'demo_token',
+        value: 'demo-admin',
+        url: 'http://localhost:3000',
+      },
+      {
+        name: 'session_provider',
+        value: 'demo',
+        url: 'http://localhost:3000',
+      },
+    ]);
 
     // Ensure onboarding is complete for non-onboarding tests
     try {
-      // Get token value from current cookies
-      const tokenValue = demoTokenCookie?.value || 'demo-admin';
       await this.page.request.put('http://localhost:3001/api/v1/settings/church-acc', {
         data: { onboardingComplete: true },
         headers: {
-          Cookie: `demo_token=${tokenValue}; session_provider=demo`,
+          Cookie: `demo_token=demo-admin; session_provider=demo`,
           'Content-Type': 'application/json',
         },
         timeout: 5000,
