@@ -15,7 +15,7 @@ const nextConfig = {
   },
   // Force dynamic rendering for all pages
   generateBuildId: async () => {
-    return 'build-' + Date.now()
+    return 'build-' + Date.now();
   },
   // Allow build to succeed even with export errors
   typescript: {
