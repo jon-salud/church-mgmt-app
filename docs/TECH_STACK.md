@@ -199,6 +199,7 @@ pnpm lint              # Check linting issues
 pnpm lint:fix          # Auto-fix linting issues
 pnpm format            # Format code with Prettier
 pnpm format:check      # Check formatting compliance
+pnpm pre-commit        # Run all pre-commit checks manually
 ```
 
 ### Environment Modes
@@ -212,6 +213,16 @@ DATA_MODE=prisma pnpm dev:api:prisma
 # Testing (mock data, fast, deterministic)
 NODE_ENV=test pnpm -C api test
 ```
+
+### Cross-Platform Development
+The project includes guardrails for consistent development across macOS, Windows, and Linux:
+
+- **Line Ending Normalization**: `.gitattributes` ensures consistent LF line endings
+- **Pre-commit Hooks**: Automatic code quality checks before commits
+- **CI Pipeline**: Encoding and line ending validation
+- **Platform Scripts**: Use `run-e2e.sh` (Unix/macOS) or `run-e2e.ps1` (Windows) for E2E testing
+
+When transferring files between platforms, run `pnpm format` to fix encoding issues.
 
 ---
 

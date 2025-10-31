@@ -15,7 +15,8 @@
     "lint": "echo 'Starting ESLint...' && eslint \"api/src/**/*.{ts,tsx,js,jsx}\" \"web/**/*.{ts,tsx,js,jsx}\" --debug",
     "lint:fix": "echo 'Starting ESLint fix...' && eslint \"api/src/**/*.{ts,tsx,js,jsx}\" \"web/**/*.{ts,tsx,js,jsx}\" --fix --debug",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "pre-commit": "pnpm lint && pnpm format:check && pnpm build"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",

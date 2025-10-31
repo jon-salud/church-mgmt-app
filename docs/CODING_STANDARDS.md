@@ -199,12 +199,29 @@ pnpm format
 pnpm lint
 ```
 
-### 7.4. CI/CD Integration
+A pre-commit hook automatically runs these checks on every commit:
+- Linting with ESLint
+- Code formatting with Prettier
+- Type checking with TypeScript
+
+### 7.4. Cross-Platform Development
+
+This project supports development across multiple platforms (macOS, Windows, Linux):
+
+- **Line Ending Normalization**: `.gitattributes` ensures consistent LF line endings for text files
+- **Encoding Consistency**: Prettier automatically fixes invisible Unicode characters
+- **Platform-Specific Scripts**: Use appropriate scripts for your platform (`run-e2e.sh` for Unix/macOS, `run-e2e.ps1` for Windows)
+
+When transferring files between platforms, always run `pnpm format` to prevent encoding issues.
+
+### 7.5. CI/CD Integration
 
 All code quality checks are automatically enforced in the CI pipeline:
 
 - **Linting:** ESLint checks run on every push and pull request
 - **Formatting:** Prettier formatting validation runs on every push and pull request
+- **Line Endings:** Automatic validation prevents CRLF line endings in text files
+- **Type Checking:** TypeScript compilation runs on every push and pull request
 - **Tests:** API and E2E tests run with coverage reporting
 
 Code that fails these checks will not be merged until the issues are resolved.

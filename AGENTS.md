@@ -92,6 +92,14 @@ quality.
 - **UI Automation:** All interactive elements must have a unique `id` attribute to facilitate
   end-to-end testing.
 
+## Cross-Platform Development
+
+- **Line Ending Normalization:** The `.gitattributes` file ensures consistent LF line endings for text files across all platforms
+- **Pre-commit Hooks:** Automatic code quality checks (linting, formatting, type checking) run before each commit
+- **CI Pipeline:** Includes encoding and line ending validation to prevent platform-specific issues
+- **Platform Scripts:** Use appropriate scripts for your platform (`scripts/run-e2e.sh` for Unix/macOS, `scripts/run-e2e.ps1` for Windows)
+- **File Transfers:** When moving files between macOS and Windows, always run `pnpm format` to fix encoding issues
+
 ## UI Features
 
 - **Theme Switching:** The application supports light and dark themes. A theme switcher component is
