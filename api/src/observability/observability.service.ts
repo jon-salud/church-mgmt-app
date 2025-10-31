@@ -393,5 +393,7 @@ export class ObservabilityService {
         queryTotalDurationMs: 0,
       },
     };
+    // Clear spans to avoid stale span data
+    this.spans.clear();
   }
 }

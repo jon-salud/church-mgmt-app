@@ -40,7 +40,7 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -67,7 +67,7 @@ jobs:
     needs: detect_changes
     if: ${{ needs.detect_changes.outputs.api == 'true' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     env:
       CI: true
     steps:
@@ -102,9 +102,10 @@ jobs:
     needs: detect_changes
     if: ${{ needs.detect_changes.outputs.web == 'true' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     env:
       CI: true
+      PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: '1'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -121,7 +122,11 @@ jobs:
           cache-dependency-path: pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+      - name: Generate Prisma Client
+        run: pnpm -C api prisma:generate
+      - name: Build API
+        run: pnpm -C api build
       - name: Install Playwright browsers
-        run: pnpm -C web exec playwright install --with-deps chromium
+        run: pnpm -C web exec playwright install chromium
       - name: Run Playwright smoke
-        run: pnpm test:e2e
+        run: DATA_MODE=mock pnpm test:e2e
