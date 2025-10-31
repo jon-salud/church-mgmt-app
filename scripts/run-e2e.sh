@@ -27,7 +27,7 @@ trap cleanup EXIT
 
 # Start API
 echo "Starting API..."
-pnpm -C api start >/tmp/api-dev.log 2>&1 &
+pnpm -C api dev >/tmp/api-dev.log 2>&1 &
 API_PID=$!
 echo "API started (pid $API_PID)"
 
