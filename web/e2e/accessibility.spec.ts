@@ -28,7 +28,7 @@ async function setLightTheme(page: Page) {
       url: 'http://localhost:3000',
     },
   ]);
-  
+
   await page.goto('/');
   await page.evaluate(() => localStorage.setItem('theme', 'light'));
   await page.reload();
@@ -49,7 +49,7 @@ async function setDarkTheme(page: Page) {
       url: 'http://localhost:3000',
     },
   ]);
-  
+
   await page.goto('/');
   await page.evaluate(() => localStorage.setItem('theme', 'dark'));
   await page.reload();
