@@ -1,5 +1,3 @@
-
-
 import { Module } from '@nestjs/common';
 import { TenantProvisioningService } from './tenant-provisioning.service';
 import { TenantProvisioningController } from './tenant-provisioning.controller';
@@ -14,4 +12,3 @@ import { DataStoreModule } from '../datastore';
   exports: [TenantProvisioningService, TenantContextService, SystemPrismaService],
 })
 export class TenantModule {}
-

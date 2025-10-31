@@ -70,7 +70,7 @@ export class AuthGuard implements CanActivate {
     if (token === 'demo-admin') {
       result = {
         user: {
-          id: 'demo-admin-user',
+          id: 'user-admin',
           primaryEmail: 'demo-admin@local',
           roles: [{ role: 'Admin' }],
         },
@@ -79,7 +79,7 @@ export class AuthGuard implements CanActivate {
     } else if (token === 'demo-member') {
       result = {
         user: {
-          id: 'demo-member-user',
+          id: 'user-member-1',
           primaryEmail: 'demo-member@local',
           roles: [{ role: 'Member' }],
         },
@@ -88,11 +88,20 @@ export class AuthGuard implements CanActivate {
     } else if (token === 'demo-leader') {
       result = {
         user: {
-          id: 'demo-leader-user',
+          id: 'user-leader',
           primaryEmail: 'demo-leader@local',
           roles: [{ role: 'Leader' }],
         },
         session: { token: 'demo-leader' },
+      };
+    } else if (token === 'demo-new-admin') {
+      result = {
+        user: {
+          id: 'user-new-admin',
+          primaryEmail: 'demo-new-admin@local',
+          roles: [{ role: 'Admin' }],
+        },
+        session: { token: 'demo-new-admin' },
       };
     } else if (!this.authService || typeof this.authService.resolveAuthBearer !== 'function') {
       // No auth service available and token isn't a known demo token: fail early

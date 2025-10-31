@@ -6,7 +6,7 @@ import { MockDataStoreAdapter } from './mock-data-store.adapter';
 import { PrismaDataStore } from './prisma-data-store.service';
 import { PrismaModule } from '../prisma/prisma.module';
 import { InMemoryDataStore } from './in-memory-data-store.service';
-import { PrismaMultiTenantDataStore } from './prisma-multi-tenant-datastore.service';
+
 // TenantModule is required dynamically below to avoid top-level requires that
 // can trigger decorator evaluation during test-time module loading.
 
@@ -34,12 +34,7 @@ import { PrismaMultiTenantDataStore } from './prisma-multi-tenant-datastore.serv
     // Create a unified DATA_STORE factory that works without multi-tenant support
     baseProviders.push({
       provide: DATA_STORE,
-      inject: [
-        ConfigService,
-        MockDataStoreAdapter,
-        PrismaDataStore,
-        InMemoryDataStore,
-      ],
+      inject: [ConfigService, MockDataStoreAdapter, PrismaDataStore, InMemoryDataStore],
       useFactory: (
         config: ConfigService,
         mockStore: MockDataStoreAdapter,

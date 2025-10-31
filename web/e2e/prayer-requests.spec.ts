@@ -80,37 +80,36 @@ test.describe('Prayer Requests and General Requests', () => {
       });
     });
 
-    test(
-      'should allow users to submit a prayer request through general requests',
-      async ({ page }) => {
-        // Test is blocked by React event handler and general request API issues
-        // Will be enabled once the following features are implemented:
-        // - General request form submission API endpoints
-        // - Request type-specific handling for prayer requests
-        // - Form submission event handler fixes in Playwright
-        const requestsPage = new RequestsPage(page);
+    test('should allow users to submit a prayer request through general requests', async ({
+      page,
+    }) => {
+      // Test is blocked by React event handler and general request API issues
+      // Will be enabled once the following features are implemented:
+      // - General request form submission API endpoints
+      // - Request type-specific handling for prayer requests
+      // - Form submission event handler fixes in Playwright
+      const requestsPage = new RequestsPage(page);
 
-        await test.step('Navigate to requests page', async () => {
-          await requestsPage.goto();
-          await requestsPage.verifyRequestsPage();
-        });
+      await test.step('Navigate to requests page', async () => {
+        await requestsPage.goto();
+        await requestsPage.verifyRequestsPage();
+      });
 
-        await test.step('Select prayer request type and fill form', async () => {
-          await requestsPage.selectRequestType('Prayer');
-          await requestsPage.verifyPrayerRequestForm();
-          await requestsPage.fillRequestForm(
-            'Prayer Request via General Form',
-            'This prayer request was submitted through the general requests form.',
-            true // confidential
-          );
-        });
+      await test.step('Select prayer request type and fill form', async () => {
+        await requestsPage.selectRequestType('Prayer');
+        await requestsPage.verifyPrayerRequestForm();
+        await requestsPage.fillRequestForm(
+          'Prayer Request via General Form',
+          'This prayer request was submitted through the general requests form.',
+          true // confidential
+        );
+      });
 
-        await test.step('Submit the prayer request', async () => {
-          await requestsPage.submitRequest();
-          await requestsPage.verifyRequestSubmitted();
-        });
-      }
-    );
+      await test.step('Submit the prayer request', async () => {
+        await requestsPage.submitRequest();
+        await requestsPage.verifyRequestSubmitted();
+      });
+    });
 
     test('should show confidential option for prayer requests', async ({ page }) => {
       const requestsPage = new RequestsPage(page);

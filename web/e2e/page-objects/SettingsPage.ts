@@ -20,7 +20,7 @@ export class SettingsPage extends BasePage {
     if (!currentUrl.includes('/settings')) {
       console.warn(`Expected to be on /settings page, but URL is: ${currentUrl}`);
     }
-    
+
     // Try to find any heading on the page
     const headings = await this.page.locator('h1, h2').all();
     console.log(`Found ${headings.length} headings on page`);
@@ -28,7 +28,7 @@ export class SettingsPage extends BasePage {
       const text = await heading.textContent();
       console.log(`Heading text: ${text}`);
     }
-    
+
     await expect(this.page.getByRole('heading', { name: 'Settings' })).toBeVisible();
   }
 }
