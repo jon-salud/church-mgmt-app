@@ -49,9 +49,30 @@ export class BasePage {
   async checkAccessibility() {
     // Wait for page to be fully loaded and stable
     await this.page.waitForLoadState('networkidle');
-    await this.page.waitForTimeout(1000); // Extra delay for any async operations
+    await this.page.waitForTimeout(500);
 
-    await this.page.addScriptTag({ path: require.resolve('axe-core') });
+    // Next.js routes occasionally trigger a follow-up navigation after the
+    // initial load which invalidates the execution context. Retry the script
+    // injection once if that happens so the accessibility scans remain stable.
+    let injected = false;
+    for (let attempt = 0; attempt < 2 && !injected; attempt += 1) {
+      try {
+        await this.page.addScriptTag({ path: require.resolve('axe-core') });
+        injected = true;
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          error.message.includes('Execution context was destroyed') &&
+          attempt === 0
+        ) {
+          await this.page.waitForLoadState('networkidle');
+          await this.page.waitForTimeout(250);
+          continue;
+        }
+        throw error;
+      }
+    }
+
     const accessibilityScanResults = await this.page.evaluate(() => axe.run());
 
     if (accessibilityScanResults.violations.length > 0) {
