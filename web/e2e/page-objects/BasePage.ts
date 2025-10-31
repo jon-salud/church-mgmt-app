@@ -19,18 +19,12 @@ export class BasePage {
         {
           name: 'demo_token',
           value: 'demo-admin',
-          domain: 'localhost',
-          path: '/',
-          httpOnly: true,
-          secure: false,
+          url: 'http://localhost:3000',
         },
         {
           name: 'session_provider',
           value: 'demo',
-          domain: 'localhost',
-          path: '/',
-          httpOnly: false,
-          secure: false,
+          url: 'http://localhost:3000',
         },
       ]);
     }
