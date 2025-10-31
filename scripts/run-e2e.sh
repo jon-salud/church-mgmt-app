@@ -17,14 +17,23 @@ cleanup() {
 
 trap cleanup EXIT
 
-pnpm -C api dev >/tmp/api-dev.log 2>&1 &
+export NODE_ENV=test
+node -r tsconfig-paths/register api/dist/src/main.js >/tmp/api-dev.log 2>&1 &
 API_PID=$!
 echo "Starting API (pid $API_PID)..."
 
 wait_for_api() {
+  local max_attempts=30
+  local attempt=0
   until curl -sf "http://localhost:${API_PORT}/api/v1/dashboard/summary" >/dev/null 2>&1; do
-    echo "Waiting for API on port ${API_PORT}..."
+    if [ $attempt -ge $max_attempts ]; then
+      echo "API failed to start after 30 attempts"
+      cat /tmp/api-dev.log
+      exit 1
+    fi
+    echo "Waiting for API on port ${API_PORT}... (attempt $((attempt+1))/$max_attempts)"
     sleep 1
+    ((attempt++))
   done
   echo "API ready."
 }
@@ -37,9 +46,17 @@ WEB_PID=$!
 echo "Starting Web (pid $WEB_PID)..."
 
 wait_for_web() {
+  local max_attempts=30
+  local attempt=0
   until curl -sf "http://localhost:${WEB_PORT}/dashboard" >/dev/null 2>&1; do
-    echo "Waiting for Web on port ${WEB_PORT}..."
+    if [ $attempt -ge $max_attempts ]; then
+      echo "Web server failed to start after 30 attempts"
+      cat /tmp/web-dev.log
+      exit 1
+    fi
+    echo "Waiting for Web on port ${WEB_PORT}... (attempt $((attempt+1))/$max_attempts)"
     sleep 1
+    ((attempt++))
   done
   echo "Web ready."
 }
