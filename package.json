@@ -11,7 +11,7 @@
     "dev:api:prisma": "DATA_MODE=prisma pnpm -C api dev",
     "test": "pnpm -r test",
     "test:e2e": "bash scripts/run-e2e.sh",
-    "test:e2e:mock": "DATA_MODE=mock bash scripts/run-e2e.sh",
+    "test:e2e:mock": "powershell scripts/run-e2e.ps1",
     "lint": "echo 'Starting ESLint...' && eslint \"api/src/**/*.{ts,tsx,js,jsx}\" \"web/**/*.{ts,tsx,js,jsx}\" --debug",
     "lint:fix": "echo 'Starting ESLint fix...' && eslint \"api/src/**/*.{ts,tsx,js,jsx}\" \"web/**/*.{ts,tsx,js,jsx}\" --fix --debug",
     "format": "prettier --write .",
