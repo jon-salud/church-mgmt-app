@@ -18,7 +18,7 @@ test.describe('Prayer Requests and General Requests', () => {
       });
     });
 
-    test.fixme('should allow users to submit a new prayer request', async ({ page }) => {
+    test('should allow users to submit a new prayer request', async ({ page }) => {
       // Test is blocked by React event handler and API integration issues
       // Will be enabled once the following issues are resolved:
       // - Form submission event handlers in Playwright environment
@@ -42,7 +42,7 @@ test.describe('Prayer Requests and General Requests', () => {
       });
     });
 
-    test.fixme('should allow admin to moderate prayer requests', async ({ page }) => {
+    test('should allow admin to moderate prayer requests', async ({ page }) => {
       // Test is blocked by API dependencies for prayer request moderation
       // Will be enabled once the following features are implemented:
       // - Prayer request moderation API endpoints
@@ -80,7 +80,7 @@ test.describe('Prayer Requests and General Requests', () => {
       });
     });
 
-    test.fixme(
+    test(
       'should allow users to submit a prayer request through general requests',
       async ({ page }) => {
         // Test is blocked by React event handler and general request API issues
@@ -125,7 +125,7 @@ test.describe('Prayer Requests and General Requests', () => {
       });
     });
 
-    test.fixme('should allow users to submit other types of requests', async ({ page }) => {
+    test('should allow users to submit other types of requests', async ({ page }) => {
       // Test is blocked by React event handler and benevolence request API issues
       // Will be enabled once the following features are implemented:
       // - Benevolence request submission API endpoints

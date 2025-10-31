@@ -101,31 +101,43 @@ To build all packages in the monorepo, run the following command from the root d
 pnpm -r build
 ```
 
+
 ## 6. Running Tests
 
 The project is equipped with a full suite of tests to ensure code quality and prevent regressions.
 
-- **Run All Tests**: To run every test across all workspaces, use the following command from the
-  root directory:
+- **Run All Tests**: To run every test across all workspaces, use the following command from the root directory:
 
-  ```bash
-  pnpm -r test
-  ```
+   ```bash
+   pnpm -r test
+   ```
 
 - **Run API Tests**: To run only the backend tests (unit and integration), use:
 
-  ```bash
-  pnpm -C api test
-  ```
+   ```bash
+   pnpm -C api test
+   ```
 
-- **Run End-to-End (E2E) Tests**: The E2E tests use Playwright and require the development servers
-  to be running.
-  1. Start the API and web servers as described in Section 4.
-  2. Run the E2E tests:
+- **Run End-to-End (E2E) Tests**: The E2E tests use Playwright and require the development servers to be running. You can run E2E tests in two ways:
 
-     ```bash
-     pnpm -C web test:e2e
-     ```
+   **A. Cross-Platform E2E Test Script (Recommended)**
+
+   - For Bash/WSL/Linux/macOS:
+      ```bash
+      bash scripts/run-e2e.sh
+      ```
+   - For Windows/PowerShell:
+      ```powershell
+      pwsh scripts/run-e2e.ps1
+      ```
+   These scripts will automatically start the API and web servers, wait for them to be ready, and then run the Playwright E2E tests. Logs are saved to `api-dev.log` and `web-dev.log`.
+
+   **B. Manual E2E Test Run**
+   1. Start the API and web servers as described in Section 4.
+   2. Run the E2E tests:
+       ```bash
+       pnpm -C web test:e2e
+       ```
 
 ## 7. Code Quality
 

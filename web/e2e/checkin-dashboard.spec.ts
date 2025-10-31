@@ -27,7 +27,7 @@ test.describe('Child Check-in Dashboard', () => {
     });
   });
 
-  test.fixme('should allow a staff member to check a child in', async ({ page }) => {
+  test('should allow a staff member to check a child in', async ({ page }) => {
     // Test is blocked on implementation of event creation and child management APIs
     // Will be enabled once the following APIs are implemented:
     // - POST /api/v1/events (for creating check-in sessions)
@@ -48,7 +48,7 @@ test.describe('Child Check-in Dashboard', () => {
     });
   });
 
-  test.fixme('should allow a staff member to check a child out', async ({ page }) => {
+  test('should allow a staff member to check a child out', async ({ page }) => {
     // Test is blocked on implementation of check-in/out workflow APIs
     // Will be enabled once the following APIs are implemented:
     // - GET /api/v1/checkins (for listing checked-in children)

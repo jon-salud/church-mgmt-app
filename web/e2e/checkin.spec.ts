@@ -8,7 +8,7 @@ test.describe('Child Check-In', () => {
     await loginPage.login('demo-admin'); // Use admin token for check-in functionality access
   });
 
-  test.fixme('staff can access member profiles for check-in', async ({ page }) => {
+  test('staff can access member profiles for check-in', async ({ page }) => {
     // Test is blocked by authentication state not being properly transferred to direct page navigation
     // The LoginPage.login() method sets cookies but direct navigation to /members doesn't receive auth
     // Will be enabled once the following issues are resolved:

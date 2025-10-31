@@ -8,7 +8,7 @@ test.describe('Roles Page', () => {
     await loginPage.login('demo-admin');
   });
 
-  test.fixme('displays roles table and permissions for admins', async ({ page }) => {
+  test('displays roles table and permissions for admins', async ({ page }) => {
     // Test is blocked by authentication state not being properly transferred to direct page navigation
     // The LoginPage.login() method works for authenticated navigation, but direct /roles navigation fails
     // Will be enabled once the following issues are resolved:

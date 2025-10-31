@@ -22,7 +22,7 @@ test.describe('Pastoral Care Pages', () => {
     pastoralCarePage = new PastoralCarePage(page);
   });
 
-  test.fixme(
+  test(
     'allows a user to navigate to and fill out the pastoral care ticket form',
     async ({ page }) => {
       // Test is blocked by React event handler issues in E2E environment
@@ -72,7 +72,7 @@ test.describe('Pastoral Care Pages', () => {
     }
   );
 
-  test.fixme(
+  test(
     'shows New Ticket button only for admin and leader roles',
     async ({ page, context }) => {
       // Test is blocked by authentication state and UI rendering issues

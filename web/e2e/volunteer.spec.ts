@@ -8,7 +8,7 @@ test.describe('Event Volunteers', () => {
     await loginPage.login('demo-admin');
   });
 
-  test.fixme('Leader can create and delete volunteer roles', async ({ page }) => {
+  test('Leader can create and delete volunteer roles', async ({ page }) => {
     // Test is blocked by event and volunteer role API integration
     // Will be enabled once the following features are implemented:
     // - Event creation API with volunteer role support
@@ -52,7 +52,7 @@ test.describe('Event Volunteers', () => {
     });
   });
 
-  test.fixme('Member can sign up for and cancel a volunteer role', async ({ page }) => {
+  test('Member can sign up for and cancel a volunteer role', async ({ page }) => {
     // Test is blocked by volunteer signup API integration
     // Will be enabled once the following features are implemented:
     // - Volunteer role signup endpoints

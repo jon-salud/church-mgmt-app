@@ -263,6 +263,32 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ### 🔄 In Progress
 
+
+### ✅ E2E Test Run & Fix Results
+
+- ✅ **Fixed API Guard Injection Issue:**
+  - ✅ Fixed "Invalid guard passed to @UseGuards()" error in TenantProvisioningController
+  - ✅ Added `AuthModule` import to `TenantModule` for proper DI of AuthGuard
+  - ✅ API now starts successfully with `pnpm -C api start`
+
+- ✅ **Cross-Platform E2E Test Script:**
+  - ✅ Added `scripts/run-e2e.ps1` (PowerShell) for Windows-native E2E test runs, mirroring the existing `scripts/run-e2e.sh` (Bash/WSL/Linux/macOS).
+  - ✅ Added port cleanup functionality to both scripts to prevent port conflicts.
+  - ✅ Updated documentation in `SETUP.md` to reflect both options and usage.
+
+- ✅ **E2E Test Run & Results:**
+  - ✅ Ran full E2E suite after enabling all previously skipped tests
+  - ✅ **23 tests passed** (smoke tests, public pages, basic navigation)
+  - ❌ **29 tests failed** (authentication and page rendering issues)
+  - ⏭️ **3 tests did not run** (skipped as expected)
+
+- **E2E Test Failure Analysis (Sprint 8 Backlog):**
+  - **14 failures:** Direct page navigation returns `net::ERR_ABORTED` (no auth context)
+  - **11 failures:** Page content not rendering after navigation (auth not propagated to React)
+  - **2 failures:** UI elements timing out (events page button never appears)
+  - **2 failures:** Onboarding modal not appearing after login
+  - **See TASKS.md backlog for detailed next steps**
+
 ### ✅ Completed Recent Work
 
 - ✅ **Sprint 6B.6: OpenTelemetry Integration** - Integrated OpenTelemetry SDK with Prometheus and Jaeger exporters
