@@ -1,11 +1,14 @@
 import { test, expect } from '@playwright/test';
-import { DashboardPage } from './page-objects/DashboardPage';
+import { LoginPage } from './page-objects/LoginPage';
 
 test.describe('Accessibility affordances', () => {
-  let dashboardPage: DashboardPage;
+  let loginPage: LoginPage;
+
   test.beforeEach(async ({ page }) => {
-    dashboardPage = new DashboardPage(page);
-    await dashboardPage.goto();
+    loginPage = new LoginPage(page);
+
+    // Login first, then navigate to dashboard
+    await loginPage.login('demo-admin');
   });
 
   test('dashboard passes accessibility scan and has skip link', async ({ page }) => {

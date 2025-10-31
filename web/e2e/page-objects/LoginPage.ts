@@ -14,31 +14,23 @@ export class LoginPage extends BasePage {
     persona: 'demo-admin' | 'demo-leader' | 'demo-member' | 'demo-new-admin' = 'demo-admin',
     skipModalHandling = false
   ) {
-    // Set the demo token cookie directly to bypass server action issues in Playwright.
-    // Playwright currently does not support Next.js 13+ server actions in E2E tests,
-    // which prevents us from logging in via the UI as server actions are not executed.
-    // See: https://github.com/vercel/next.js/issues/49260 (Next.js server actions and Playwright)
-    await this.page.context().addCookies([
-      {
-        name: 'demo_token',
-        value: persona,
-        url: 'http://localhost:3000',
-      },
-      {
-        name: 'session_provider',
-        value: 'demo',
-        url: 'http://localhost:3000',
-      },
-    ]);
+    // Navigate to login page
+    await this.page.goto('http://localhost:3000/login');
+    await this.page.waitForLoadState('load');
 
-    // Navigate to dashboard to trigger the authentication check
-    await this.page.goto('http://localhost:3000/dashboard');
-    await this.page.waitForLoadState('networkidle');
+    // Select the demo persona from the dropdown
+    await this.page.selectOption('#persona-select', persona);
 
-    // Check if we're redirected to onboarding or stayed on dashboard
+    // Click the demo login button
+    await this.page.click('#demo-login-button');
+
+    // Wait for navigation to complete
+    await this.page.waitForLoadState('load');
+
+    // Check if we're redirected to dashboard or onboarding
     const currentUrl = this.page.url();
     if (currentUrl.includes('/login')) {
-      throw new Error(`Login failed - redirected to login page: ${currentUrl}`);
+      throw new Error(`Login failed - still on login page: ${currentUrl}`);
     }
 
     // Handle any modal that might appear (onboarding or other dialogs)

@@ -9,42 +9,13 @@ export class BasePage {
   }
 
   async goto(url: string) {
-    // Always ensure auth cookies are set before navigation
-    // This handles both first-time access and cookie refresh on navigation
-    await this.page.context().addCookies([
-      {
-        name: 'demo_token',
-        value: 'demo-admin',
-        url: 'http://localhost:3000',
-      },
-      {
-        name: 'session_provider',
-        value: 'demo',
-        url: 'http://localhost:3000',
-      },
-    ]);
-
-    // Ensure onboarding is complete for non-onboarding tests
-    try {
-      await this.page.request.put('http://localhost:3001/api/v1/settings/church-acc', {
-        data: { onboardingComplete: true },
-        headers: {
-          Cookie: `demo_token=demo-admin; session_provider=demo`,
-          'Content-Type': 'application/json',
-        },
-        timeout: 5000,
-      });
-    } catch {
-      // Ignore errors - onboarding status might already be set
-    }
-
-    // Navigate to the URL with cookies already set
-    await this.page.goto(url, { waitUntil: 'networkidle' });
+    // Navigate to the URL - cookies should already be set by login process
+    await this.page.goto(url, { waitUntil: 'load' });
   }
 
   async checkAccessibility() {
     // Wait for page to be fully loaded and stable
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('load');
     await this.page.waitForTimeout(500);
 
     // Next.js routes occasionally trigger a follow-up navigation after the
