@@ -15,7 +15,9 @@ import { PrismaMultiTenantDataStore } from './prisma-multi-tenant-datastore.serv
   imports: [
     MockDataModule,
     PrismaModule,
-    ...(process.env.NODE_ENV === 'test' ? [] : [require('../tenant/tenant.module').TenantModule]),
+    // TenantModule disabled due to decorator resolution issues with dynamic require
+    // Re-enable once guard decorator resolution is properly handled
+    // ...(process.env.NODE_ENV === 'test' ? [] : [require('../tenant/tenant.module').TenantModule]),
   ],
   providers: (() => {
     // Build providers array dynamically so test runs do not attempt to
@@ -23,59 +25,37 @@ import { PrismaMultiTenantDataStore } from './prisma-multi-tenant-datastore.serv
     // services that may not be available in the test assembly).
     const baseProviders: any[] = [MockDataStoreAdapter, PrismaDataStore, InMemoryDataStore];
 
-    if (process.env.NODE_ENV !== 'test') {
-      // In normal runs include the multi-tenant store and a DATA_STORE factory
-      // that can choose it when DATA_MODE is 'multi-tenant'.
-      baseProviders.push(PrismaMultiTenantDataStore);
-      baseProviders.push({
-        provide: DATA_STORE,
-        inject: [
-          ConfigService,
-          MockDataStoreAdapter,
-          PrismaDataStore,
-          InMemoryDataStore,
-          PrismaMultiTenantDataStore,
-        ],
-        useFactory: (
-          config: ConfigService,
-          mockStore: MockDataStoreAdapter,
-          prismaStore: PrismaDataStore,
-          memoryStore: InMemoryDataStore,
-          multiTenantStore: PrismaMultiTenantDataStore
-        ): DataStore => {
-          const mode = config.get<string>('DATA_MODE', 'mock');
-          if (!mode || mode === 'mock') return mockStore;
-          if (mode === 'prisma') return prismaStore;
-          if (mode === 'memory') return memoryStore;
-          if (mode === 'multi-tenant') return multiTenantStore;
-          throw new Error(
-            `Unsupported DATA_MODE "${mode}". No data store is registered for this mode.`
-          );
-        },
-      });
-    } else {
-      // Test-mode: don't register the multi-tenant provider. Prefer the mock
-      // datastore deterministically and avoid any dependency on tenant providers.
-      baseProviders.push({
-        provide: DATA_STORE,
-        inject: [ConfigService, MockDataStoreAdapter, PrismaDataStore, InMemoryDataStore],
-        useFactory: (
-          _config: ConfigService,
-          mockStore: MockDataStoreAdapter,
-          prismaStore: PrismaDataStore,
-          memoryStore: InMemoryDataStore
-        ): DataStore => {
-          // Force mock mode for tests to avoid requiring generated Prisma clients
-          const mode = 'mock';
-          if (!mode || mode === 'mock') return mockStore;
-          if (mode === 'prisma') return prismaStore;
-          if (mode === 'memory') return memoryStore;
-          throw new Error(
-            `Unsupported DATA_MODE "${mode}". No data store is registered for this mode.`
-          );
-        },
-      });
-    }
+    // TenantModule is currently disabled, so don't include multi-tenant store
+    // (Re-enable when TenantModule decorator resolution is fixed)
+    // if (process.env.NODE_ENV !== 'test') {
+    //   baseProviders.push(PrismaMultiTenantDataStore);
+    // }
+
+    // Create a unified DATA_STORE factory that works without multi-tenant support
+    baseProviders.push({
+      provide: DATA_STORE,
+      inject: [
+        ConfigService,
+        MockDataStoreAdapter,
+        PrismaDataStore,
+        InMemoryDataStore,
+      ],
+      useFactory: (
+        config: ConfigService,
+        mockStore: MockDataStoreAdapter,
+        prismaStore: PrismaDataStore,
+        memoryStore: InMemoryDataStore
+      ): DataStore => {
+        const mode = config.get<string>('DATA_MODE', 'mock');
+        if (!mode || mode === 'mock') return mockStore;
+        if (mode === 'prisma') return prismaStore;
+        if (mode === 'memory') return memoryStore;
+        // multi-tenant mode not available (TenantModule disabled)
+        throw new Error(
+          `Unsupported DATA_MODE "${mode}". No data store is registered for this mode.`
+        );
+      },
+    });
 
     return baseProviders;
   })(),

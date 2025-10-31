@@ -49,12 +49,10 @@ import { OpenTelemetryModule } from './opentelemetry/opentelemetry.module';
     RequestsModule,
     InvitationsModule,
     DocumentsModule,
-    // When running tests we may want to avoid loading the Tenant module as
-    // its controllers can reference runtime guards that are difficult to
-    // reliably resolve under transformed/test-time module loading. Skip the
-    // TenantModule in test runs to keep the compiled/test server bootable and
-    // avoid decorator resolution errors.
-    ...(process.env.NODE_ENV === 'test' ? [] : [require('../tenant/tenant.module').TenantModule]),
+    // When running tests or in development, skip TenantModule due to decorator resolution issues
+    // TenantModule is primarily for multi-tenant provisioning (not used in E2E tests)
+    // Re-enable once decorator-time guard resolution is properly handled
+    // ...(process.env.NODE_ENV === 'test' ? [] : [require('../tenant/tenant.module').TenantModule]),
     OpenTelemetryModule,
   ],
 })

@@ -116,7 +116,9 @@
     "metadata": {
       "userId": "user-956cfde1-9532-421c-96e7-d6e2d1c58cb6",
       "email": "qa-1761502675551@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-26T18:17:59.961Z"
   },
@@ -131,7 +133,9 @@
     "metadata": {
       "userId": "user-fc16d8b3-50f5-4d27-948f-c971093914e6",
       "email": "qa-1761502770915@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-26T18:19:34.730Z"
   },
@@ -177,7 +181,9 @@
     "metadata": {
       "userId": "user-4d4afe42-f60e-43fb-a14e-5e93b8daab9a",
       "email": "qa-1761502913366@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-26T18:22:06.326Z"
   },
@@ -192,7 +198,9 @@
     "metadata": {
       "userId": "user-968c64fd-c3c1-42d0-b24f-ffcab0891e65",
       "email": "qa-1761503032267@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-26T18:23:55.995Z"
   },
@@ -238,7 +246,9 @@
     "metadata": {
       "userId": "user-9a37c310-4d3e-4544-aa2f-e73d3c11f123",
       "email": "qa-1761503135013@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-26T18:25:39.393Z"
   },
@@ -284,7 +294,9 @@
     "metadata": {
       "userId": "user-be765720-8d3b-44bc-8271-d893a9b101f6",
       "email": "qa-1761503222688@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-26T18:27:06.786Z"
   },
@@ -330,7 +342,9 @@
     "metadata": {
       "userId": "user-f8a5fcda-993f-41b1-b0e6-90a4a99f2083",
       "email": "qa-1761503324592@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-26T18:28:48.576Z"
   },
@@ -390,7 +404,9 @@
     "metadata": {
       "userId": "user-fdf1f013-9f02-4a2c-9ef5-c0829d8fb5d4",
       "email": "qa-1761503646089@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-26T18:34:12.224Z"
   },
@@ -450,7 +466,9 @@
     "metadata": {
       "userId": "user-9703b62e-3441-4cdf-92e3-3376fce32fd1",
       "email": "qa-1761503726261@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-26T18:35:30.768Z"
   },
@@ -510,7 +528,9 @@
     "metadata": {
       "userId": "user-c81d56fe-e8c1-4021-b7bd-e01d165d87c8",
       "email": "qa-1761504086510@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-26T18:41:31.693Z"
   },
@@ -570,7 +590,9 @@
     "metadata": {
       "userId": "user-e1ca35ea-a8a6-4559-bd7d-38615fbe7b05",
       "email": "qa-1761527758915@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-27T01:16:04.283Z"
   },
@@ -682,7 +704,9 @@
     "metadata": {
       "userId": "user-6f035101-9ff8-4be4-b2e9-08d1f9df0148",
       "email": "qa-1761613189208@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-28T00:59:57.673Z"
   },
@@ -749,7 +773,9 @@
     "metadata": {
       "userId": "user-59594bbf-cdc7-4e13-aafb-176763cc8a20",
       "email": "qa-1761613408658@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-28T01:03:35.208Z"
   },
@@ -875,7 +901,9 @@
     "metadata": {
       "userId": "user-f4134243-0b20-47cd-8f95-2e09f08d3466",
       "email": "qa-1761613503461@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-28T01:05:08.749Z"
   },
@@ -1001,7 +1029,9 @@
     "metadata": {
       "userId": "user-346d201e-ded2-4b88-b67f-ba285ca7d34e",
       "email": "qa-1761614089591@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-28T01:15:00.032Z"
   },
@@ -1127,7 +1157,9 @@
     "metadata": {
       "userId": "user-9c73559f-fc4c-4016-b527-149f9c200281",
       "email": "qa-1761614194708@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-28T01:16:43.986Z"
   },
@@ -1253,7 +1285,9 @@
     "metadata": {
       "userId": "user-9cf82041-ffe8-47f7-9b01-13ea7bbb74fb",
       "email": "qa-1761614759404@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-28T01:26:06.687Z"
   },
@@ -1379,7 +1413,9 @@
     "metadata": {
       "userId": "user-e145d6e3-2d2e-4c87-b8bf-e6dd8dcb5f7e",
       "email": "qa-1761629883723@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-28T05:38:09.917Z"
   },
@@ -1505,7 +1541,9 @@
     "metadata": {
       "userId": "user-69ed6355-d06d-4ee1-8397-a1b15ac3dd74",
       "email": "qa-1761634737406@example.com",
-      "roles": ["Member"]
+      "roles": [
+        "Member"
+      ]
     },
     "createdAt": "2025-10-28T06:59:03.755Z"
   },
@@ -1583,5 +1621,71 @@
       "groupId": null
     },
     "createdAt": "2025-10-28T06:59:27.033Z"
+  },
+  {
+    "id": "audit-announcement-announcement-4d141170-f3ed-4e2c-a453-2f853f6a38f8-1761892289512",
+    "churchId": "church-acc",
+    "actorUserId": "demo-admin-user",
+    "action": "announcement.created",
+    "entity": "announcement",
+    "entityId": "announcement-4d141170-f3ed-4e2c-a453-2f853f6a38f8",
+    "summary": "demo-admin-user published announcement \"Test Announcement 1761892284731\"",
+    "metadata": {
+      "audience": "all",
+      "groupIds": [],
+      "publishAt": "2025-10-31T06:31:00.000Z",
+      "expireAt": null
+    },
+    "createdAt": "2025-10-31T06:31:29.512Z"
+  },
+  {
+    "id": "audit-announcement-announcement-4d141170-f3ed-4e2c-a453-2f853f6a38f8-1761892290713",
+    "churchId": "church-acc",
+    "actorUserId": "demo-admin-user",
+    "action": "announcement.updated",
+    "entity": "announcement",
+    "entityId": "announcement-4d141170-f3ed-4e2c-a453-2f853f6a38f8",
+    "summary": "demo-admin-user updated announcement \"Updated Test Announcement 1761892284731\"",
+    "diff": {
+      "title": {
+        "previous": "Test Announcement 1761892284731",
+        "newValue": "Updated Test Announcement 1761892284731"
+      },
+      "body": {
+        "previous": "This is a test announcement created at 2025-10-31T06:31:24.731Z",
+        "newValue": "Updated: This is a test announcement created at 2025-10-31T06:31:24.731Z"
+      }
+    },
+    "createdAt": "2025-10-31T06:31:30.713Z"
+  },
+  {
+    "id": "audit-event-event-caaef589-8f79-49f0-a477-e50392037951-1761892313344",
+    "churchId": "church-acc",
+    "actorUserId": "demo-admin-user",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-caaef589-8f79-49f0-a477-e50392037951",
+    "summary": "demo-admin-user scheduled Test Volunteer Event 1761892311375",
+    "metadata": {
+      "eventId": "event-caaef589-8f79-49f0-a477-e50392037951",
+      "startAt": "2024-12-24T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-31T06:31:53.344Z"
+  },
+  {
+    "id": "audit-event-event-cce491fc-dbff-424c-b37a-4f43f1147d28-1761892315773",
+    "churchId": "church-acc",
+    "actorUserId": "demo-admin-user",
+    "action": "event.created",
+    "entity": "event",
+    "entityId": "event-cce491fc-dbff-424c-b37a-4f43f1147d28",
+    "summary": "demo-admin-user scheduled Test Signup Event 1761892314638",
+    "metadata": {
+      "eventId": "event-cce491fc-dbff-424c-b37a-4f43f1147d28",
+      "startAt": "2024-12-25T21:00:00.000Z",
+      "groupId": null
+    },
+    "createdAt": "2025-10-31T06:31:55.773Z"
   }
 ]
