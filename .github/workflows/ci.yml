@@ -126,6 +126,8 @@ jobs:
         run: pnpm -C api prisma:generate
       - name: Build API
         run: pnpm -C api build
+      - name: Build Web
+        run: pnpm -C web build
       - name: Install Playwright browsers
         run: pnpm -C web exec playwright install chromium
       - name: Run Playwright smoke
