@@ -170,6 +170,8 @@ A pre-commit hook automatically runs quality checks before each commit:
 
 You can also run these checks manually with: `pnpm pre-commit`
 
+**Husky** manages these Git hooks automatically. When you run `pnpm install`, Husky installs the pre-commit hook from the `.husky/` directory, ensuring code quality checks run before every commit.
+
 ### 8.3. CI Pipeline Checks
 
 The CI pipeline includes additional checks for:

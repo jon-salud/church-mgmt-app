@@ -125,6 +125,7 @@
 - **Prettier** v3.6.2 - Code formatting
 - **eslint-plugin-prettier** v5.5.4 - Prettier integration
 - **eslint-config-prettier** v10.1.8 - Prettier config
+- **husky** v9.1.7 - Git hooks management
 
 #### Build Tools
 - **@nestjs/cli** v10.4.5 - NestJS CLI
@@ -218,7 +219,7 @@ NODE_ENV=test pnpm -C api test
 The project includes guardrails for consistent development across macOS, Windows, and Linux:
 
 - **Line Ending Normalization**: `.gitattributes` ensures consistent LF line endings
-- **Pre-commit Hooks**: Automatic code quality checks before commits
+- **Pre-commit Hooks**: Husky manages automatic code quality checks before commits
 - **CI Pipeline**: Encoding and line ending validation
 - **Platform Scripts**: Use `run-e2e.sh` (Unix/macOS) or `run-e2e.ps1` (Windows) for E2E testing
 

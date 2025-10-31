@@ -204,6 +204,8 @@ A pre-commit hook automatically runs these checks on every commit:
 - Code formatting with Prettier
 - Type checking with TypeScript
 
+**Husky** is the tool that manages Git hooks for this project. It automatically installs and configures Git hooks based on the `.husky/` directory. The pre-commit hook runs `pnpm pre-commit` which executes all quality checks before allowing the commit to proceed.
+
 ### 7.4. Cross-Platform Development
 
 This project supports development across multiple platforms (macOS, Windows, Linux):
