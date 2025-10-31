@@ -128,4 +128,4 @@ jobs:
       - name: Install Playwright browsers
         run: pnpm -C web exec playwright install --with-deps chromium
       - name: Run Playwright smoke
-        run: pnpm test:e2e
+        run: DATA_MODE=mock pnpm test:e2e
