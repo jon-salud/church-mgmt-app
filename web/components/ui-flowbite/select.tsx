@@ -27,9 +27,11 @@ const Select: React.FC<SelectProps> = ({ value, defaultValue, onValueChange, nam
   const [internalValue, setInternalValue] = React.useState(
     value !== undefined ? value : defaultValue || ''
   );
+  const [hiddenInputValue, setHiddenInputValue] = React.useState(internalValue);
 
   const handleValueChange = (newValue: string) => {
     setInternalValue(newValue);
+    setHiddenInputValue(newValue);
     onValueChange?.(newValue);
   };
 
@@ -37,12 +39,18 @@ const Select: React.FC<SelectProps> = ({ value, defaultValue, onValueChange, nam
   React.useEffect(() => {
     if (value !== undefined) {
       setInternalValue(value);
+      setHiddenInputValue(value);
     }
   }, [value]);
 
+  // Sync internal value changes to hidden input
+  React.useEffect(() => {
+    setHiddenInputValue(internalValue);
+  }, [internalValue]);
+
   return (
     <SelectContext.Provider value={{ value: internalValue, onValueChange: handleValueChange }}>
-      {name && <input type="hidden" name={name} value={internalValue} />}
+      {name && <input type="hidden" name={name} value={hiddenInputValue} />}
       {children}
     </SelectContext.Provider>
   );

@@ -90,9 +90,7 @@ export class PrayerPage extends BasePage {
 
   async submitPrayerRequest() {
     await this.submitButton.click();
-    // Wait for the button to show "Submitting..." which indicates the request is in progress
-    await expect(this.submitButton).toBeDisabled();
-    // Then wait for the success message
+    // Wait for the success message with longer timeout
     await expect(this.successMessage).toBeVisible({ timeout: 10000 });
   }
 

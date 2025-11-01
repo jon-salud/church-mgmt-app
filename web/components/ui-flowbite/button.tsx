@@ -16,10 +16,14 @@ export function Button({ className = '', variant = 'default', ...props }: Props)
     outline: 'light',
   };
 
+  // Force white text on dark buttons for visibility in both light and dark themes
+  const combinedClassName =
+    `${className} ${variant === 'default' ? '[&>span]:!text-white [&>span]:dark:!text-white' : ''}`.trim();
+
   return (
     <FlowbiteButton
       color={colorMap[variant]}
-      className={className}
+      className={combinedClassName}
       {...(props as FlowbiteButtonProps)}
     />
   );
