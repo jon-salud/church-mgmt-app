@@ -24,9 +24,23 @@ interface SelectProps {
 }
 
 const Select: React.FC<SelectProps> = ({ value, defaultValue, onValueChange, name, children }) => {
+  const [internalValue, setInternalValue] = React.useState(value || defaultValue || '');
+
+  const handleValueChange = (newValue: string) => {
+    setInternalValue(newValue);
+    onValueChange?.(newValue);
+  };
+
+  // Sync external value changes
+  React.useEffect(() => {
+    if (value !== undefined) {
+      setInternalValue(value);
+    }
+  }, [value]);
+
   return (
-    <SelectContext.Provider value={{ value: value || defaultValue, onValueChange }}>
-      {name && <input type="hidden" name={name} value={value || defaultValue || ''} />}
+    <SelectContext.Provider value={{ value: internalValue, onValueChange: handleValueChange }}>
+      {name && <input type="hidden" name={name} value={internalValue} />}
       {children}
     </SelectContext.Provider>
   );

@@ -83,15 +83,17 @@ export function OnboardingWizard({
     setIsLoading(true);
     try {
       await api.updateSettings(churchId, { ...settings, onboardingComplete: true });
+    } catch (error) {
+      console.error('Failed to complete onboarding:', error);
+      // Continue anyway - we still want to close the modal/redirect
+    } finally {
+      setIsLoading(false);
+      // Always proceed with close/redirect, even if API fails
       if (isModal && onComplete) {
         onComplete();
       } else {
         router.push('/dashboard');
       }
-    } catch (error) {
-      console.error('Failed to complete onboarding:', error);
-    } finally {
-      setIsLoading(false);
     }
   };
 

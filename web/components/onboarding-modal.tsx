@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Modal } from '@/components/ui-flowbite/modal';
 import { OnboardingWizard } from '@/app/onboarding/onboarding-wizard';
 
 interface OnboardingModalProps {
@@ -31,21 +31,20 @@ export function OnboardingModal({
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent
-        className="max-w-4xl max-h-[90vh] overflow-y-auto"
-        data-testid="onboarding-modal"
-      >
-        <DialogHeader>
-          <DialogTitle className="sr-only">Church Setup Wizard</DialogTitle>
-        </DialogHeader>
+    <Modal
+      open={isOpen}
+      onClose={onClose}
+      title="Church Setup Wizard"
+      data-testid="onboarding-modal"
+    >
+      <div className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <OnboardingWizard
           churchId={churchId}
           initialSettings={settings}
           onComplete={handleComplete}
           isModal={true}
         />
-      </DialogContent>
-    </Dialog>
+      </div>
+    </Modal>
   );
 }

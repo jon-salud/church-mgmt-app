@@ -11,9 +11,17 @@ type ModalProps = {
   title: string;
   children: ReactNode;
   footer?: ReactNode;
+  'data-testid'?: string;
 };
 
-export function Modal({ open, onClose, title, children, footer }: ModalProps) {
+export function Modal({
+  open,
+  onClose,
+  title,
+  children,
+  footer,
+  'data-testid': testId,
+}: ModalProps) {
   const labelledBy = useId();
 
   useEffect(() => {
@@ -41,6 +49,7 @@ export function Modal({ open, onClose, title, children, footer }: ModalProps) {
       aria-modal="true"
       role="dialog"
       aria-labelledby={labelledBy}
+      data-testid={testId}
       className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/50 dark:bg-gray-900/80 px-4 backdrop-blur-sm"
       onMouseDown={onClose}
     >
