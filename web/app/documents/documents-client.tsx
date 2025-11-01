@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { Modal } from '../../components/ui/modal';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Textarea } from '../../components/ui/textarea';
-import { Checkbox } from '../../components/ui/checkbox';
+import { Button } from '@/components/ui-flowbite/button';
+import { Input } from '@/components/ui-flowbite/input';
+import { Label } from '@/components/ui-flowbite/label';
+import { Textarea } from '@/components/ui-flowbite/textarea';
+import { Checkbox } from '@/components/ui-flowbite/checkbox';
 import { DownloadIcon, FileIcon, PencilIcon, TrashIcon, UploadIcon } from 'lucide-react';
 import { clientApi } from '../../lib/api.client';
 
