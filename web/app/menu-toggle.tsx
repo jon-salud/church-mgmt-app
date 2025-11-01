@@ -10,16 +10,16 @@ export function MenuToggle() {
     <button
       id="menu-toggle"
       onClick={() => {
-        setIsSidebarOpen(!isSidebarOpen);
+        setIsSidebarOpen(prev => !prev);
         // Toggle sidebar visibility
         const sidebar = document.getElementById('sidebar');
         if (sidebar) {
-          if (isSidebarOpen) {
-            sidebar.classList.remove('!block');
-            sidebar.classList.add('hidden');
-          } else {
+          if (!isSidebarOpen) {
             sidebar.classList.remove('hidden');
             sidebar.classList.add('!block');
+          } else {
+            sidebar.classList.remove('!block');
+            sidebar.classList.add('hidden');
           }
         }
       }}

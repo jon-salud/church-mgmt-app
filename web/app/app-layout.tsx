@@ -74,29 +74,20 @@ export async function AppLayout({ children }: AppLayoutProps) {
   let settings: Record<string, unknown> = {};
 
   try {
-    const [userData, settingsData] = await Promise.all([
-      api.currentUser().catch(error => {
-        console.error('Failed to load current user:', error);
-        return null;
-      }),
-      (async () => {
-        try {
-          const user = await api.currentUser().catch(() => null);
-          const churchId = user?.user?.roles?.[0]?.churchId;
-          if (churchId) {
-            try {
-              return await api.getSettings(churchId).catch(() => ({}));
-            } catch {
-              return {};
-            }
-          }
-          return {};
-        } catch (error) {
-          console.error('Failed to load settings:', error);
-          return {};
-        }
-      })(),
-    ]);
+    // Fetch user data once and reuse it
+    const userData = await api.currentUser().catch(error => {
+      console.error('Failed to load current user:', error);
+      return null;
+    });
+
+    // Use the same user data to fetch settings
+    const settingsData = await (async () => {
+      const churchId = userData?.user?.roles?.[0]?.churchId;
+      if (churchId) {
+        return await api.getSettings(churchId).catch(() => ({}));
+      }
+      return {};
+    })();
 
     me = userData;
     settings = settingsData;
