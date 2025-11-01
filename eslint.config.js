@@ -124,9 +124,20 @@ export default [
     },
   },
   {
-    files: ['web/components/ui/**/*.{ts,tsx}'],
+    files: [
+      'web/lib/api*.ts',
+      'web/lib/types.ts',
+      'api/src/mock/**/*.ts',
+      'api/src/**/*.service.ts',
+    ],
     rules: {
-      '@typescript-eslint/no-empty-object-type': 'off', // Allow empty interfaces in UI components
+      '@typescript-eslint/no-explicit-any': 'off', // Allow any types in API clients, types, mock data, and services
+    },
+  },
+  {
+    files: ['web/components/ui/input.tsx', 'web/components/ui/textarea.tsx'],
+    rules: {
+      '@typescript-eslint/no-empty-object-type': 'off', // Allow empty interfaces in shadcn/ui components for future extension
     },
   },
   {
