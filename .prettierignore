@@ -3,3 +3,6 @@
 docs/*.md
 .devcontainer/*.md
 .github/*.md
+
+# Ignore runtime-generated files
+api/storage/audit-log.json

@@ -101,31 +101,43 @@ To build all packages in the monorepo, run the following command from the root d
 pnpm -r build
 ```
 
+
 ## 6. Running Tests
 
 The project is equipped with a full suite of tests to ensure code quality and prevent regressions.
 
-- **Run All Tests**: To run every test across all workspaces, use the following command from the
-  root directory:
+- **Run All Tests**: To run every test across all workspaces, use the following command from the root directory:
 
-  ```bash
-  pnpm -r test
-  ```
+   ```bash
+   pnpm -r test
+   ```
 
 - **Run API Tests**: To run only the backend tests (unit and integration), use:
 
-  ```bash
-  pnpm -C api test
-  ```
+   ```bash
+   pnpm -C api test
+   ```
 
-- **Run End-to-End (E2E) Tests**: The E2E tests use Playwright and require the development servers
-  to be running.
-  1. Start the API and web servers as described in Section 4.
-  2. Run the E2E tests:
+- **Run End-to-End (E2E) Tests**: The E2E tests use Playwright and require the development servers to be running. You can run E2E tests in two ways:
 
-     ```bash
-     pnpm -C web test:e2e
-     ```
+   **A. Cross-Platform E2E Test Script (Recommended)**
+
+   - For Bash/WSL/Linux/macOS:
+      ```bash
+      bash scripts/run-e2e.sh
+      ```
+   - For Windows/PowerShell:
+      ```powershell
+      pwsh scripts/run-e2e.ps1
+      ```
+   These scripts will automatically start the API and web servers, wait for them to be ready, and then run the Playwright E2E tests. Logs are saved to `api-dev.log` and `web-dev.log`.
+
+   **B. Manual E2E Test Run**
+   1. Start the API and web servers as described in Section 4.
+   2. Run the E2E tests:
+       ```bash
+       pnpm -C web test:e2e
+       ```
 
 ## 7. Code Quality
 
@@ -139,12 +151,57 @@ The project uses ESLint and Prettier to maintain code quality and consistent for
 VS Code is configured to automatically format code on save and fix linting issues. Before committing
 changes, run the quality checks to ensure your code meets the project's standards.
 
+## 8. Cross-Platform Development
+
+This project supports development across multiple platforms (macOS, Windows, Linux). To ensure consistent behavior and prevent common issues:
+
+### 8.1. Line Endings and Encoding
+
+- **Automatic Normalization**: The `.gitattributes` file ensures consistent line endings (LF) for text files across all platforms
+- **Encoding Issues**: Always use UTF-8 encoding. Avoid invisible Unicode characters that may cause silent crashes
+- **Prettier**: Run `pnpm format` regularly to automatically fix encoding and formatting issues
+
+### 8.2. Pre-commit Hooks
+
+A pre-commit hook automatically runs quality checks before each commit:
+- Linting (`pnpm lint`)
+- Formatting check (`pnpm format:check`)
+- Type checking (`pnpm build`)
+
+You can also run these checks manually with: `pnpm pre-commit`
+
+**Husky** manages these Git hooks automatically. When you run `pnpm install`, Husky installs the pre-commit hook from the `.husky/` directory, ensuring code quality checks run before every commit.
+
+### 8.3. CI Pipeline Checks
+
+The CI pipeline includes additional checks for:
+- Line ending consistency (no CRLF in text files)
+- Code formatting
+- Linting
+- Type safety
+
+### 8.4. Platform-Specific Notes
+
+- **Windows**: Use PowerShell scripts (`scripts/run-e2e.ps1`) for E2E testing
+- **macOS/Linux**: Use Bash scripts (`scripts/run-e2e.sh`) for E2E testing
+- **File Transfers**: When transferring files between platforms, always run `pnpm format` to fix any encoding issues
+
 > For more details on the project's architecture, data model, and coding conventions, please refer
 > to the relevant documents in the `/docs` directory.
 
 ---
 
 ## Change Records
+
+### v1.1.0 - Cross-Platform Guardrails
+
+- **Date**: 2025-01-XX
+- **Changes**:
+  - Added `.gitattributes` for automatic line ending normalization
+  - Implemented pre-commit hook for code quality checks
+  - Added CI pipeline checks for line ending consistency
+  - Updated documentation with cross-platform development guidelines
+  - Added `pre-commit` npm script for manual quality checks
 
 ### v1.0.0 - Soft Delete Documentation
 

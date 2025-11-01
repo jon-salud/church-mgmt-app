@@ -15,6 +15,20 @@ import { SettingsPage } from './page-objects/SettingsPage';
 
 // Helper functions for theme management
 async function setLightTheme(page: Page) {
+  // Set auth cookies first before any navigation
+  await page.context().addCookies([
+    {
+      name: 'demo_token',
+      value: 'demo-admin',
+      url: 'http://localhost:3000',
+    },
+    {
+      name: 'session_provider',
+      value: 'demo',
+      url: 'http://localhost:3000',
+    },
+  ]);
+
   await page.goto('/');
   await page.evaluate(() => localStorage.setItem('theme', 'light'));
   await page.reload();
@@ -22,6 +36,20 @@ async function setLightTheme(page: Page) {
 }
 
 async function setDarkTheme(page: Page) {
+  // Set auth cookies first before any navigation
+  await page.context().addCookies([
+    {
+      name: 'demo_token',
+      value: 'demo-admin',
+      url: 'http://localhost:3000',
+    },
+    {
+      name: 'session_provider',
+      value: 'demo',
+      url: 'http://localhost:3000',
+    },
+  ]);
+
   await page.goto('/');
   await page.evaluate(() => localStorage.setItem('theme', 'dark'));
   await page.reload();
@@ -105,7 +133,7 @@ test.describe('Accessibility tests - Light Theme', () => {
     await givingPage.checkAccessibility();
   });
 
-  test.fixme('roles page is accessible', async () => {
+  test('roles page is accessible', async () => {
     // Test is blocked by the same auth state issues as the main roles test
     // Direct navigation to /roles fails with net::ERR_ABORTED
     // Will be enabled once authentication context is properly maintained in E2E tests
@@ -214,7 +242,7 @@ test.describe('Accessibility tests - Dark Theme', () => {
     await givingPage.checkAccessibility();
   });
 
-  test.fixme('roles page is accessible', async () => {
+  test('roles page is accessible', async () => {
     // Test is blocked by the same auth state issues as the main roles test
     // Direct navigation to /roles fails with net::ERR_ABORTED
     // Will be enabled once authentication context is properly maintained in E2E tests

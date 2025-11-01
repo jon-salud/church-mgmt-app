@@ -28,7 +28,7 @@ function NavSection({ title, items }: NavSectionProps) {
         const isActive = pathname === item.href;
         return (
           <Link
-            id={`nav-link-${item.href.replace('/', '')}`}
+            id={`nav-link-${item.href.replace('/', '').replace('auditlog', 'audit-log').replace('pastoralcare', 'pastoral-care')}`}
             key={item.href}
             href={item.href}
             className={cn(

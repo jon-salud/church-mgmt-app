@@ -5,7 +5,7 @@ API_PORT=${API_PORT:-3001}
 WEB_PORT=${WEB_PORT:-3000}
 DATA_MODE=${DATA_MODE:-mock}
 export DATA_MODE
-export NODE_ENV=test
+export NODE_ENV=development
 
 API_PID=""
 WEB_PID=""
@@ -27,7 +27,7 @@ trap cleanup EXIT
 
 # Start API
 echo "Starting API..."
-pnpm -C api start >/tmp/api-dev.log 2>&1 &
+pnpm -C api dev >/tmp/api-dev.log 2>&1 &
 API_PID=$!
 echo "API started (pid $API_PID)"
 
@@ -51,6 +51,7 @@ done
 
 # Start Web
 echo "Starting Web..."
+echo "Using development server..."
 pnpm -C web dev >/tmp/web-dev.log 2>&1 &
 WEB_PID=$!
 echo "Web started (pid $WEB_PID)"

@@ -20,6 +20,11 @@ export class MembersPage extends BasePage {
     // First navigate to members page to ensure we're on the right page
     await this.page.goto('http://localhost:3000/members');
 
+    // Get current cookies from context to include in API request
+    const cookies = await this.page.context().cookies();
+    const demoToken = cookies.find(c => c.name === 'demo_token')?.value || 'demo-admin';
+    const cookieHeader = `demo_token=${demoToken}; session_provider=demo`;
+
     // Create member via API
     const response = await this.page.request.post('http://localhost:3001/api/v1/users', {
       data: {
@@ -35,12 +40,15 @@ export class MembersPage extends BasePage {
       },
       headers: {
         'Content-Type': 'application/json',
-        Cookie: 'demo_token=demo-admin; session_provider=demo',
+        Cookie: cookieHeader,
       },
     });
 
     if (!response.ok()) {
-      throw new Error(`Failed to create member: ${response.status()} ${response.statusText()}`);
+      const errorBody = await response.text();
+      throw new Error(
+        `Failed to create member: ${response.status()} ${response.statusText()} - ${errorBody}`
+      );
     }
 
     const member = await response.json();

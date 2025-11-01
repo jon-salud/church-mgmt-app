@@ -1,8 +1,14 @@
 import { test } from '@playwright/test';
+import { LoginPage } from './page-objects/LoginPage';
 import { AnnouncementsPage } from './page-objects/AnnouncementsPage';
 
 test.describe('Announcements Page', () => {
-  test.fixme('allows admins to create, view, and manage announcements', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.login();
+  });
+
+  test('allows admins to create, view, and manage announcements', async ({ page }) => {
     // Test is blocked by announcement management API integration
     // Will be enabled once the following features are implemented:
     // - Announcement creation and update endpoints

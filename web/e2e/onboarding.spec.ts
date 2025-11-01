@@ -82,7 +82,7 @@ test.describe.serial('Onboarding Wizard', () => {
     });
   });
 
-  test.fixme('allows skipping onboarding', async ({ page }) => {
+  test('allows skipping onboarding', async ({ page }) => {
     // Test is blocked by onboarding status API integration
     // Will be enabled once the following is implemented:
     // - Settings API for updating onboarding status

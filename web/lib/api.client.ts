@@ -12,7 +12,19 @@ async function apiFetch<T>(path: string, init?: RequestInit) {
     process.env.NODE_ENV === 'test' ||
     process.env.NEXT_PUBLIC_API_BASE_URL?.includes('localhost')
   ) {
-    headers.set('Authorization', 'Bearer demo-admin');
+    // For E2E tests, check if demo_token cookie is set and use that
+    let demoToken = 'demo-admin';
+    if (typeof document !== 'undefined' && document.cookie) {
+      const cookies = document.cookie.split(';');
+      for (const cookie of cookies) {
+        const [name, value] = cookie.trim().split('=');
+        if (name === 'demo_token') {
+          demoToken = value;
+          break;
+        }
+      }
+    }
+    headers.set('Authorization', `Bearer ${demoToken}`);
   }
 
   const response = await fetch(`${DEFAULT_API_BASE}${path}`, {

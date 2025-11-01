@@ -2,10 +2,11 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export default async function middleware(request: NextRequest) {
-  // Skip middleware for auth-related routes
+  // Skip middleware for auth-related routes and public pages
   if (
     request.nextUrl.pathname.startsWith('/login') ||
-    request.nextUrl.pathname.startsWith('/oauth')
+    request.nextUrl.pathname.startsWith('/oauth') ||
+    request.nextUrl.pathname.startsWith('/prayer')
   ) {
     return NextResponse.next();
   }

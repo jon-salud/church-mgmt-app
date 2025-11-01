@@ -61,6 +61,17 @@ jobs:
         run: pnpm lint
       - name: Check formatting
         run: pnpm format:check
+      - name: Check line endings
+        run: |
+          # Check for Windows line endings (CRLF) in text files
+          if find . -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.json" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" | xargs grep -l $'\r' > /dev/null 2>&1; then
+            echo "Error: Found CRLF line endings in text files. Please ensure all text files use LF line endings."
+            echo "Files with CRLF endings:"
+            find . -name "*.ts" -o -name "*.tsx" -o -name "*.js" -o -name "*.jsx" -o -name "*.json" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" | xargs grep -l $'\r'
+            exit 1
+          else
+            echo "Line endings check passed."
+          fi
 
   test_api:
     name: API tests
@@ -126,6 +137,8 @@ jobs:
         run: pnpm -C api prisma:generate
       - name: Build API
         run: pnpm -C api build
+      - name: Build Web
+        run: pnpm -C web build
       - name: Install Playwright browsers
         run: pnpm -C web exec playwright install chromium
       - name: Run Playwright smoke

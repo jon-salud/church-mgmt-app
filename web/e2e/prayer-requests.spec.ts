@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from './page-objects/LoginPage';
 import { PrayerPage } from './page-objects/PrayerPage';
 import { RequestsPage } from './page-objects/RequestsPage';
 
@@ -18,7 +19,7 @@ test.describe('Prayer Requests and General Requests', () => {
       });
     });
 
-    test.fixme('should allow users to submit a new prayer request', async ({ page }) => {
+    test('should allow users to submit a new prayer request', async ({ page }) => {
       // Test is blocked by React event handler and API integration issues
       // Will be enabled once the following issues are resolved:
       // - Form submission event handlers in Playwright environment
@@ -42,7 +43,7 @@ test.describe('Prayer Requests and General Requests', () => {
       });
     });
 
-    test.fixme('should allow admin to moderate prayer requests', async ({ page }) => {
+    test('should allow admin to moderate prayer requests', async ({ page }) => {
       // Test is blocked by API dependencies for prayer request moderation
       // Will be enabled once the following features are implemented:
       // - Prayer request moderation API endpoints
@@ -63,6 +64,11 @@ test.describe('Prayer Requests and General Requests', () => {
   });
 
   test.describe('General Requests Form', () => {
+    test.beforeEach(async ({ page }) => {
+      const loginPage = new LoginPage(page);
+      await loginPage.login();
+    });
+
     test('should display the requests form with all request types', async ({ page }) => {
       const requestsPage = new RequestsPage(page);
 
@@ -80,37 +86,36 @@ test.describe('Prayer Requests and General Requests', () => {
       });
     });
 
-    test.fixme(
-      'should allow users to submit a prayer request through general requests',
-      async ({ page }) => {
-        // Test is blocked by React event handler and general request API issues
-        // Will be enabled once the following features are implemented:
-        // - General request form submission API endpoints
-        // - Request type-specific handling for prayer requests
-        // - Form submission event handler fixes in Playwright
-        const requestsPage = new RequestsPage(page);
+    test('should allow users to submit a prayer request through general requests', async ({
+      page,
+    }) => {
+      // Test is blocked by React event handler and general request API issues
+      // Will be enabled once the following features are implemented:
+      // - General request form submission API endpoints
+      // - Request type-specific handling for prayer requests
+      // - Form submission event handler fixes in Playwright
+      const requestsPage = new RequestsPage(page);
 
-        await test.step('Navigate to requests page', async () => {
-          await requestsPage.goto();
-          await requestsPage.verifyRequestsPage();
-        });
+      await test.step('Navigate to requests page', async () => {
+        await requestsPage.goto();
+        await requestsPage.verifyRequestsPage();
+      });
 
-        await test.step('Select prayer request type and fill form', async () => {
-          await requestsPage.selectRequestType('Prayer');
-          await requestsPage.verifyPrayerRequestForm();
-          await requestsPage.fillRequestForm(
-            'Prayer Request via General Form',
-            'This prayer request was submitted through the general requests form.',
-            true // confidential
-          );
-        });
+      await test.step('Select prayer request type and fill form', async () => {
+        await requestsPage.selectRequestType('Prayer');
+        await requestsPage.verifyPrayerRequestForm();
+        await requestsPage.fillRequestForm(
+          'Prayer Request via General Form',
+          'This prayer request was submitted through the general requests form.',
+          true // confidential
+        );
+      });
 
-        await test.step('Submit the prayer request', async () => {
-          await requestsPage.submitRequest();
-          await requestsPage.verifyRequestSubmitted();
-        });
-      }
-    );
+      await test.step('Submit the prayer request', async () => {
+        await requestsPage.submitRequest();
+        await requestsPage.verifyRequestSubmitted();
+      });
+    });
 
     test('should show confidential option for prayer requests', async ({ page }) => {
       const requestsPage = new RequestsPage(page);
@@ -125,7 +130,7 @@ test.describe('Prayer Requests and General Requests', () => {
       });
     });
 
-    test.fixme('should allow users to submit other types of requests', async ({ page }) => {
+    test('should allow users to submit other types of requests', async ({ page }) => {
       // Test is blocked by React event handler and benevolence request API issues
       // Will be enabled once the following features are implemented:
       // - Benevolence request submission API endpoints

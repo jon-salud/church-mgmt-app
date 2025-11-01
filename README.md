@@ -69,10 +69,21 @@ documentation.
 
 - Node.js 20+
 - `pnpm` (recommended via `corepack enable`)
-- macOS/Linux/WSL (windows works via WSL2)
+- **Cross-platform support**: macOS, Windows, Linux with automatic line ending normalization
 
 > The Prisma schema remains in the repo for future Postgres wiring, but the MVP runs entirely from
 > the mock store. You do **not** need a database to demo the product.
+
+### Cross-Platform Development
+
+This project includes guardrails for consistent development across platforms:
+
+- **Automatic line ending normalization** via `.gitattributes`
+- **Pre-commit hooks** for code quality checks
+- **CI pipeline** with encoding and line ending validation
+- **Prettier formatting** to prevent invisible character issues
+
+When transferring files between macOS and Windows, always run `pnpm format` to fix any encoding issues.
 
 ---
 
@@ -302,6 +313,16 @@ The helper scripts (`pnpm dev:api:mock`, `pnpm test:e2e:mock`) wrap those export
 ---
 
 ## Change Records
+
+### v1.1.0 - Cross-Platform Guardrails
+
+- **Date**: 2025-10-31
+- **Changes**:
+  - Added `.gitattributes` for automatic line ending normalization
+  - Implemented pre-commit hooks for code quality checks
+  - Enhanced CI pipeline with encoding and line ending validation
+  - Updated documentation with cross-platform development guidelines
+  - Added `pre-commit` npm script for manual quality checks
 
 ### v1.0.0 - Soft Delete Implementation
 

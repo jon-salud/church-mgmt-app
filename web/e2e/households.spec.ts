@@ -20,7 +20,7 @@ test.describe('Households', () => {
 
       // Verify households are displayed with member counts
       await expect(page.getByText('Matau Family')).toBeVisible();
-      await expect(page.getByRole('link', { name: 'Matau Family' })).toBeVisible();
+      await expect(page.getByRole('heading', { name: 'Matau Family' })).toBeVisible();
     });
 
     await test.step('Navigate to household detail page and verify content', async () => {

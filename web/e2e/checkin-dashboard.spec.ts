@@ -1,7 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from './page-objects/LoginPage';
 import { CheckinDashboardPage } from './page-objects/CheckinDashboardPage';
 
 test.describe('Child Check-in Dashboard', () => {
+  test.beforeEach(async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.login();
+  });
+
   test('should allow a staff member to view the check-in dashboard', async ({ page }) => {
     const checkinDashboardPage = new CheckinDashboardPage(page);
 
@@ -27,7 +33,7 @@ test.describe('Child Check-in Dashboard', () => {
     });
   });
 
-  test.fixme('should allow a staff member to check a child in', async ({ page }) => {
+  test('should allow a staff member to check a child in', async ({ page }) => {
     // Test is blocked on implementation of event creation and child management APIs
     // Will be enabled once the following APIs are implemented:
     // - POST /api/v1/events (for creating check-in sessions)
@@ -48,7 +54,7 @@ test.describe('Child Check-in Dashboard', () => {
     });
   });
 
-  test.fixme('should allow a staff member to check a child out', async ({ page }) => {
+  test('should allow a staff member to check a child out', async ({ page }) => {
     // Test is blocked on implementation of check-in/out workflow APIs
     // Will be enabled once the following APIs are implemented:
     // - GET /api/v1/checkins (for listing checked-in children)

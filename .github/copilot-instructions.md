@@ -228,3 +228,4 @@ pnpm test:e2e:mock    # E2E tests
 - Check port conflicts if E2E tests fail unexpectedly
 - Remember: all entities require `churchId` for multi-tenancy
 - Use `hasRole()` utility for role-based UI logic
+- **Never commit `api/storage/audit-log.json`** - This file grows every time E2E tests run as the application logs all actions. It should always be excluded from version control.
