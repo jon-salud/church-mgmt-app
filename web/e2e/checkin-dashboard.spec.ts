@@ -1,7 +1,13 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from './page-objects/LoginPage';
 import { CheckinDashboardPage } from './page-objects/CheckinDashboardPage';
 
 test.describe('Child Check-in Dashboard', () => {
+  test.beforeEach(async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.login();
+  });
+
   test('should allow a staff member to view the check-in dashboard', async ({ page }) => {
     const checkinDashboardPage = new CheckinDashboardPage(page);
 

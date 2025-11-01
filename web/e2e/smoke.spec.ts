@@ -1,8 +1,14 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from './page-objects/LoginPage';
 import { DashboardPage } from './page-objects/DashboardPage';
 import { AuditLogPage } from './page-objects/AuditLogPage';
 
 test.describe('Smoke Tests', () => {
+  test.beforeEach(async ({ page }) => {
+    const loginPage = new LoginPage(page);
+    await loginPage.login();
+  });
+
   test('dashboard renders summary cards and displays data correctly', async ({ page }) => {
     const dashboardPage = new DashboardPage(page);
 

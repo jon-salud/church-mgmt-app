@@ -14,20 +14,26 @@ export class LoginPage extends BasePage {
     persona: 'demo-admin' | 'demo-leader' | 'demo-member' | 'demo-new-admin' = 'demo-admin',
     skipModalHandling = false
   ) {
-    // Navigate to login page
-    await this.page.goto('http://localhost:3000/login');
+    // Set demo cookies directly for reliable test authentication
+    await this.page.context().addCookies([
+      {
+        name: 'demo_token',
+        value: persona,
+        url: 'http://localhost:3000',
+        httpOnly: true,
+      },
+      {
+        name: 'session_provider',
+        value: 'demo',
+        url: 'http://localhost:3000',
+      },
+    ]);
+
+    // Navigate to dashboard to trigger auth check
+    await this.page.goto('http://localhost:3000/dashboard');
     await this.page.waitForLoadState('load');
 
-    // Select the demo persona from the dropdown
-    await this.page.selectOption('#persona-select', persona);
-
-    // Click the demo login button
-    await this.page.click('#demo-login-button');
-
-    // Wait for navigation to complete
-    await this.page.waitForLoadState('load');
-
-    // Check if we're redirected to dashboard or onboarding
+    // Check if we're redirected back to login (auth failed)
     const currentUrl = this.page.url();
     if (currentUrl.includes('/login')) {
       throw new Error(`Login failed - still on login page: ${currentUrl}`);

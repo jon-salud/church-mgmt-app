@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { LoginPage } from './page-objects/LoginPage';
 import { PrayerPage } from './page-objects/PrayerPage';
 import { RequestsPage } from './page-objects/RequestsPage';
 
@@ -63,6 +64,11 @@ test.describe('Prayer Requests and General Requests', () => {
   });
 
   test.describe('General Requests Form', () => {
+    test.beforeEach(async ({ page }) => {
+      const loginPage = new LoginPage(page);
+      await loginPage.login();
+    });
+
     test('should display the requests form with all request types', async ({ page }) => {
       const requestsPage = new RequestsPage(page);
 
