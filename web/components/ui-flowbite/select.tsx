@@ -24,7 +24,9 @@ interface SelectProps {
 }
 
 const Select: React.FC<SelectProps> = ({ value, defaultValue, onValueChange, name, children }) => {
-  const [internalValue, setInternalValue] = React.useState(value || defaultValue || '');
+  const [internalValue, setInternalValue] = React.useState(
+    value !== undefined ? value : defaultValue || ''
+  );
 
   const handleValueChange = (newValue: string) => {
     setInternalValue(newValue);
@@ -89,29 +91,15 @@ interface SelectContentProps {
   position?: 'popper' | 'item-aligned';
 }
 
-const SelectContent: React.FC<SelectContentProps> = ({
-  children,
-  className,
-  position = 'popper',
-}) => {
+const SelectContent: React.FC<SelectContentProps> = ({ children, className }) => {
   return (
     <div
       className={cn(
         'relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md',
-        position === 'popper' &&
-          'data-[side=bottom]:translate-y-1 data-[side=left]:-translate-x-1 data-[side=right]:translate-x-1 data-[side=top]:-translate-y-1',
         className
       )}
     >
-      <div
-        className={cn(
-          'p-1',
-          position === 'popper' &&
-            'h-[var(--radix-select-trigger-height)] w-full min-w-[var(--radix-select-trigger-width)]'
-        )}
-      >
-        {children}
-      </div>
+      <div className="p-1">{children}</div>
     </div>
   );
 };

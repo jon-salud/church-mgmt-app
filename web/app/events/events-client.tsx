@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { format } from 'date-fns';
-import { Modal } from '../../components/ui/modal';
+import { Modal } from '@/components/ui-flowbite/modal';
 import {
   createEventAction,
   createEventVolunteerRoleAction,

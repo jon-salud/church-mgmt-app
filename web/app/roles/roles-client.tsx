@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState, useEffect } from 'react';
-import { Modal } from '../../components/ui/modal';
+import { Modal } from '@/components/ui-flowbite/modal';
 import { createRoleAction, updateRoleAction, deleteRoleAction } from '../actions';
 import { clientApi } from '../../lib/api.client';
 import { PERMISSION_GROUPS } from './permission-schema';

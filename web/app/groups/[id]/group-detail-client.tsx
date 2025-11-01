@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
-import { Modal } from '../../../components/ui/modal';
+import { Modal } from '@/components/ui-flowbite/modal';
 import {
   addGroupMemberAction,
   removeGroupMemberAction,

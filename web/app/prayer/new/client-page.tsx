@@ -32,6 +32,12 @@ export function NewPrayerRequestClientPage() {
   }
 
   if (isSubmitted) {
+    // Small delay before auto-redirect to allow tests to verify success message
+    // eslint-disable-next-line no-undef
+    setTimeout(() => {
+      window.location.href = '/prayer';
+    }, 2000);
+
     return (
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">Prayer Request Submitted</h1>
@@ -39,6 +45,7 @@ export function NewPrayerRequestClientPage() {
           Thank you for submitting your prayer request. It will be reviewed by our pastoral team
           shortly.
         </p>
+        <p className="mt-4 text-sm text-gray-500">Redirecting to prayer wall...</p>
       </div>
     );
   }
