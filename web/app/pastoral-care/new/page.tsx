@@ -1,9 +1,9 @@
 'use client';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui-flowbite/button';
+import { Input } from '@/components/ui-flowbite/input';
+import { Textarea } from '@/components/ui-flowbite/textarea';
 import { clientApi } from '@/lib/api.client';
 
 export default function NewTicketPage() {

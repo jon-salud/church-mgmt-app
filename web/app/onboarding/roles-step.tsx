@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui-flowbite/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui-flowbite/card';
 import { Plus, Users, Shield, Settings } from 'lucide-react';
 
 interface Role {

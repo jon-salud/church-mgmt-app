@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui-flowbite/button';
+import { Checkbox } from '@/components/ui-flowbite/checkbox';
 import { clientApi } from '@/lib/api.client';
 import { useState } from 'react';
 

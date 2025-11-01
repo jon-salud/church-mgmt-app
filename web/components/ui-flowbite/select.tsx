@@ -19,12 +19,14 @@ interface SelectProps {
   value?: string;
   defaultValue?: string;
   onValueChange?: (value: string) => void;
+  name?: string;
   children: React.ReactNode;
 }
 
-const Select: React.FC<SelectProps> = ({ value, defaultValue, onValueChange, children }) => {
+const Select: React.FC<SelectProps> = ({ value, defaultValue, onValueChange, name, children }) => {
   return (
     <SelectContext.Provider value={{ value: value || defaultValue, onValueChange }}>
+      {name && <input type="hidden" name={name} value={value || defaultValue || ''} />}
       {children}
     </SelectContext.Provider>
   );

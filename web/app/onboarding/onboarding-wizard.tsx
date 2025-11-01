@@ -2,9 +2,15 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Progress } from '@/components/ui/progress';
+import { Button } from '@/components/ui-flowbite/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui-flowbite/card';
+import { Progress } from '@/components/ui-flowbite/progress';
 import { BrandingStep } from './branding-step';
 import { RolesStep } from './roles-step';
 import { TeamInvitesStep } from './team-invites-step';

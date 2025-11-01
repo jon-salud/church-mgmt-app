@@ -1,7 +1,7 @@
 import { api } from '@/lib/api.server';
 import { PastoralCareClientPage } from './client-page';
 import { redirect } from 'next/navigation';
-import { PageHeader } from '@/components/ui/page-header';
+import { PageHeader } from '@/components/ui-flowbite/page-header';
 
 export default async function PastoralCareDashboard() {
   const me = await api.currentUser();

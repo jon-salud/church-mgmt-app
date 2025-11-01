@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal } from '@/components/ui/modal';
+import { Modal } from '@/components/ui-flowbite/modal';
 
 type OnboardingModalProps = {
   isOpen: boolean;
