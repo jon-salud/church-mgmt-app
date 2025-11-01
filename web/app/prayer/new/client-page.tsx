@@ -4,8 +4,10 @@ import { Button } from '@/components/ui-flowbite/button';
 import { Checkbox } from '@/components/ui-flowbite/checkbox';
 import { clientApi } from '@/lib/api.client';
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export function NewPrayerRequestClientPage() {
+  const router = useRouter();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
@@ -36,12 +38,12 @@ export function NewPrayerRequestClientPage() {
     if (isSubmitted) {
       // eslint-disable-next-line no-undef
       const timer = setTimeout(() => {
-        window.location.href = '/prayer';
+        router.push('/prayer');
       }, 2000);
       // eslint-disable-next-line no-undef
       return () => clearTimeout(timer);
     }
-  }, [isSubmitted]);
+  }, [isSubmitted, router]);
 
   if (isSubmitted) {
     return (
