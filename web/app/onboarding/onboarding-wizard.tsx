@@ -91,17 +91,16 @@ export function OnboardingWizard({
       setIsLoading(false);
       console.log('Completing onboarding, isModal:', isModal, 'onComplete:', !!onComplete);
       // Always proceed with close/redirect, even if API fails
-      // Use setTimeout to ensure React finishes all state updates before closing modal
-      // Increased to 100ms for CI environment where portal updates are slower
+      // Use requestAnimationFrame to ensure DOM has updated before closing modal
       // eslint-disable-next-line no-undef
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         if (isModal && onComplete) {
           console.log('Calling onComplete to close modal');
           onComplete();
         } else {
           router.push('/dashboard');
         }
-      }, 100);
+      });
     }
   };
 

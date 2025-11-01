@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui-flowbite/button';
 import { Checkbox } from '@/components/ui-flowbite/checkbox';
 import { clientApi } from '@/lib/api.client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export function NewPrayerRequestClientPage() {
@@ -33,18 +33,6 @@ export function NewPrayerRequestClientPage() {
     }
   }
 
-  // Redirect after showing success message
-  useEffect(() => {
-    if (isSubmitted) {
-      // eslint-disable-next-line no-undef
-      const timer = setTimeout(() => {
-        router.push('/prayer');
-      }, 2000);
-      // eslint-disable-next-line no-undef
-      return () => clearTimeout(timer);
-    }
-  }, [isSubmitted, router]);
-
   if (isSubmitted) {
     return (
       <div className="p-4">
@@ -53,7 +41,9 @@ export function NewPrayerRequestClientPage() {
           Thank you for submitting your prayer request. It will be reviewed by our pastoral team
           shortly.
         </p>
-        <p className="mt-4 text-sm text-gray-500">Redirecting to prayer wall...</p>
+        <Button id="back-to-prayer-wall" onClick={() => router.push('/prayer')} className="mt-4">
+          Back to Prayer Wall
+        </Button>
       </div>
     );
   }
