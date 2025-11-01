@@ -270,6 +270,7 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
     - Dashboard navigation rendering issues
     - Onboarding modal settings API integration
     - Admin CRUD member archiving functionality
+  - ✅ **CI Pipeline Fixes:** Resolved linting and formatting failures by excluding audit-log.json from Prettier checks and git tracking
   - ✅ **Documentation:** Updated TASKS.md with completion status and lessons learned
   - ✅ **Branch:** feature/sprint8-e2e-fixes ready for merge
 
