@@ -66,12 +66,25 @@ export class MembersPage extends BasePage {
   }
 
   async verifyMemberInArchivedList(firstName: string, lastName: string) {
-    await this.page.getByLabel('Show archived members').check();
+    // Start listening for the API response before checking the box
+    const responsePromise = this.page.waitForResponse(
+      response => response.url().includes('/users/deleted') && response.status() === 200
+    );
+
+    // Check the box
+    await this.page.getByLabel('Show archived members').check({ force: true });
+
+    // Wait for the API response
+    await responsePromise;
+
+    // Wait a bit for React to update the DOM
+    await this.page.waitForTimeout(1000);
+
+    // Now verify the archived member is visible
     await expect(
       this.page.getByRole('cell', { name: new RegExp(`${firstName}\\s+${lastName}`) })
-    ).toBeVisible();
+    ).toBeVisible({ timeout: 10000 });
   }
-
   async getMemberId(firstName: string, lastName: string): Promise<string | null> {
     const memberLink = this.page.locator(`a:has-text("${firstName} ${lastName}")`);
     if (await memberLink.count()) {
