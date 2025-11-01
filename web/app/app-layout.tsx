@@ -1,15 +1,11 @@
-'use client';
-
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { api } from '../lib/api.server';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { SidebarNav } from '@/components/sidebar-nav';
 import { logoutAction } from './actions';
 import { NavItem } from '../components/sidebar-nav';
-import { Icon } from '@/components/icon';
-import { cn } from '@/lib/utils';
 import { OnboardingModal } from '@/components/onboarding-modal';
-import { clientApi as api } from '../lib/api.client';
+import { MenuToggle } from './menu-toggle';
 import { hasRole } from '../lib/utils';
 import type { Role } from '../lib/types';
 
@@ -73,47 +69,36 @@ function getFilteredNavItems(userRoles: Role[]) {
   }
 }
 
-export function AppLayout({ children }: AppLayoutProps) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isOnboardingModalOpen, setIsOnboardingModalOpen] = useState(false);
-  const [me, setMe] = useState<any>(null);
-  const [settings, setSettings] = useState<Record<string, unknown>>({});
-  const [isLoading, setIsLoading] = useState(true);
+export async function AppLayout({ children }: AppLayoutProps) {
+  let me: any = null;
+  let settings: Record<string, unknown> = {};
 
-  useEffect(() => {
-    async function loadUserData() {
-      try {
-        const [userData, settingsData] = await Promise.all([
-          api.currentUser(),
-          (async () => {
-            const user = await api.currentUser();
-            const churchId = user?.user?.roles?.[0]?.churchId;
-            if (churchId) {
-              try {
-                return await api.getSettings(churchId);
-              } catch {
-                return {};
-              }
+  try {
+    const [userData, settingsData] = await Promise.all([
+      api.currentUser(),
+      (async () => {
+        try {
+          const user = await api.currentUser();
+          const churchId = user?.user?.roles?.[0]?.churchId;
+          if (churchId) {
+            try {
+              return await api.getSettings(churchId);
+            } catch {
+              return {};
             }
-            return {};
-          })(),
-        ]);
+          }
+          return {};
+        } catch {
+          return {};
+        }
+      })(),
+    ]);
 
-        setMe(userData);
-        setSettings(settingsData);
-
-        // Check if onboarding is required
-        const onboardingRequired = !settingsData.onboardingComplete;
-        setIsOnboardingModalOpen(onboardingRequired);
-      } catch (error) {
-        console.error('Failed to load user data:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    loadUserData();
-  }, []);
+    me = userData;
+    settings = settingsData;
+  } catch (error) {
+    console.error('Failed to load user data:', error);
+  }
 
   // Get role-based navigation items
   const {
@@ -124,44 +109,12 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   const displayName = me?.user?.profile
     ? `${me.user.profile.firstName} ${me.user.profile.lastName ?? ''}`.trim()
-    : me?.user?.primaryEmail || 'Loading...';
+    : me?.user?.primaryEmail || 'Guest';
   const roles = me?.user?.roles ?? [];
   const isAdmin = roles.some((entry: any) => entry?.slug === 'admin');
   const primaryRole = roles[0]?.role ?? (isAdmin ? 'Admin' : 'Member');
   const churchId = me?.user?.roles?.[0]?.churchId;
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen flex-col">
-        <header className="border-b border-border bg-background/80 backdrop-blur">
-          <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-            <div className="flex items-center gap-4">
-              <div>
-                <div className="text-xl font-semibold tracking-tight">
-                  Auckland Community Church
-                </div>
-                <p className="text-xs text-muted-foreground">Loading...</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 text-sm text-foreground">
-              <ThemeSwitcher />
-              <span className="hidden md:inline">Loading...</span>
-            </div>
-          </div>
-        </header>
-        <main className="flex-1 p-6">
-          <div className="mx-auto w-full max-w-4xl space-y-8" data-testid="page-content">
-            <div className="flex items-center justify-center min-h-[400px]">
-              <div className="text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-                <p className="mt-2 text-sm text-muted-foreground">Loading...</p>
-              </div>
-            </div>
-          </div>
-        </main>
-      </div>
-    );
-  }
+  const onboardingRequired = !settings.onboardingComplete;
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -171,13 +124,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       <header className="border-b border-border bg-background/80 backdrop-blur">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-4">
-            <button
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="inline-flex h-8 w-8 items-center justify-center rounded-md border bg-background transition md:hidden"
-              aria-label="Toggle menu"
-            >
-              <Icon name="Menu" />
-            </button>
+            <MenuToggle />
             <div>
               <Link
                 id="dashboard-link"
@@ -205,11 +152,8 @@ export function AppLayout({ children }: AppLayoutProps) {
       </header>
       <div className="flex flex-1 flex-col md:flex-row">
         <aside
-          className={cn(
-            'border-b border-border bg-background px-4 py-4 md:w-64 md:border-b-0 md:border-r',
-            'transition-all duration-300 ease-in-out',
-            isSidebarOpen ? 'block' : 'hidden md:block'
-          )}
+          id="sidebar"
+          className="border-b border-border bg-background px-4 py-4 md:w-64 md:border-b-0 md:border-r hidden md:block"
           aria-label="Secondary navigation"
         >
           <SidebarNav
@@ -230,8 +174,10 @@ export function AppLayout({ children }: AppLayoutProps) {
       </footer>
       {churchId && (
         <OnboardingModal
-          isOpen={isOnboardingModalOpen}
-          onClose={() => setIsOnboardingModalOpen(false)}
+          isOpen={onboardingRequired}
+          onClose={() => {
+            /* handled by server revalidation */
+          }}
           churchId={churchId}
           initialSettings={settings}
         />
