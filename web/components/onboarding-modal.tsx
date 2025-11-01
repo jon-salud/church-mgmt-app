@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Modal } from '@/components/ui-flowbite/modal';
 import { OnboardingWizard } from '@/app/onboarding/onboarding-wizard';
 
@@ -17,7 +18,14 @@ export function OnboardingModal({
   churchId,
   initialSettings,
 }: OnboardingModalProps) {
+  const router = useRouter();
   const [settings, setSettings] = useState(initialSettings);
+  const [internalOpen, setInternalOpen] = useState(isOpen);
+
+  // Sync internal state with prop
+  useEffect(() => {
+    setInternalOpen(isOpen);
+  }, [isOpen]);
 
   // Reset settings when modal opens
   useEffect(() => {
@@ -27,12 +35,20 @@ export function OnboardingModal({
   }, [isOpen, initialSettings]);
 
   const handleComplete = () => {
+    // Close modal immediately
+    setInternalOpen(false);
     onClose();
+    // Navigate to dashboard to re-fetch settings with onboardingComplete=true
+    // Small delay to allow modal close animation
+    // eslint-disable-next-line no-undef
+    setTimeout(() => {
+      router.push('/dashboard');
+    }, 200);
   };
 
   return (
     <Modal
-      open={isOpen}
+      open={internalOpen}
       onClose={onClose}
       title="Church Setup Wizard"
       data-testid="onboarding-modal"

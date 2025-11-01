@@ -91,16 +91,12 @@ export function OnboardingWizard({
       setIsLoading(false);
       console.log('Completing onboarding, isModal:', isModal, 'onComplete:', !!onComplete);
       // Always proceed with close/redirect, even if API fails
-      // Use requestAnimationFrame to ensure DOM has updated before closing modal
-      // eslint-disable-next-line no-undef
-      requestAnimationFrame(() => {
-        if (isModal && onComplete) {
-          console.log('Calling onComplete to close modal');
-          onComplete();
-        } else {
-          router.push('/dashboard');
-        }
-      });
+      if (isModal && onComplete) {
+        console.log('Calling onComplete to close modal');
+        onComplete();
+      } else {
+        router.push('/dashboard');
+      }
     }
   };
 
