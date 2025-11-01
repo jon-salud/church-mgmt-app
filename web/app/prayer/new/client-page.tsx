@@ -12,11 +12,15 @@ export function NewPrayerRequestClientPage() {
   const [description, setDescription] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (isLoading) return; // Prevent double submission
+
     setError(null);
+    setIsLoading(true);
     try {
       console.log('Submitting prayer request...');
       await clientApi.post('/requests', {
@@ -30,6 +34,8 @@ export function NewPrayerRequestClientPage() {
     } catch (err) {
       console.error('Submission error:', err);
       setError('Failed to submit prayer request. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -92,7 +98,9 @@ export function NewPrayerRequestClientPage() {
             Submit anonymously
           </label>
         </div>
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? 'Submitting...' : 'Submit'}
+        </Button>
       </form>
     </div>
   );
