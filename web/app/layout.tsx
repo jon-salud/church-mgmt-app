@@ -1,8 +1,5 @@
 import { Metadata, Viewport } from 'next';
 import './globals.css';
-import { ServiceWorkerRegister } from '../components/service-worker-register';
-import { ThemeProvider } from '../components/theme-provider';
-import { AppLayout } from './app-layout';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,15 +13,10 @@ export const viewport: Viewport = {
   themeColor: '#0f172a',
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className="min-h-screen">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <AppLayout>{children}</AppLayout>
-          <ServiceWorkerRegister />
-        </ThemeProvider>
-      </body>
+      <body className="min-h-screen">{children}</body>
     </html>
   );
 }
