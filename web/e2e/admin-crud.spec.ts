@@ -9,8 +9,8 @@ test.describe('Admin CRUD Operations', () => {
     await loginPage.login();
   });
 
-  test.fixme('admin can manage members, groups, and events end-to-end', async ({ page }) => {
-    // Blocked: API returns 404 for POST /api/v1/users when DATA_MODE=mock.
+  test('admin can manage members, groups, and events end-to-end', async ({ page }) => {
+    // Previous blocker resolved: API works in mock mode.
     const timestamp = Date.now();
     const memberFirst = `QA${timestamp}`;
     const memberLast = 'Member';
