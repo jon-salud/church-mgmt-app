@@ -6,27 +6,25 @@ import { useState } from 'react';
 export function MenuToggle() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
+  // Sidebar visibility is controlled by state for mobile
+  // We use a global style to toggle display for #sidebar on mobile
   return (
-    <button
-      id="menu-toggle"
-      onClick={() => {
-        setIsSidebarOpen(prev => !prev);
-        // Toggle sidebar visibility
-        const sidebar = document.getElementById('sidebar');
-        if (sidebar) {
-          if (!isSidebarOpen) {
-            sidebar.classList.remove('hidden');
-            sidebar.classList.add('!block');
-          } else {
-            sidebar.classList.remove('!block');
-            sidebar.classList.add('hidden');
+    <>
+      <button
+        id="menu-toggle"
+        onClick={() => setIsSidebarOpen(prev => !prev)}
+        className="inline-flex h-8 w-8 items-center justify-center rounded-md border bg-background transition md:hidden"
+        aria-label="Toggle menu"
+      >
+        <Icon name="Menu" />
+      </button>
+      <style jsx global>{`
+        @media (max-width: 767px) {
+          #sidebar {
+            display: ${isSidebarOpen ? 'block' : 'none'} !important;
           }
         }
-      }}
-      className="inline-flex h-8 w-8 items-center justify-center rounded-md border bg-background transition md:hidden"
-      aria-label="Toggle menu"
-    >
-      <Icon name="Menu" />
-    </button>
+      `}</style>
+    </>
   );
 }

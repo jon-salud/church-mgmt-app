@@ -74,25 +74,20 @@ export async function AppLayout({ children }: AppLayoutProps) {
   let settings: Record<string, unknown> = {};
 
   try {
-    // Fetch user data once and reuse it
-    const userData = await api.currentUser().catch(error => {
-      console.error('Failed to load current user:', error);
-      return null;
-    });
-
-    // Use the same user data to fetch settings
-    const settingsData = await (async () => {
-      const churchId = userData?.user?.roles?.[0]?.churchId;
-      if (churchId) {
-        return await api.getSettings(churchId).catch(() => ({}));
-      }
-      return {};
-    })();
-
-    me = userData;
-    settings = settingsData;
+    me = await api.currentUser();
   } catch (error) {
-    console.error('Error in AppLayout:', error);
+    console.error('Failed to load current user in AppLayout:', error);
+    // Provide a fallback minimal user object to prevent render failures
+    me = null;
+  }
+
+  if (me?.user?.roles?.[0]?.churchId) {
+    try {
+      settings = await api.getSettings(me.user.roles[0].churchId);
+    } catch (error) {
+      console.error('Failed to load settings in AppLayout:', error);
+      settings = {};
+    }
   }
 
   // Get role-based navigation items
@@ -170,9 +165,6 @@ export async function AppLayout({ children }: AppLayoutProps) {
       {churchId && (
         <OnboardingModal
           isOpen={onboardingRequired}
-          onClose={() => {
-            /* handled by server revalidation */
-          }}
           churchId={churchId}
           initialSettings={settings}
         />
