@@ -39,7 +39,25 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
 
   useEffect(() => {
     if (showArchived && isAdmin && archivedMembers.length === 0) {
-      clientApi.listDeletedUsers().then(setArchivedMembers).catch(console.error);
+      clientApi
+        .listDeletedUsers()
+        .then(users => {
+          // Normalize the data structure - archived users have id as {value: string}
+          const normalized = users.map(user => ({
+            ...user,
+            id: typeof user.id === 'object' && user.id?.value ? user.id.value : user.id,
+            primaryEmail:
+              typeof user.primaryEmail === 'object' && user.primaryEmail?.value
+                ? user.primaryEmail.value
+                : user.primaryEmail,
+            churchId:
+              typeof user.churchId === 'object' && user.churchId?.value
+                ? user.churchId.value
+                : user.churchId,
+          }));
+          setArchivedMembers(normalized);
+        })
+        .catch(console.error);
     }
   }, [showArchived, isAdmin, archivedMembers.length]);
 
@@ -75,8 +93,9 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
             </button>
           </form>
           {isAdmin && (
-            <label className="flex items-center gap-2 text-sm">
+            <label htmlFor="show-archived-checkbox" className="flex items-center gap-2 text-sm">
               <input
+                id="show-archived-checkbox"
                 type="checkbox"
                 checked={showArchived}
                 onChange={e => setShowArchived(e.target.checked)}

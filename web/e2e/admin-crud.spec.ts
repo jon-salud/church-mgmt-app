@@ -9,7 +9,7 @@ test.describe('Admin CRUD Operations', () => {
     await loginPage.login();
   });
 
-  test.fixme('admin can manage members, groups, and events end-to-end', async ({ page }) => {
+  test('admin can manage members, groups, and events end-to-end', async ({ page }) => {
     // Blocked: Show archived members checkbox not found
     const timestamp = Date.now();
     const memberFirst = `QA${timestamp}`;
