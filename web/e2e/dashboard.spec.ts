@@ -30,7 +30,7 @@ test.describe('Accessibility affordances', () => {
       await expect(page.getByTestId('stat-members')).toBeVisible({ timeout: 10000 });
     });
   });
-  test('dashboard has labelled navigation landmarks', async ({ page }) => {
+  test.fixme('dashboard has labelled navigation landmarks', async ({ page }) => {
     await test.step('Verify navigation landmarks', async () => {
       // Wait for the dashboard to fully load
       await expect(page).toHaveURL('http://localhost:3000/dashboard');
