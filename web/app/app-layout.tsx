@@ -75,20 +75,24 @@ export async function AppLayout({ children }: AppLayoutProps) {
 
   try {
     const [userData, settingsData] = await Promise.all([
-      api.currentUser(),
+      api.currentUser().catch(error => {
+        console.error('Failed to load current user:', error);
+        return null;
+      }),
       (async () => {
         try {
-          const user = await api.currentUser();
+          const user = await api.currentUser().catch(() => null);
           const churchId = user?.user?.roles?.[0]?.churchId;
           if (churchId) {
             try {
-              return await api.getSettings(churchId);
+              return await api.getSettings(churchId).catch(() => ({}));
             } catch {
               return {};
             }
           }
           return {};
-        } catch {
+        } catch (error) {
+          console.error('Failed to load settings:', error);
           return {};
         }
       })(),
@@ -97,7 +101,7 @@ export async function AppLayout({ children }: AppLayoutProps) {
     me = userData;
     settings = settingsData;
   } catch (error) {
-    console.error('Failed to load user data:', error);
+    console.error('Error in AppLayout:', error);
   }
 
   // Get role-based navigation items
