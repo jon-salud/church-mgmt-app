@@ -35,13 +35,7 @@ test.describe.serial('Onboarding Wizard', () => {
   });
 
   test.fixme('completes full onboarding flow', async ({ page }) => {
-    // Test is blocked by onboarding API integration issues
-    // Will be enabled once the following features are implemented:
-    // - Settings API for onboarding status
-    // - Branding update endpoints
-    // - Role definition API
-    // - Team invite functionality
-    // - Member import API
+    // Blocked: Onboarding modal not appearing for demo-new-admin
     const onboardingPage = new OnboardingPage(page);
 
     await test.step('Verify onboarding modal appears after login', async () => {

@@ -26,9 +26,11 @@ function NavSection({ title, items }: NavSectionProps) {
       </h3>
       {items.map(item => {
         const isActive = pathname === item.href;
+        // Generate ID: /dashboard -> nav-link-dashboard, /audit-log -> nav-link-audit-log, /checkin/dashboard -> nav-link-checkin-dashboard
+        const idSuffix = item.href.split('/').filter(Boolean).join('-');
         return (
           <Link
-            id={`nav-link-${item.href.replace('/', '').replace('auditlog', 'audit-log').replace('pastoralcare', 'pastoral-care')}`}
+            id={`nav-link-${idSuffix}`}
             key={item.href}
             href={item.href}
             className={cn(

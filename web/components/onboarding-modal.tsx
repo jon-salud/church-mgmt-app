@@ -6,14 +6,14 @@ import { OnboardingWizard } from '@/app/onboarding/onboarding-wizard';
 
 interface OnboardingModalProps {
   isOpen: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   churchId: string;
   initialSettings: Record<string, unknown>;
 }
 
 export function OnboardingModal({
   isOpen,
-  onClose,
+  onClose = () => {},
   churchId,
   initialSettings,
 }: OnboardingModalProps) {

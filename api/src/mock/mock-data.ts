@@ -302,6 +302,15 @@ export const mockSettings: MockSettings[] = [
     createdAt: makeDate(-365),
     updatedAt: makeDate(-1),
   },
+  {
+    id: 'settings-church-onboarding',
+    churchId: 'church-onboarding',
+    onboardingComplete: false,
+    enabledFields: [],
+    requestTypes: [],
+    createdAt: makeDate(-1),
+    updatedAt: makeDate(-1),
+  },
 ];
 
 const churchId = 'church-acc';
