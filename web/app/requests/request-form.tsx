@@ -1,18 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui-flowbite/button';
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui-flowbite/card';
+import { Label } from '@/components/ui-flowbite/label';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
+} from '@/components/ui-flowbite/select';
+import { Textarea } from '@/components/ui-flowbite/textarea';
+import { Input } from '@/components/ui-flowbite/input';
 import { clientApi } from '@/lib/api.client';
 import { useRouter } from 'next/navigation';
 import { RequestType } from '@/lib/types';

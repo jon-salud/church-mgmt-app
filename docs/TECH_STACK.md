@@ -81,12 +81,11 @@
 
 #### UI Components & Styling
 - **Tailwind CSS** v3.4.13 - Utility-first CSS framework
-- **shadcn/ui** - Headless component library (Radix UI based)
-  - `@radix-ui/react-dialog` - Modal dialogs
-  - `@radix-ui/react-dropdown-menu` - Dropdown menus
-  - `@radix-ui/react-select` - Select components
-  - `@radix-ui/react-label` - Labels
-  - `@radix-ui/react-checkbox` - Checkboxes
+- **Flowbite** v3.1.2 - UI component library built on Tailwind CSS
+- **Flowbite React** v0.12.10 - React component library with TypeScript support
+  - 13 custom wrapper components in `web/components/ui-flowbite/`
+  - Full API compatibility with previous Radix UI implementation
+  - Components: Alert, Button, Checkbox, Dialog, Dropdown, Input, Label, Modal, Progress, Select, Spinner, Table, Textarea
 - **Lucide React** v0.546.0 - Beautiful icons
 - **class-variance-authority** v0.7.1 - Component variant management
 - **clsx** v2.1.1 - Conditional className utility
@@ -126,6 +125,15 @@
 - **eslint-plugin-prettier** v5.5.4 - Prettier integration
 - **eslint-config-prettier** v10.1.8 - Prettier config
 - **husky** v9.1.7 - Git hooks management
+
+#### UI Migration
+- **Flowbite Migration Complete** (November 2024)
+  - Migrated from Radix UI to Flowbite
+  - Removed 5 Radix packages (41 total packages)
+  - Created 13 API-compatible wrapper components
+  - 100% feature parity maintained
+  - Improved bundle sizes: Onboarding -6.9%, Settings -1.7%
+  - See `docs/FLOWBITE_MIGRATION.md` for complete details
 
 #### Build Tools
 - **@nestjs/cli** v10.4.5 - NestJS CLI

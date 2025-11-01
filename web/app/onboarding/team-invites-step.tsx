@@ -1,17 +1,17 @@
 'use client';
 
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui-flowbite/button';
+import { Input } from '@/components/ui-flowbite/input';
+import { Label } from '@/components/ui-flowbite/label';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui-flowbite/card';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui-flowbite/select';
 import { Plus, X, Mail, User } from 'lucide-react';
 import { clientApi } from '@/lib/api.client';
 

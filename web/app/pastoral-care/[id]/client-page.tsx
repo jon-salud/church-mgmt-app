@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui-flowbite/button';
+import { Textarea } from '@/components/ui-flowbite/textarea';
 import { clientApi } from '@/lib/api.client';
 import { PastoralCareTicket, PastoralCareComment } from '@/lib/types';
 

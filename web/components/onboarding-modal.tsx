@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useRouter } from 'next/navigation';
+import { Modal } from '@/components/ui-flowbite/modal';
 import { OnboardingWizard } from '@/app/onboarding/onboarding-wizard';
 
 interface OnboardingModalProps {
@@ -17,7 +18,14 @@ export function OnboardingModal({
   churchId,
   initialSettings,
 }: OnboardingModalProps) {
+  const router = useRouter();
   const [settings, setSettings] = useState(initialSettings);
+  const [internalOpen, setInternalOpen] = useState(isOpen);
+
+  // Sync internal state with prop
+  useEffect(() => {
+    setInternalOpen(isOpen);
+  }, [isOpen]);
 
   // Reset settings when modal opens
   useEffect(() => {
@@ -27,25 +35,32 @@ export function OnboardingModal({
   }, [isOpen, initialSettings]);
 
   const handleComplete = () => {
+    // Close modal immediately
+    setInternalOpen(false);
     onClose();
+    // Navigate to dashboard to re-fetch settings with onboardingComplete=true
+    // Small delay to allow modal close animation
+    // eslint-disable-next-line no-undef
+    setTimeout(() => {
+      router.push('/dashboard');
+    }, 200);
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent
-        className="max-w-4xl max-h-[90vh] overflow-y-auto"
-        data-testid="onboarding-modal"
-      >
-        <DialogHeader>
-          <DialogTitle className="sr-only">Church Setup Wizard</DialogTitle>
-        </DialogHeader>
+    <Modal
+      open={internalOpen}
+      onClose={onClose}
+      title="Church Setup Wizard"
+      data-testid="onboarding-modal"
+    >
+      <div className="max-w-4xl max-h-[80vh] overflow-y-auto">
         <OnboardingWizard
           churchId={churchId}
           initialSettings={settings}
           onComplete={handleComplete}
           isModal={true}
         />
-      </DialogContent>
-    </Dialog>
+      </div>
+    </Modal>
   );
 }

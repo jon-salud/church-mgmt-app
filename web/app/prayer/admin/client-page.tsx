@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { Button } from '@/components/ui-flowbite/button';
 import { clientApi } from '@/lib/api.client';
 import { PrayerRequest } from '@/lib/types';
 import { useRouter } from 'next/navigation';

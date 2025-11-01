@@ -1,20 +1,26 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui-flowbite/button';
+import { Checkbox } from '@/components/ui-flowbite/checkbox';
 import { clientApi } from '@/lib/api.client';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 export function NewPrayerRequestClientPage() {
+  const router = useRouter();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isAnonymous, setIsAnonymous] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (isLoading) return; // Prevent double submission
+
     setError(null);
+    setIsLoading(true);
     try {
       console.log('Submitting prayer request...');
       await clientApi.post('/requests', {
@@ -28,6 +34,8 @@ export function NewPrayerRequestClientPage() {
     } catch (err) {
       console.error('Submission error:', err);
       setError('Failed to submit prayer request. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -39,6 +47,9 @@ export function NewPrayerRequestClientPage() {
           Thank you for submitting your prayer request. It will be reviewed by our pastoral team
           shortly.
         </p>
+        <Button id="back-to-prayer-wall" onClick={() => router.push('/prayer')} className="mt-4">
+          Back to Prayer Wall
+        </Button>
       </div>
     );
   }
@@ -87,7 +98,9 @@ export function NewPrayerRequestClientPage() {
             Submit anonymously
           </label>
         </div>
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? 'Submitting...' : 'Submit'}
+        </Button>
       </form>
     </div>
   );

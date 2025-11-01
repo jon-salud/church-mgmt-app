@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Modal } from '../../components/ui/modal';
+import { Modal } from '@/components/ui-flowbite/modal';
 import { createMemberAction } from '../actions';
 import { clientApi } from '../../lib/api.client';
 

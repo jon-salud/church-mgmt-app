@@ -7,15 +7,15 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
+} from '@/components/ui-flowbite/table';
+import { Button } from '@/components/ui-flowbite/button';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
+} from '@/components/ui-flowbite/dialog';
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -23,14 +23,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
+} from '@/components/ui-flowbite/dropdown-menu';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from '@/components/ui-flowbite/select';
 import { RequestType, User } from '@/lib/types';
 import { hasRole } from '@/lib/utils';
 

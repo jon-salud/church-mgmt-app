@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useRef } from 'react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui-flowbite/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui-flowbite/card';
 import { Upload, FileText, Users, AlertCircle, CheckCircle } from 'lucide-react';
 import { clientApi } from '@/lib/api.client';
 

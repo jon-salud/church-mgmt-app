@@ -1,12 +1,18 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Checkbox } from '@/components/ui/checkbox';
+import { Checkbox } from '@/components/ui-flowbite/checkbox';
 import { clientApi as api } from '@/lib/api.client';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui-flowbite/card';
+import { Button } from '@/components/ui-flowbite/button';
+import { Input } from '@/components/ui-flowbite/input';
+import { Label } from '@/components/ui-flowbite/label';
 import { RequestType } from '@/lib/types';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 
