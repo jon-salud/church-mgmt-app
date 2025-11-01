@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui-flowbite/button';
 import { Checkbox } from '@/components/ui-flowbite/checkbox';
 import { clientApi } from '@/lib/api.client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export function NewPrayerRequestClientPage() {
   const [title, setTitle] = useState('');
@@ -31,13 +31,19 @@ export function NewPrayerRequestClientPage() {
     }
   }
 
-  if (isSubmitted) {
-    // Small delay before auto-redirect to allow tests to verify success message
-    // eslint-disable-next-line no-undef
-    setTimeout(() => {
-      window.location.href = '/prayer';
-    }, 2000);
+  // Redirect after showing success message
+  useEffect(() => {
+    if (isSubmitted) {
+      // eslint-disable-next-line no-undef
+      const timer = setTimeout(() => {
+        window.location.href = '/prayer';
+      }, 2000);
+      // eslint-disable-next-line no-undef
+      return () => clearTimeout(timer);
+    }
+  }, [isSubmitted]);
 
+  if (isSubmitted) {
     return (
       <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">Prayer Request Submitted</h1>

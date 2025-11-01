@@ -91,7 +91,7 @@ export function OnboardingWizard({
       setIsLoading(false);
       console.log('Completing onboarding, isModal:', isModal, 'onComplete:', !!onComplete);
       // Always proceed with close/redirect, even if API fails
-      // Use setTimeout to ensure state updates are flushed before calling onComplete
+      // Use setTimeout to ensure React finishes all state updates before closing modal
       // eslint-disable-next-line no-undef
       setTimeout(() => {
         if (isModal && onComplete) {
@@ -100,7 +100,7 @@ export function OnboardingWizard({
         } else {
           router.push('/dashboard');
         }
-      }, 100);
+      }, 0);
     }
   };
 
