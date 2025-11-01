@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils';
 interface SelectContextValue {
   value?: string;
   onValueChange?: (value: string) => void;
+  triggerId?: string;
 }
 
 const SelectContext = React.createContext<SelectContextValue>({});
@@ -27,11 +28,14 @@ const Select: React.FC<SelectProps> = ({ value, defaultValue, onValueChange, nam
   const [internalValue, setInternalValue] = React.useState(
     value !== undefined ? value : defaultValue || ''
   );
-  const [hiddenInputValue, setHiddenInputValue] = React.useState(internalValue);
+  const [triggerId] = React.useState(
+    () => `select-trigger-${Math.random().toString(36).substr(2, 9)}`
+  );
 
   const handleValueChange = (newValue: string) => {
+    console.log('[Select] handleValueChange called with:', newValue);
     setInternalValue(newValue);
-    setHiddenInputValue(newValue);
+    console.log('[Select] calling onValueChange callback');
     onValueChange?.(newValue);
   };
 
@@ -39,18 +43,14 @@ const Select: React.FC<SelectProps> = ({ value, defaultValue, onValueChange, nam
   React.useEffect(() => {
     if (value !== undefined) {
       setInternalValue(value);
-      setHiddenInputValue(value);
     }
   }, [value]);
 
-  // Sync internal value changes to hidden input
-  React.useEffect(() => {
-    setHiddenInputValue(internalValue);
-  }, [internalValue]);
-
   return (
-    <SelectContext.Provider value={{ value: internalValue, onValueChange: handleValueChange }}>
-      {name && <input type="hidden" name={name} value={hiddenInputValue} />}
+    <SelectContext.Provider
+      value={{ value: internalValue, onValueChange: handleValueChange, triggerId }}
+    >
+      {name && <input type="hidden" name={name} value={internalValue} />}
       {children}
     </SelectContext.Provider>
   );
@@ -74,10 +74,12 @@ interface SelectTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
   ({ className, children, ...props }, ref) => {
+    const { triggerId } = React.useContext(SelectContext);
     return (
       <button
         ref={ref}
         type="button"
+        id={triggerId}
         className={cn(
           'flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
           className
@@ -97,11 +99,20 @@ interface SelectContentProps {
   children: React.ReactNode;
   className?: string;
   position?: 'popper' | 'item-aligned';
+  'aria-label'?: string;
 }
 
-const SelectContent: React.FC<SelectContentProps> = ({ children, className }) => {
+const SelectContent: React.FC<SelectContentProps> = ({
+  children,
+  className,
+  'aria-label': ariaLabel,
+}) => {
+  const { triggerId } = React.useContext(SelectContext);
   return (
     <div
+      role="listbox"
+      aria-labelledby={!ariaLabel ? triggerId : undefined}
+      aria-label={ariaLabel}
       className={cn(
         'relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md',
         className

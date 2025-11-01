@@ -27,6 +27,8 @@ export function RequestForm({ initialRequestTypes, churchId: _churchId }: Reques
   const [requestTypes] = useState<RequestType[]>(initialRequestTypes);
   const router = useRouter();
 
+  console.log('[RequestForm] Current requestTypeId:', requestTypeId);
+
   const getFormDescription = () => {
     const selectedType = requestTypes.find(rt => rt.id === requestTypeId);
     if (selectedType) {
@@ -69,7 +71,7 @@ export function RequestForm({ initialRequestTypes, churchId: _churchId }: Reques
               <SelectTrigger id="request-type" data-testid="request-type-select">
                 <SelectValue placeholder="Select a request type..." />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent aria-label="Request Type">
                 {requestTypes.map(rt => (
                   <SelectItem key={rt.id} value={rt.id}>
                     {rt.name}
