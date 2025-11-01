@@ -152,8 +152,13 @@ about for all developers.
   custom CSS files.
 - **Theme-Aware Colors:** Use theme-aware utility classes (e.g., `bg-primary`, `text-foreground`)
   instead of hardcoded colors to support light and dark modes.
-- **UI Components:** Use the shared UI components from `web/components/ui` whenever possible to
-  maintain a consistent look and feel.
+- **UI Components:** Use the shared UI components from `web/components/ui-flowbite/` whenever possible to
+  maintain a consistent look and feel. The project uses Flowbite components with custom API-compatible
+  wrappers that match the previous Radix UI interface. Legacy components in `web/components/ui/` are
+  retained for non-Radix custom implementations.
+- **Component Selection:**
+  - **Flowbite Components** (`ui-flowbite/`): Alert, Button, Checkbox, Dialog, Dropdown, Input, Label, Modal, Progress, Select, Spinner, Table, Textarea
+  - **Legacy Components** (`ui/`): Modal (custom), PageHeader, Card, Table (custom), Progress (custom)
 
 ---
 
