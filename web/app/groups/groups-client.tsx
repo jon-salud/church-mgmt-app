@@ -176,9 +176,12 @@ export function GroupsClient({
             checked={allSelected}
             onCheckedChange={toggleSelectAll}
           />
-          <span className="text-sm text-muted-foreground">
+          <label
+            htmlFor="select-all-groups"
+            className="text-sm text-muted-foreground cursor-pointer"
+          >
             {selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Select all'}
-          </span>
+          </label>
           {selectedIds.size > 0 && (
             <div className="ml-auto flex gap-2">
               {showArchived ? (
@@ -217,12 +220,17 @@ export function GroupsClient({
           >
             <div className="flex items-start gap-3">
               {isAdmin && (
-                <Checkbox
-                  id={`select-group-${group.id}`}
-                  checked={selectedIds.has(group.id)}
-                  onCheckedChange={() => toggleSelect(group.id)}
-                  className="mt-1"
-                />
+                <>
+                  <Checkbox
+                    id={`select-group-${group.id}`}
+                    checked={selectedIds.has(group.id)}
+                    onCheckedChange={() => toggleSelect(group.id)}
+                    className="mt-1"
+                  />
+                  <label htmlFor={`select-group-${group.id}`} className="sr-only">
+                    Select {group.name}
+                  </label>
+                </>
               )}
               <div className="flex-1 min-w-0">
                 <div className="flex items-start justify-between gap-2">

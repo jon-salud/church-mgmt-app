@@ -308,9 +308,12 @@ export function AnnouncementsClient({
             checked={allSelected}
             onCheckedChange={toggleSelectAll}
           />
-          <span className="text-sm text-muted-foreground">
+          <label
+            htmlFor="select-all-announcements"
+            className="text-sm text-muted-foreground cursor-pointer"
+          >
             {selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Select all'}
-          </span>
+          </label>
           {selectedIds.size > 0 && (
             <div className="ml-auto flex gap-2">
               {showArchived ? (
@@ -356,12 +359,17 @@ export function AnnouncementsClient({
             >
               <div className="flex items-start gap-3">
                 {isAdmin && (
-                  <Checkbox
-                    id={`select-announcement-${announcement.id}`}
-                    checked={selectedIds.has(announcement.id)}
-                    onCheckedChange={() => toggleSelect(announcement.id)}
-                    className="mt-1"
-                  />
+                  <>
+                    <Checkbox
+                      id={`select-announcement-${announcement.id}`}
+                      checked={selectedIds.has(announcement.id)}
+                      onCheckedChange={() => toggleSelect(announcement.id)}
+                      className="mt-1"
+                    />
+                    <label htmlFor={`select-announcement-${announcement.id}`} className="sr-only">
+                      Select {announcement.title}
+                    </label>
+                  </>
                 )}
                 <div className="flex-1 min-w-0">
                   <header className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
