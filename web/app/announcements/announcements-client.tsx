@@ -3,6 +3,9 @@
 import { format } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';
 import { Modal } from '@/components/ui-flowbite/modal';
+import { Checkbox } from '@/components/ui-flowbite/checkbox';
+import { Button } from '@/components/ui-flowbite/button';
+import { Archive, ArchiveRestore } from 'lucide-react';
 import {
   createAnnouncementAction,
   markAnnouncementReadAction,
@@ -10,6 +13,9 @@ import {
 } from '../actions';
 import { loadOfflineSnapshot, persistOfflineSnapshot } from '../../lib/offline-cache';
 import { useOfflineStatus } from '../../lib/use-offline-status';
+import { clientApi } from '@/lib/api.client';
+import { hasRole } from '@/lib/utils';
+import { User } from '@/lib/types';
 
 type Announcement = {
   id: string;
@@ -20,6 +26,7 @@ type Announcement = {
   publishAt: string;
   expireAt?: string | null;
   reads?: Array<{ userId: string }>;
+  deletedAt?: string;
 };
 
 type Group = {
@@ -30,6 +37,8 @@ type Group = {
 type AnnouncementsClientProps = {
   announcements: Announcement[];
   groups: Group[];
+  deletedAnnouncements: Announcement[];
+  user: User | null;
 };
 
 type AnnouncementDraft = {
@@ -74,15 +83,26 @@ const audienceLabel = (announcement: Announcement, groupMap: Map<string, Group>)
   return announcement.groupIds.map(id => groupMap.get(id)?.name || id).join(', ');
 };
 
-export function AnnouncementsClient({ announcements, groups }: AnnouncementsClientProps) {
+export function AnnouncementsClient({
+  announcements,
+  groups,
+  deletedAnnouncements,
+  user,
+}: AnnouncementsClientProps) {
   const [announcementState, setAnnouncementState] = useState(announcements);
+  const [deletedAnnouncementState, setDeletedAnnouncementState] = useState(deletedAnnouncements);
   const [groupState, setGroupState] = useState(groups);
+  const [showArchived, setShowArchived] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isProcessing, setIsProcessing] = useState(false);
   const isOffline = useOfflineStatus();
+  const isAdmin = hasRole(user?.roles, 'admin');
 
   useEffect(() => {
     setAnnouncementState(announcements);
+    setDeletedAnnouncementState(deletedAnnouncements);
     setGroupState(groups);
-  }, [announcements, groups]);
+  }, [announcements, deletedAnnouncements, groups]);
 
   useEffect(() => {
     persistOfflineSnapshot('announcements', {
@@ -116,17 +136,128 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
   }, [isOffline, announcementState.length, groupState.length]);
 
   const groupMap = useMemo(() => new Map(groupState.map(group => [group.id, group])), [groupState]);
+  const displayAnnouncements = showArchived ? deletedAnnouncementState : announcementState;
   const sortedAnnouncements = useMemo(
     () =>
-      [...announcementState].sort(
+      [...displayAnnouncements].sort(
         (a, b) => new Date(b.publishAt).getTime() - new Date(a.publishAt).getTime()
       ),
-    [announcementState]
+    [displayAnnouncements]
   );
+  const allSelected =
+    selectedIds.size === sortedAnnouncements.length && sortedAnnouncements.length > 0;
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [createAudience, setCreateAudience] = useState<'all' | 'custom'>('all');
   const [editModal, setEditModal] = useState<AnnouncementDraft | null>(null);
   const [editAudience, setEditAudience] = useState<'all' | 'custom'>('all');
+
+  const toggleSelectAll = () => {
+    if (allSelected) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(sortedAnnouncements.map(a => a.id)));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const handleArchive = async (id: string) => {
+    setIsProcessing(true);
+    try {
+      await clientApi.deleteAnnouncement(id);
+      const archived = announcementState.find(a => a.id === id);
+      if (archived) {
+        setAnnouncementState(announcementState.filter(a => a.id !== id));
+        setDeletedAnnouncementState([
+          ...deletedAnnouncementState,
+          { ...archived, deletedAt: new Date().toISOString() },
+        ]);
+      }
+    } catch (error) {
+      console.error('Failed to archive announcement:', error);
+      window.alert('Failed to archive announcement. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleRestore = async (id: string) => {
+    setIsProcessing(true);
+    try {
+      await clientApi.undeleteAnnouncement(id);
+      const restored = deletedAnnouncementState.find(a => a.id === id);
+      if (restored) {
+        setDeletedAnnouncementState(deletedAnnouncementState.filter(a => a.id !== id));
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { deletedAt, ...restoredAnnouncement } = restored;
+        setAnnouncementState([...announcementState, restoredAnnouncement]);
+      }
+    } catch (error) {
+      console.error('Failed to restore announcement:', error);
+      window.alert('Failed to restore announcement. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleBulkArchive = async () => {
+    if (selectedIds.size === 0) return;
+    if (!window.confirm(`Archive ${selectedIds.size} announcement(s)?`)) return;
+
+    setIsProcessing(true);
+    try {
+      const idsArray = Array.from(selectedIds);
+      const result = await clientApi.bulkDeleteAnnouncements(idsArray);
+      if (result.success) {
+        const archivedAnnouncements = announcementState.filter(a => selectedIds.has(a.id));
+        setAnnouncementState(announcementState.filter(a => !selectedIds.has(a.id)));
+        setDeletedAnnouncementState([
+          ...deletedAnnouncementState,
+          ...archivedAnnouncements.map(a => ({ ...a, deletedAt: new Date().toISOString() })),
+        ]);
+        setSelectedIds(new Set());
+      }
+    } catch (error) {
+      console.error('Failed to bulk archive announcements:', error);
+      window.alert('Failed to archive announcements. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  const handleBulkRestore = async () => {
+    if (selectedIds.size === 0) return;
+    if (!window.confirm(`Restore ${selectedIds.size} announcement(s)?`)) return;
+
+    setIsProcessing(true);
+    try {
+      const idsArray = Array.from(selectedIds);
+      const result = await clientApi.bulkUndeleteAnnouncements(idsArray);
+      if (result.success) {
+        const restoredAnnouncements = deletedAnnouncementState.filter(a => selectedIds.has(a.id));
+        setDeletedAnnouncementState(deletedAnnouncementState.filter(a => !selectedIds.has(a.id)));
+        setAnnouncementState([
+          ...announcementState,
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ...restoredAnnouncements.map(({ deletedAt, ...a }) => a),
+        ]);
+        setSelectedIds(new Set());
+      }
+    } catch (error) {
+      console.error('Failed to bulk restore announcements:', error);
+      window.alert('Failed to restore announcements. Please try again.');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   return (
     <section className="space-y-6">
@@ -142,18 +273,71 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
             </p>
           ) : null}
         </div>
-        <button
-          id="new-announcement-button"
-          type="button"
-          onClick={() => {
-            setCreateAudience('all');
-            setIsCreateOpen(true);
-          }}
-          className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
-        >
-          New announcement
-        </button>
+        <div className="flex items-center gap-4">
+          {isAdmin && (
+            <label className="flex items-center gap-2 text-sm">
+              <Checkbox
+                id="show-archived-announcements"
+                checked={showArchived}
+                onCheckedChange={checked => {
+                  setShowArchived(checked === true);
+                  setSelectedIds(new Set());
+                }}
+              />
+              <span>Show Archived ({deletedAnnouncementState.length})</span>
+            </label>
+          )}
+          <button
+            id="new-announcement-button"
+            type="button"
+            onClick={() => {
+              setCreateAudience('all');
+              setIsCreateOpen(true);
+            }}
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition hover:bg-primary/90"
+          >
+            New announcement
+          </button>
+        </div>
       </header>
+
+      {isAdmin && sortedAnnouncements.length > 0 && (
+        <div className="flex items-center gap-3 rounded-lg border border-border bg-card/60 p-3">
+          <Checkbox
+            id="select-all-announcements"
+            checked={allSelected}
+            onCheckedChange={toggleSelectAll}
+          />
+          <span className="text-sm text-muted-foreground">
+            {selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Select all'}
+          </span>
+          {selectedIds.size > 0 && (
+            <div className="ml-auto flex gap-2">
+              {showArchived ? (
+                <Button
+                  id="bulk-restore-announcements-button"
+                  variant="outline"
+                  onClick={handleBulkRestore}
+                  disabled={isProcessing}
+                >
+                  <ArchiveRestore className="mr-2 h-4 w-4" />
+                  Restore Selected
+                </Button>
+              ) : (
+                <Button
+                  id="bulk-archive-announcements-button"
+                  variant="outline"
+                  onClick={handleBulkArchive}
+                  disabled={isProcessing}
+                >
+                  <Archive className="mr-2 h-4 w-4" />
+                  Archive Selected
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="space-y-4">
         {sortedAnnouncements.map(announcement => {
@@ -166,60 +350,116 @@ export function AnnouncementsClient({ announcements, groups }: AnnouncementsClie
           return (
             <article
               key={announcement.id}
-              className="rounded-xl border border-border bg-card/60 p-5 shadow-lg shadow-black/5"
+              className={`rounded-xl border border-border bg-card/60 p-5 shadow-lg shadow-black/5 ${
+                announcement.deletedAt ? 'opacity-60' : ''
+              }`}
             >
-              <header className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                <div className="space-y-2">
-                  <h2 className="text-xl font-semibold text-foreground">{announcement.title}</h2>
-                  <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                    <span className={`rounded-full px-3 py-1 font-medium ${badge.className}`}>
-                      {badge.label}
-                    </span>
-                    <span>
-                      Publishes {publishDisplay}
-                      {expireDisplay ? ` · Expires ${expireDisplay}` : ''}
-                    </span>
-                    <span>Audience: {audienceLabel(announcement, groupMap)}</span>
-                    <span>Reads: {readCount}</span>
-                  </div>
-                </div>
-                <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
-                  <form action={markAnnouncementReadAction.bind(null, announcement.id)}>
-                    <button
-                      id={`mark-read-button-${announcement.id}`}
-                      className="rounded-md border border-border px-3 py-1 text-xs uppercase tracking-wide text-foreground transition hover:bg-muted"
-                    >
-                      Mark read
-                    </button>
-                  </form>
-                  <button
-                    id={`edit-button-${announcement.id}`}
-                    type="button"
-                    onClick={() => {
-                      setEditAudience(announcement.audience);
-                      setEditModal({
-                        id: announcement.id,
-                        title: announcement.title,
-                        body: announcement.body,
-                        audience: announcement.audience,
-                        groupIds: announcement.groupIds ?? [],
-                        publishAt: announcement.publishAt,
-                        expireAt: announcement.expireAt ?? undefined,
-                      });
-                    }}
-                    className="rounded-md border border-border px-3 py-1 text-xs text-foreground transition hover:bg-muted"
-                  >
-                    Edit
-                  </button>
-                </div>
-              </header>
+              <div className="flex items-start gap-3">
+                {isAdmin && (
+                  <Checkbox
+                    id={`select-announcement-${announcement.id}`}
+                    checked={selectedIds.has(announcement.id)}
+                    onCheckedChange={() => toggleSelect(announcement.id)}
+                    className="mt-1"
+                  />
+                )}
+                <div className="flex-1 min-w-0">
+                  <header className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-xl font-semibold text-foreground">
+                          {announcement.title}
+                        </h2>
+                        {announcement.deletedAt && (
+                          <span className="rounded-full border border-border px-2 py-0.5 text-xs uppercase tracking-wide text-muted-foreground">
+                            Archived
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                        <span className={`rounded-full px-3 py-1 font-medium ${badge.className}`}>
+                          {badge.label}
+                        </span>
+                        <span>
+                          Publishes {publishDisplay}
+                          {expireDisplay ? ` · Expires ${expireDisplay}` : ''}
+                        </span>
+                        <span>Audience: {audienceLabel(announcement, groupMap)}</span>
+                        <span>Reads: {readCount}</span>
+                      </div>
+                    </div>
+                    {!showArchived && (
+                      <div className="flex flex-col items-stretch gap-2 sm:flex-row sm:items-center">
+                        <form action={markAnnouncementReadAction.bind(null, announcement.id)}>
+                          <button
+                            id={`mark-read-button-${announcement.id}`}
+                            className="rounded-md border border-border px-3 py-1 text-xs uppercase tracking-wide text-foreground transition hover:bg-muted"
+                          >
+                            Mark read
+                          </button>
+                        </form>
+                        <button
+                          id={`edit-button-${announcement.id}`}
+                          type="button"
+                          onClick={() => {
+                            setEditAudience(announcement.audience);
+                            setEditModal({
+                              id: announcement.id,
+                              title: announcement.title,
+                              body: announcement.body,
+                              audience: announcement.audience,
+                              groupIds: announcement.groupIds ?? [],
+                              publishAt: announcement.publishAt,
+                              expireAt: announcement.expireAt ?? undefined,
+                            });
+                          }}
+                          className="rounded-md border border-border px-3 py-1 text-xs text-foreground transition hover:bg-muted"
+                        >
+                          Edit
+                        </button>
+                      </div>
+                    )}
+                  </header>
 
-              <p className="mt-3 text-sm leading-relaxed text-foreground whitespace-pre-wrap">
-                {announcement.body}
-              </p>
+                  <p className="mt-3 text-sm leading-relaxed text-foreground whitespace-pre-wrap">
+                    {announcement.body}
+                  </p>
+
+                  {isAdmin && (
+                    <div className="mt-3 flex gap-2">
+                      {showArchived ? (
+                        <Button
+                          id={`restore-announcement-${announcement.id}`}
+                          variant="outline"
+                          onClick={() => handleRestore(announcement.id)}
+                          disabled={isProcessing}
+                        >
+                          <ArchiveRestore className="mr-1 h-3 w-3" />
+                          Restore
+                        </Button>
+                      ) : (
+                        <Button
+                          id={`archive-announcement-${announcement.id}`}
+                          variant="outline"
+                          onClick={() => handleArchive(announcement.id)}
+                          disabled={isProcessing}
+                        >
+                          <Archive className="mr-1 h-3 w-3" />
+                          Archive
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
             </article>
           );
         })}
+        {sortedAnnouncements.length === 0 && (
+          <div className="text-center py-12 text-muted-foreground">
+            {showArchived ? 'No archived announcements' : 'No announcements found'}
+          </div>
+        )}
       </div>
 
       <Modal

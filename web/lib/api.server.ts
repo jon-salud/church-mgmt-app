@@ -108,6 +108,9 @@ export const api = {
   async group(id: string) {
     return apiFetch<any>(`/groups/${id}`);
   },
+  async listDeletedGroups() {
+    return apiFetch<Array<any>>('/groups/deleted/all');
+  },
   async events() {
     return apiFetch<Array<any>>('/events');
   },
@@ -116,6 +119,9 @@ export const api = {
   },
   async announcements() {
     return apiFetch<Array<any>>('/announcements');
+  },
+  async listDeletedAnnouncements() {
+    return apiFetch<Array<any>>('/announcements/deleted/all');
   },
   async roles() {
     return apiFetch<Array<any>>('/roles');

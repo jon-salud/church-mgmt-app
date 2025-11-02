@@ -230,4 +230,59 @@ export const clientApi = {
   async listDeletedDocuments() {
     return apiFetch<any[]>('/documents/deleted');
   },
+  // Groups soft delete methods
+  async deleteGroup(groupId: string) {
+    return apiFetch<{ success: boolean }>(`/groups/${groupId}`, {
+      method: 'DELETE',
+    });
+  },
+  async undeleteGroup(groupId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(`/groups/${groupId}/undelete`, {
+      method: 'POST',
+    });
+  },
+  async listDeletedGroups() {
+    return apiFetch<any[]>('/groups/deleted/all');
+  },
+  async bulkDeleteGroups(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/groups/bulk-delete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+  async bulkUndeleteGroups(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/groups/bulk-undelete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+  // Announcements soft delete methods
+  async deleteAnnouncement(announcementId: string) {
+    return apiFetch<{ success: boolean }>(`/announcements/${announcementId}`, {
+      method: 'DELETE',
+    });
+  },
+  async undeleteAnnouncement(announcementId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(
+      `/announcements/${announcementId}/undelete`,
+      {
+        method: 'POST',
+      }
+    );
+  },
+  async listDeletedAnnouncements() {
+    return apiFetch<any[]>('/announcements/deleted/all');
+  },
+  async bulkDeleteAnnouncements(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/announcements/bulk-delete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+  async bulkUndeleteAnnouncements(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/announcements/bulk-undelete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
 };

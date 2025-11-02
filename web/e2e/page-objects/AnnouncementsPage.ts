@@ -75,4 +75,86 @@ export class AnnouncementsPage extends BasePage {
     const announcement = this.page.locator('article').filter({ hasText: title });
     await expect(announcement.getByText(expectedStatus)).toBeVisible();
   }
+
+  // Soft delete methods
+  async toggleShowArchived() {
+    await this.page.locator('#show-archived-announcements').click();
+  }
+
+  async verifyArchivedToggleVisible() {
+    await expect(this.page.locator('label:has(#show-archived-announcements)')).toBeVisible();
+  }
+
+  async archiveAnnouncement(title: string) {
+    const announcement = this.page.locator('article').filter({ hasText: title });
+    await announcement
+      .locator(`#archive-announcement-${await this.getAnnouncementId(title)}`)
+      .click();
+  }
+
+  async restoreAnnouncement(title: string) {
+    const announcement = this.page.locator('article').filter({ hasText: title });
+    await announcement
+      .locator(`#restore-announcement-${await this.getAnnouncementId(title)}`)
+      .click();
+  }
+
+  async verifyAnnouncementArchived(title: string) {
+    const announcement = this.page.locator('article').filter({ hasText: title });
+    await expect(announcement.getByText('Archived')).toBeVisible();
+  }
+
+  async verifyAnnouncementNotArchived(title: string) {
+    const announcement = this.page.locator('article').filter({ hasText: title });
+    await expect(announcement.getByText('Archived')).not.toBeVisible();
+  }
+
+  async verifyAnnouncementVisible(title: string) {
+    await expect(this.page.locator('article').filter({ hasText: title })).toBeVisible();
+  }
+
+  async verifyAnnouncementNotVisible(title: string) {
+    await expect(this.page.locator('article').filter({ hasText: title })).not.toBeVisible();
+  }
+
+  async selectAnnouncement(title: string) {
+    const announcement = this.page.locator('article').filter({ hasText: title });
+    const checkbox = announcement.locator('input[type="checkbox"]').first();
+    await checkbox.check();
+  }
+
+  async verifySelectAllCheckbox() {
+    await expect(this.page.locator('#select-all-announcements')).toBeVisible();
+  }
+
+  async selectAllAnnouncements() {
+    await this.page.locator('#select-all-announcements').check();
+  }
+
+  async bulkArchiveAnnouncements() {
+    await this.page.locator('#bulk-archive-announcements-button').click();
+  }
+
+  async bulkRestoreAnnouncements() {
+    await this.page.locator('#bulk-restore-announcements-button').click();
+  }
+
+  async confirmBulkAction() {
+    this.page.on('dialog', dialog => dialog.accept());
+  }
+
+  async verifyBulkArchiveButtonVisible() {
+    await expect(this.page.locator('#bulk-archive-announcements-button')).toBeVisible();
+  }
+
+  async verifyBulkRestoreButtonVisible() {
+    await expect(this.page.locator('#bulk-restore-announcements-button')).toBeVisible();
+  }
+
+  private async getAnnouncementId(title: string): Promise<string> {
+    const announcement = this.page.locator('article').filter({ hasText: title });
+    const archiveButton = announcement.locator('button[id^="archive-announcement-"]').first();
+    const id = await archiveButton.getAttribute('id');
+    return id?.replace('archive-announcement-', '') || '';
+  }
 }
