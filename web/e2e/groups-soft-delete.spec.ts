@@ -51,7 +51,6 @@ test.describe('Groups Soft Delete', () => {
 
     await test.step('Restore the group', async () => {
       await groupsPage.restoreGroup(groupName);
-      await page.waitForTimeout(500);
     });
 
     await test.step('Verify group is no longer in archived list', async () => {
@@ -104,9 +103,8 @@ test.describe('Groups Soft Delete', () => {
     });
 
     await test.step('Bulk archive selected groups', async () => {
-      groupsPage.confirmBulkAction();
       await groupsPage.bulkArchiveGroups();
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(500);
     });
 
     await test.step('Verify groups are no longer in active list', async () => {
@@ -139,9 +137,8 @@ test.describe('Groups Soft Delete', () => {
     });
 
     await test.step('Bulk restore selected groups', async () => {
-      groupsPage.confirmBulkAction();
       await groupsPage.bulkRestoreGroups();
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(500);
     });
 
     await test.step('Verify groups are no longer in archived list', async () => {
@@ -187,9 +184,8 @@ test.describe('Groups Soft Delete', () => {
     const initialMatch = initialText?.match(/\((\d+)\)/);
     const initialCount = initialMatch ? parseInt(initialMatch[1]) : 0;
 
-    await test.step('Archive a group', async () => {
+    await test.step('Archive the group', async () => {
       await groupsPage.archiveGroup(groupName);
-      await page.waitForTimeout(500);
     });
 
     await test.step('Verify archived count increased', async () => {

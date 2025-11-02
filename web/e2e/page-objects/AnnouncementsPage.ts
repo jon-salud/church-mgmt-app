@@ -87,16 +87,30 @@ export class AnnouncementsPage extends BasePage {
 
   async archiveAnnouncement(title: string) {
     const announcement = this.page.locator('article').filter({ hasText: title });
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/announcements/') && response.request().method() === 'DELETE'
+    );
     await announcement
       .locator(`#archive-announcement-${await this.getAnnouncementId(title)}`)
       .click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
   }
 
   async restoreAnnouncement(title: string) {
     const announcement = this.page.locator('article').filter({ hasText: title });
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/announcements/') &&
+        response.url().includes('/undelete') &&
+        response.request().method() === 'POST'
+    );
     await announcement
       .locator(`#restore-announcement-${await this.getAnnouncementId(title)}`)
       .click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
   }
 
   async verifyAnnouncementArchived(title: string) {
@@ -132,11 +146,27 @@ export class AnnouncementsPage extends BasePage {
   }
 
   async bulkArchiveAnnouncements() {
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/announcements/bulk-delete') &&
+        response.request().method() === 'POST'
+    );
+    await this.page.once('dialog', dialog => dialog.accept());
     await this.page.locator('#bulk-archive-announcements-button').click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
   }
 
   async bulkRestoreAnnouncements() {
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/announcements/bulk-undelete') &&
+        response.request().method() === 'POST'
+    );
+    await this.page.once('dialog', dialog => dialog.accept());
     await this.page.locator('#bulk-restore-announcements-button').click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
   }
 
   async confirmBulkAction() {

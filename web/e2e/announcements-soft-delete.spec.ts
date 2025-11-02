@@ -50,7 +50,6 @@ test.describe('Announcements Soft Delete', () => {
 
     await test.step('Restore the announcement', async () => {
       await announcementsPage.restoreAnnouncement(announcementTitle);
-      await page.waitForTimeout(500);
     });
 
     await test.step('Verify announcement is no longer in archived list', async () => {
@@ -103,9 +102,8 @@ test.describe('Announcements Soft Delete', () => {
     });
 
     await test.step('Bulk archive selected announcements', async () => {
-      announcementsPage.confirmBulkAction();
       await announcementsPage.bulkArchiveAnnouncements();
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(500);
     });
 
     await test.step('Verify announcements are no longer in active list', async () => {
@@ -138,9 +136,8 @@ test.describe('Announcements Soft Delete', () => {
     });
 
     await test.step('Bulk restore selected announcements', async () => {
-      announcementsPage.confirmBulkAction();
       await announcementsPage.bulkRestoreAnnouncements();
-      await page.waitForTimeout(1000);
+      await page.waitForTimeout(500);
     });
 
     await test.step('Verify announcements are no longer in archived list', async () => {
@@ -221,7 +218,6 @@ test.describe('Announcements Soft Delete', () => {
 
     await test.step('Archive the announcement', async () => {
       await announcementsPage.archiveAnnouncement(announcementTitle);
-      await page.waitForTimeout(500);
     });
 
     await test.step('Toggle to show archived announcements', async () => {

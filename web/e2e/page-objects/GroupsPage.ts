@@ -80,12 +80,25 @@ export class GroupsPage extends BasePage {
 
   async archiveGroup(groupName: string) {
     const groupCard = this.page.locator('article').filter({ hasText: groupName });
+    const responsePromise = this.page.waitForResponse(
+      response => response.url().includes('/groups/') && response.request().method() === 'DELETE'
+    );
     await groupCard.locator('button[id^="archive-group-"]').click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
   }
 
   async restoreGroup(groupName: string) {
     const groupCard = this.page.locator('article').filter({ hasText: groupName });
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/groups/') &&
+        response.url().includes('/undelete') &&
+        response.request().method() === 'POST'
+    );
     await groupCard.locator('button[id^="restore-group-"]').click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
   }
 
   async verifyGroupArchived(groupName: string) {
@@ -121,11 +134,25 @@ export class GroupsPage extends BasePage {
   }
 
   async bulkArchiveGroups() {
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/groups/bulk-delete') && response.request().method() === 'POST'
+    );
+    await this.page.once('dialog', dialog => dialog.accept());
     await this.page.locator('#bulk-archive-groups-button').click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
   }
 
   async bulkRestoreGroups() {
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/groups/bulk-undelete') && response.request().method() === 'POST'
+    );
+    await this.page.once('dialog', dialog => dialog.accept());
     await this.page.locator('#bulk-restore-groups-button').click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
   }
 
   async confirmBulkAction() {

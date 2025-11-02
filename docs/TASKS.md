@@ -331,6 +331,13 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
     - ✅ Fixed E2E button selectors: Updated GroupsPage.ts to use flexible prefix selectors (`button[id^="archive-group-"]`) matching actual implementation
     - ✅ Fixed dialog handlers: Changed `page.on` to `page.once` in both GroupsPage.ts and AnnouncementsPage.ts to prevent handler accumulation
     - ✅ Validated all fixes with API regression tests: All 296 tests still passing
+  - ✅ **Accessibility Fixes:**
+    - ✅ Added proper `<label>` elements with `htmlFor` attributes for all bulk selection checkboxes
+    - ✅ Groups: `select-all-groups` and `select-group-{id}` now have proper labels (visible and sr-only respectively)
+    - ✅ Announcements: `select-all-announcements` and `select-announcement-{id}` now have proper labels
+    - ✅ Individual item labels use `sr-only` class for screen readers without visual clutter
+    - ✅ Select-all labels changed from `<span>` to `<label>` with `cursor-pointer` for better UX
+    - ✅ Validated with build and lint: 0 errors, 202 warnings (acceptable @typescript-eslint/no-explicit-any)
 
 ### 🔄 In Progress
 
