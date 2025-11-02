@@ -122,6 +122,46 @@ export class GroupsController {
     return this.groupsService.deleteResource(resourceId, req.user.id);
   }
 
+  @Delete(':id')
+  @ApiOperation({ summary: 'Archive group (soft delete)' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  delete(@Param('id') id: string, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.groupsService.remove(id, req.user.id);
+  }
+
+  @Post(':id/undelete')
+  @ApiOperation({ summary: 'Restore archived group' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  undelete(@Param('id') id: string, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.groupsService.undelete(id, req.user.id);
+  }
+
+  @Get('deleted/all')
+  @ApiOperation({ summary: 'List archived groups (admin only)' })
+  @ApiOkResponse(arrayOfObjectsResponse)
+  listDeleted(@Req() req: any) {
+    this.ensureAdmin(req);
+    return this.groupsService.listDeleted();
+  }
+
+  @Post('bulk-delete')
+  @ApiOperation({ summary: 'Archive multiple groups (bulk operation)' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  bulkDelete(@Body() body: { ids: string[] }, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.groupsService.bulkDelete(body.ids, req.user.id);
+  }
+
+  @Post('bulk-undelete')
+  @ApiOperation({ summary: 'Restore multiple archived groups (bulk operation)' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  bulkUndelete(@Body() body: { ids: string[] }, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.groupsService.bulkUndelete(body.ids, req.user.id);
+  }
+
   private ensureAdmin(req: any) {
     const roles: Array<{ churchId: string; role: string }> = req.user?.roles ?? [];
     const isAdmin = roles.some(role => role.role === 'Admin');

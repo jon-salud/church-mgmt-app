@@ -1153,6 +1153,113 @@ export class MockDatabaseService {
     return { success: true };
   }
 
+  deleteGroup(id: string, input: { actorUserId: string }) {
+    const group = this.groups.find(g => g.id === id);
+    if (!group) {
+      return { success: false };
+    }
+    // Soft delete - set deletedAt timestamp (non-cascading)
+    group.deletedAt = new Date().toISOString();
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'group.soft-deleted',
+      entity: 'group',
+      entityId: group.id,
+      summary: `${actorName} archived group "${group.name}"`,
+      metadata: {
+        groupId: group.id,
+        memberCount: group.members.length,
+      },
+    });
+    return { success: true };
+  }
+
+  undeleteGroup(id: string, input: { actorUserId: string }) {
+    const group = this.groups.find(g => g.id === id);
+    if (!group || !group.deletedAt) {
+      return { success: false, reason: 'Group not found or not deleted' };
+    }
+    group.deletedAt = undefined;
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'group.undeleted',
+      entity: 'group',
+      entityId: group.id,
+      summary: `${actorName} restored group "${group.name}"`,
+      metadata: {
+        groupId: group.id,
+      },
+    });
+    return { success: true };
+  }
+
+  listDeletedGroups() {
+    return clone(
+      this.groups
+        .filter(group => group.deletedAt)
+        .map(group => ({
+          ...group,
+          deletedAt: group.deletedAt,
+        }))
+    );
+  }
+
+  bulkDeleteGroups(ids: string[], input: { actorUserId: string }) {
+    const deletedGroups: string[] = [];
+    ids.forEach(id => {
+      const group = this.groups.find(g => g.id === id);
+      if (group && !group.deletedAt) {
+        group.deletedAt = new Date().toISOString();
+        deletedGroups.push(group.name);
+      }
+    });
+    if (deletedGroups.length > 0) {
+      const actorName = this.getUserName(input.actorUserId);
+      this.createAuditLog({
+        actorUserId: input.actorUserId,
+        action: 'group.bulk-deleted',
+        entity: 'group',
+        entityId: ids[0],
+        summary: `${actorName} archived ${deletedGroups.length} group(s): ${deletedGroups.join(', ')}`,
+        metadata: {
+          groupIds: ids,
+          count: deletedGroups.length,
+          groupNames: deletedGroups,
+        },
+      });
+    }
+    return { success: true, count: deletedGroups.length };
+  }
+
+  bulkUndeleteGroups(ids: string[], input: { actorUserId: string }) {
+    const restoredGroups: string[] = [];
+    ids.forEach(id => {
+      const group = this.groups.find(g => g.id === id);
+      if (group && group.deletedAt) {
+        group.deletedAt = undefined;
+        restoredGroups.push(group.name);
+      }
+    });
+    if (restoredGroups.length > 0) {
+      const actorName = this.getUserName(input.actorUserId);
+      this.createAuditLog({
+        actorUserId: input.actorUserId,
+        action: 'group.bulk-undeleted',
+        entity: 'group',
+        entityId: ids[0],
+        summary: `${actorName} restored ${restoredGroups.length} group(s): ${restoredGroups.join(', ')}`,
+        metadata: {
+          groupIds: ids,
+          count: restoredGroups.length,
+          groupNames: restoredGroups,
+        },
+      });
+    }
+    return { success: true, count: restoredGroups.length };
+  }
+
   listEvents() {
     return clone(this.events.filter(event => !event.deletedAt));
   }
@@ -1409,7 +1516,9 @@ export class MockDatabaseService {
   }
 
   listAnnouncements(churchId?: string) {
-    const filtered = this.announcements.filter(a => !churchId || a.churchId === churchId);
+    const filtered = this.announcements.filter(
+      a => (!churchId || a.churchId === churchId) && !a.deletedAt
+    );
     return filtered
       .map(announcement => ({
         ...clone(announcement),
@@ -1543,6 +1652,113 @@ export class MockDatabaseService {
     }
 
     return clone(announcement);
+  }
+
+  deleteAnnouncement(id: string, input: { actorUserId: string }) {
+    const announcement = this.announcements.find(a => a.id === id);
+    if (!announcement) {
+      return { success: false };
+    }
+    // Soft delete - set deletedAt timestamp
+    announcement.deletedAt = new Date().toISOString();
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'announcement.soft-deleted',
+      entity: 'announcement',
+      entityId: announcement.id,
+      summary: `${actorName} archived announcement "${announcement.title}"`,
+      metadata: {
+        announcementId: announcement.id,
+        audience: announcement.audience,
+      },
+    });
+    return { success: true };
+  }
+
+  undeleteAnnouncement(id: string, input: { actorUserId: string }) {
+    const announcement = this.announcements.find(a => a.id === id);
+    if (!announcement || !announcement.deletedAt) {
+      return { success: false, reason: 'Announcement not found or not deleted' };
+    }
+    announcement.deletedAt = undefined;
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'announcement.undeleted',
+      entity: 'announcement',
+      entityId: announcement.id,
+      summary: `${actorName} restored announcement "${announcement.title}"`,
+      metadata: {
+        announcementId: announcement.id,
+      },
+    });
+    return { success: true };
+  }
+
+  listDeletedAnnouncements() {
+    return clone(
+      this.announcements
+        .filter(announcement => announcement.deletedAt)
+        .map(announcement => ({
+          ...announcement,
+          deletedAt: announcement.deletedAt,
+        }))
+    );
+  }
+
+  bulkDeleteAnnouncements(ids: string[], input: { actorUserId: string }) {
+    const deletedAnnouncements: string[] = [];
+    ids.forEach(id => {
+      const announcement = this.announcements.find(a => a.id === id);
+      if (announcement && !announcement.deletedAt) {
+        announcement.deletedAt = new Date().toISOString();
+        deletedAnnouncements.push(announcement.title);
+      }
+    });
+    if (deletedAnnouncements.length > 0) {
+      const actorName = this.getUserName(input.actorUserId);
+      this.createAuditLog({
+        actorUserId: input.actorUserId,
+        action: 'announcement.bulk-deleted',
+        entity: 'announcement',
+        entityId: ids[0],
+        summary: `${actorName} archived ${deletedAnnouncements.length} announcement(s): ${deletedAnnouncements.join(', ')}`,
+        metadata: {
+          announcementIds: ids,
+          count: deletedAnnouncements.length,
+          announcementTitles: deletedAnnouncements,
+        },
+      });
+    }
+    return { success: true, count: deletedAnnouncements.length };
+  }
+
+  bulkUndeleteAnnouncements(ids: string[], input: { actorUserId: string }) {
+    const restoredAnnouncements: string[] = [];
+    ids.forEach(id => {
+      const announcement = this.announcements.find(a => a.id === id);
+      if (announcement && announcement.deletedAt) {
+        announcement.deletedAt = undefined;
+        restoredAnnouncements.push(announcement.title);
+      }
+    });
+    if (restoredAnnouncements.length > 0) {
+      const actorName = this.getUserName(input.actorUserId);
+      this.createAuditLog({
+        actorUserId: input.actorUserId,
+        action: 'announcement.bulk-undeleted',
+        entity: 'announcement',
+        entityId: ids[0],
+        summary: `${actorName} restored ${restoredAnnouncements.length} announcement(s): ${restoredAnnouncements.join(', ')}`,
+        metadata: {
+          announcementIds: ids,
+          count: restoredAnnouncements.length,
+          announcementTitles: restoredAnnouncements,
+        },
+      });
+    }
+    return { success: true, count: restoredAnnouncements.length };
   }
 
   listFunds() {

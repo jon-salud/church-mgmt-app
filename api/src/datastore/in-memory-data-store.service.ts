@@ -700,6 +700,35 @@ export class InMemoryDataStore {
     return { success: true };
   }
 
+  async deleteGroup(_id: string, _input: { actorUserId: string }): Promise<{ success: boolean }> {
+    throw new Error('deleteGroup is not yet implemented for InMemory data store');
+  }
+
+  async undeleteGroup(
+    _id: string,
+    _input: { actorUserId: string }
+  ): Promise<{ success: boolean; reason?: string }> {
+    throw new Error('undeleteGroup is not yet implemented for InMemory data store');
+  }
+
+  async listDeletedGroups(): Promise<any[]> {
+    throw new Error('listDeletedGroups is not yet implemented for InMemory data store');
+  }
+
+  async bulkDeleteGroups(
+    _ids: string[],
+    _input: { actorUserId: string }
+  ): Promise<{ success: boolean; count: number }> {
+    throw new Error('bulkDeleteGroups is not yet implemented for InMemory data store');
+  }
+
+  async bulkUndeleteGroups(
+    _ids: string[],
+    _input: { actorUserId: string }
+  ): Promise<{ success: boolean; count: number }> {
+    throw new Error('bulkUndeleteGroups is not yet implemented for InMemory data store');
+  }
+
   async listEvents() {
     return clone(this.events.filter(event => !event.deletedAt));
   }
@@ -1007,6 +1036,38 @@ export class InMemoryDataStore {
     if (input.audience) announcement.audience = input.audience;
     if (input.groupIds) announcement.groupIds = input.groupIds;
     return clone(announcement);
+  }
+
+  async deleteAnnouncement(
+    _id: string,
+    _input: { actorUserId: string }
+  ): Promise<{ success: boolean }> {
+    throw new Error('deleteAnnouncement is not yet implemented for InMemory data store');
+  }
+
+  async undeleteAnnouncement(
+    _id: string,
+    _input: { actorUserId: string }
+  ): Promise<{ success: boolean; reason?: string }> {
+    throw new Error('undeleteAnnouncement is not yet implemented for InMemory data store');
+  }
+
+  async listDeletedAnnouncements(): Promise<any[]> {
+    throw new Error('listDeletedAnnouncements is not yet implemented for InMemory data store');
+  }
+
+  async bulkDeleteAnnouncements(
+    _ids: string[],
+    _input: { actorUserId: string }
+  ): Promise<{ success: boolean; count: number }> {
+    throw new Error('bulkDeleteAnnouncements is not yet implemented for InMemory data store');
+  }
+
+  async bulkUndeleteAnnouncements(
+    _ids: string[],
+    _input: { actorUserId: string }
+  ): Promise<{ success: boolean; count: number }> {
+    throw new Error('bulkUndeleteAnnouncements is not yet implemented for InMemory data store');
   }
 
   async listFunds() {

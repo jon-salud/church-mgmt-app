@@ -55,4 +55,24 @@ export class AnnouncementsService {
 
     return this.db.updateAnnouncement(id, payload as any);
   }
+
+  async remove(id: string, actorUserId: string) {
+    return this.db.deleteAnnouncement(id, { actorUserId });
+  }
+
+  async undelete(id: string, actorUserId: string) {
+    return this.db.undeleteAnnouncement(id, { actorUserId });
+  }
+
+  async listDeleted() {
+    return this.db.listDeletedAnnouncements();
+  }
+
+  async bulkDelete(ids: string[], actorUserId: string) {
+    return this.db.bulkDeleteAnnouncements(ids, { actorUserId });
+  }
+
+  async bulkUndelete(ids: string[], actorUserId: string) {
+    return this.db.bulkUndeleteAnnouncements(ids, { actorUserId });
+  }
 }

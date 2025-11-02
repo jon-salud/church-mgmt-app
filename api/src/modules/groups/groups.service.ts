@@ -86,6 +86,26 @@ export class GroupsService {
     return this.groupsRepository.deleteGroupResource(resourceId, { actorUserId });
   }
 
+  async remove(id: string, actorUserId: string) {
+    return this.db.deleteGroup(id, { actorUserId });
+  }
+
+  async undelete(id: string, actorUserId: string) {
+    return this.db.undeleteGroup(id, { actorUserId });
+  }
+
+  async listDeleted() {
+    return this.db.listDeletedGroups();
+  }
+
+  async bulkDelete(ids: string[], actorUserId: string) {
+    return this.db.bulkDeleteGroups(ids, { actorUserId });
+  }
+
+  async bulkUndelete(ids: string[], actorUserId: string) {
+    return this.db.bulkUndeleteGroups(ids, { actorUserId });
+  }
+
   private toGroupResponse(group: Group) {
     return {
       id: group.id.value,

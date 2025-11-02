@@ -126,6 +126,32 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.deleteGroupResource(resourceId, input);
   }
 
+  async deleteGroup(id: string, input: Parameters<MockDatabaseService['deleteGroup']>[1]) {
+    return this.mock.deleteGroup(id, input);
+  }
+
+  async undeleteGroup(id: string, input: Parameters<MockDatabaseService['undeleteGroup']>[1]) {
+    return this.mock.undeleteGroup(id, input);
+  }
+
+  async listDeletedGroups() {
+    return this.mock.listDeletedGroups();
+  }
+
+  async bulkDeleteGroups(
+    ids: string[],
+    input: Parameters<MockDatabaseService['bulkDeleteGroups']>[1]
+  ) {
+    return this.mock.bulkDeleteGroups(ids, input);
+  }
+
+  async bulkUndeleteGroups(
+    ids: string[],
+    input: Parameters<MockDatabaseService['bulkUndeleteGroups']>[1]
+  ) {
+    return this.mock.bulkUndeleteGroups(ids, input);
+  }
+
   async listEvents() {
     return this.mock.listEvents();
   }
@@ -203,6 +229,39 @@ export class MockDataStoreAdapter implements DataStore {
   ) {
     return this.mock.updateAnnouncement(id, input);
   }
+
+  async deleteAnnouncement(
+    id: string,
+    input: Parameters<MockDatabaseService['deleteAnnouncement']>[1]
+  ) {
+    return this.mock.deleteAnnouncement(id, input);
+  }
+
+  async undeleteAnnouncement(
+    id: string,
+    input: Parameters<MockDatabaseService['undeleteAnnouncement']>[1]
+  ) {
+    return this.mock.undeleteAnnouncement(id, input);
+  }
+
+  async listDeletedAnnouncements() {
+    return this.mock.listDeletedAnnouncements();
+  }
+
+  async bulkDeleteAnnouncements(
+    ids: string[],
+    input: Parameters<MockDatabaseService['bulkDeleteAnnouncements']>[1]
+  ) {
+    return this.mock.bulkDeleteAnnouncements(ids, input);
+  }
+
+  async bulkUndeleteAnnouncements(
+    ids: string[],
+    input: Parameters<MockDatabaseService['bulkUndeleteAnnouncements']>[1]
+  ) {
+    return this.mock.bulkUndeleteAnnouncements(ids, input);
+  }
+
   async listRoles() {
     return this.mock.listRoles();
   }
