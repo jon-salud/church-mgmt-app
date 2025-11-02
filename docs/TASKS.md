@@ -351,6 +351,18 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ## Phase 2: Admin Experience & Polish
 
+- **Prayer Request Smart Routing (Behavior TBD):**
+  - **Feature:** Implement smart routing logic for prayer requests based on confidentiality setting and user role
+  - **Behavior to be defined:**
+    - Non-confidential prayer requests: Should redirect to Prayer Wall instead of Pastoral Care page?
+    - Confidential prayer requests (Member): Show "Prayer Request Submitted" message and stay on form, or redirect to Pastoral Care?
+    - Confidential prayer requests (Admin/Leader): Redirect to Pastoral Care page?
+    - Success messages should be request-type specific (e.g., "Prayer added to Prayer Wall!" vs "Request submitted successfully!")
+  - **Backend:** May need endpoint to determine routing based on request type and confidentiality
+  - **Frontend:** Update request-form.tsx to handle different redirect paths and success messages based on request type
+  - **Testing:** Update E2E tests to verify correct routing behavior once requirements are finalized
+  - **Status:** Deferred - requirements need clarification before implementation
+
 - **E2E Test Stabilization & Authentication Fixes:**
   - ✅ **Completed:** Fixed authentication method changes from click-based to cookie-based login across all E2E tests
   - ✅ **Completed:** Updated LoginPage to set demo_token and session_provider cookies directly with httpOnly: true

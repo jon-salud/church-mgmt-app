@@ -30,7 +30,7 @@ export class PrayerPage extends BasePage {
     this.descriptionInput = this.page.getByLabel('Description');
     this.anonymousCheckbox = this.page.getByLabel('Submit anonymously');
     this.submitButton = this.page.getByRole('button', { name: 'Submit' });
-    this.successMessage = this.page.getByText('Prayer Request Submitted');
+    this.successMessage = this.page.getByText('Request submitted successfully');
 
     // Admin Moderation Locators
     this.pendingRequestList = this.page.locator('.space-y-4 > div');
