@@ -80,12 +80,12 @@ export class GroupsPage extends BasePage {
 
   async archiveGroup(groupName: string) {
     const groupCard = this.page.locator('article').filter({ hasText: groupName });
-    await groupCard.locator('#archive-group-button').click();
+    await groupCard.locator('button[id^="archive-group-"]').click();
   }
 
   async restoreGroup(groupName: string) {
     const groupCard = this.page.locator('article').filter({ hasText: groupName });
-    await groupCard.locator('#restore-group-button').click();
+    await groupCard.locator('button[id^="restore-group-"]').click();
   }
 
   async verifyGroupArchived(groupName: string) {
@@ -129,7 +129,7 @@ export class GroupsPage extends BasePage {
   }
 
   async confirmBulkAction() {
-    this.page.on('dialog', dialog => dialog.accept());
+    await this.page.once('dialog', dialog => dialog.accept());
   }
 
   async verifyBulkArchiveButtonVisible() {

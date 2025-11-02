@@ -140,7 +140,7 @@ export class AnnouncementsPage extends BasePage {
   }
 
   async confirmBulkAction() {
-    this.page.on('dialog', dialog => dialog.accept());
+    await this.page.once('dialog', dialog => dialog.accept());
   }
 
   async verifyBulkArchiveButtonVisible() {

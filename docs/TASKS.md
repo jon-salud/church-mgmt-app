@@ -325,6 +325,12 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ Successfully committed and pushed to feature/soft-delete-phase1 branch
   - ✅ Validated with API regression tests: All 296 tests passing
   - ✅ Reorganized TASKS.md documentation
+  - ✅ **Code Review Fixes:**
+    - ✅ Fixed route ordering: Moved `GET deleted/all` and `POST bulk-*` routes before `:id` parameterized routes in both groups and announcements controllers to prevent NestJS route matching conflicts
+    - ✅ Created shared `BulkOperationDto` with proper validation decorators (`@IsArray()`, `@IsString({ each: true })`) for bulk operations instead of inline type definitions
+    - ✅ Fixed E2E button selectors: Updated GroupsPage.ts to use flexible prefix selectors (`button[id^="archive-group-"]`) matching actual implementation
+    - ✅ Fixed dialog handlers: Changed `page.on` to `page.once` in both GroupsPage.ts and AnnouncementsPage.ts to prevent handler accumulation
+    - ✅ Validated all fixes with API regression tests: All 296 tests still passing
 
 ### 🔄 In Progress
 

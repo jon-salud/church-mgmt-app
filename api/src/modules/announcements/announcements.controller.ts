@@ -23,6 +23,7 @@ import { CreateAnnouncementDto } from './dto/create-announcement.dto';
 import { UpdateAnnouncementDto } from './dto/update-announcement.dto';
 import { arrayOfObjectsResponse, objectResponse } from '../../common/openapi/schemas';
 import { SuccessResponseDto } from '../../common/dto/success-response.dto';
+import { BulkOperationDto } from '../../common/dto/bulk-operation.dto';
 
 @UseGuards(AuthGuard)
 @ApiTags('Announcements')
@@ -36,6 +37,30 @@ export class AnnouncementsController {
   @ApiOkResponse(arrayOfObjectsResponse)
   list() {
     return this.announcementsService.list();
+  }
+
+  @Get('deleted/all')
+  @ApiOperation({ summary: 'List archived announcements (admin only)' })
+  @ApiOkResponse(arrayOfObjectsResponse)
+  listDeleted(@Req() req: any) {
+    this.ensureAdmin(req);
+    return this.announcementsService.listDeleted();
+  }
+
+  @Post('bulk-delete')
+  @ApiOperation({ summary: 'Archive multiple announcements (bulk operation)' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  bulkDelete(@Body() body: BulkOperationDto, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.announcementsService.bulkDelete(body.ids, req.user.id);
+  }
+
+  @Post('bulk-undelete')
+  @ApiOperation({ summary: 'Restore multiple archived announcements (bulk operation)' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  bulkUndelete(@Body() body: BulkOperationDto, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.announcementsService.bulkUndelete(body.ids, req.user.id);
   }
 
   @Post(':id/read')
@@ -75,30 +100,6 @@ export class AnnouncementsController {
   undelete(@Param('id') id: string, @Req() req: any) {
     this.ensureAdmin(req);
     return this.announcementsService.undelete(id, req.user.id);
-  }
-
-  @Get('deleted/all')
-  @ApiOperation({ summary: 'List archived announcements (admin only)' })
-  @ApiOkResponse(arrayOfObjectsResponse)
-  listDeleted(@Req() req: any) {
-    this.ensureAdmin(req);
-    return this.announcementsService.listDeleted();
-  }
-
-  @Post('bulk-delete')
-  @ApiOperation({ summary: 'Archive multiple announcements (bulk operation)' })
-  @ApiOkResponse({ type: SuccessResponseDto })
-  bulkDelete(@Body() body: { ids: string[] }, @Req() req: any) {
-    this.ensureAdmin(req);
-    return this.announcementsService.bulkDelete(body.ids, req.user.id);
-  }
-
-  @Post('bulk-undelete')
-  @ApiOperation({ summary: 'Restore multiple archived announcements (bulk operation)' })
-  @ApiOkResponse({ type: SuccessResponseDto })
-  bulkUndelete(@Body() body: { ids: string[] }, @Req() req: any) {
-    this.ensureAdmin(req);
-    return this.announcementsService.bulkUndelete(body.ids, req.user.id);
   }
 
   private ensureAdmin(req: any) {
