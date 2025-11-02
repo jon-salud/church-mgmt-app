@@ -451,6 +451,38 @@ export class PrismaDataStore implements DataStore {
     throw new Error('deleteGroupResource is not yet implemented for Prisma data store');
   }
 
+  async deleteGroup(
+    _id: string,
+    _input: Parameters<DataStore['deleteGroup']>[1]
+  ): Promise<StoreReturn<'deleteGroup'>> {
+    throw new Error('deleteGroup is not yet implemented for Prisma data store');
+  }
+
+  async undeleteGroup(
+    _id: string,
+    _input: Parameters<DataStore['undeleteGroup']>[1]
+  ): Promise<StoreReturn<'undeleteGroup'>> {
+    throw new Error('undeleteGroup is not yet implemented for Prisma data store');
+  }
+
+  async listDeletedGroups(): Promise<StoreReturn<'listDeletedGroups'>> {
+    throw new Error('listDeletedGroups is not yet implemented for Prisma data store');
+  }
+
+  async bulkDeleteGroups(
+    _ids: string[],
+    _input: Parameters<DataStore['bulkDeleteGroups']>[1]
+  ): Promise<StoreReturn<'bulkDeleteGroups'>> {
+    throw new Error('bulkDeleteGroups is not yet implemented for Prisma data store');
+  }
+
+  async bulkUndeleteGroups(
+    _ids: string[],
+    _input: Parameters<DataStore['bulkUndeleteGroups']>[1]
+  ): Promise<StoreReturn<'bulkUndeleteGroups'>> {
+    throw new Error('bulkUndeleteGroups is not yet implemented for Prisma data store');
+  }
+
   async listEvents() {
     const churchId = await this.getPrimaryChurchId();
     const events = await this.client.event.findMany({
@@ -618,6 +650,38 @@ export class PrismaDataStore implements DataStore {
     _input: Parameters<DataStore['updateAnnouncement']>[1]
   ): Promise<any> {
     throw new Error('Not implemented: updateAnnouncement');
+  }
+
+  async deleteAnnouncement(
+    _id: string,
+    _input: Parameters<DataStore['deleteAnnouncement']>[1]
+  ): Promise<StoreReturn<'deleteAnnouncement'>> {
+    throw new Error('deleteAnnouncement is not yet implemented for Prisma data store');
+  }
+
+  async undeleteAnnouncement(
+    _id: string,
+    _input: Parameters<DataStore['undeleteAnnouncement']>[1]
+  ): Promise<StoreReturn<'undeleteAnnouncement'>> {
+    throw new Error('undeleteAnnouncement is not yet implemented for Prisma data store');
+  }
+
+  async listDeletedAnnouncements(): Promise<StoreReturn<'listDeletedAnnouncements'>> {
+    throw new Error('listDeletedAnnouncements is not yet implemented for Prisma data store');
+  }
+
+  async bulkDeleteAnnouncements(
+    _ids: string[],
+    _input: Parameters<DataStore['bulkDeleteAnnouncements']>[1]
+  ): Promise<StoreReturn<'bulkDeleteAnnouncements'>> {
+    throw new Error('bulkDeleteAnnouncements is not yet implemented for Prisma data store');
+  }
+
+  async bulkUndeleteAnnouncements(
+    _ids: string[],
+    _input: Parameters<DataStore['bulkUndeleteAnnouncements']>[1]
+  ): Promise<StoreReturn<'bulkUndeleteAnnouncements'>> {
+    throw new Error('bulkUndeleteAnnouncements is not yet implemented for Prisma data store');
   }
 
   async listFunds() {

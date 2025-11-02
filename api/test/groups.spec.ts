@@ -159,4 +159,152 @@ describe('Groups (e2e-light)', () => {
     const body = res.json();
     expect(body).toMatchObject({ success: true });
   });
+
+  // Soft Delete Tests
+  describe('Soft Delete Operations', () => {
+    let testGroupId: string;
+    let secondGroupId: string;
+
+    beforeAll(async () => {
+      // Use existing seed groups for soft delete tests
+      const listRes = await app.inject({
+        method: 'GET',
+        url: '/api/v1/groups',
+        headers: { authorization: 'Bearer demo-admin' },
+      });
+      const groups = listRes.json();
+      testGroupId = groups[0]?.id;
+      secondGroupId = groups[1]?.id;
+
+      if (!testGroupId || !secondGroupId) {
+        throw new Error('Not enough seed groups available for testing');
+      }
+    });
+
+    afterAll(async () => {
+      // Restore groups if they were left in deleted state
+      await app.inject({
+        method: 'POST',
+        url: `/api/v1/groups/${testGroupId}/undelete`,
+        headers: { authorization: 'Bearer demo-admin' },
+      });
+      await app.inject({
+        method: 'POST',
+        url: `/api/v1/groups/${secondGroupId}/undelete`,
+        headers: { authorization: 'Bearer demo-admin' },
+      });
+    });
+
+    it('DELETE /groups/:id should soft delete (archive) a group', async () => {
+      const res = await app.inject({
+        method: 'DELETE',
+        url: `/api/v1/groups/${testGroupId}`,
+        headers: { authorization: 'Bearer demo-admin' },
+      });
+      expect(res.statusCode).toBe(200);
+      const body = res.json();
+      expect(body).toMatchObject({ success: true });
+
+      // Verify group is not in regular list
+      const listRes = await app.inject({
+        method: 'GET',
+        url: '/api/v1/groups',
+        headers: { authorization: 'Bearer demo-admin' },
+      });
+      const groups = listRes.json();
+      expect(groups.find((g: any) => g.id === testGroupId)).toBeUndefined();
+    });
+
+    it('GET /groups/deleted/all should list archived groups (admin only)', async () => {
+      const res = await app.inject({
+        method: 'GET',
+        url: '/api/v1/groups/deleted/all',
+        headers: { authorization: 'Bearer demo-admin' },
+      });
+      expect(res.statusCode).toBe(200);
+      const body = res.json();
+      expect(Array.isArray(body)).toBe(true);
+      expect(body.find((g: any) => g.id === testGroupId)).toBeDefined();
+      expect(body.find((g: any) => g.id === testGroupId).deletedAt).toBeDefined();
+    });
+
+    it('POST /groups/:id/undelete should restore archived group', async () => {
+      const res = await app.inject({
+        method: 'POST',
+        url: `/api/v1/groups/${testGroupId}/undelete`,
+        headers: { authorization: 'Bearer demo-admin' },
+      });
+      expect([200, 201]).toContain(res.statusCode);
+      const body = res.json();
+      expect(body).toMatchObject({ success: true });
+
+      // Verify group is back in regular list
+      const listRes = await app.inject({
+        method: 'GET',
+        url: '/api/v1/groups',
+        headers: { authorization: 'Bearer demo-admin' },
+      });
+      const groups = listRes.json();
+      expect(groups.find((g: any) => g.id === testGroupId)).toBeDefined();
+      expect(groups.find((g: any) => g.id === testGroupId).deletedAt).toBeUndefined();
+    });
+
+    it('POST /groups/bulk-delete should archive multiple groups', async () => {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/api/v1/groups/bulk-delete',
+        headers: { authorization: 'Bearer demo-admin' },
+        payload: {
+          ids: [testGroupId, secondGroupId],
+        },
+      });
+      expect([200, 201]).toContain(res.statusCode);
+      const body = res.json();
+      expect(body).toMatchObject({ success: true, count: 2 });
+
+      // Verify both groups are archived
+      const listRes = await app.inject({
+        method: 'GET',
+        url: '/api/v1/groups',
+        headers: { authorization: 'Bearer demo-admin' },
+      });
+      const groups = listRes.json();
+      expect(groups.find((g: any) => g.id === testGroupId)).toBeUndefined();
+      expect(groups.find((g: any) => g.id === secondGroupId)).toBeUndefined();
+    });
+
+    it('POST /groups/bulk-undelete should restore multiple archived groups', async () => {
+      const res = await app.inject({
+        method: 'POST',
+        url: '/api/v1/groups/bulk-undelete',
+        headers: { authorization: 'Bearer demo-admin' },
+        payload: {
+          ids: [testGroupId, secondGroupId],
+        },
+      });
+      expect([200, 201]).toContain(res.statusCode);
+      const body = res.json();
+      expect(body).toMatchObject({ success: true, count: 2 });
+
+      // Verify both groups are restored
+      const listRes = await app.inject({
+        method: 'GET',
+        url: '/api/v1/groups',
+        headers: { authorization: 'Bearer demo-admin' },
+      });
+      const groups = listRes.json();
+      expect(groups.find((g: any) => g.id === testGroupId)).toBeDefined();
+      expect(groups.find((g: any) => g.id === secondGroupId)).toBeDefined();
+    });
+
+    it('DELETE endpoints should require admin role', async () => {
+      // Test with member token (non-admin)
+      const res = await app.inject({
+        method: 'DELETE',
+        url: `/api/v1/groups/${testGroupId}`,
+        headers: { authorization: 'Bearer demo-member' },
+      });
+      expect([401, 403]).toContain(res.statusCode);
+    });
+  });
 });
