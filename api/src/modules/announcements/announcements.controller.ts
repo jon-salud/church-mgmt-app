@@ -70,6 +70,14 @@ export class AnnouncementsController {
     return this.announcementsService.markRead(id, req.user?.id);
   }
 
+  @Post(':id/undelete')
+  @ApiOperation({ summary: 'Restore archived announcement' })
+  @ApiOkResponse({ type: SuccessResponseDto })
+  undelete(@Param('id') id: string, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.announcementsService.undelete(id, req.user.id);
+  }
+
   @Post()
   @ApiOperation({ summary: 'Create announcement' })
   @ApiCreatedResponse(objectResponse)
@@ -92,14 +100,6 @@ export class AnnouncementsController {
   delete(@Param('id') id: string, @Req() req: any) {
     this.ensureAdmin(req);
     return this.announcementsService.remove(id, req.user.id);
-  }
-
-  @Post(':id/undelete')
-  @ApiOperation({ summary: 'Restore archived announcement' })
-  @ApiOkResponse({ type: SuccessResponseDto })
-  undelete(@Param('id') id: string, @Req() req: any) {
-    this.ensureAdmin(req);
-    return this.announcementsService.undelete(id, req.user.id);
   }
 
   private ensureAdmin(req: any) {

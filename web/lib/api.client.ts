@@ -4,7 +4,10 @@ const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localho
 
 async function apiFetch<T>(path: string, init?: RequestInit) {
   const headers = new Headers(init?.headers || {});
-  headers.set('Content-Type', 'application/json');
+  // Only set Content-Type if there's a body to send
+  if (init?.body) {
+    headers.set('Content-Type', 'application/json');
+  }
 
   // Include demo token in Authorization header for testing environments
   // In production, authentication is handled via cookies
