@@ -99,6 +99,16 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ Updated workflow instructions to reference "all files in docs/source-of-truth/" for simplicity
   - ✅ Updated all cross-references in README.md, NEXT_TASK.md, docs/PRD.md, and docs/TASKS.md to point to new locations
 - ✅ **Code Review Verification:**
+- ✅ **Flowbite UI Migration (Complete):**
+  - ✅ **Phase 0:** Pre-Migration Assessment - Audited Radix UI usage across codebase
+  - ✅ **Phase 1:** Tailwind Configuration - Configured Flowbite plugin and content paths
+  - ✅ **Phase 2:** Created 13 Flowbite wrapper components (Alert, Button, Checkbox, Dialog, Dropdown, Input, Label, Modal, Progress, Select, Spinner, Table, Textarea)
+  - ✅ **Phase 3:** Pilot migration with Settings module (2 files)
+  - ✅ **Phase 4:** Migrated 16 major pages (Requests, Prayer, Pastoral Care, Onboarding modules)
+  - ✅ **Phase 5:** E2E testing and bug fixes (Select form integration, Modal completion, data-testid support)
+  - ✅ **Phase 6:** Removed all 5 Radix UI dependencies (41 total packages removed), deleted old component files (573 lines)
+  - ✅ **Phase 7:** Complete documentation (FLOWBITE_MIGRATION.md)
+  - **Results:** 100% feature parity, 41 packages removed, bundle size improvements (-9 kB Onboarding, -2.5 kB Settings), all 55 E2E tests passing
   - ✅ Verified that getDefaultRoleId method exists and functions correctly in mock-database.service.ts
   - ✅ Confirmed all API tests pass (67/67) validating the method's functionality
   - ✅ Resolved reviewer concern about non-existent method - the method is properly implemented and working
@@ -340,6 +350,29 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 ## Phase 1: Complete Core Initial Release Features
 
 ## Phase 2: Admin Experience & Polish
+
+- **Public Prayer Request Form (`/prayer/new` - Behavior TBD):**
+  - **Context:** The `/prayer/new` page exists as a standalone public-facing prayer request form, intended to be accessible without authentication for public prayer submissions
+  - **Current State:** Page exists but is not linked from any navigation - requires direct URL access
+  - **Behavior to be defined:**
+    - Should this page be public (no authentication required)?
+    - What should happen after submission (redirect to prayer wall, show confirmation, etc.)?
+    - Should there be a moderation workflow for public submissions before appearing on prayer wall?
+    - How should this differ from the authenticated `/requests` form with "Prayer Request" type?
+  - **Testing:** Tests in `prayer-requests.spec.ts` are marked with FIXME pending behavior decisions
+  - **Status:** Deferred - product requirements need clarification before implementation
+
+- **Prayer Request Smart Routing (Behavior TBD):**
+  - **Feature:** Implement smart routing logic for prayer requests based on confidentiality setting and user role
+  - **Behavior to be defined:**
+    - Non-confidential prayer requests: Should redirect to Prayer Wall instead of Pastoral Care page?
+    - Confidential prayer requests (Member): Show "Prayer Request Submitted" message and stay on form, or redirect to Pastoral Care?
+    - Confidential prayer requests (Admin/Leader): Redirect to Pastoral Care page?
+    - Success messages should be request-type specific (e.g., "Prayer added to Prayer Wall!" vs "Request submitted successfully!")
+  - **Backend:** May need endpoint to determine routing based on request type and confidentiality
+  - **Frontend:** Update request-form.tsx to handle different redirect paths and success messages based on request type
+  - **Testing:** Update E2E tests to verify correct routing behavior once requirements are finalized
+  - **Status:** Deferred - requirements need clarification before implementation
 
 - **E2E Test Stabilization & Authentication Fixes:**
   - ✅ **Completed:** Fixed authentication method changes from click-based to cookie-based login across all E2E tests

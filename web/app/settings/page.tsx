@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 import { api } from '@/lib/api.server';
 import { SettingsForm } from './settings-form';
-import { PageHeader } from '@/components/ui/page-header';
+import { PageHeader } from '@/components/ui-flowbite/page-header';
 
 export default async function SettingsPage() {
   const me = await api.currentUser();

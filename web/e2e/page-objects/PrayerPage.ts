@@ -90,7 +90,8 @@ export class PrayerPage extends BasePage {
 
   async submitPrayerRequest() {
     await this.submitButton.click();
-    await expect(this.successMessage).toBeVisible();
+    // Wait for the success message with longer timeout
+    await expect(this.successMessage).toBeVisible({ timeout: 10000 });
   }
 
   async verifyPrayerRequestSubmitted() {

@@ -22,11 +22,15 @@ export class RequestsPage extends BasePage {
   }
 
   async selectRequestType(type: 'Prayer' | 'Benevolence' | 'Improvement' | 'Suggestion') {
-    // Use the data-testid for stable test selection instead of targeting native select
+    // Click the trigger to open the dropdown
     await this.page.locator('[data-testid="request-type-select"]').click();
-    await this.page.getByRole('option', { name: type }).click();
-  }
 
+    // Wait for the dropdown to be visible by checking for the listbox role
+    await this.page.locator('[role="listbox"]').waitFor({ state: 'visible' });
+
+    // The option text is just the type name (e.g., "Prayer", not "Prayer Request")
+    await this.page.locator('[role="option"]').filter({ hasText: type }).click();
+  }
   async fillRequestForm(title: string, body: string, isConfidential = false) {
     await this.titleInput.fill(title);
     await this.bodyTextarea.fill(body);
@@ -49,14 +53,24 @@ export class RequestsPage extends BasePage {
   }
 
   async getAvailableRequestTypes(): Promise<string[]> {
-    await this.requestTypeSelect.click();
-    const options = this.page.getByRole('option');
+    // Click the trigger to open the dropdown
+    await this.page.locator('[data-testid="request-type-select"]').click();
+
+    // Wait for the dropdown to be visible
+    await this.page.locator('[role="listbox"]').waitFor({ state: 'visible' });
+
+    // Get all options - text is just the type name (e.g., "Prayer", not "Prayer Request")
+    const options = this.page.locator('[role="option"]');
     const count = await options.count();
     const types: string[] = [];
     for (let i = 0; i < count; i++) {
       const text = await options.nth(i).textContent();
-      if (text) types.push(text.replace(' Request', ''));
+      if (text) types.push(text);
     }
+
+    // Close the dropdown by clicking the trigger again
+    await this.page.locator('[data-testid="request-type-select"]').click();
+
     return types;
   }
 
