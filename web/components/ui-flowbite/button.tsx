@@ -16,10 +16,13 @@ export function Button({ className = '', variant = 'default', ...props }: Props)
     outline: 'light',
   };
 
+  // Add proper padding and styling
+  const baseClasses = 'px-4 py-2';
+
   return (
     <FlowbiteButton
       color={colorMap[variant]}
-      className={className}
+      className={`${baseClasses} ${className}`}
       {...(props as FlowbiteButtonProps)}
     />
   );
