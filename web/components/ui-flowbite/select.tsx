@@ -34,15 +34,11 @@ const Select: React.FC<SelectProps> = ({ value, defaultValue, onValueChange, nam
   );
   const [open, setOpen] = React.useState(false);
   const [selectedLabel, setSelectedLabel] = React.useState('');
-  const [triggerId] = React.useState(
-    () => `select-trigger-${Math.random().toString(36).substr(2, 9)}`
-  );
+  const triggerId = React.useId();
 
   const handleValueChange = (newValue: string) => {
-    console.log('[Select] handleValueChange called with:', newValue);
     setInternalValue(newValue);
     setOpen(false); // Close dropdown after selection
-    console.log('[Select] calling onValueChange callback');
     onValueChange?.(newValue);
   };
 

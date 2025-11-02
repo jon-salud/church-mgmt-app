@@ -17,6 +17,10 @@ import { clientApi } from '@/lib/api.client';
 import { RequestType } from '@/lib/types';
 import { Loader2 } from 'lucide-react';
 
+// Declare browser globals for ESLint
+declare const alert: (message: string) => void;
+declare const setTimeout: (callback: () => void, delay: number) => number;
+
 interface RequestFormProps {
   initialRequestTypes: RequestType[];
   churchId: string;
@@ -27,8 +31,6 @@ export function RequestForm({ initialRequestTypes, churchId: _churchId }: Reques
   const [requestTypes] = useState<RequestType[]>(initialRequestTypes);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
-
-  console.log('[RequestForm] Current requestTypeId:', requestTypeId);
 
   const getFormDescription = () => {
     const selectedType = requestTypes.find(rt => rt.id === requestTypeId);
@@ -55,7 +57,6 @@ export function RequestForm({ initialRequestTypes, churchId: _churchId }: Reques
       setSubmitSuccess(true);
 
       // Wait a bit for the backend to process, then redirect
-      // eslint-disable-next-line no-undef
       setTimeout(() => {
         // Use window.location to force a full page reload with fresh data
         window.location.href = '/pastoral-care';
@@ -63,7 +64,6 @@ export function RequestForm({ initialRequestTypes, churchId: _churchId }: Reques
     } catch (error) {
       console.error('Failed to submit request:', error);
       setIsSubmitting(false);
-      // eslint-disable-next-line no-undef
       alert('Failed to submit request. Please try again.');
     }
   };
