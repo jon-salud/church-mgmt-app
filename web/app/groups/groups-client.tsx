@@ -209,7 +209,7 @@ export function GroupsClient({
 
       <div className="grid gap-4 md:grid-cols-2">
         {displayGroups.map(group => (
-          <div
+          <article
             key={group.id}
             className={`rounded-xl border border-border bg-card/60 p-4 transition ${
               showArchived ? 'opacity-60' : ''
@@ -277,7 +277,7 @@ export function GroupsClient({
                 )}
               </div>
             </div>
-          </div>
+          </article>
         ))}
       </div>
 

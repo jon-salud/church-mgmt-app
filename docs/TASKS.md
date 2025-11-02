@@ -279,39 +279,18 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ **Final Status:** 54 tests passing, 1 skipped (allows skipping onboarding - serial execution conflict), 0 failing
   - ✅ **Improvement:** Increased from 33 baseline passing tests to 54 passing tests (21 tests fixed)
   - ✅ **Branch:** feature/sprint8b-fixme-tests - 3 commits pushed and ready for review
-
-### 🔄 In Progress
-
-- **None** - All planned sprints completed!
-
-### ✅ E2E Test Run & Fix Results
-
-- ✅ **Fixed API Guard Injection Issue:**
-  - ✅ Fixed "Invalid guard passed to @UseGuards()" error in TenantProvisioningController
-  - ✅ Added `AuthModule` import to `TenantModule` for proper DI of AuthGuard
-  - ✅ API now starts successfully with `pnpm -C api start`
-
-- ✅ **Cross-Platform E2E Test Script:**
-  - ✅ Added `scripts/run-e2e.ps1` (PowerShell) for Windows-native E2E test runs, mirroring the existing `scripts/run-e2e.sh` (Bash/WSL/Linux/macOS).
-  - ✅ Added port cleanup functionality to both scripts to prevent port conflicts.
-  - ✅ Updated documentation in `SETUP.md` to reflect both options and usage.
-
-- ✅ **E2E Test Run & Results:**
-  - ✅ Ran full E2E suite after enabling all previously skipped tests
-  - ✅ **23 tests passed** (smoke tests, public pages, basic navigation)
-  - ❌ **29 tests failed** (authentication and page rendering issues)
-  - ⏭️ **3 tests did not run** (skipped as expected)
-
-- **E2E Test Failure Analysis (Sprint 8 Backlog):**
-  - **14 failures:** Direct page navigation returns `net::ERR_ABORTED` (no auth context)
-  - **11 failures:** Page content not rendering after navigation (auth not propagated to React)
-  - **2 failures:** UI elements timing out (events page button never appears)
-  - **2 failures:** Onboarding modal not appearing after login
-  - **See TASKS.md backlog for detailed next steps**
-
-### ✅ Completed Recent Work
-
-- ✅ **Sprint 6B.6: OpenTelemetry Integration** - Integrated OpenTelemetry SDK with Prometheus and Jaeger exporters
+- ✅ **E2E Test Infrastructure Improvements:**
+  - ✅ **Fixed API Guard Injection Issue:** Fixed "Invalid guard passed to @UseGuards()" error in TenantProvisioningController, added `AuthModule` import to `TenantModule` for proper DI of AuthGuard
+  - ✅ **Cross-Platform E2E Test Script:** Added `scripts/run-e2e.ps1` (PowerShell) for Windows-native E2E test runs, mirroring the existing `scripts/run-e2e.sh` (Bash/WSL/Linux/macOS), added port cleanup functionality to both scripts to prevent port conflicts
+  - ✅ **E2E Test Run & Results:** Ran full E2E suite after enabling all previously skipped tests - 23 tests passed (smoke tests, public pages, basic navigation), 29 tests failed (authentication and page rendering issues), 3 tests skipped as expected
+  - ✅ **E2E Test Failure Analysis:** Documented 14 direct page navigation failures (net::ERR_ABORTED), 11 page content rendering failures (auth not propagated to React), 2 UI element timeout failures, 2 onboarding modal failures for Sprint 8 backlog
+- ✅ **Sprint 6B.6: OpenTelemetry Integration:**
+  - ✅ Integrated OpenTelemetry SDK with Prometheus and Jaeger exporters, NodeSDK initialization, resource detection, Prometheus exporter (port 9464), Jaeger exporter, and graceful shutdown
+  - ✅ Created OpenTelemetryService and OpenTelemetryModule for Meter/Tracer dependency injection
+  - ✅ Migrated ObservabilityService from custom metrics to OpenTelemetry instruments (histograms, counters) while maintaining backward compatibility
+  - ✅ Updated AuditLogCommandService and AuditLogQueryService to use OpenTelemetry spans
+  - ✅ Fixed all linting errors (0 errors, 361 acceptable warnings)
+  - ✅ [PR #138](https://github.com/jon-salud/church-mgmt-app/pull/138) - Complete Sprint 6B implementation ready for review
 - ✅ **API Test Migration to Vitest:**
   - ✅ Migrated from Jest + ts-jest to Vitest for faster, more reliable test execution
   - ✅ Fixed NestJS DI class-identity mismatch caused by Vitest's TypeScript transformation
@@ -320,30 +299,33 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ Added comprehensive service caching and getter-based DI resolution
   - ✅ All 38 test files (284 tests) passing with 100% success rate
   - ✅ Tests now run in ~13 seconds with full coverage reporting
-
-**Key Fix:** The NestJS DI class-identity mismatch under Vitest was solved by:
-1. Pre-resolving all services into a global cache after app initialization
-2. Patching AuthGuard CLASS prototype (not instance) after app.init() for controller decorators
-3. Deleting own properties from instances to allow prototype getters to work
-4. This ensures both global APP_GUARD and controller-level @UseGuards(AuthGuard) work correctly
-
-- **Sprint 7: Production Migration & System Hardening**
-  - ✅ **PostgreSQL Multi-tenant Architecture Design:**
-    - ✅ Created system metadata database schema (`system-schema.prisma`) with Tenant, TenantSettings, TenantUsage, SystemUser, and SystemAuditLog models
-    - ✅ Created tenant database schema (`tenant-schema.prisma`) by removing Church model and preparing for single-tenant context
-    - ✅ Generated Prisma clients for both system and tenant databases
-    - ✅ Implemented multi-tenant Prisma service with connection pooling and tenant-aware client management
-  - ✅ **Self-Service Tenant Provisioning:**
-    - ✅ Created TenantProvisioningService with automated database creation, resource limits, and security controls
-    - ✅ Implemented TenantProvisioningController with REST API endpoints for tenant lifecycle management
-    - ✅ Created TenantModule to wire together provisioning components
-    - ✅ Integrated tenant module into main application
-  - ✅ **Prisma Multi-tenant Datastore Implementation:** Completed PrismaMultiTenantDataStore service with full DataStore interface compliance, tenant-aware database operations, and comprehensive CRUD operations for all entities. Fixed lint issues by prefixing unused parameters with underscores, reducing total project errors from 18 to 13.
-- ✅ **Sprint 7: API Test Pipeline Fixes**
-  - ✅ Fixed port conflicts in test setup by using dynamic port allocation with get-port
-  - ✅ Fixed AuthGuard unit test failures by adding early token validation and proper mock setup
-  - ✅ Ensured Prisma client generation in CI workflows
+- ✅ **Sprint 7: Production Migration & System Hardening**
+  - ✅ **PostgreSQL Multi-tenant Architecture Design:** Created system metadata database schema (`system-schema.prisma`) with Tenant, TenantSettings, TenantUsage, SystemUser, and SystemAuditLog models; created tenant database schema (`tenant-schema.prisma`); generated Prisma clients for both system and tenant databases; implemented multi-tenant Prisma service with connection pooling and tenant-aware client management
+  - ✅ **Self-Service Tenant Provisioning:** Created TenantProvisioningService with automated database creation, resource limits, and security controls; implemented TenantProvisioningController with REST API endpoints for tenant lifecycle management; created TenantModule to wire together provisioning components; integrated tenant module into main application
+  - ✅ **Prisma Multi-tenant Datastore Implementation:** Completed PrismaMultiTenantDataStore service with full DataStore interface compliance, tenant-aware database operations, and comprehensive CRUD operations for all entities
+  - ✅ **API Test Pipeline Fixes:** Fixed port conflicts in test setup by using dynamic port allocation with get-port; fixed AuthGuard unit test failures by adding early token validation and proper mock setup; ensured Prisma client generation in CI workflows
   - ✅ **Pipeline Validation:** All 284 tests pass (38 test files) with full coverage reporting - ready for CI/CD deployment
+- ✅ **Soft Delete Implementation - Phase 1 (Backend API):**
+  - ✅ Implemented complete backend soft delete for Users and Events modules
+  - ✅ Added 10 database methods per module (delete, undelete, listDeleted, bulkDelete, bulkUndelete)
+  - ✅ Created 10 wrapper methods in adapters with proper churchId isolation
+  - ✅ Implemented 10 controller endpoints with OpenAPI documentation
+  - ✅ Added 10 service methods with audit logging
+  - ✅ Created comprehensive unit tests covering all soft delete operations
+  - ✅ All 296 API tests passing with no regressions
+  - ✅ Successfully committed and pushed to feature/soft-delete-phase1 branch
+
+### 🔄 In Progress
+
+- **Soft Delete Implementation - Phase 2 (Frontend UI):**
+  - ✅ Added 20 API client methods (10 groups + 10 announcements) for soft delete operations
+  - ✅ Added 2 server API methods (listDeletedGroups, listDeletedAnnouncements) for SSR data fetching
+  - ✅ Created complete GroupsClient component with admin-only soft delete features (show archived toggle, bulk operations)
+  - ✅ Enhanced AnnouncementsClient with integrated soft delete functionality
+  - ✅ Added E2E test infrastructure (page objects with 12 new methods + 7 comprehensive test cases)
+  - ✅ Fixed TypeScript compilation issues (Button component compatibility, linting errors)
+  - ✅ Successfully committed and pushed to feature/soft-delete-phase1 branch
+  - ⏳ **Pending:** Validation testing (E2E tests, API regression tests, manual browser testing)
 
 ### 📝 Backlog / Upcoming
 
@@ -387,13 +369,20 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - **Remaining:** 1 test skipped (allows skipping onboarding) due to serial execution conflict - not blocking
 
 - **Complete CRUD Operations for All Entities:**
-  - **Backend:** Implement full Create, Read, Update, Delete operations for missing database entities (groups, announcements, funds, contributions, households, children).
-  - **Soft Delete Implementation:** Extend soft delete functionality to remaining entities to maintain data integrity and audit trails.
-    - **Current Status:** Schema includes `deletedAt` fields for all tables. Users and events have full soft delete (create/update/delete/listDeleted/undelete). Some join tables (group_members, document_permissions, announcement_audiences) have soft delete.
-    - **Missing:** Groups, announcements, funds, contributions, households, and children lack delete operations entirely.
-  - **Frontend:** Implement soft delete UI for all entities (show archived items, recovery buttons, "Archived" status badges).
-    - **Current Status:** Events have basic soft delete UI (show archived checkbox, recover button, "Archived" status badge).
-    - **Missing:** All other entities lack soft delete UI and admin controls for viewing/managing archived items.
+  - **Soft Delete Implementation - Phase 3 (Giving Module Backend):**
+    - **Backend:** Implement soft delete for Funds and Contributions entities following same pattern as Phase 1
+    - **Target:** 10 database methods, 10 adapter methods, 10 controller endpoints, 10 service methods per entity
+    - **Testing:** Comprehensive unit tests covering all soft delete operations
+  - **Soft Delete Implementation - Phase 4 (Giving Module Frontend):**
+    - **Frontend:** Implement soft delete UI for Funds and Contributions following Phase 2 patterns
+    - **Features:** Admin-only controls, show archived toggle, bulk operations, archived badges
+    - **Testing:** E2E tests for soft delete workflows
+  - **Soft Delete Implementation - Phase 5 (Households & Checkin Backend):**
+    - **Backend:** Implement soft delete for Households and Children entities
+  - **Soft Delete Implementation - Phase 6 (Households & Checkin Frontend):**
+    - **Frontend:** Implement soft delete UI for Households and Children
+  - **Soft Delete Implementation - Phase 7 (Final Validation):**
+    - **Testing:** Complete end-to-end validation, documentation updates, final regression testing
 
 - **Admin Experience Enhancements:**
   - **Backend:** Implement API endpoints for CRUD operations on custom member profile fields.
