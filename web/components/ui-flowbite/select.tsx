@@ -139,7 +139,7 @@ const SelectContent: React.FC<SelectContentProps> = ({
       aria-labelledby={!ariaLabel ? triggerId : undefined}
       aria-label={ariaLabel}
       className={cn(
-        'absolute z-50 mt-1 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md',
+        'absolute z-50 mt-1 w-full min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md',
         className
       )}
     >

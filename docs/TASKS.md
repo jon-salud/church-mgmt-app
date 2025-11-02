@@ -351,6 +351,17 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ## Phase 2: Admin Experience & Polish
 
+- **Public Prayer Request Form (`/prayer/new` - Behavior TBD):**
+  - **Context:** The `/prayer/new` page exists as a standalone public-facing prayer request form, intended to be accessible without authentication for public prayer submissions
+  - **Current State:** Page exists but is not linked from any navigation - requires direct URL access
+  - **Behavior to be defined:**
+    - Should this page be public (no authentication required)?
+    - What should happen after submission (redirect to prayer wall, show confirmation, etc.)?
+    - Should there be a moderation workflow for public submissions before appearing on prayer wall?
+    - How should this differ from the authenticated `/requests` form with "Prayer Request" type?
+  - **Testing:** Tests in `prayer-requests.spec.ts` are marked with FIXME pending behavior decisions
+  - **Status:** Deferred - product requirements need clarification before implementation
+
 - **Prayer Request Smart Routing (Behavior TBD):**
   - **Feature:** Implement smart routing logic for prayer requests based on confidentiality setting and user role
   - **Behavior to be defined:**
