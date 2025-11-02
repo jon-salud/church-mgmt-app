@@ -3,6 +3,10 @@ import { PastoralCareClientPage } from './client-page';
 import { redirect } from 'next/navigation';
 import { PageHeader } from '@/components/ui-flowbite/page-header';
 
+// Disable caching for this page to always show fresh data
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function PastoralCareDashboard() {
   const me = await api.currentUser();
   if (!me?.user) {

@@ -11,6 +11,10 @@ interface SelectContextValue {
   value?: string;
   onValueChange?: (value: string) => void;
   triggerId?: string;
+  open?: boolean;
+  setOpen?: (open: boolean) => void;
+  selectedLabel?: string;
+  setSelectedLabel?: (label: string) => void;
 }
 
 const SelectContext = React.createContext<SelectContextValue>({});
@@ -28,6 +32,8 @@ const Select: React.FC<SelectProps> = ({ value, defaultValue, onValueChange, nam
   const [internalValue, setInternalValue] = React.useState(
     value !== undefined ? value : defaultValue || ''
   );
+  const [open, setOpen] = React.useState(false);
+  const [selectedLabel, setSelectedLabel] = React.useState('');
   const [triggerId] = React.useState(
     () => `select-trigger-${Math.random().toString(36).substr(2, 9)}`
   );
@@ -35,6 +41,7 @@ const Select: React.FC<SelectProps> = ({ value, defaultValue, onValueChange, nam
   const handleValueChange = (newValue: string) => {
     console.log('[Select] handleValueChange called with:', newValue);
     setInternalValue(newValue);
+    setOpen(false); // Close dropdown after selection
     console.log('[Select] calling onValueChange callback');
     onValueChange?.(newValue);
   };
@@ -48,7 +55,15 @@ const Select: React.FC<SelectProps> = ({ value, defaultValue, onValueChange, nam
 
   return (
     <SelectContext.Provider
-      value={{ value: internalValue, onValueChange: handleValueChange, triggerId }}
+      value={{
+        value: internalValue,
+        onValueChange: handleValueChange,
+        triggerId,
+        open,
+        setOpen,
+        selectedLabel,
+        setSelectedLabel,
+      }}
     >
       {name && <input type="hidden" name={name} value={internalValue} />}
       {children}
@@ -63,8 +78,8 @@ const SelectGroup: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 // SelectValue component (used inside trigger to show selected value)
 const SelectValue: React.FC<{ placeholder?: string }> = ({ placeholder }) => {
-  const { value } = React.useContext(SelectContext);
-  return <span>{value || placeholder}</span>;
+  const { selectedLabel } = React.useContext(SelectContext);
+  return <span>{selectedLabel || placeholder}</span>;
 };
 
 // SelectTrigger component
@@ -73,13 +88,20 @@ interface SelectTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 }
 
 const SelectTrigger = React.forwardRef<HTMLButtonElement, SelectTriggerProps>(
-  ({ className, children, ...props }, ref) => {
-    const { triggerId } = React.useContext(SelectContext);
+  ({ className, children, onClick, ...props }, ref) => {
+    const { triggerId, open, setOpen } = React.useContext(SelectContext);
+
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      setOpen?.(!open);
+      onClick?.(e);
+    };
+
     return (
       <button
         ref={ref}
         type="button"
         id={triggerId}
+        onClick={handleClick}
         className={cn(
           'flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50',
           className
@@ -107,14 +129,17 @@ const SelectContent: React.FC<SelectContentProps> = ({
   className,
   'aria-label': ariaLabel,
 }) => {
-  const { triggerId } = React.useContext(SelectContext);
+  const { triggerId, open } = React.useContext(SelectContext);
+
+  if (!open) return null;
+
   return (
     <div
       role="listbox"
       aria-labelledby={!ariaLabel ? triggerId : undefined}
       aria-label={ariaLabel}
       className={cn(
-        'relative z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md',
+        'absolute z-50 mt-1 min-w-[8rem] overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md',
         className
       )}
     >
@@ -140,8 +165,17 @@ interface SelectItemProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
   ({ className, children, value, ...props }, ref) => {
-    const { value: selectedValue, onValueChange } = React.useContext(SelectContext);
+    const {
+      value: selectedValue,
+      onValueChange,
+      setSelectedLabel,
+    } = React.useContext(SelectContext);
     const isSelected = selectedValue === value;
+
+    const handleClick = () => {
+      onValueChange?.(value);
+      setSelectedLabel?.(typeof children === 'string' ? children : value);
+    };
 
     return (
       <div
@@ -152,7 +186,7 @@ const SelectItem = React.forwardRef<HTMLDivElement, SelectItemProps>(
           'relative flex w-full cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none focus:bg-accent focus:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50',
           className
         )}
-        onClick={() => onValueChange?.(value)}
+        onClick={handleClick}
         {...props}
       >
         <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">

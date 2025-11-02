@@ -14,8 +14,8 @@ import {
 import { Textarea } from '@/components/ui-flowbite/textarea';
 import { Input } from '@/components/ui-flowbite/input';
 import { clientApi } from '@/lib/api.client';
-import { useRouter } from 'next/navigation';
 import { RequestType } from '@/lib/types';
+import { Loader2 } from 'lucide-react';
 
 interface RequestFormProps {
   initialRequestTypes: RequestType[];
@@ -25,7 +25,8 @@ interface RequestFormProps {
 export function RequestForm({ initialRequestTypes, churchId: _churchId }: RequestFormProps) {
   const [requestTypeId, setRequestTypeId] = useState('');
   const [requestTypes] = useState<RequestType[]>(initialRequestTypes);
-  const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   console.log('[RequestForm] Current requestTypeId:', requestTypeId);
 
@@ -39,6 +40,8 @@ export function RequestForm({ initialRequestTypes, churchId: _churchId }: Reques
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setIsSubmitting(true);
+
     const formData = new FormData(event.currentTarget);
     const data = {
       requestTypeId: formData.get('requestTypeId'),
@@ -49,9 +52,19 @@ export function RequestForm({ initialRequestTypes, churchId: _churchId }: Reques
 
     try {
       await clientApi.post('/requests', data);
-      router.push('/pastoral-care');
+      setSubmitSuccess(true);
+
+      // Wait a bit for the backend to process, then redirect
+      // eslint-disable-next-line no-undef
+      setTimeout(() => {
+        // Use window.location to force a full page reload with fresh data
+        window.location.href = '/pastoral-care';
+      }, 1500);
     } catch (error) {
       console.error('Failed to submit request:', error);
+      setIsSubmitting(false);
+      // eslint-disable-next-line no-undef
+      alert('Failed to submit request. Please try again.');
     }
   };
 
@@ -67,18 +80,20 @@ export function RequestForm({ initialRequestTypes, churchId: _churchId }: Reques
         <CardContent className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="request-type">Request Type</Label>
-            <Select name="requestTypeId" onValueChange={setRequestTypeId}>
-              <SelectTrigger id="request-type" data-testid="request-type-select">
-                <SelectValue placeholder="Select a request type..." />
-              </SelectTrigger>
-              <SelectContent aria-label="Request Type">
-                {requestTypes.map(rt => (
-                  <SelectItem key={rt.id} value={rt.id}>
-                    {rt.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <div className="relative">
+              <Select name="requestTypeId" onValueChange={setRequestTypeId}>
+                <SelectTrigger id="request-type" data-testid="request-type-select">
+                  <SelectValue placeholder="Select a request type..." />
+                </SelectTrigger>
+                <SelectContent aria-label="Request Type">
+                  {requestTypes.map(rt => (
+                    <SelectItem key={rt.id} value={rt.id}>
+                      {rt.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           {requestTypeId && (
             <>
@@ -102,8 +117,13 @@ export function RequestForm({ initialRequestTypes, churchId: _churchId }: Reques
               </div>
               {requestTypes.find(rt => rt.id === requestTypeId)?.hasConfidentialField && (
                 <div className="flex items-center space-x-2">
-                  <Input type="checkbox" id="isConfidential" name="isConfidential" />
-                  <Label htmlFor="isConfidential">
+                  <input
+                    type="checkbox"
+                    id="isConfidential"
+                    name="isConfidential"
+                    className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-2 focus:ring-primary"
+                  />
+                  <Label htmlFor="isConfidential" className="cursor-pointer">
                     Keep this request confidential (pastoral staff only)
                   </Label>
                 </div>
@@ -111,9 +131,21 @@ export function RequestForm({ initialRequestTypes, churchId: _churchId }: Reques
             </>
           )}
         </CardContent>
-        <CardFooter>
-          <Button type="submit" disabled={!requestTypeId}>
-            Submit Request
+        <CardFooter className="flex-col items-start gap-4">
+          {submitSuccess && (
+            <div className="w-full rounded-md bg-green-50 p-3 text-sm text-green-800 dark:bg-green-900/20 dark:text-green-400">
+              ✓ Request submitted successfully! Redirecting...
+            </div>
+          )}
+          <Button type="submit" disabled={!requestTypeId || isSubmitting}>
+            {isSubmitting ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Submitting...
+              </>
+            ) : (
+              'Submit Request'
+            )}
           </Button>
         </CardFooter>
       </Card>

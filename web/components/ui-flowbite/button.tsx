@@ -10,20 +10,16 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 };
 
 export function Button({ className = '', variant = 'default', ...props }: Props) {
-  // Map our variants to Flowbite colors
+  // Map our variants to Flowbite colors - use Flowbite's standard styling
   const colorMap: Record<'default' | 'outline', FlowbiteButtonProps['color']> = {
-    default: 'dark',
+    default: 'light',
     outline: 'light',
   };
-
-  // Force white text on dark buttons for visibility in both light and dark themes
-  const combinedClassName =
-    `${className} ${variant === 'default' ? '[&>span]:!text-white [&>span]:dark:!text-white' : ''}`.trim();
 
   return (
     <FlowbiteButton
       color={colorMap[variant]}
-      className={combinedClassName}
+      className={className}
       {...(props as FlowbiteButtonProps)}
     />
   );

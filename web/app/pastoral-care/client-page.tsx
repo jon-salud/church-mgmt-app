@@ -1,5 +1,5 @@
 'use client';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import {
   Table,
   TableBody,
@@ -33,6 +33,9 @@ import {
 } from '@/components/ui-flowbite/select';
 import { RequestType, User } from '@/lib/types';
 import { hasRole } from '@/lib/utils';
+import { ChevronDown } from 'lucide-react';
+
+const STORAGE_KEY = 'pastoral-care-type-filter';
 
 export function PastoralCareClientPage({
   data: initialData,
@@ -47,10 +50,29 @@ export function PastoralCareClientPage({
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [statusFilter, setStatusFilter] = useState('all');
   const [requestTypes] = useState<RequestType[]>(initialRequestTypes);
-  // Initialize with all types selected
-  const [typeFilter, setTypeFilter] = useState<string[]>(requestTypes.map(rt => rt.id));
+  // Initialize with all types selected, or load from localStorage
+  const [typeFilter, setTypeFilter] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch {
+          return initialRequestTypes.map(rt => rt.id);
+        }
+      }
+    }
+    return initialRequestTypes.map(rt => rt.id);
+  });
   const [sortOrder, setSortOrder] = useState('newest');
   const typeMap = useMemo(() => new Map(requestTypes.map(rt => [rt.id, rt.name])), [requestTypes]);
+
+  // Persist filter changes to localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(typeFilter));
+    }
+  }, [typeFilter]);
 
   const allTypesSelected = typeFilter.length === requestTypes.length;
 
@@ -122,11 +144,14 @@ export function PastoralCareClientPage({
         </Select>
         <DropdownMenu>
           <DropdownMenuTrigger className="inline-flex h-10 w-[180px] items-center justify-between whitespace-nowrap rounded-md border border-input bg-background px-3 py-2 text-sm font-medium ring-offset-background transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50">
-            {allTypesSelected
-              ? 'All Types'
-              : typeFilter.length === 0
-                ? 'No Types Selected'
-                : `${typeFilter.length} selected`}
+            <span>
+              {allTypesSelected
+                ? 'All Types'
+                : typeFilter.length === 0
+                  ? 'No Types Selected'
+                  : `${typeFilter.length} selected`}
+            </span>
+            <ChevronDown className="h-4 w-4 opacity-50" />
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
             <DropdownMenuLabel>Request Types</DropdownMenuLabel>

@@ -30,15 +30,36 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
 }) => {
   const [isOpen, setIsOpen] = React.useState(defaultOpen ?? false);
   const actualOpen = open ?? isOpen;
+  const containerRef = React.useRef<HTMLDivElement>(null);
 
   const handleOpenChange = (newOpen: boolean) => {
     setIsOpen(newOpen);
     onOpenChange?.(newOpen);
   };
 
+  // Close dropdown when clicking outside
+  React.useEffect(() => {
+    if (!actualOpen) return;
+
+    // eslint-disable-next-line no-undef
+    const handleClickOutside = (event: MouseEvent) => {
+      // eslint-disable-next-line no-undef
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        handleOpenChange(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [actualOpen]);
+
   return (
     <DropdownContext.Provider value={{ open: actualOpen, onOpenChange: handleOpenChange }}>
-      {children}
+      <div ref={containerRef} style={{ position: 'relative', display: 'inline-block' }}>
+        {children}
+      </div>
     </DropdownContext.Provider>
   );
 };
@@ -49,13 +70,20 @@ interface DropdownMenuTriggerProps extends React.ButtonHTMLAttributes<HTMLButton
 }
 
 const DropdownMenuTrigger = React.forwardRef<HTMLButtonElement, DropdownMenuTriggerProps>(
-  ({ className, children, asChild, ...props }, ref) => {
+  ({ className, children, asChild, onClick, ...props }, ref) => {
+    const { open, onOpenChange } = React.useContext(DropdownContext);
+
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+      onClick?.(e);
+      onOpenChange?.(!open);
+    };
+
     if (asChild && React.isValidElement(children)) {
-      return React.cloneElement(children, { ref, ...props } as any);
+      return React.cloneElement(children, { ref, onClick: handleClick, ...props } as any);
     }
 
     return (
-      <button ref={ref} type="button" className={className} {...props}>
+      <button ref={ref} type="button" className={className} onClick={handleClick} {...props}>
         {children}
       </button>
     );
@@ -69,18 +97,24 @@ interface DropdownMenuContentProps extends React.HTMLAttributes<HTMLDivElement> 
 }
 
 const DropdownMenuContent = React.forwardRef<HTMLDivElement, DropdownMenuContentProps>(
-  ({ className, sideOffset = 4, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(
-        'z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
-        'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
-        className
-      )}
-      style={{ marginTop: `${sideOffset}px` }}
-      {...props}
-    />
-  )
+  ({ className, sideOffset = 4, ...props }, ref) => {
+    const { open } = React.useContext(DropdownContext);
+
+    if (!open) return null;
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          'z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
+          'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
+          className
+        )}
+        style={{ marginTop: `${sideOffset}px` }}
+        {...props}
+      />
+    );
+  }
 );
 DropdownMenuContent.displayName = 'DropdownMenuContent';
 
