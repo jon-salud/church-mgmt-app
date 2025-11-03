@@ -1071,7 +1071,104 @@ export class InMemoryDataStore {
   }
 
   async listFunds() {
-    return clone(this.funds);
+    return clone(this.funds.filter(f => !f.deletedAt));
+  }
+
+  async listDeletedFunds() {
+    return clone(this.funds.filter(f => f.deletedAt)) as any[];
+  }
+
+  async createFund(input: { name: string; description?: string }) {
+    const fund = {
+      id: `fund-${Date.now()}`,
+      churchId: (await this.getChurch()).id,
+      name: input.name,
+      description: input.description,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    this.funds.push(fund as any);
+    return clone(fund);
+  }
+
+  async updateFund(id: string, input: Partial<{ name: string; description?: string }>) {
+    const fund = this.funds.find(f => f.id === id && !f.deletedAt);
+    if (!fund) {
+      return null;
+    }
+    if (input.name !== undefined) (fund as any).name = input.name;
+    if (input.description !== undefined) (fund as any).description = input.description;
+    (fund as any).updatedAt = new Date().toISOString();
+    return clone(fund);
+  }
+
+  async deleteFund(id: string, _input: { actorUserId: string }) {
+    const fund = this.funds.find(f => f.id === id && !f.deletedAt);
+    if (!fund) {
+      return { success: false };
+    }
+    (fund as any).deletedAt = new Date().toISOString();
+    return { success: true };
+  }
+
+  async hardDeleteFund(id: string, _input: { actorUserId: string }) {
+    const index = this.funds.findIndex(f => f.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    this.funds.splice(index, 1);
+    // Orphan contributions
+    this.contributions.forEach(contribution => {
+      if (contribution.fundId === id) {
+        contribution.fundId = undefined;
+      }
+    });
+    return { success: true };
+  }
+
+  async undeleteFund(id: string, _input: { actorUserId: string }) {
+    const fund = this.funds.find(f => f.id === id && f.deletedAt);
+    if (!fund) {
+      return { success: false };
+    }
+    (fund as any).deletedAt = undefined;
+    return { success: true };
+  }
+
+  async bulkDeleteFunds(
+    ids: string[],
+    _input: { actorUserId: string }
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    let count = 0;
+    const failed: Array<{ id: string; reason: string }> = [];
+    for (const id of ids) {
+      const fund = this.funds.find(f => f.id === id && !f.deletedAt);
+      if (fund) {
+        (fund as any).deletedAt = new Date().toISOString();
+        count++;
+      } else {
+        failed.push({ id, reason: 'Not found or already deleted' });
+      }
+    }
+    return { success: count, failed };
+  }
+
+  async bulkUndeleteFunds(
+    ids: string[],
+    _input: { actorUserId: string }
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    let count = 0;
+    const failed: Array<{ id: string; reason: string }> = [];
+    for (const id of ids) {
+      const fund = this.funds.find(f => f.id === id && f.deletedAt);
+      if (fund) {
+        (fund as any).deletedAt = undefined;
+        count++;
+      } else {
+        failed.push({ id, reason: 'Not found or not deleted' });
+      }
+    }
+    return { success: count, failed };
   }
 
   async listContributions(filter?: {
@@ -1080,7 +1177,34 @@ export class InMemoryDataStore {
     from?: string;
     to?: string;
   }) {
-    let list = this.contributions;
+    let list = this.contributions.filter(c => !c.deletedAt);
+    if (filter?.memberId) {
+      list = list.filter(contribution => contribution.memberId === filter.memberId);
+    }
+    if (filter?.fundId) {
+      list = list.filter(contribution => contribution.fundId === filter.fundId);
+    }
+    if (filter?.from) {
+      const fromTime = new Date(filter.from).getTime();
+      list = list.filter(contribution => new Date(contribution.date).getTime() >= fromTime);
+    }
+    if (filter?.to) {
+      const toTime = new Date(filter.to).getTime();
+      list = list.filter(contribution => new Date(contribution.date).getTime() <= toTime);
+    }
+    const sorted = [...list].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+    return clone(sorted);
+  }
+
+  async listDeletedContributions(filter?: {
+    memberId?: string;
+    fundId?: string;
+    from?: string;
+    to?: string;
+  }) {
+    let list = this.contributions.filter(c => c.deletedAt);
     if (filter?.memberId) {
       list = list.filter(contribution => contribution.memberId === filter.memberId);
     }
@@ -1117,7 +1241,7 @@ export class InMemoryDataStore {
   }
 
   async updateContribution(id: string, input: ContributionUpdateInput) {
-    const contribution = this.contributions.find(item => item.id === id);
+    const contribution = this.contributions.find(item => item.id === id && !item.deletedAt);
     if (!contribution) {
       return null;
     }
@@ -1130,8 +1254,73 @@ export class InMemoryDataStore {
     return clone(contribution);
   }
 
+  async deleteContribution(id: string, _input: { actorUserId: string }) {
+    const contribution = this.contributions.find(c => c.id === id && !c.deletedAt);
+    if (!contribution) {
+      return { success: false };
+    }
+    (contribution as any).deletedAt = new Date().toISOString();
+    return { success: true };
+  }
+
+  async hardDeleteContribution(id: string, _input: { actorUserId: string }) {
+    const index = this.contributions.findIndex(c => c.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    this.contributions.splice(index, 1);
+    return { success: true };
+  }
+
+  async undeleteContribution(id: string, _input: { actorUserId: string }) {
+    const contribution = this.contributions.find(c => c.id === id && c.deletedAt);
+    if (!contribution) {
+      return { success: false };
+    }
+    (contribution as any).deletedAt = undefined;
+    return { success: true };
+  }
+
+  async bulkDeleteContributions(
+    ids: string[],
+    _input: { actorUserId: string }
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    let count = 0;
+    const failed: Array<{ id: string; reason: string }> = [];
+    for (const id of ids) {
+      const contribution = this.contributions.find(c => c.id === id && !c.deletedAt);
+      if (contribution) {
+        (contribution as any).deletedAt = new Date().toISOString();
+        count++;
+      } else {
+        failed.push({ id, reason: 'Not found or already deleted' });
+      }
+    }
+    return { success: count, failed };
+  }
+
+  async bulkUndeleteContributions(
+    ids: string[],
+    _input: { actorUserId: string }
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    let count = 0;
+    const failed: Array<{ id: string; reason: string }> = [];
+    for (const id of ids) {
+      const contribution = this.contributions.find(c => c.id === id && c.deletedAt);
+      if (contribution) {
+        (contribution as any).deletedAt = undefined;
+        count++;
+      } else {
+        failed.push({ id, reason: 'Not found or not deleted' });
+      }
+    }
+    return { success: count, failed };
+  }
+
   async getGivingSummary(churchId: string) {
-    const contributions = this.contributions.filter(entry => entry.churchId === churchId);
+    const contributions = this.contributions.filter(
+      entry => entry.churchId === churchId && !entry.deletedAt
+    );
     const totals = contributions.reduce(
       (acc, entry) => {
         acc.overall += entry.amount;
@@ -1158,7 +1347,8 @@ export class InMemoryDataStore {
     const previousMonthKey = formatMonthKey(previousMonth.toISOString());
 
     const byFund = Array.from(totals.fundTotals.entries()).map(([fundId, amount]) => {
-      const fund = fundId === 'general' ? undefined : this.funds.find(f => f.id === fundId);
+      const fund =
+        fundId === 'general' ? undefined : this.funds.find(f => f.id === fundId && !f.deletedAt);
       return {
         fundId: fund?.id ?? null,
         name: fund?.name ?? 'General',

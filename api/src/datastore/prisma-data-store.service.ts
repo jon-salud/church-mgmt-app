@@ -686,7 +686,105 @@ export class PrismaDataStore implements DataStore {
 
   async listFunds() {
     const churchId = await this.getPrimaryChurchId();
-    return this.client.fund.findMany({ where: { churchId } });
+    return this.client.fund.findMany({
+      where: { churchId, deletedAt: null },
+    });
+  }
+
+  async listDeletedFunds() {
+    const churchId = await this.getPrimaryChurchId();
+    return this.client.fund.findMany({
+      where: { churchId, NOT: { deletedAt: null } },
+    });
+  }
+
+  async createFund(input: { name: string; description?: string }) {
+    const churchId = await this.getPrimaryChurchId();
+    return this.client.fund.create({
+      data: {
+        churchId,
+        name: input.name,
+        description: input.description,
+      },
+    });
+  }
+
+  async updateFund(id: string, input: Partial<{ name: string; description?: string }>) {
+    const fund = await this.client.fund.findUnique({ where: { id } });
+    if (!fund || fund.deletedAt) {
+      return null;
+    }
+    return this.client.fund.update({
+      where: { id },
+      data: input,
+    });
+  }
+
+  async deleteFund(id: string, _input: { actorUserId: string }) {
+    const fund = await this.client.fund.findUnique({ where: { id } });
+    if (!fund || fund.deletedAt) {
+      return { success: false };
+    }
+    await this.client.fund.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+    return { success: true };
+  }
+
+  async hardDeleteFund(id: string, _input: { actorUserId: string }) {
+    const fund = await this.client.fund.findUnique({ where: { id } });
+    if (!fund) {
+      return { success: false };
+    }
+    // Orphan contributions: set fundId to null
+    await this.client.contribution.updateMany({
+      where: { fundId: id },
+      data: { fundId: null },
+    });
+    await this.client.fund.delete({ where: { id } });
+    return { success: true };
+  }
+
+  async undeleteFund(id: string, _input: { actorUserId: string }) {
+    const fund = await this.client.fund.findUnique({ where: { id } });
+    if (!fund || !fund.deletedAt) {
+      return { success: false };
+    }
+    await this.client.fund.update({
+      where: { id },
+      data: { deletedAt: null },
+    });
+    return { success: true };
+  }
+
+  async bulkDeleteFunds(
+    ids: string[],
+    _input: { actorUserId: string }
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const result = await this.client.fund.updateMany({
+      where: { id: { in: ids }, deletedAt: null },
+      data: { deletedAt: new Date() },
+    });
+    const notFound = ids.filter(id => !result.count || id !== id);
+    return {
+      success: result.count || 0,
+      failed: notFound.map(id => ({ id, reason: 'Not found or already deleted' })),
+    };
+  }
+
+  async bulkUndeleteFunds(
+    ids: string[],
+    _input: { actorUserId: string }
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const result = await this.client.fund.updateMany({
+      where: { id: { in: ids }, NOT: { deletedAt: null } },
+      data: { deletedAt: null },
+    });
+    return {
+      success: result.count || 0,
+      failed: [],
+    };
   }
 
   async listContributions(filter?: {
@@ -699,6 +797,34 @@ export class PrismaDataStore implements DataStore {
     const contributions = await this.client.contribution.findMany({
       where: {
         churchId,
+        deletedAt: null,
+        memberId: filter?.memberId,
+        fundId: filter?.fundId,
+        date: {
+          gte: filter?.from ? new Date(filter.from) : undefined,
+          lte: filter?.to ? new Date(filter.to) : undefined,
+        },
+      },
+      orderBy: { date: 'desc' },
+    });
+    return (contributions as any[]).map((contribution: any) => ({
+      ...contribution,
+      amount: toNumber(contribution.amount),
+      date: toISO(contribution.date)!,
+    }));
+  }
+
+  async listDeletedContributions(filter?: {
+    memberId?: string;
+    fundId?: string;
+    from?: string;
+    to?: string;
+  }) {
+    const churchId = await this.getPrimaryChurchId();
+    const contributions = await this.client.contribution.findMany({
+      where: {
+        churchId,
+        NOT: { deletedAt: null },
         memberId: filter?.memberId,
         fundId: filter?.fundId,
         date: {
@@ -744,10 +870,83 @@ export class PrismaDataStore implements DataStore {
   }
 
   async updateContribution(
-    _id: string,
-    _input: Parameters<DataStore['updateContribution']>[1]
+    id: string,
+    input: Parameters<DataStore['updateContribution']>[1]
   ): Promise<any> {
-    throw new Error('Not implemented: updateContribution');
+    const contribution = await this.client.contribution.findUnique({ where: { id } });
+    if (!contribution || contribution.deletedAt) {
+      return null;
+    }
+    const updated = await this.client.contribution.update({
+      where: { id },
+      data: input as any,
+    });
+    return {
+      ...updated,
+      amount: toNumber(updated.amount),
+      date: toISO(updated.date)!,
+    };
+  }
+
+  async deleteContribution(id: string, _input: { actorUserId: string }) {
+    const contribution = await this.client.contribution.findUnique({ where: { id } });
+    if (!contribution || contribution.deletedAt) {
+      return { success: false };
+    }
+    await this.client.contribution.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+    return { success: true };
+  }
+
+  async hardDeleteContribution(id: string, _input: { actorUserId: string }) {
+    const contribution = await this.client.contribution.findUnique({ where: { id } });
+    if (!contribution) {
+      return { success: false };
+    }
+    await this.client.contribution.delete({ where: { id } });
+    return { success: true };
+  }
+
+  async undeleteContribution(id: string, _input: { actorUserId: string }) {
+    const contribution = await this.client.contribution.findUnique({ where: { id } });
+    if (!contribution || !contribution.deletedAt) {
+      return { success: false };
+    }
+    await this.client.contribution.update({
+      where: { id },
+      data: { deletedAt: null },
+    });
+    return { success: true };
+  }
+
+  async bulkDeleteContributions(
+    ids: string[],
+    _input: { actorUserId: string }
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const result = await this.client.contribution.updateMany({
+      where: { id: { in: ids }, deletedAt: null },
+      data: { deletedAt: new Date() },
+    });
+    return {
+      success: result.count || 0,
+      failed: [],
+    };
+  }
+
+  async bulkUndeleteContributions(
+    ids: string[],
+    _input: { actorUserId: string }
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const result = await this.client.contribution.updateMany({
+      where: { id: { in: ids }, NOT: { deletedAt: null } },
+      data: { deletedAt: null },
+    });
+    return {
+      success: result.count || 0,
+      failed: [],
+    };
   }
 
   async getGivingSummary(_churchId: string): Promise<any> {

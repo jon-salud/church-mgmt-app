@@ -1,37 +1,62 @@
 import { GivingService } from '../../src/modules/giving/giving.service';
-import { createDataStoreMock } from '../support/datastore.mock';
+import { IGivingRepository } from '../../src/modules/giving/giving.repository.interface';
+import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 describe('GivingService', () => {
-  const store = createDataStoreMock();
-  const service = new GivingService(store);
+  const createRepositoryMock = (): IGivingRepository & Record<string, any> => ({
+    listFunds: vi.fn(),
+    listDeletedFunds: vi.fn(),
+    createFund: vi.fn(),
+    updateFund: vi.fn(),
+    deleteFund: vi.fn(),
+    hardDeleteFund: vi.fn(),
+    undeleteFund: vi.fn(),
+    bulkDeleteFunds: vi.fn(),
+    bulkUndeleteFunds: vi.fn(),
+    getFundById: vi.fn(),
+    listContributions: vi.fn(),
+    listDeletedContributions: vi.fn(),
+    recordContribution: vi.fn(),
+    updateContribution: vi.fn(),
+    getContributionById: vi.fn(),
+    deleteContribution: vi.fn(),
+    hardDeleteContribution: vi.fn(),
+    undeleteContribution: vi.fn(),
+    bulkDeleteContributions: vi.fn(),
+    bulkUndeleteContributions: vi.fn(),
+    getGivingSummary: vi.fn(),
+    exportContributionsCsv: vi.fn(),
+  });
+
+  const repo = createRepositoryMock();
+  const service = new GivingService(repo);
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    store.getChurch.mockResolvedValue({ id: 'church-1' } as any);
+    vi.clearAllMocks();
   });
 
   it('returns funds from the datastore', async () => {
     const funds = [{ id: 'fund-1' }];
-    store.listFunds.mockResolvedValue(funds as any);
+    repo.listFunds.mockResolvedValue(funds as any);
 
     const result = await service.listFunds();
 
     expect(result).toEqual(funds);
-    expect(store.listFunds).toHaveBeenCalledTimes(1);
+    expect(repo.listFunds).toHaveBeenCalledTimes(1);
   });
 
   it('filters contributions through datastore', async () => {
-    store.listContributions.mockResolvedValue([{ id: 'contribution-1' }] as any);
+    repo.listContributions.mockResolvedValue([{ id: 'contribution-1' }] as any);
 
     const result = await service.listContributions({ memberId: 'user-1' });
 
-    expect(store.listContributions).toHaveBeenCalledWith({ memberId: 'user-1' });
+    expect(repo.listContributions).toHaveBeenCalledWith({ memberId: 'user-1' });
     expect(result[0].id).toBe('contribution-1');
   });
 
   it('records contribution attributing actor when provided', async () => {
     const contribution = { id: 'contribution-new' };
-    store.recordContribution.mockResolvedValue(contribution as any);
+    repo.recordContribution.mockResolvedValue(contribution as any);
 
     const result = await service.recordContribution(
       {
@@ -43,7 +68,7 @@ describe('GivingService', () => {
       'admin-user'
     );
 
-    expect(store.recordContribution).toHaveBeenCalledWith({
+    expect(repo.recordContribution).toHaveBeenCalledWith({
       memberId: 'user-1',
       amount: 42,
       date: '2024-03-01',
@@ -54,17 +79,16 @@ describe('GivingService', () => {
   });
 
   it('provides giving summary for the current church', async () => {
-    store.getGivingSummary.mockResolvedValue({ totals: { overall: 100 } } as any);
+    repo.getGivingSummary.mockResolvedValue({ totals: { overall: 100 } } as any);
 
     const summary = await service.summary();
 
-    expect(store.getChurch).toHaveBeenCalled();
-    expect(store.getGivingSummary).toHaveBeenCalledWith('church-1');
+    expect(repo.getGivingSummary).toHaveBeenCalled();
     expect(summary.totals.overall).toBe(100);
   });
 
   it('updates contributions via datastore with cleanup helpers', async () => {
-    store.updateContribution.mockResolvedValue({ id: 'contribution-1', amount: 75 } as any);
+    repo.updateContribution.mockResolvedValue({ id: 'contribution-1', amount: 75 } as any);
 
     const updated = await service.updateContribution(
       'contribution-1',
@@ -72,7 +96,7 @@ describe('GivingService', () => {
       'admin-user'
     );
 
-    expect(store.updateContribution).toHaveBeenCalledWith('contribution-1', {
+    expect(repo.updateContribution).toHaveBeenCalledWith('contribution-1', {
       amount: 75,
       note: null,
       actorUserId: 'admin-user',
@@ -82,14 +106,14 @@ describe('GivingService', () => {
   });
 
   it('exports contributions to csv with filters', async () => {
-    store.exportContributionsCsv.mockResolvedValue({
+    repo.exportContributionsCsv.mockResolvedValue({
       filename: 'giving.csv',
       content: 'data',
     } as any);
 
     const result = await service.exportContributionsCsv({ memberId: 'user-1' });
 
-    expect(store.exportContributionsCsv).toHaveBeenCalledWith({ memberId: 'user-1' });
+    expect(repo.exportContributionsCsv).toHaveBeenCalledWith({ memberId: 'user-1' });
     expect(result.filename).toBe('giving.csv');
   });
 });

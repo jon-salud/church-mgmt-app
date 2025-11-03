@@ -199,6 +199,9 @@ export interface MockFund {
   id: string;
   churchId: string;
   name: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string;
   deletedAt?: string;
 }
 
@@ -766,6 +769,7 @@ export const mockAnnouncementReads: MockAnnouncementRead[] = [
 export const mockFunds: MockFund[] = [
   { id: 'fund-general', churchId, name: 'General Offering' },
   { id: 'fund-missions', churchId, name: 'Missions' },
+  { id: 'fund-building', churchId, name: 'Building Fund' },
 ];
 
 export const mockContributions: MockContribution[] = [
@@ -787,6 +791,26 @@ export const mockContributions: MockContribution[] = [
     amount: 40.0,
     method: 'cash',
     fundId: 'fund-missions',
+  },
+  {
+    id: 'contribution-orphaned-1',
+    churchId,
+    memberId: 'user-member-1',
+    date: makeDate(-5, 10),
+    amount: 50.0,
+    method: 'bank-transfer',
+    fundId: undefined,
+    note: 'Building fund contribution (fund deleted)',
+  },
+  {
+    id: 'contribution-deleted-1',
+    churchId,
+    memberId: 'user-member-2',
+    date: makeDate(-3, 14),
+    amount: 100.0,
+    method: 'eftpos',
+    fundId: 'fund-general',
+    deletedAt: makeDate(-1, 10),
   },
 ];
 

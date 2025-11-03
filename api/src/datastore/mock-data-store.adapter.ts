@@ -286,8 +286,60 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.listFunds();
   }
 
-  async listContributions(filter?: { memberId?: string; fundId?: string }) {
+  async listDeletedFunds() {
+    return this.mock.listDeletedFunds();
+  }
+
+  async createFund(input: Parameters<MockDatabaseService['createFund']>[0]) {
+    return this.mock.createFund(input);
+  }
+
+  async updateFund(id: string, input: Parameters<MockDatabaseService['updateFund']>[1]) {
+    return this.mock.updateFund(id, input);
+  }
+
+  async deleteFund(id: string, input: Parameters<MockDatabaseService['deleteFund']>[1]) {
+    return this.mock.deleteFund(id, input);
+  }
+
+  async hardDeleteFund(id: string, input: Parameters<MockDatabaseService['hardDeleteFund']>[1]) {
+    return this.mock.hardDeleteFund(id, input);
+  }
+
+  async undeleteFund(id: string, input: Parameters<MockDatabaseService['undeleteFund']>[1]) {
+    return this.mock.undeleteFund(id, input);
+  }
+
+  async bulkDeleteFunds(
+    ids: string[],
+    input: Parameters<MockDatabaseService['bulkDeleteFunds']>[1]
+  ) {
+    return this.mock.bulkDeleteFunds(ids, input);
+  }
+
+  async bulkUndeleteFunds(
+    ids: string[],
+    input: Parameters<MockDatabaseService['bulkUndeleteFunds']>[1]
+  ) {
+    return this.mock.bulkUndeleteFunds(ids, input);
+  }
+
+  async listContributions(filter?: {
+    memberId?: string;
+    fundId?: string;
+    from?: string;
+    to?: string;
+  }) {
     return this.mock.listContributions(filter);
+  }
+
+  async listDeletedContributions(filter?: {
+    memberId?: string;
+    fundId?: string;
+    from?: string;
+    to?: string;
+  }) {
+    return this.mock.listDeletedContributions(filter);
   }
 
   async recordContribution(input: Parameters<MockDatabaseService['recordContribution']>[0]) {
@@ -299,6 +351,41 @@ export class MockDataStoreAdapter implements DataStore {
     input: Parameters<MockDatabaseService['updateContribution']>[1]
   ) {
     return this.mock.updateContribution(id, input);
+  }
+
+  async deleteContribution(
+    id: string,
+    input: Parameters<MockDatabaseService['deleteContribution']>[1]
+  ) {
+    return this.mock.deleteContribution(id, input);
+  }
+
+  async hardDeleteContribution(
+    id: string,
+    input: Parameters<MockDatabaseService['hardDeleteContribution']>[1]
+  ) {
+    return this.mock.hardDeleteContribution(id, input);
+  }
+
+  async undeleteContribution(
+    id: string,
+    input: Parameters<MockDatabaseService['undeleteContribution']>[1]
+  ) {
+    return this.mock.undeleteContribution(id, input);
+  }
+
+  async bulkDeleteContributions(
+    ids: string[],
+    input: Parameters<MockDatabaseService['bulkDeleteContributions']>[1]
+  ) {
+    return this.mock.bulkDeleteContributions(ids, input);
+  }
+
+  async bulkUndeleteContributions(
+    ids: string[],
+    input: Parameters<MockDatabaseService['bulkUndeleteContributions']>[1]
+  ) {
+    return this.mock.bulkUndeleteContributions(ids, input);
   }
 
   async getGivingSummary(churchId: string) {
