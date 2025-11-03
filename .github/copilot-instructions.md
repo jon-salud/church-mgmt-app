@@ -85,55 +85,6 @@ A church management system with:
    - Shared UI components in `web/components/`
    - PWA capabilities via service worker
 
-## Development Workflow
-
-### Essential Commands
-
-```bash
-# Install dependencies
-pnpm install
-
-# Development servers
-pnpm dev:api:mock     # API on port 3001
-pnpm -C web dev       # Web on port 3000
-
-# Code Quality
-pnpm lint             # Check linting issues
-pnpm lint:fix         # Auto-fix linting issues
-pnpm format           # Format code with Prettier
-pnpm format:check     # Check code formatting
-
-# Testing
-pnpm -C api test      # API tests (Vitest)
-pnpm test:e2e:mock    # E2E tests
-```
-
-### Testing Patterns
-
-- E2E tests use `demo-admin` token (set via cookie)
-- API tests run against mock data store using Vitest for faster, more reliable execution
-- Test files follow feature-based organization:
-  - API: `api/test/*.spec.ts`
-  - E2E: `web/e2e/*.spec.ts`
-
-### Key Integration Points
-
-1. **API Client**
-   - Generated from OpenAPI spec
-   - Base URL configurable via env vars
-   - See `web/lib/api.client.ts`
-
-2. **Authentication**
-   - Development: Uses demo tokens
-   - Production: OAuth via Google/Facebook
-   - JWT token handling in middleware
-
-3. **PWA Implementation**
-   - Service worker in `web/public/service-worker.js`
-   - Offline caching for announcements and events
-   - Push notification infrastructure (configured but disabled in MVP)
-   - See `web/components/service-worker-register.tsx`
-
 ## Project Conventions
 
 - **Multi-tenancy**: All entities scoped by `churchId` for data isolation
@@ -229,3 +180,11 @@ pnpm test:e2e:mock    # E2E tests
 - Remember: all entities require `churchId` for multi-tenancy
 - Use `hasRole()` utility for role-based UI logic
 - **Never commit `api/storage/audit-log.json`** - This file grows every time E2E tests run as the application logs all actions. It should always be excluded from version control.
+
+## Cross-Platform Development
+
+- **Line Ending Normalization:** The `.gitattributes` file ensures consistent LF line endings for text files across all platforms
+- **Pre-commit Hooks:** Automatic code quality checks (linting, formatting, type checking) run before each commit
+- **CI Pipeline:** Includes encoding and line ending validation to prevent platform-specific issues
+- **Platform Scripts:** Use appropriate scripts for your platform (`scripts/run-e2e.sh` for Unix/macOS, `scripts/run-e2e.ps1` for Windows)
+- **File Transfers:** When moving files between macOS and Windows, always run `pnpm format` to fix encoding issues
