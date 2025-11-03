@@ -4,11 +4,18 @@ import { calculateGivingSummary } from './giving-calculations';
 import type { Contribution, Fund } from '../../lib/types';
 
 export default async function GivingPage() {
-  const [funds, contributions, members] = await Promise.all([
-    api.funds(),
-    api.contributions(),
-    api.members(),
-  ]);
+  const [funds, deletedFunds, contributions, deletedContributions, members, user] =
+    await Promise.all([
+      api.funds(),
+      api.listDeletedFunds().catch(() => []),
+      api.contributions(),
+      api.listDeletedContributions().catch(() => []),
+      api.members(),
+      api
+        .currentUser()
+        .then(data => data?.user || null)
+        .catch(() => null),
+    ]);
 
   let summary;
   try {
@@ -17,12 +24,14 @@ export default async function GivingPage() {
     summary = calculateGivingSummary(contributions as Contribution[], funds as Fund[]);
   }
 
-  // Note: deletedFunds and deletedContributions will be passed to GivingClient in Phase 4E
   return (
     <GivingClient
       funds={funds}
+      deletedFunds={deletedFunds}
       contributions={contributions}
+      deletedContributions={deletedContributions}
       members={members}
+      user={user}
       summary={summary}
       csvUrl="/api/giving/contributions/csv"
     />
