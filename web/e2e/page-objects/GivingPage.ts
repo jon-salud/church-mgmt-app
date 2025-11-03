@@ -78,8 +78,9 @@ export class GivingPage extends BasePage {
 
   async selectAllContributions() {
     const checkbox = this.page.locator('#select-all-contributions-checkbox');
-    // Force click since the checkbox state might not update immediately
-    await checkbox.click({ force: true });
+    await expect(checkbox).toBeVisible();
+    await expect(checkbox).toBeEnabled();
+    await checkbox.check();
     await this.page.waitForTimeout(200);
   }
 

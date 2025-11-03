@@ -22,8 +22,8 @@ export const toast = {
 
   error: (message: string) => {
     console.error(`❌ ERROR: ${message}`);
-    // For critical errors, still use alert temporarily
-    window.alert(`Error: ${message}`);
+    // In production, this would trigger an error toast component
+    // (window.alert removed to avoid blocking UI; see tech debt notice)
   },
 
   warning: (message: string) => {

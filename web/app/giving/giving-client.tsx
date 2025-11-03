@@ -24,7 +24,7 @@ type GivingClientProps = {
 
 export function GivingClient({
   funds: initialFunds,
-  deletedFunds: initialDeletedFunds,
+  deletedFunds: _initialDeletedFunds,
   members,
   contributions: initialContributions,
   deletedContributions: initialDeletedContributions,
@@ -34,16 +34,10 @@ export function GivingClient({
 }: GivingClientProps) {
   const memberMap = useMemo(() => new Map(members.map(member => [member.id, member])), [members]);
 
-  // State management for soft delete
-  const [funds, setFunds] = useState(initialFunds);
-  const [deletedFunds, setDeletedFunds] = useState(initialDeletedFunds);
+  // State management for soft delete (contributions only - fund management reserved for future)
   const [contributions, setContributions] = useState(initialContributions);
   const [deletedContributions, setDeletedContributions] = useState(initialDeletedContributions);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [_showDeletedFunds, _setShowDeletedFunds] = useState(false);
   const [showDeletedContributions, setShowDeletedContributions] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [selectedFundIds, setSelectedFundIds] = useState<Set<string>>(new Set());
   const [selectedContributionIds, setSelectedContributionIds] = useState<Set<string>>(new Set());
   const [confirmDialog, setConfirmDialog] = useState<{
     open: boolean;
@@ -53,131 +47,12 @@ export function GivingClient({
   }>({ open: false, title: '', message: '', onConfirm: () => {} });
   const [editContribution, setEditContribution] = useState<Contribution | null>(null);
 
-  const fundMap = useMemo(() => new Map(funds.map(fund => [fund.id, fund])), [funds]);
+  const fundMap = useMemo(() => new Map(initialFunds.map(fund => [fund.id, fund])), [initialFunds]);
   const isAdmin = hasRole(user?.roles, 'admin');
   const isLeader = hasRole(user?.roles, 'leader');
   const canManage = isAdmin || isLeader;
 
-  // Handlers for soft delete operations (fund handlers reserved for future use)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _handleArchiveFund = async (fundId: string) => {
-    const fund = funds.find(f => f.id === fundId);
-    if (!fund) return;
-
-    setConfirmDialog({
-      open: true,
-      title: 'Archive Fund',
-      message: `Archive "${fund.name}"? It will be hidden from active use but can be restored later.`,
-      onConfirm: async () => {
-        setConfirmDialog(prev => ({ ...prev, open: false }));
-        setFunds(prev => prev.filter(f => f.id !== fundId));
-        setDeletedFunds(prev => [...prev, { ...fund, deletedAt: new Date().toISOString() }]);
-
-        try {
-          await clientApi.deleteFund(fundId);
-          toast.success(`Fund "${fund.name}" archived`);
-        } catch {
-          setFunds(prev => [...prev, fund]);
-          setDeletedFunds(prev => prev.filter(f => f.id !== fundId));
-          toast.error('Failed to archive fund');
-        }
-      },
-    });
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _handleRestoreFund = async (fundId: string) => {
-    const fund = deletedFunds.find(f => f.id === fundId);
-    if (!fund) return;
-
-    setDeletedFunds(prev => prev.filter(f => f.id !== fundId));
-    setFunds(prev => [...prev, { ...fund, deletedAt: null }]);
-
-    try {
-      await clientApi.undeleteFund(fundId);
-      toast.success(`Fund "${fund.name}" restored`);
-    } catch {
-      setDeletedFunds(prev => [...prev, fund]);
-      setFunds(prev => prev.filter(f => f.id !== fundId));
-      toast.error('Failed to restore fund');
-    }
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _handleBulkArchiveFunds = async () => {
-    const ids = Array.from(selectedFundIds);
-    if (ids.length === 0) return;
-
-    setConfirmDialog({
-      open: true,
-      title: 'Archive Funds',
-      message: `Archive ${ids.length} fund(s)? They can be restored later.`,
-      onConfirm: async () => {
-        setConfirmDialog(prev => ({ ...prev, open: false }));
-        const fundsToArchive = funds.filter(f => ids.includes(f.id));
-
-        setFunds(prev => prev.filter(f => !ids.includes(f.id)));
-        setDeletedFunds(prev => [
-          ...prev,
-          ...fundsToArchive.map(f => ({ ...f, deletedAt: new Date().toISOString() })),
-        ]);
-        setSelectedFundIds(new Set());
-
-        try {
-          const result: BulkOperationResult = await clientApi.bulkDeleteFunds(ids);
-          if (result.failed && result.failed.length > 0) {
-            toast.warning(
-              `Archived ${result.success} fund(s). ${result.failed.length} failed: ${result.failed.map(f => f.reason).join(', ')}`
-            );
-            const failedIds = result.failed.map(f => f.id);
-            const failedFunds = fundsToArchive.filter(f => failedIds.includes(f.id));
-            setFunds(prev => [...prev, ...failedFunds]);
-            setDeletedFunds(prev => prev.filter(f => !failedIds.includes(f.id)));
-          } else {
-            toast.success(`${result.success} fund(s) archived`);
-          }
-        } catch {
-          setFunds(prev => [...prev, ...fundsToArchive]);
-          setDeletedFunds(prev => prev.filter(f => !ids.includes(f.id)));
-          setSelectedFundIds(new Set(ids));
-          toast.error('Failed to archive funds');
-        }
-      },
-    });
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _handleBulkRestoreFunds = async () => {
-    const ids = Array.from(selectedFundIds);
-    if (ids.length === 0) return;
-
-    const fundsToRestore = deletedFunds.filter(f => ids.includes(f.id));
-
-    setDeletedFunds(prev => prev.filter(f => !ids.includes(f.id)));
-    setFunds(prev => [...prev, ...fundsToRestore.map(f => ({ ...f, deletedAt: null }))]);
-    setSelectedFundIds(new Set());
-
-    try {
-      const result: BulkOperationResult = await clientApi.bulkUndeleteFunds(ids);
-      if (result.failed && result.failed.length > 0) {
-        toast.warning(
-          `Restored ${result.success} fund(s). ${result.failed.length} failed: ${result.failed.map(f => f.reason).join(', ')}`
-        );
-        const failedIds = result.failed.map(f => f.id);
-        const failedFunds = fundsToRestore.filter(f => failedIds.includes(f.id));
-        setDeletedFunds(prev => [...prev, ...failedFunds]);
-        setFunds(prev => prev.filter(f => !failedIds.includes(f.id)));
-      } else {
-        toast.success(`${result.success} fund(s) restored`);
-      }
-    } catch {
-      setDeletedFunds(prev => [...prev, ...fundsToRestore]);
-      setFunds(prev => prev.filter(f => !ids.includes(f.id)));
-      setSelectedFundIds(new Set(ids));
-      toast.error('Failed to restore funds');
-    }
-  };
-
+  // Handlers for soft delete operations
   const handleArchiveContribution = async (contributionId: string) => {
     const contribution = contributions.find(c => c.id === contributionId);
     if (!contribution) return;
@@ -593,7 +468,7 @@ export function GivingClient({
                   className="rounded-md border border-border bg-background px-3 py-2 text-sm"
                 >
                   <option value="">General</option>
-                  {funds.map(fund => (
+                  {initialFunds.map(fund => (
                     <option key={fund.id} value={fund.id}>
                       {fund.name}
                     </option>
@@ -723,7 +598,7 @@ export function GivingClient({
                 className="rounded-md border border-border bg-background px-3 py-2 text-sm"
               >
                 <option value="">General</option>
-                {funds.map(fund => (
+                {initialFunds.map(fund => (
                   <option key={fund.id} value={fund.id}>
                     {fund.name}
                   </option>
