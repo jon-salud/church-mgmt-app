@@ -338,10 +338,23 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
     - ✅ Individual item labels use `sr-only` class for screen readers without visual clutter
     - ✅ Select-all labels changed from `<span>` to `<label>` with `cursor-pointer` for better UX
     - ✅ Validated with build and lint: 0 errors, 202 warnings (acceptable @typescript-eslint/no-explicit-any)
+- ✅ **Soft Delete Implementation - Phase 3 (Giving Module Backend):**
+  - ✅ **Repository Pattern:** Created IGivingRepository interface with 20 methods and GivingDataStoreRepository adapter wrapping DataStore
+  - ✅ **Database Methods:** Implemented 15+ soft delete methods in MockDatabaseService with proper deletedAt filtering
+  - ✅ **Data Store Adapters:** Added all soft delete methods to MockDataStoreAdapter, PrismaDataStore, and InMemoryDataStore
+  - ✅ **Controller Endpoints:** Implemented 12 REST endpoints for soft delete operations with OpenAPI documentation and authorization
+  - ✅ **Service Methods:** Created service methods with audit logging for all CRUD and soft delete operations
+  - ✅ **Type Definitions:** Updated ContributionUpdateInput to make actorUserId optional, added missing MockFund fields
+  - ✅ **Testing:** Created comprehensive E2E test suite (33 tests) covering all CRUD, soft delete, authorization, and cascade scenarios
+  - ✅ **Unit Tests:** Converted giving service unit tests from Jest to Vitest with proper repository mocking (6 tests)
+  - ✅ **Test Results:** All 39 giving tests passing (33 e2e + 6 unit), overall 328/329 tests passing
+  - ✅ **Code Quality:** Fixed all linting errors (unused variables) and TypeScript compilation issues
+  - ✅ **Documentation:** Updated TASKS.md with complete implementation details
+  - ✅ Successfully committed and pushed to feature/soft-delete-phase3-giving branch (commit 234beb0)
 
 ### 🔄 In Progress
 
-- **None** - Phase 2 complete, ready to proceed with Phase 3
+- **None** - Phase 3 complete, ready to proceed with Phase 4 or other priorities
 
 ### 📝 Backlog / Upcoming
 
@@ -385,10 +398,6 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - **Remaining:** 1 test skipped (allows skipping onboarding) due to serial execution conflict - not blocking
 
 - **Complete CRUD Operations for All Entities:**
-  - **Soft Delete Implementation - Phase 3 (Giving Module Backend):**
-    - **Backend:** Implement soft delete for Funds and Contributions entities following same pattern as Phase 1
-    - **Target:** 10 database methods, 10 adapter methods, 10 controller endpoints, 10 service methods per entity
-    - **Testing:** Comprehensive unit tests covering all soft delete operations
   - **Soft Delete Implementation - Phase 4 (Giving Module Frontend):**
     - **Frontend:** Implement soft delete UI for Funds and Contributions following Phase 2 patterns
     - **Features:** Admin-only controls, show archived toggle, bulk operations, archived badges
