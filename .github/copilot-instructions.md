@@ -27,6 +27,7 @@ For every sprint (a collection of related phases):
    - Document the overall approved plan for the entire sprint
    - Include: sprint goals, all phases overview, acceptance criteria, timeline
    - This is NOT a task tracking file - it's the strategic plan document
+   - **Note:** The "PLAN" suffix must always be uppercase for all sprint and phase plan files
 
 3. **Sprint Completion**
    - After all phases are complete and merged to the sprint branch
@@ -49,6 +50,7 @@ For each phase within a sprint:
 
 3. **Create Phase Plan Document**
    - Create: `docs/sprints/{sprint-name}-phase{N}-PLAN.md`
+   - Use a non-padded integer for `{N}` (e.g., `phase1`, `phase2`, not `phase01`)
    - Document the approved implementation plan for this specific phase
    - Include: detailed technical approach, files to modify, testing strategy
    - Written BEFORE implementation begins
