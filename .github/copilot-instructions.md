@@ -1,304 +1,207 @@
-# AI Agent Workflow for Church Management App
+# AI Agent Workflow for Church Management App (Strict Mode • Prettier)
 
-This guide outlines the standardized workflow for AI agents when handling user prompts in this church management application.
+You are in **STRICT MODE**. Do not write or modify code until all **Compliance Gates** pass and the required **Artifacts** exist. If a gate fails, **STOP** and ask the user.
 
-## Core Principles
+> This version assumes **Prettier** is the single source of truth for formatting.
 
-1. **Certainty Before Action:** Achieve absolute certainty of the user's expectations and goals before starting any work. Ask clarifying questions to confirm assumptions, even if the task seems clear. The goal is to achieve zero doubt about the requirements.
-2. **Codebase as Source of Truth:** The actual codebase files are the source of truth for the current code state. If documentation like `TASKS.md` is out of sync, the code prevails, and the documentation must be updated.
-3. **User Request Supersedes:** Always prioritize the user's current, explicit request over any conflicting information in this document or other project files.
-4. **Regression Prevention (MUST):** Before making any code changes, systematically review where methods, functions, or components are used to identify dependencies. If fundamental changes risk breaking existing functionality, introduce new implementations or update incrementally to ensure no regressions. Use code search and analysis tools to identify dependencies, such as those that search the entire codebase to list all usages (e.g., `list_code_usages`), perform text searches (e.g., `grep_search`), or semantic queries (e.g., `semantic_search`), and validate through comprehensive testing and builds.
+---
 
-## Sprint and Phase Management Protocol (MUST)
+## 0) Execution Contract (MUST READ FIRST)
 
-This project follows a structured sprint and phase workflow for organizing multi-phase feature development. **You MUST follow this protocol for all sprint-based work.**
+**Authoritative sources (priority order):**
+1) **User’s current explicit request**
+2) **This document** (Strict Mode)
+3) **Codebase** (actual files on disk)
+4) Project docs (e.g., `TASKS.md`, `PRD.md`)
 
-### Sprint-Level Workflow
+**Non‑negotiables (MUST):**
+- Never commit directly to `main`.
+- Never create a phase branch off `main`.
+- Always follow **Sprint & Phase Protocol** and pass **Compliance Gates**.
+- Prevent regressions: search usages before changes; keep tests green.
+- **Formatting:** Use only the commands `pnpm format` and `pnpm format:check`. Do **not** call Prettier directly.
 
-For every sprint (a collection of related phases):
+---
 
-1. **Create Sprint Branch**
-   - Branch from `main` with naming: `feature/{sprint-name}-main-sprint`
-   - Example: `feature/soft-delete-main-sprint`
-   - This branch serves as the integration point for all phases in the sprint
+## 1) Sprint & Phase Management Protocol (MUST)
 
-2. **Create Sprint Plan Document**
-   - Create a new file: `docs/sprints/{sprint-name}-PLAN.md`
-   - Document the overall approved plan for the entire sprint
-   - Include: sprint goals, all phases overview, acceptance criteria, timeline
-   - This is NOT a task tracking file - it's the strategic plan document
-   - **Note:** The "PLAN" suffix must always be uppercase for all sprint and phase plan files
-   - **Rationale:** The uppercase "PLAN" suffix ensures that plan documents are easily distinguishable from task files and implementation documents in file listings, supports automation that relies on consistent naming, and helps prevent confusion between planning and execution artifacts
+You MUST follow this protocol for all sprint‑based work.
 
-3. **Sprint Completion**
-   - After all phases are complete and merged to the sprint branch
-   - Create a Pull Request from sprint branch → `main`
-   - PR title: "Sprint: {Sprint Name}"
-   - PR includes all completed phases and documentation
+### 1.1 Sprint‑Level
 
-### Phase-Level Workflow
+1. **Create Sprint Branch**  
+   From `main`: `feature/{sprint-name}-main-sprint`  
+   Example: `feature/soft-delete-main-sprint`
 
-For each phase within a sprint:
+2. **Create Sprint Plan**  
+   File: `docs/sprints/{sprint-name}-PLAN.md` (PLAN must be uppercase)  
+   Contents: sprint goals, phase overview, acceptance criteria, timeline, risks.
 
-1. **Move Phase to In Progress**
-   - In `TASKS.md`, move the entire phase section from "Backlog" to "🔄 In Progress"
-   - Clearly mark which phase you are working on
+3. **Complete Sprint**  
+   After all phases merged → PR `feature/{sprint-name}-main-sprint` → `main`  
+   Title: `Sprint: {Sprint Name}`. Link all phase PRs & plans.
 
-2. **Create Phase Branch**
-   - Branch OFF the sprint branch (not main)
-   - Naming convention: `feature/{sprint-name}-phase{N}-{brief-description}`
-   - Example: `feature/soft-delete-phase4-giving-frontend`
+### 1.2 Phase‑Level
 
-3. **Create Phase Plan Document**
-   - Create: `docs/sprints/{sprint-name}-phase{N}-PLAN.md`
-   - Use a non-padded integer for `{N}` (e.g., `phase1`, `phase2`, not `phase01`)
-   - **Note:** If a sprint has 10+ phases, use zero-padded integers (e.g., `phase01`, `phase02`) to ensure correct alphabetical sorting in file listings
-   - Document the approved implementation plan for this specific phase
-   - Include: detailed technical approach, files to modify, testing strategy
-   - Written BEFORE implementation begins
+1. **Move Phase to In Progress** in `TASKS.md`.  
+2. **Create Phase Branch** from the sprint branch:  
+   `feature/{sprint-name}-phase{N}-{brief-description}`.  
+3. **Create Phase Plan BEFORE coding**:  
+   `docs/sprints/{sprint-name}-phase{N}-PLAN.md`  
+   Use `phase1`, `phase2` ...; if ≥10 phases, zero‑pad (`phase01`...).  
+   Include: technical approach, files to change, tests, risks & rollback, acceptance criteria.  
+4. **Implement & Review** on the phase branch; keep tests green.  
+5. **Document Accomplishments**: append `## Accomplishments` to the phase plan.  
+6. **Open Phase PR** → sprint branch (NOT `main`).  
+7. **Update `TASKS.md`** to “✅ Completed” with brief summary + commit hashes.
 
-4. **Implementation and Review**
-   - Implement the phase following the plan
-   - Commit and push changes to the phase branch
-   - Address all code review feedback with additional commits
-   - Run all tests and ensure no regressions
+**Rules Recap**  
+- **NEVER** branch a phase from `main`.  
+- **NEVER** merge a phase directly to `main`.  
+- **ALWAYS** create sprint plan before phases; create each phase plan before implementation.  
+- **ALWAYS** append accomplishments after completion and keep `TASKS.md` in sync.
 
-5. **Document Phase Accomplishments**
-   - After implementation is complete, append to the phase plan document
-   - Add a "## Accomplishments" section at the end
-   - Include comprehensive details of what was actually done
-   - Note any deviations from the original plan and why
-   - Include: files changed, test results, any issues resolved
-   - This captures the reality vs. the plan
+---
 
-6. **Create Phase Pull Request**
-   - Create PR from phase branch → sprint branch (NOT to main)
-   - PR title: "Phase {N}: {Description}"
-   - Reference the phase plan document in PR description
+## 2) Compliance Gates (Hard Stops)
 
-7. **Update TASKS.md**
-   - Once PR is merged, move the phase from "In Progress" to "✅ Completed"
-   - Add accomplishment summary with commit hashes
-   - Keep documentation in sync with actual state
+You MUST pass each gate in order. If any check fails, **STOP** and ask the user.
 
-### File Organization
+### Gate A — Readiness & Understanding
+- Read `TASKS.md` and relevant `docs/source-of-truth/*`.
+- Ask clarifying questions until **zero ambiguity**.
+- Produce **Readiness Receipt JSON** (see §3) and wait for explicit approval.
 
+### Gate B — Sprint/Phase Setup
+- Sprint branch exists and is correctly named.
+- Sprint plan exists.
+- Phase moved to “🔄 In Progress” in `TASKS.md`.
+- Phase branch exists from sprint branch and is correctly named.
+- Phase plan file exists with required sections.
+
+### Gate C — Test‑First (TDD)
+- Add/adjust tests per phase plan (happy path, edges, errors).
+- Confirm failing tests initially (red).
+
+### Gate D — Implementation & Verification
+- Implement minimal code to pass tests (green).
+- Refactor safely while tests remain green.
+- Run full test suite and lint/format checks.
+- Verify no regressions (usage search complete).
+
+### Gate E — Documentation & PRs
+- Append `## Accomplishments` to phase plan.
+- Update `TASKS.md` status.
+- Open phase PR → sprint branch with links to plan & commits.
+- On sprint completion: open sprint PR → `main`.
+
+---
+
+## 3) Required Machine‑Checkable Output (Readiness Receipt)
+
+Return this JSON **before implementing** and wait for approval:
+
+```json
+{
+  "sprint": {
+    "name": "<sprint-name>",
+    "branch": "feature/<sprint-name>-main-sprint",
+    "plan_file": "docs/sprints/<sprint-name>-PLAN.md",
+    "exists": true
+  },
+  "phase": {
+    "n": "<N>",
+    "title": "<brief-description>",
+    "branch": "feature/<sprint-name>-phase<N>-<brief-description>",
+    "plan_file": "docs/sprints/<sprint-name>-phase<N>-PLAN.md",
+    "moved_in_tasks_md": true
+  },
+  "tests": {
+    "added_or_updated": ["<paths>"],
+    "coverage_targets": ["<modules>"]
+  },
+  "searches_done": {
+    "usages_checked_for": ["<symbols/functions/classes>"]
+  },
+  "risks_and_rollbacks": {
+    "key_risks": ["<risk-1>", "<risk-2>"],
+    "rollback_plan": "<summary>"
+  }
+}
 ```
-docs/
-  sprints/
-    soft-delete-PLAN.md                    # Sprint overview (no phase designation)
-    soft-delete-phase1-PLAN.md             # Phase 1 plan + accomplishments
-    soft-delete-phase2-PLAN.md             # Phase 2 plan + accomplishments
-    soft-delete-phase3-PLAN.md             # Phase 3 plan + accomplishments
-    ...
-```
 
-### Branch Structure
+**Do not implement** until this is approved by the user.
+
+---
+
+## 4) Formatting (Prettier as Single Source of Truth)
+
+- Run **only**:
+  - `pnpm format` (write)
+  - `pnpm format:check` (verify)  
+- Do **not** call any formatter directly.  
+- CI must fail if `pnpm format:check` fails.  
+- VS Code should have a **single default formatter** per language (Prettier).
+
+---
+
+## 5) Regression Prevention (MUST)
+
+Before changes, identify dependencies and risks:
+- Full‑repo search to list all usages of changed symbols (e.g., `list_code_usages`, text search, semantic search).  
+- If risk of breakage, prefer **new implementations** or **incremental updates** guarded by tests.  
+- Confirm no unintended behaviour changes via tests and manual checks where appropriate.
+
+---
+
+## 6) End‑to‑End Workflow
+
+1) **Understand** → read `TASKS.md`, `docs/source-of-truth/*`; ask questions.  
+2) **Plan** → produce step‑by‑step plan + **Readiness Receipt JSON**; wait for approval.  
+3) **TDD** → write tests first; see them fail (red).  
+4) **Execute** → minimal implementation to pass tests (green); refactor safely; verify; format.  
+5) **Docs** → update `TASKS.md`; update `docs/source-of-truth/*`, `PRD.md`, `USER_MANUAL.md` if impacted; append `## Accomplishments`.  
+6) **Submit** → Phase PR → sprint branch; Sprint PR → `main` when all phases complete.
+
+---
+
+## 7) File/Branch Naming
 
 ```
 main
-  └─ feature/soft-delete-main-sprint
-       ├─ feature/soft-delete-phase1-users-events-backend
-       ├─ feature/soft-delete-phase2-groups-announcements-frontend
-       ├─ feature/soft-delete-phase3-giving-backend
-       └─ feature/soft-delete-phase4-giving-frontend
+  └─ feature/{sprint-name}-main-sprint
+       ├─ feature/{sprint-name}-phase1-<desc>
+       ├─ feature/{sprint-name}-phase2-<desc>
+       └─ ...
+docs/
+  sprints/
+    {sprint-name}-PLAN.md
+    {sprint-name}-phase1-PLAN.md
+    {sprint-name}-phase2-PLAN.md
 ```
 
-### Key Rules
+- Use non‑padded `phaseN` unless ≥10 phases (then `phase01`).  
+- PLAN suffix is uppercase.
 
-- **NEVER** create a phase branch from `main` - always from the sprint branch  
-  _Rationale: Creating phase branches from the sprint branch ensures all phases build on the same integration point, preventing divergence and merge conflicts._
-  
-- **NEVER** merge a phase directly to `main` - always to sprint branch first  
-  _Rationale: Merging phases into the sprint branch first allows for incremental integration testing and avoids introducing incomplete or conflicting features into `main`._
-  
-- **ALWAYS** create the sprint plan before starting any phases, and create each phase plan before starting that phase's implementation  
-  _Rationale: Planning documents provide clear objectives and acceptance criteria, reducing ambiguity and rework during implementation._
-  
-- **ALWAYS** append accomplishments to phase plan after completion  
-  _Rationale: Documenting accomplishments ensures accurate historical records and helps with retrospectives and knowledge transfer._
-  
-- **ALWAYS** update `TASKS.md` to reflect current sprint/phase status  
-  _Rationale: Keeping `TASKS.md` up to date provides a reliable source of truth for project progress and prevents confusion among contributors._
-  
-- Plan documents are strategic/historical records, NOT task lists
+---
 
-## Workflow Steps
+## 8) Technical Guardrails (Project Snapshot)
 
-When a user submits a prompt to the AI Agent:
+- **Monorepo:** `pnpm` workspaces; install with `pnpm install`.  
+- **Servers:** API `pnpm dev:api:mock` (3001); Web `pnpm -C web dev` (3000).  
+- **Testing:** Build `pnpm -r build`; API `pnpm -C api test`; E2E `pnpm test:e2e:mock`.  
+- **Auth in E2E:** cookie `demo_token=demo-admin`.  
+- **RBAC & Multi‑tenancy:** require `churchId`; use `hasRole()` utilities.  
+- **Audit log:** never commit `api/storage/audit-log.json`.
 
-1. **Understand the Task**
-   - Begin by reading the `TASKS.md` file to understand the current state of the project and the backlog
-   - Cross-reference the source of truth documents (all files in `docs/source-of-truth/`) to ensure deep understanding of feature requirements and acceptance criteria
-   - Ask clarifying questions to resolve any ambiguities and achieve zero doubt about requirements
+---
 
-2. **Formulate a Plan**
-   - Create a detailed, step-by-step plan based on the source of truth documents
-   - Review usages of any methods, functions, or components to be changed using code search and analysis tools, such as those that search the entire codebase to list all usages (e.g., `list_code_usages`), perform text searches (e.g., `grep_search`), or semantic queries (e.g., `semantic_search`) to prevent regressions
-   - Review the plan for robustness, identifying potential challenges and outlining workarounds and solutions
-   - Present the plan to the user, highlighting any risks, and wait for explicit approval before proceeding
-   - The plan must include a final documentation update and submission step
+## 9) Common Pitfalls Checklist
 
-3. **Define Tests First (TDD)**
-   - Before implementing any code changes, write or update tests to define the expected behavior
-   - Use existing test files and add new ones if insufficient coverage
-   - Ensure tests cover happy path, edge cases, and error conditions
-   - Run tests to confirm they fail initially (red phase)
-
-4. **Execute and Verify**
-   - Upon approval, implement the plan, making tests pass (green phase)
-   - Write minimal code to satisfy test requirements
-   - Refactor code while keeping tests passing (refactor phase)
-   - After each modification to the codebase, verify the changes using read-only tools
-
-5. **Test Implementation**
-   - Ensure no build failures and run all tests to validate the changes
-   - Verify that all existing functionality still works correctly
-
-6. **Update Documentation**
-   - Update `TASKS.md` to reflect the progress of the task (e.g., moving it from "In Progress" to "Completed")
-   - As part of the same branch/PR, update all relevant files in `docs/source-of-truth/` to reflect the new or updated features
-   - Make documentation updates in separate commits from code changes for clarity
-   - Ask the user to confirm each documentation update to keep them informed
-   - If changes impact the product's features or requirements, update `PRD.md` and `USER_MANUAL.md` accordingly
-   - Append any new findings or follow-up tasks to the backlog in `TASKS.md`
-
-7. **Submit the Work**
-   - Once all steps are complete and verified, commit and push the feature changes with proper title and description
-   - Ensure that both code and documentation changes are reviewed and merged together in the same PR to keep the codebase and docs in sync
-
-## Product Overview
-
-A church management system with:
-
-- Member directory with role-based access
-- Groups/ministries management
-- Events and attendance tracking
-- Announcements and communications
-- Manual giving records
-- Pastoral care and prayer request system
-- Child check-in safety features
-- PWA capabilities with offline support
-
-## Architecture Overview
-
-- **Monorepo Structure** (`pnpm` workspaces):
-  - `api/` - NestJS API with mock/Prisma data stores
-  - `web/` - Next.js 13+ frontend with App Router
-  - Cross-cutting: TypeScript, OpenAPI, E2E tests
-
-### Key Design Patterns
-
-1. **Data Layer Abstraction**
-   - `DataStore` interface defined by `api/src/mock/mock-database.service.ts`
-   - Mock store is default for development (`DATA_MODE=mock`)
-   - Prisma schema ready for future persistent storage
-
-2. **Frontend Architecture**
-   - App Router pages in `web/app/`
-   - Shared UI components in `web/components/`
-   - PWA capabilities via service worker
-
-## Project Conventions
-
-- **Multi-tenancy**: All entities scoped by `churchId` for data isolation
-- **Soft Delete**: All tables implement `deletedAt` timestamp for audit trails
-- **Role-Based Access**: Admin/Leader/Member roles with granular permissions
-- **Audit Logging**: All changes logged to `storage/audit-log.json`
-- **Mock Data**: Canonical seed in `api/src/mock/mock-data.ts`
-- **UI Automation**: All interactive elements have unique `id` attributes
-- **Type Safety**: Strict TypeScript with DTOs in `api/src/modules/*/dto/`
-
-## Common Development Tasks
-
-### Adding a New Feature
-
-1. **API Changes**
-   ```typescript
-   // 1. Define DTOs in api/src/modules/your-feature/dto/
-   export class YourFeatureDto {
-     @IsString()
-     name: string;
-   }
-
-   // 2. Add to mock-data.ts
-   export const mockYourFeatures = [{ id: '1', name: 'Example' }];
-
-   // 3. Update mock-database.service.ts
-   @Injectable()
-   export class MockDatabaseService {
-     async getYourFeature(id: string) {
-       return mockYourFeatures.find(f => f.id === id);
-     }
-   }
-   ```
-
-2. **Frontend Changes**
-   ```typescript
-   // 1. Add page in web/app/your-feature/page.tsx
-   export default function YourFeaturePage() {
-     return <div>Your Feature</div>;
-   }
-
-   // 2. Add to navigation in web/app/layout.tsx
-   // 3. Add E2E test in web/e2e/your-feature.spec.ts
-   ```
-
-### Working with Mock Data
-
-1. Add mock data in `api/src/mock/mock-data.ts`
-2. Update `MockDatabaseService` with new methods
-3. Implement in controller using injected `DataStore`
-
-## Technical Guidelines
-
-- **Monorepo Management:** The project uses `pnpm` workspaces. The command to install all dependencies is `pnpm install`.
-- **Development Servers:**
-  - API (NestJS): `pnpm dev:api:mock` (runs on port 3001)
-  - Frontend (Next.js): `pnpm -C web dev` (runs on port 3000)
-  - Run servers in the background with `&` and redirect output to log files (e.g., `> api_dev.log &`).
-  - If servers fail with `EADDRINUSE`, terminate existing processes with `pkill -f 'pnpm'` and `pkill -f 'node'`.
-- **Data Layer:**
-  - The application uses a mock datastore for development (`DATA_MODE=mock`).
-  - The `DataStore` interface is derived from `api/src/mock/mock-database.service.ts`.
-  - When updating the `DataStore` interface, changes must be implemented in both `PrismaDataStore` and `MockDataStoreAdapter`.
-- **Testing:**
-  - Build: `pnpm -r build`
-  - API tests: `pnpm -C api test` (uses Vitest)
-  - End-to-end tests: `pnpm test:e2e:mock`
-  - To run a single E2E test: `pnpm -C web test:e2e <path_to_spec_file>`
-- **Code Quality:**
-  - Lint code: `pnpm lint`
-  - Auto-fix linting issues: `pnpm lint:fix`
-  - Format code: `pnpm format`
-  - Check formatting: `pnpm format:check`
-  - E2E tests may fail in the remote environment due to missing dependencies. These tests can be skipped if necessary, and the reason should be noted.
-- **Authentication:**
-  - E2E tests bypass the login UI by setting the `demo_token` cookie to `demo-admin`.
-  - The web app uses OAuth with Google/Facebook providers.
-- **Styling:** Follow the existing theme and styling conventions using Tailwind CSS and shadcn/ui components.
-- **UI Automation:** All interactive elements must have a unique `id` attribute to facilitate end-to-end testing.
-
-## UI Features
-
-- **Theme Switching:** The application supports light and dark themes. A theme switcher component is available in the main layout.
-- **Sidebar Navigation:** The sidebar menu uses icons and highlights the active link.
-
-## Common Pitfalls
-
-- Don't assume Prisma DB exists - use mock store
-- Watch for port conflicts (3000, 3001)
-- Remember to rebuild after certain dep changes
-- Verify environment variables when OAuth flows fail
-- Check port conflicts if E2E tests fail unexpectedly
-- Remember: all entities require `churchId` for multi-tenancy
-- Use `hasRole()` utility for role-based UI logic
-- **Never commit `api/storage/audit-log.json`** - This file grows every time E2E tests run as the application logs all actions. It should always be excluded from version control.
-
-## Cross-Platform Development
-
-- **Line Ending Normalization:** The `.gitattributes` file ensures consistent LF line endings for text files across all platforms
-- **Pre-commit Hooks:** Automatic code quality checks (linting, formatting, type checking) run before each commit
-- **CI Pipeline:** Includes encoding and line ending validation to prevent platform-specific issues
-- **Platform Scripts:** The standard way to run end-to-end tests is with `pnpm test:e2e:mock`, which works in most local development environments. However, if your shell or environment does not support the `pnpm` command directly (such as in certain CI/CD pipelines or when running tests outside of a Node.js shell), use the platform-specific scripts provided: `scripts/run-e2e.sh` for Unix/macOS and `scripts/run-e2e.ps1` for Windows. These scripts ensure the correct environment and dependencies are set up for E2E testing on your platform.
-- **File Transfers:** When moving files between macOS and Windows, always run `pnpm format` to fix encoding issues
+- [ ] Branching phases from `main`  
+- [ ] Skipping PLAN docs before coding  
+- [ ] Implementing without user‑approved **Readiness Receipt**  
+- [ ] Running multiple formatters or skipping format checks  
+- [ ] Missing regression searches for symbol usages  
+- [ ] Forgetting to update `TASKS.md`  
+- [ ] Opening phase PR directly to `main`
