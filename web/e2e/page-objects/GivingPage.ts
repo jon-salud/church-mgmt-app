@@ -80,7 +80,8 @@ export class GivingPage extends BasePage {
     const checkbox = this.page.locator('#select-all-contributions-checkbox');
     await expect(checkbox).toBeVisible();
     await expect(checkbox).toBeEnabled();
-    await checkbox.check();
+    // Use click() instead of check() to properly trigger React state updates
+    await checkbox.click();
     await this.page.waitForTimeout(200);
   }
 

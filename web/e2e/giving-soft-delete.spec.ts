@@ -29,7 +29,7 @@ test.describe('Giving Soft Delete', () => {
 
     // Get the contribution amount for verification
     const contributionRow = await givingPage.getContributionRow(contributionId);
-    const amount = await contributionRow.locator('td').nth(3).textContent();
+    const amount = await contributionRow.locator('td').nth(4).textContent();
     if (!amount) throw new Error('No amount found');
 
     await test.step('Archive the contribution', async () => {
@@ -101,7 +101,7 @@ test.describe('Giving Soft Delete', () => {
     const amounts: string[] = [];
     for (const id of contributionIds) {
       const row = await givingPage.getContributionRow(id);
-      const amount = await row.locator('td').nth(3).textContent();
+      const amount = await row.locator('td').nth(4).textContent();
       if (amount) amounts.push(amount);
     }
 
@@ -231,7 +231,7 @@ test.describe('Giving Soft Delete', () => {
     await test.step('Get first contribution', async () => {
       contributionId = await givingPage.getFirstContributionId();
       const row = await givingPage.getContributionRow(contributionId);
-      const amountText = await row.locator('td').nth(3).textContent();
+      const amountText = await row.locator('td').nth(4).textContent();
       archivedAmount = amountText?.replace(/[$,]/g, '') || '0';
     });
 
