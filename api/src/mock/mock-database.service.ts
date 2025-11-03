@@ -1870,11 +1870,12 @@ export class MockDatabaseService {
       apply('note', input.note ?? undefined);
     }
 
-    if (Object.keys(diff).length > 0 && input.actorUserId) {
-      const actorName = this.getUserName(input.actorUserId);
+    if (Object.keys(diff).length > 0) {
+      const actorUserId = input.actorUserId || 'system';
+      const actorName = this.getUserName(actorUserId);
       const memberName = this.getUserName(contribution.memberId);
       this.createAuditLog({
-        actorUserId: input.actorUserId,
+        actorUserId,
         action: 'giving.updated',
         entity: 'contribution',
         entityId: contribution.id,

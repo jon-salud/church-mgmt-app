@@ -762,14 +762,20 @@ export class PrismaDataStore implements DataStore {
     ids: string[],
     _input: { actorUserId: string }
   ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    // Find funds that are not already deleted
+    const existingFunds = await this.client.fund.findMany({
+      where: { id: { in: ids }, deletedAt: null },
+      select: { id: true },
+    });
+    const existingIds = new Set(existingFunds.map((f: { id: string }) => f.id));
     const result = await this.client.fund.updateMany({
       where: { id: { in: ids }, deletedAt: null },
       data: { deletedAt: new Date() },
     });
-    const notFound = ids.filter(id => !result.count || id !== id);
+    const notFound = ids.filter((id: string) => !existingIds.has(id));
     return {
       success: result.count || 0,
-      failed: notFound.map(id => ({ id, reason: 'Not found or already deleted' })),
+      failed: notFound.map((id: string) => ({ id, reason: 'Not found or already deleted' })),
     };
   }
 
@@ -877,9 +883,12 @@ export class PrismaDataStore implements DataStore {
     if (!contribution || contribution.deletedAt) {
       return null;
     }
+    // Exclude actorUserId from data sent to Prisma (it's not a database column)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { actorUserId, ...data } = input as any;
     const updated = await this.client.contribution.update({
       where: { id },
-      data: input as any,
+      data,
     });
     return {
       ...updated,
@@ -925,13 +934,20 @@ export class PrismaDataStore implements DataStore {
     ids: string[],
     _input: { actorUserId: string }
   ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    // Find contributions that are not already deleted
+    const existingContributions = await this.client.contribution.findMany({
+      where: { id: { in: ids }, deletedAt: null },
+      select: { id: true },
+    });
+    const existingIds = new Set(existingContributions.map((c: { id: string }) => c.id));
     const result = await this.client.contribution.updateMany({
       where: { id: { in: ids }, deletedAt: null },
       data: { deletedAt: new Date() },
     });
+    const notFound = ids.filter((id: string) => !existingIds.has(id));
     return {
       success: result.count || 0,
-      failed: [],
+      failed: notFound.map((id: string) => ({ id, reason: 'Not found or already deleted' })),
     };
   }
 

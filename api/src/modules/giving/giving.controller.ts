@@ -197,7 +197,13 @@ export class GivingController {
     // Members can only see their own contributions; leaders/admin see all
     const isAdmin = req?.user?.roles?.some((r: any) => r.role === 'Admin');
     const isLeader = req?.user?.roles?.some((r: any) => r.role === 'Leader');
-    const effectiveMemberId = !isAdmin && !isLeader ? req?.user?.id : memberId;
+
+    // Security: Members must have a valid user ID and cannot override the filter
+    if (!isAdmin && !isLeader && !req?.user?.id) {
+      throw new ForbiddenException('You are not authorized to view contributions.');
+    }
+
+    const effectiveMemberId = !isAdmin && !isLeader ? req.user.id : memberId || undefined;
 
     return this.givingService.listContributions({
       memberId: effectiveMemberId,

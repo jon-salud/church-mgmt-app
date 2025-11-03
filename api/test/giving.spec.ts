@@ -1,6 +1,4 @@
-import { Test } from '@nestjs/testing';
-import { AppModule } from '../src/modules/app.module';
-import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
+import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { bootstrapTestApp } from './support/e2e-bootstrap';
 
 describe('Giving Soft Delete (e2e)', () => {
