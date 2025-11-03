@@ -299,6 +299,7 @@ export function GivingClient({
                 <tr>
                   {canManage && (
                     <th scope="col" className="w-12 py-2">
+                      <span className="sr-only">Select all contributions</span>
                       <input
                         id="select-all-contributions-checkbox"
                         type="checkbox"
@@ -311,6 +312,7 @@ export function GivingClient({
                           }
                         }}
                         className="rounded border-gray-300"
+                        aria-label="Select all contributions"
                       />
                     </th>
                   )}
@@ -363,6 +365,7 @@ export function GivingClient({
                               setSelectedContributionIds(newSet);
                             }}
                             className="rounded border-gray-300"
+                            aria-label={`Select contribution from ${memberName}`}
                           />
                         </td>
                       )}
