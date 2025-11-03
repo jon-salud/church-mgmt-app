@@ -186,5 +186,5 @@ A church management system with:
 - **Line Ending Normalization:** The `.gitattributes` file ensures consistent LF line endings for text files across all platforms
 - **Pre-commit Hooks:** Automatic code quality checks (linting, formatting, type checking) run before each commit
 - **CI Pipeline:** Includes encoding and line ending validation to prevent platform-specific issues
-- **Platform Scripts:** Use appropriate scripts for your platform (`scripts/run-e2e.sh` for Unix/macOS, `scripts/run-e2e.ps1` for Windows)
+- **Platform Scripts:** The standard way to run end-to-end tests is with `pnpm test:e2e:mock`, which works in most local development environments. However, if your shell or environment does not support the `pnpm` command directly (such as in certain CI/CD pipelines or when running tests outside of a Node.js shell), use the platform-specific scripts provided: `scripts/run-e2e.sh` for Unix/macOS and `scripts/run-e2e.ps1` for Windows. These scripts ensure the correct environment and dependencies are set up for E2E testing on your platform.
 - **File Transfers:** When moving files between macOS and Windows, always run `pnpm format` to fix encoding issues
