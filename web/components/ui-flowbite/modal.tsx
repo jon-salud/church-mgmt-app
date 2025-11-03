@@ -14,6 +14,59 @@ type ModalProps = {
   'data-testid'?: string;
 };
 
+export interface ConfirmDialogProps {
+  open: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  message: string;
+  confirmText?: string;
+  cancelText?: string;
+  variant?: 'default' | 'danger' | 'warning';
+}
+
+export function ConfirmDialog({
+  open,
+  onClose,
+  onConfirm,
+  title,
+  message,
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
+  variant = 'default',
+}: ConfirmDialogProps) {
+  const variantStyles = {
+    default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+    danger: 'bg-red-600 text-white hover:bg-red-700',
+    warning: 'bg-amber-600 text-white hover:bg-amber-700',
+  };
+
+  return (
+    <Modal open={open} onClose={onClose} title={title}>
+      <div className="space-y-4">
+        <p className="text-sm text-foreground">{message}</p>
+        <div className="flex justify-end gap-2">
+          <button
+            onClick={onClose}
+            className="rounded-md border border-border px-4 py-2 text-sm hover:bg-muted"
+          >
+            {cancelText}
+          </button>
+          <button
+            onClick={() => {
+              onConfirm();
+              onClose();
+            }}
+            className={`rounded-md px-4 py-2 text-sm font-medium ${variantStyles[variant]}`}
+          >
+            {confirmText}
+          </button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
 export function Modal({
   open,
   onClose,
