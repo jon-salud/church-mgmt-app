@@ -4,8 +4,12 @@ const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localho
 
 async function apiFetch<T>(path: string, init?: RequestInit) {
   const headers = new Headers(init?.headers || {});
-  // Only set Content-Type if there's a body to send
-  if (init?.body) {
+  // Only set Content-Type to application/json if body is present, not FormData/Blob/URLSearchParams, and Content-Type is not already set
+  if (
+    init?.body &&
+    !headers.has('Content-Type') &&
+    typeof init.body === 'string' // assume JSON.stringify has been called
+  ) {
     headers.set('Content-Type', 'application/json');
   }
 
