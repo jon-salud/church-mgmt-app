@@ -99,7 +99,7 @@ interface ContributionUpdateInput {
   fundId?: string | null;
   method?: MockContribution['method'];
   note?: string | null;
-  actorUserId: string;
+  actorUserId?: string;
 }
 
 interface UserCreateInput {
@@ -1762,11 +1762,11 @@ export class MockDatabaseService {
   }
 
   listFunds() {
-    return clone(this.funds);
+    return clone(this.funds.filter(f => !f.deletedAt));
   }
 
   listContributions(filter?: { memberId?: string; fundId?: string; from?: string; to?: string }) {
-    let list = this.contributions;
+    let list = this.contributions.filter(c => !c.deletedAt);
     if (filter?.memberId) {
       list = list.filter(contribution => contribution.memberId === filter.memberId);
     }
@@ -1834,7 +1834,7 @@ export class MockDatabaseService {
   }
 
   updateContribution(id: string, input: ContributionUpdateInput) {
-    const contribution = this.contributions.find(item => item.id === id);
+    const contribution = this.contributions.find(item => item.id === id && !item.deletedAt);
     if (!contribution) {
       return null;
     }
@@ -1871,10 +1871,11 @@ export class MockDatabaseService {
     }
 
     if (Object.keys(diff).length > 0) {
-      const actorName = this.getUserName(input.actorUserId);
+      const actorUserId = input.actorUserId || 'system';
+      const actorName = this.getUserName(actorUserId);
       const memberName = this.getUserName(contribution.memberId);
       this.createAuditLog({
-        actorUserId: input.actorUserId,
+        actorUserId,
         action: 'giving.updated',
         entity: 'contribution',
         entityId: contribution.id,
@@ -1986,6 +1987,272 @@ export class MockDatabaseService {
       filename: `giving-contributions-${new Date().toISOString().slice(0, 10)}.csv`,
       content: lines.join('\n'),
     };
+  }
+
+  // ==================== FUND SOFT DELETE OPERATIONS ====================
+
+  createFund(input: { name: string; description?: string }) {
+    const fund = {
+      id: `fund-${Date.now()}`,
+      churchId: this.getChurch().id,
+      name: input.name,
+      description: input.description,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+    this.funds.push(fund);
+    this.createAuditLog({
+      actorUserId: 'system',
+      action: 'fund.created',
+      entity: 'fund',
+      entityId: fund.id,
+      summary: `Fund created: ${fund.name}`,
+      metadata: { fundId: fund.id, name: fund.name },
+    });
+    return clone(fund);
+  }
+
+  updateFund(id: string, input: Partial<{ name: string; description?: string }>) {
+    const fund = this.funds.find(f => f.id === id && !f.deletedAt);
+    if (!fund) {
+      return null;
+    }
+    const diff: Record<string, { previous: unknown; newValue: unknown }> = {};
+    if (input.name !== undefined && input.name !== fund.name) {
+      diff.name = { previous: fund.name, newValue: input.name };
+      fund.name = input.name;
+    }
+    if (input.description !== undefined && input.description !== fund.description) {
+      diff.description = { previous: fund.description, newValue: input.description };
+      fund.description = input.description;
+    }
+    fund.updatedAt = new Date().toISOString();
+    if (Object.keys(diff).length > 0) {
+      this.createAuditLog({
+        actorUserId: 'system',
+        action: 'fund.updated',
+        entity: 'fund',
+        entityId: fund.id,
+        summary: `Fund updated: ${fund.name}`,
+        diff,
+      });
+    }
+    return clone(fund);
+  }
+
+  deleteFund(id: string, input: { actorUserId: string }) {
+    const fund = this.funds.find(f => f.id === id && !f.deletedAt);
+    if (!fund) {
+      return { success: false };
+    }
+    fund.deletedAt = new Date().toISOString();
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'fund.soft-deleted',
+      entity: 'fund',
+      entityId: fund.id,
+      summary: `${actorName} soft-deleted fund ${fund.name}`,
+      metadata: { fundId: fund.id, name: fund.name },
+    });
+    return { success: true };
+  }
+
+  hardDeleteFund(id: string, input: { actorUserId: string }) {
+    const index = this.funds.findIndex(f => f.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    const [removed] = this.funds.splice(index, 1);
+    // Orphan contributions: set fundId to null for any contributions linked to this fund
+    this.contributions.forEach(contribution => {
+      if (contribution.fundId === id) {
+        contribution.fundId = undefined;
+      }
+    });
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'fund.hard-deleted',
+      entity: 'fund',
+      entityId: removed.id,
+      summary: `${actorName} permanently deleted fund ${removed.name}`,
+      metadata: { fundId: removed.id, name: removed.name, deletedAt: removed.deletedAt },
+    });
+    return { success: true };
+  }
+
+  undeleteFund(id: string, input: { actorUserId: string }) {
+    const fund = this.funds.find(f => f.id === id && f.deletedAt);
+    if (!fund) {
+      return { success: false };
+    }
+    fund.deletedAt = undefined;
+    const actorName = this.getUserName(input.actorUserId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'fund.undeleted',
+      entity: 'fund',
+      entityId: fund.id,
+      summary: `${actorName} restored fund ${fund.name}`,
+      metadata: { fundId: fund.id, name: fund.name },
+    });
+    return { success: true };
+  }
+
+  listDeletedFunds() {
+    return clone(this.funds.filter(f => f.deletedAt).map(f => ({ ...f, deletedAt: f.deletedAt })));
+  }
+
+  bulkDeleteFunds(ids: string[], input: { actorUserId: string }) {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    ids.forEach(id => {
+      const deleted = this.deleteFund(id, input);
+      if (deleted.success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Fund not found or already deleted' });
+      }
+    });
+    return result;
+  }
+
+  bulkUndeleteFunds(ids: string[], input: { actorUserId: string }) {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    ids.forEach(id => {
+      const undeleted = this.undeleteFund(id, input);
+      if (undeleted.success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Fund not found or not deleted' });
+      }
+    });
+    return result;
+  }
+
+  // ==================== CONTRIBUTION SOFT DELETE OPERATIONS ====================
+
+  deleteContribution(id: string, input: { actorUserId: string }) {
+    const contribution = this.contributions.find(c => c.id === id && !c.deletedAt);
+    if (!contribution) {
+      return { success: false };
+    }
+    contribution.deletedAt = new Date().toISOString();
+    const actorName = this.getUserName(input.actorUserId);
+    const memberName = this.getUserName(contribution.memberId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'contribution.soft-deleted',
+      entity: 'contribution',
+      entityId: contribution.id,
+      summary: `${actorName} soft-deleted $${contribution.amount.toFixed(2)} contribution for ${memberName}`,
+      metadata: {
+        contributionId: contribution.id,
+        memberId: contribution.memberId,
+        amount: contribution.amount,
+      },
+    });
+    return { success: true };
+  }
+
+  hardDeleteContribution(id: string, input: { actorUserId: string }) {
+    const index = this.contributions.findIndex(c => c.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    const [removed] = this.contributions.splice(index, 1);
+    const actorName = this.getUserName(input.actorUserId);
+    const memberName = this.getUserName(removed.memberId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'contribution.hard-deleted',
+      entity: 'contribution',
+      entityId: removed.id,
+      summary: `${actorName} permanently deleted $${removed.amount.toFixed(2)} contribution for ${memberName}`,
+      metadata: {
+        contributionId: removed.id,
+        memberId: removed.memberId,
+        amount: removed.amount,
+        deletedAt: removed.deletedAt,
+      },
+    });
+    return { success: true };
+  }
+
+  undeleteContribution(id: string, input: { actorUserId: string }) {
+    const contribution = this.contributions.find(c => c.id === id && c.deletedAt);
+    if (!contribution) {
+      return { success: false };
+    }
+    contribution.deletedAt = undefined;
+    const actorName = this.getUserName(input.actorUserId);
+    const memberName = this.getUserName(contribution.memberId);
+    this.createAuditLog({
+      actorUserId: input.actorUserId,
+      action: 'contribution.undeleted',
+      entity: 'contribution',
+      entityId: contribution.id,
+      summary: `${actorName} restored $${contribution.amount.toFixed(2)} contribution for ${memberName}`,
+      metadata: {
+        contributionId: contribution.id,
+        memberId: contribution.memberId,
+        amount: contribution.amount,
+      },
+    });
+    return { success: true };
+  }
+
+  listDeletedContributions(filter?: {
+    memberId?: string;
+    fundId?: string;
+    from?: string;
+    to?: string;
+  }) {
+    let list = this.contributions.filter(c => c.deletedAt);
+    if (filter?.memberId) {
+      list = list.filter(contribution => contribution.memberId === filter.memberId);
+    }
+    if (filter?.fundId) {
+      list = list.filter(contribution => contribution.fundId === filter.fundId);
+    }
+    if (filter?.from) {
+      const fromTime = new Date(filter.from).getTime();
+      list = list.filter(contribution => new Date(contribution.date).getTime() >= fromTime);
+    }
+    if (filter?.to) {
+      const toTime = new Date(filter.to).getTime();
+      list = list.filter(contribution => new Date(contribution.date).getTime() <= toTime);
+    }
+    const sorted = [...list].sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+    return clone(sorted);
+  }
+
+  bulkDeleteContributions(ids: string[], input: { actorUserId: string }) {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    ids.forEach(id => {
+      const deleted = this.deleteContribution(id, input);
+      if (deleted.success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Contribution not found or already deleted' });
+      }
+    });
+    return result;
+  }
+
+  bulkUndeleteContributions(ids: string[], input: { actorUserId: string }) {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    ids.forEach(id => {
+      const undeleted = this.undeleteContribution(id, input);
+      if (undeleted.success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Contribution not found or not deleted' });
+      }
+    });
+    return result;
   }
 
   listAuditLogs(filter: AuditLogFilter = {}) {

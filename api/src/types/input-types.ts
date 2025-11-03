@@ -46,7 +46,7 @@ export interface ContributionUpdateInput {
   fundId?: string | null;
   method?: 'cash' | 'bank-transfer' | 'eftpos' | 'other';
   note?: string | null;
-  actorUserId: string;
+  actorUserId?: string;
 }
 
 export interface UserCreateInput {
