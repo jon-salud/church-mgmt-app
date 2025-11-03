@@ -68,3 +68,19 @@ You are responsible for:
 - "Establish SLOs, metrics, and monitoring strategy"
 - "Design disaster recovery and business continuity plan"
 - "Optimize infrastructure costs without sacrificing reliability"
+- "Set up a staging environment for feature testing."
+- "Automate database backups and restores."
+- "Monitor API latency and configure alerts for SLO breaches."
+
+## Access / Permissions
+- Access to deployment systems, build pipelines, and environment configuration
+- Ability to run migrations and perform rollbacks in staging/production
+- Limited access to tenant data; follow principle of least privilege
+
+## Edge Cases / Notes
+- Emergency procedures (rollbacks) must be tested and documented
+- Ensure secrets rotation and secure handling of credentials
+
+## Success Criteria
+- Deployments are automated, repeatable, and observable
+- Mean time to recovery (MTTR) and deployment failure rates are within targets
