@@ -28,6 +28,7 @@ For every sprint (a collection of related phases):
    - Include: sprint goals, all phases overview, acceptance criteria, timeline
    - This is NOT a task tracking file - it's the strategic plan document
    - **Note:** The "PLAN" suffix must always be uppercase for all sprint and phase plan files
+   - **Rationale:** The uppercase "PLAN" suffix ensures that plan documents are easily distinguishable from task files and implementation documents in file listings, supports automation that relies on consistent naming, and helps prevent confusion between planning and execution artifacts
 
 3. **Sprint Completion**
    - After all phases are complete and merged to the sprint branch
@@ -51,6 +52,7 @@ For each phase within a sprint:
 3. **Create Phase Plan Document**
    - Create: `docs/sprints/{sprint-name}-phase{N}-PLAN.md`
    - Use a non-padded integer for `{N}` (e.g., `phase1`, `phase2`, not `phase01`)
+   - **Note:** If a sprint has 10+ phases, use zero-padded integers (e.g., `phase01`, `phase02`) to ensure correct alphabetical sorting in file listings
    - Document the approved implementation plan for this specific phase
    - Include: detailed technical approach, files to modify, testing strategy
    - Written BEFORE implementation begins
@@ -104,11 +106,21 @@ main
 
 ### Key Rules
 
-- **NEVER** create a phase branch from `main` - always from the sprint branch
-- **NEVER** merge a phase directly to `main` - always to sprint branch first
-- **ALWAYS** create the sprint plan before starting any phases, and create each phase plan before starting that phase's implementation
-- **ALWAYS** append accomplishments to phase plan after completion
-- **ALWAYS** update `TASKS.md` to reflect current sprint/phase status
+- **NEVER** create a phase branch from `main` - always from the sprint branch  
+  _Rationale: Creating phase branches from the sprint branch ensures all phases build on the same integration point, preventing divergence and merge conflicts._
+  
+- **NEVER** merge a phase directly to `main` - always to sprint branch first  
+  _Rationale: Merging phases into the sprint branch first allows for incremental integration testing and avoids introducing incomplete or conflicting features into `main`._
+  
+- **ALWAYS** create the sprint plan before starting any phases, and create each phase plan before starting that phase's implementation  
+  _Rationale: Planning documents provide clear objectives and acceptance criteria, reducing ambiguity and rework during implementation._
+  
+- **ALWAYS** append accomplishments to phase plan after completion  
+  _Rationale: Documenting accomplishments ensures accurate historical records and helps with retrospectives and knowledge transfer._
+  
+- **ALWAYS** update `TASKS.md` to reflect current sprint/phase status  
+  _Rationale: Keeping `TASKS.md` up to date provides a reliable source of truth for project progress and prevents confusion among contributors._
+  
 - Plan documents are strategic/historical records, NOT task lists
 
 ## Workflow Steps
