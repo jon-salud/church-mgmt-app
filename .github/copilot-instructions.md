@@ -82,7 +82,7 @@ For each phase within a sprint:
 ```
 docs/
   sprints/
-    soft-delete-PLAN.md                    # Sprint overview
+    soft-delete-PLAN.md                    # Sprint overview (no phase designation)
     soft-delete-phase1-PLAN.md             # Phase 1 plan + accomplishments
     soft-delete-phase2-PLAN.md             # Phase 2 plan + accomplishments
     soft-delete-phase3-PLAN.md             # Phase 3 plan + accomplishments
@@ -104,7 +104,7 @@ main
 
 - **NEVER** create a phase branch from `main` - always from the sprint branch
 - **NEVER** merge a phase directly to `main` - always to sprint branch first
-- **ALWAYS** create both sprint and phase plan documents before starting work
+- **ALWAYS** create the sprint plan before starting any phases, and create each phase plan before starting that phase's implementation
 - **ALWAYS** append accomplishments to phase plan after completion
 - **ALWAYS** update `TASKS.md` to reflect current sprint/phase status
 - Plan documents are strategic/historical records, NOT task lists
