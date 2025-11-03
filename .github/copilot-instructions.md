@@ -9,6 +9,106 @@ This guide outlines the standardized workflow for AI agents when handling user p
 3. **User Request Supersedes:** Always prioritize the user's current, explicit request over any conflicting information in this document or other project files.
 4. **Regression Prevention (MUST):** Before making any code changes, systematically review where methods, functions, or components are used to identify dependencies. If fundamental changes risk breaking existing functionality, introduce new implementations or update incrementally to ensure no regressions. Use code search and analysis tools to identify dependencies, such as those that search the entire codebase to list all usages (e.g., `list_code_usages`), perform text searches (e.g., `grep_search`), or semantic queries (e.g., `semantic_search`), and validate through comprehensive testing and builds.
 
+## Sprint and Phase Management Protocol (MUST)
+
+This project follows a structured sprint and phase workflow for organizing multi-phase feature development. **You MUST follow this protocol for all sprint-based work.**
+
+### Sprint-Level Workflow
+
+For every sprint (a collection of related phases):
+
+1. **Create Sprint Branch**
+   - Branch from `main` with naming: `feature/{sprint-name}-main-sprint`
+   - Example: `feature/soft-delete-main-sprint`
+   - This branch serves as the integration point for all phases in the sprint
+
+2. **Create Sprint Plan Document**
+   - Create a new file: `docs/sprints/{sprint-name}-PLAN.md`
+   - Document the overall approved plan for the entire sprint
+   - Include: sprint goals, all phases overview, acceptance criteria, timeline
+   - This is NOT a task tracking file - it's the strategic plan document
+
+3. **Sprint Completion**
+   - After all phases are complete and merged to the sprint branch
+   - Create a Pull Request from sprint branch → `main`
+   - PR title: "Sprint: {Sprint Name}"
+   - PR includes all completed phases and documentation
+
+### Phase-Level Workflow
+
+For each phase within a sprint:
+
+1. **Move Phase to In Progress**
+   - In `TASKS.md`, move the entire phase section from "Backlog" to "🔄 In Progress"
+   - Clearly mark which phase you are working on
+
+2. **Create Phase Branch**
+   - Branch OFF the sprint branch (not main)
+   - Naming convention: `feature/{sprint-name}-phase{N}-{brief-description}`
+   - Example: `feature/soft-delete-phase4-giving-frontend`
+
+3. **Create Phase Plan Document**
+   - Create: `docs/sprints/{sprint-name}-phase{N}-PLAN.md`
+   - Document the approved implementation plan for this specific phase
+   - Include: detailed technical approach, files to modify, testing strategy
+   - Written BEFORE implementation begins
+
+4. **Implementation and Review**
+   - Implement the phase following the plan
+   - Commit and push changes to the phase branch
+   - Address all code review feedback with additional commits
+   - Run all tests and ensure no regressions
+
+5. **Document Phase Accomplishments**
+   - After implementation is complete, append to the phase plan document
+   - Add a "## Accomplishments" section at the end
+   - Include comprehensive details of what was actually done
+   - Note any deviations from the original plan and why
+   - Include: files changed, test results, any issues resolved
+   - This captures the reality vs. the plan
+
+6. **Create Phase Pull Request**
+   - Create PR from phase branch → sprint branch (NOT to main)
+   - PR title: "Phase {N}: {Description}"
+   - Reference the phase plan document in PR description
+
+7. **Update TASKS.md**
+   - Once PR is merged, move the phase from "In Progress" to "✅ Completed"
+   - Add accomplishment summary with commit hashes
+   - Keep documentation in sync with actual state
+
+### File Organization
+
+```
+docs/
+  sprints/
+    soft-delete-PLAN.md                    # Sprint overview
+    soft-delete-phase1-PLAN.md             # Phase 1 plan + accomplishments
+    soft-delete-phase2-PLAN.md             # Phase 2 plan + accomplishments
+    soft-delete-phase3-PLAN.md             # Phase 3 plan + accomplishments
+    ...
+```
+
+### Branch Structure
+
+```
+main
+  └─ feature/soft-delete-main-sprint
+       ├─ feature/soft-delete-phase1-users-events-backend
+       ├─ feature/soft-delete-phase2-groups-announcements-frontend
+       ├─ feature/soft-delete-phase3-giving-backend
+       └─ feature/soft-delete-phase4-giving-frontend
+```
+
+### Key Rules
+
+- **NEVER** create a phase branch from `main` - always from the sprint branch
+- **NEVER** merge a phase directly to `main` - always to sprint branch first
+- **ALWAYS** create both sprint and phase plan documents before starting work
+- **ALWAYS** append accomplishments to phase plan after completion
+- **ALWAYS** update `TASKS.md` to reflect current sprint/phase status
+- Plan documents are strategic/historical records, NOT task lists
+
 ## Workflow Steps
 
 When a user submits a prompt to the AI Agent:
