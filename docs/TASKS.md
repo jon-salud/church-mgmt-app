@@ -381,43 +381,26 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ **Documentation:** Accomplishments added to phase plan, TASKS.md updated with all commits
   - **Note:** Fund handlers implemented but not yet activated in UI (admin-only feature, lower priority)
 
-### 🔄 In Progress
-
-- **Complete CRUD Operations - Soft Delete Implementation Phase 5 (Households & Checkin Backend):**
+- ✅ **Soft Delete Implementation - Phase 5 (Households & Checkin Backend):**
   - **Sprint:** Soft Delete Main Sprint
-  - **Branch:** `feature/soft-delete-phase5-households-backend`
+  - **Branch:** `feature/soft-delete-phase5-households-backend` (merged to sprint branch)
   - **Plan:** `docs/sprints/soft-delete-phase5-PLAN.md`
   - **Scope:** Backend implementation of soft delete for Households and Children entities
-  - ✅ **Phase 5A:** Database migrations (commit b1dfe15) - Added `deletedAt` columns to Household and Child tables with indexes, created rollback SQL
-  - ✅ **Phase 5A.5:** Module dependencies (commit b1dfe15) - Created ensureLeader() helper, bulk operation DTOs, updated module imports
-  - ✅ **Phase 5B:** Households backend implementation (commit 626c2a7) - Complete soft delete functionality:
-    - Created IHouseholdsRepository interface with 8 soft delete operations
-    - Implemented HouseholdsDataStoreRepository with DataStore adapter
-    - Updated HouseholdsService to use repository pattern
-    - Added 8 controller endpoints (delete, undelete, bulk operations, hard delete, list deleted)
-    - Implemented soft delete in all 4 datastore adapters (MockDataStore, PrismaDataStore, PrismaMultiTenantDataStore, InMemoryDataStore)
-    - Added 6 methods to MockDatabaseService with audit logging
-    - All endpoints use ensureLeader() for Admin/Leader authorization
-    - All builds passing, 0 compilation errors
-  - ✅ **Phase 5C:** Children backend implementation (commit 818bdf6) - Complete soft delete functionality:
-    - Created ICheckinRepository interface with 8 child soft delete methods
-    - Implemented CheckinDataStoreRepository wrapping DataStore
-    - Updated CheckinService to inject repository and add 6 soft delete methods
-    - Added 6 controller endpoints with ensureLeader() authorization (GET /children/deleted, POST /children/:id/undelete, POST /children/bulk-delete, POST /children/bulk-undelete, DELETE /children/:id/hard, updated DELETE /children/:id to soft delete)
-    - Updated MockDatabaseService with child soft delete methods and audit logging
-    - Updated all 4 datastore adapters (MockDataStoreAdapter, PrismaDataStore, PrismaMultiTenantDataStore, InMemoryDataStore)
-    - Registered repository provider in CheckinModule
-    - All builds passing, 0 compilation errors
-  - ✅ **Phase 5D:** Testing and documentation (commit fdc78e8) - Comprehensive test suite and documentation:
-    - Created households.spec.ts with 28 E2E tests covering list operations, create, soft delete, restore, bulk operations, edge cases, and audit logging
-    - Updated checkin.spec.ts with 40+ children soft delete tests including authorization checks, check-in exclusion, and integration tests validating household-child independence
-    - Updated DATABASE_SCHEMA.md with deletedAt column documentation for both Household and Child tables including soft delete notes and index information
-    - Updated API_DOCUMENTATION.md with 16 new soft delete endpoints (8 households + 8 children) documenting request/response formats, authorization requirements, and bulk operation return types
-    - Fixed ensureLeader() helper in auth.helpers.ts to match giving controller implementation (checking req.user.roles array)
-    - Fixed listHouseholds() and getHouseholdById() in MockDatabaseService to properly filter deleted households and users
-    - All code formatted with Prettier, build passes with 0 compilation errors, 269 acceptable lint warnings
-    - **Test Results:** 68+ new tests created (28 households + 40+ children), comprehensive coverage of soft delete operations
-  - **Status:** Phase 5 (Households & Children Backend) complete - Ready for Phase 6 (Frontend implementation)
+  - ✅ **Phase 5A-B:** Database & Households Backend - Added `deletedAt` columns, created IHouseholdsRepository with 8 operations, implemented HouseholdsDataStoreRepository, added 8 controller endpoints with ensureLeader() authorization
+  - ✅ **Phase 5C:** Children Backend - Created ICheckinRepository, implemented CheckinDataStoreRepository, added 6 soft delete controller endpoints, updated all 4 datastore adapters
+  - ✅ **Phase 5D:** Testing & Documentation - Created 68+ tests (28 households + 40+ checkin), updated DATABASE_SCHEMA.md and API_DOCUMENTATION.md with 16 new endpoints
+  - ✅ **Test Results:** All 59 Phase 5 tests passing (23 households + 36 checkin), zero regressions
+  - ✅ **Code Review Fixes:** Standardized user ID extraction to req.user?.id across all controllers, resolved merge conflict in principal-architect.agent.md
+  - ✅ **Status:** Phase 5 complete and merged to feature/soft-delete-main-sprint
+
+### 🔄 In Progress
+
+- **Complete CRUD Operations - Soft Delete Implementation Phase 6 (Households & Checkin Frontend):**
+  - **Sprint:** Soft Delete Main Sprint
+  - **Branch:** `feature/soft-delete-phase6-households-frontend`
+  - **Plan:** `docs/sprints/soft-delete-phase6-PLAN.md`
+  - **Scope:** Frontend UI implementation of soft delete for Households and Children
+  - **Status:** Ready to start - Phase 5 (backend) merged to sprint branch
 
 ### 📝 Backlog / Upcoming
 

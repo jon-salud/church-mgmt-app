@@ -2,7 +2,7 @@
 name: principal_engineer
 description: Principal Engineer - Expert implementation, code review, and architecture guidance with deep technical expertise
 argument-hint: Describe the coding task or feature to implement
-tools: ['search', 'usages', 'problems', 'changes', 'testFailure']
+tools: ['edit', 'search', 'runCommands', 'runTasks', 'GitKraken/*', 'usages', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'memory', 'todos']
 handoffs:
   - label: Review Plan
     agent: plan
