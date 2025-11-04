@@ -401,6 +401,98 @@ export class PrismaMultiTenantDataStore implements DataStore {
     return members.map((member: any) => member.user);
   }
 
+  async listDeletedHouseholds(context?: ExecutionContext): Promise<any[]> {
+    const client = await this.getTenantClient(context);
+    return client.household.findMany({
+      where: { NOT: { deletedAt: null } },
+      include: {
+        members: {
+          include: {
+            user: true,
+          },
+        },
+      },
+    });
+  }
+
+  async deleteHousehold(id: string, _actorUserId: string, context?: ExecutionContext) {
+    const client = await this.getTenantClient(context);
+    const household = await client.household.findUnique({ where: { id } });
+    if (!household || household.deletedAt) {
+      return { success: false };
+    }
+    await client.household.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+    return { success: true };
+  }
+
+  async undeleteHousehold(id: string, _actorUserId: string, context?: ExecutionContext) {
+    const client = await this.getTenantClient(context);
+    const household = await client.household.findUnique({ where: { id } });
+    if (!household || !household.deletedAt) {
+      return { success: false };
+    }
+    await client.household.update({
+      where: { id },
+      data: { deletedAt: null },
+    });
+    return { success: true };
+  }
+
+  async hardDeleteHousehold(id: string, _actorUserId: string, context?: ExecutionContext) {
+    const client = await this.getTenantClient(context);
+    const household = await client.household.findUnique({ where: { id } });
+    if (!household) {
+      return { success: false };
+    }
+    await client.household.delete({ where: { id } });
+    return { success: true };
+  }
+
+  async bulkDeleteHouseholds(
+    ids: string[],
+    _actorUserId: string,
+    context?: ExecutionContext
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const client = await this.getTenantClient(context);
+    const existingHouseholds = await client.household.findMany({
+      where: { id: { in: ids }, deletedAt: null },
+      select: { id: true },
+    });
+    const existingIds = new Set(existingHouseholds.map((h: { id: string }) => h.id));
+    const result = await client.household.updateMany({
+      where: { id: { in: ids }, deletedAt: null },
+      data: { deletedAt: new Date() },
+    });
+    const failed = ids
+      .filter(id => !existingIds.has(id))
+      .map(id => ({ id, reason: 'Household not found or already deleted' }));
+    return { success: result.count, failed };
+  }
+
+  async bulkUndeleteHouseholds(
+    ids: string[],
+    _actorUserId: string,
+    context?: ExecutionContext
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const client = await this.getTenantClient(context);
+    const existingHouseholds = await client.household.findMany({
+      where: { id: { in: ids }, NOT: { deletedAt: null } },
+      select: { id: true },
+    });
+    const existingIds = new Set(existingHouseholds.map((h: { id: string }) => h.id));
+    const result = await client.household.updateMany({
+      where: { id: { in: ids }, NOT: { deletedAt: null } },
+      data: { deletedAt: null },
+    });
+    const failed = ids
+      .filter(id => !existingIds.has(id))
+      .map(id => ({ id, reason: 'Household not found or not deleted' }));
+    return { success: result.count, failed };
+  }
+
   async listUsers(query?: string, context?: ExecutionContext): Promise<any[]> {
     const client = await this.getTenantClient(context);
     const users = await client.user.findMany({
@@ -1407,15 +1499,91 @@ export class PrismaMultiTenantDataStore implements DataStore {
     });
   }
 
-  async deleteChild(
-    id: string,
-    { actorUserId: _actorUserId }: { actorUserId: string }
-  ): Promise<any> {
-    const client = await this.getTenantClient();
-    await client.child.delete({
+  async deleteChild(id: string, actorUserId: string, context?: ExecutionContext): Promise<any> {
+    const client = await this.getTenantClient(context);
+    const child = await client.child.findUnique({ where: { id } });
+    if (!child || child.deletedAt) {
+      return { success: false };
+    }
+    await client.child.update({
       where: { id },
+      data: { deletedAt: new Date() },
     });
     return { success: true };
+  }
+
+  async undeleteChild(id: string, _actorUserId: string, context?: ExecutionContext): Promise<any> {
+    const client = await this.getTenantClient(context);
+    const child = await client.child.findUnique({ where: { id } });
+    if (!child || !child.deletedAt) {
+      return { success: false };
+    }
+    await client.child.update({
+      where: { id },
+      data: { deletedAt: null },
+    });
+    return { success: true };
+  }
+
+  async hardDeleteChild(
+    id: string,
+    _actorUserId: string,
+    context?: ExecutionContext
+  ): Promise<any> {
+    const client = await this.getTenantClient(context);
+    const child = await client.child.findUnique({ where: { id } });
+    if (!child) {
+      return { success: false };
+    }
+    await client.child.delete({ where: { id } });
+    return { success: true };
+  }
+
+  async bulkDeleteChildren(
+    ids: string[],
+    _actorUserId: string,
+    context?: ExecutionContext
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const client = await this.getTenantClient(context);
+    const existingChildren = await client.child.findMany({
+      where: { id: { in: ids }, deletedAt: null },
+      select: { id: true },
+    });
+    const existingIds = existingChildren.map((c: { id: string }) => c.id);
+    await client.child.updateMany({
+      where: { id: { in: existingIds } },
+      data: { deletedAt: new Date() },
+    });
+    const failed = ids
+      .filter(id => !existingIds.includes(id))
+      .map(id => ({ id, reason: 'Child not found or already deleted' }));
+    return { success: existingIds.length, failed };
+  }
+
+  async bulkUndeleteChildren(
+    ids: string[],
+    _actorUserId: string,
+    context?: ExecutionContext
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const client = await this.getTenantClient(context);
+    const existingChildren = await client.child.findMany({
+      where: { id: { in: ids }, deletedAt: { not: null } },
+      select: { id: true },
+    });
+    const existingIds = existingChildren.map((c: { id: string }) => c.id);
+    await client.child.updateMany({
+      where: { id: { in: existingIds } },
+      data: { deletedAt: null },
+    });
+    const failed = ids
+      .filter(id => !existingIds.includes(id))
+      .map(id => ({ id, reason: 'Child not found or not deleted' }));
+    return { success: existingIds.length, failed };
+  }
+
+  async listDeletedChildren(context?: ExecutionContext): Promise<any[]> {
+    const client = await this.getTenantClient(context);
+    return client.child.findMany({ where: { deletedAt: { not: null } } });
   }
 
   async createPushSubscription(data: any, context?: ExecutionContext): Promise<any> {
@@ -1542,14 +1710,6 @@ export class PrismaMultiTenantDataStore implements DataStore {
       where: { id },
       data,
     });
-  }
-
-  async deleteHousehold(id: string, context?: ExecutionContext): Promise<any> {
-    const client = await this.getTenantClient(context);
-    await client.household.delete({
-      where: { id },
-    });
-    return { success: true };
   }
 
   async createHousehold(data: any, context?: ExecutionContext): Promise<any> {

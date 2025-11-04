@@ -139,6 +139,7 @@ explicitly querying for audit/compliance purposes.
 - `name` (Text, Not Null)
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
+- `deletedAt` (Timestamp) - **Soft delete timestamp**. When set, household is archived and excluded from default queries. Admin/Leader authorization required for soft delete operations. Indexed for query performance.
 
 ### Table: `children`
 
@@ -159,6 +160,7 @@ explicitly querying for audit/compliance purposes.
   - `isPrimary` (Boolean, Default: false): Whether this is the primary contact)
 - `createdAt` (Timestamp, Not Null)
 - `updatedAt` (Timestamp, Not Null)
+- `deletedAt` (Timestamp) - **Soft delete timestamp**. When set, child is archived and excluded from default queries and check-in flows. Admin/Leader authorization required for soft delete operations. Indexed for query performance.
 
 ### Table: `checkins`
 

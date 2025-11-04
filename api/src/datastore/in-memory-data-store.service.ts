@@ -332,6 +332,71 @@ export class InMemoryDataStore {
       .map(u => this.buildUserPayload(u));
   }
 
+  async listDeletedHouseholds() {
+    return clone(
+      this.households.filter(h => h.deletedAt).map(h => ({ ...h, deletedAt: h.deletedAt }))
+    );
+  }
+
+  async deleteHousehold(id: string, _actorUserId: string) {
+    const household = this.households.find(h => h.id === id && !h.deletedAt);
+    if (!household) {
+      return { success: false };
+    }
+    household.deletedAt = new Date().toISOString();
+    return { success: true };
+  }
+
+  async undeleteHousehold(id: string, _actorUserId: string) {
+    const household = this.households.find(h => h.id === id && h.deletedAt);
+    if (!household) {
+      return { success: false };
+    }
+    household.deletedAt = undefined;
+    return { success: true };
+  }
+
+  async hardDeleteHousehold(id: string, _actorUserId: string) {
+    const index = this.households.findIndex(h => h.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    this.households.splice(index, 1);
+    return { success: true };
+  }
+
+  async bulkDeleteHouseholds(
+    ids: string[],
+    _actorUserId: string
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    ids.forEach(id => {
+      const deleted = this.deleteHousehold(id, _actorUserId);
+      if ((deleted as any).success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Household not found or already deleted' });
+      }
+    });
+    return result;
+  }
+
+  async bulkUndeleteHouseholds(
+    ids: string[],
+    _actorUserId: string
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    ids.forEach(id => {
+      const undeleted = this.undeleteHousehold(id, _actorUserId);
+      if ((undeleted as any).success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Household not found or not deleted' });
+      }
+    });
+    return result;
+  }
+
   async listUsers(query?: string) {
     const lower = query?.toLowerCase();
     const list = this.users
@@ -2177,24 +2242,80 @@ export class InMemoryDataStore {
     return clone(child);
   }
 
-  async deleteChild(id: string, { actorUserId }: { actorUserId: string }) {
+  async deleteChild(id: string, { actorUserId: _actorUserId }: { actorUserId: string }) {
+    const child = this.children.find(c => c.id === id && !c.deletedAt);
+    if (!child) {
+      return { success: false };
+    }
+    child.deletedAt = new Date().toISOString();
+    return { success: true };
+  }
+
+  async undeleteChild(id: string, _actorUserId: string) {
+    const child = this.children.find(c => c.id === id && c.deletedAt);
+    if (!child) {
+      return { success: false };
+    }
+    child.deletedAt = undefined;
+    return { success: true };
+  }
+
+  async hardDeleteChild(id: string, _actorUserId: string) {
     const index = this.children.findIndex(c => c.id === id);
     if (index === -1) {
       return { success: false };
     }
-    const [removed] = this.children.splice(index, 1);
-    await this.createAuditLog({
-      actorUserId,
-      action: 'child.deleted',
-      entity: 'child',
-      entityId: removed.id,
-      summary: `${this.getUserName(actorUserId)} removed child ${removed.fullName} from household`,
-      metadata: {
-        householdId: removed.householdId,
-        childId: removed.id,
-      },
-    });
+    this.children.splice(index, 1);
     return { success: true };
+  }
+
+  async bulkDeleteChildren(
+    ids: string[],
+    _actorUserId: string
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    const deletePromises = ids.map(id => this.deleteChild(id, { actorUserId: _actorUserId }));
+    const deleteResults = await Promise.all(deletePromises);
+
+    deleteResults.forEach((res, idx) => {
+      if (res.success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id: ids[idx], reason: 'Child not found or already deleted' });
+      }
+    });
+
+    return result;
+  }
+
+  async bulkUndeleteChildren(
+    ids: string[],
+    _actorUserId: string
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    const undeletePromises = ids.map(id => this.undeleteChild(id, _actorUserId));
+    const undeleteResults = await Promise.all(undeletePromises);
+
+    undeleteResults.forEach((res, idx) => {
+      if (res.success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id: ids[idx], reason: 'Child not found or not deleted' });
+      }
+    });
+
+    return result;
+  }
+
+  async listDeletedChildren() {
+    return clone(
+      this.children.filter(c => c.deletedAt).map(c => ({ ...c, deletedAt: c.deletedAt }))
+    );
+  }
+
+  async getChildById(id: string) {
+    const child = this.children.find(c => c.id === id);
+    return child ? clone(child) : null;
   }
 
   async createPushSubscription(data: {
@@ -2216,7 +2337,9 @@ export class InMemoryDataStore {
   }
 
   async getChildren(householdId: string) {
-    return clone(this.children.filter(child => child.householdId === householdId));
+    return clone(
+      this.children.filter(child => child.householdId === householdId && !child.deletedAt)
+    );
   }
 
   async getCheckinsByEventId(eventId: string) {
