@@ -18,7 +18,7 @@ export default async function MemberDetailPage({ params }: MemberDetailProps) {
   const settings = churchId ? await api.getSettings(churchId) : null;
   const children = member.household?.id ? await api.getChildren(member.household.id) : [];
   const deletedChildren = member.household?.id
-    ? await api.listDeletedChildren().catch(() => [])
+    ? await api.listDeletedChildren(member.household.id).catch(() => [])
     : [];
 
   const isOwnProfile = me?.user?.id === params.id;

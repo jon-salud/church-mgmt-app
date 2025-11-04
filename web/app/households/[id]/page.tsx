@@ -3,15 +3,13 @@ import { HouseholdDetailClient } from './household-detail-client';
 
 export default async function HouseholdDetailPage({ params }: { params: { id: string } }) {
   try {
-    const [household, children, deletedChildren, user] = await Promise.all([
+    const [household, children, deletedChildren, currentUserResult] = await Promise.all([
       api.household(params.id),
       api.getChildren(params.id).catch(() => []),
-      api.listDeletedChildren().catch(() => []),
-      api
-        .currentUser()
-        .then(data => data?.user || null)
-        .catch(() => null),
+      api.listDeletedChildren(params.id).catch(() => []),
+      api.currentUser().catch(() => null),
     ]);
+    const user = currentUserResult?.user ?? null;
 
     if (!household) {
       return <div>Household not found</div>;

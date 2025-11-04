@@ -21,3 +21,15 @@ export function hasRole(userRoles: Role[] | undefined | null, roleName: string):
     return false;
   });
 }
+
+/**
+ * Check if a user has any of the specified roles (optimized for multiple role checks)
+ */
+export function hasAnyRole(userRoles: Role[] | undefined | null, roleNames: string[]): boolean {
+  if (!Array.isArray(userRoles) || roleNames.length === 0) return false;
+  const normalizedRoleNames = new Set(roleNames.map(r => r.toLowerCase()));
+  return userRoles.some(role => {
+    if (!role || typeof role.slug !== 'string') return false;
+    return normalizedRoleNames.has(role.slug.toLowerCase());
+  });
+}

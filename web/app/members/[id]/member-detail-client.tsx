@@ -8,20 +8,11 @@ import { Checkbox } from '@/components/ui-flowbite/checkbox';
 import { Button } from '@/components/ui-flowbite/button';
 import { updateMemberAction, deleteMemberAction, updatePrayerRequestAction } from '../../actions';
 import { clientApi } from '@/lib/api.client';
-import { hasRole } from '@/lib/utils';
+import { hasAnyRole } from '@/lib/utils';
 import { Archive, ArchiveRestore } from 'lucide-react';
-import { PrayerRequest, User } from '@/lib/types';
+import { PrayerRequest, User, Child } from '@/lib/types';
 
 type ViewMode = 'active' | 'deleted';
-
-type Child = {
-  id: string;
-  fullName: string;
-  dateOfBirth: string;
-  allergies?: string;
-  medicalNotes?: string;
-  deletedAt?: string;
-};
 
 type MemberDetailClientProps = {
   member: any;
@@ -57,7 +48,7 @@ export function MemberDetailClient({
     roles[0]?.id ??
     '';
 
-  const canManageSoftDelete = hasRole(user?.roles, 'admin') || hasRole(user?.roles, 'leader');
+  const canManageSoftDelete = hasAnyRole(user?.roles, ['admin', 'leader']);
   const displayedChildren = viewMode === 'active' ? children : deletedChildren;
 
   const handleToggleSelect = (id: string) => {
@@ -697,9 +688,11 @@ export function MemberDetailClient({
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-muted-foreground">
-                        Born: {format(new Date(child.dateOfBirth), 'd MMM yyyy')}
-                      </p>
+                      {child.dateOfBirth && (
+                        <p className="text-xs text-muted-foreground">
+                          Born: {format(new Date(child.dateOfBirth), 'd MMM yyyy')}
+                        </p>
+                      )}
                     </div>
                     <div className="flex gap-2">
                       {!child.deletedAt && (

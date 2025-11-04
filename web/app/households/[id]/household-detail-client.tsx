@@ -6,20 +6,11 @@ import { format } from 'date-fns';
 import { Checkbox } from '@/components/ui-flowbite/checkbox';
 import { Button } from '@/components/ui-flowbite/button';
 import { clientApi } from '@/lib/api.client';
-import { hasRole } from '@/lib/utils';
+import { hasAnyRole } from '@/lib/utils';
 import { Archive, ArchiveRestore } from 'lucide-react';
-import { User } from '@/lib/types';
+import { User, Child } from '@/lib/types';
 
 type ViewMode = 'active' | 'deleted';
-
-type Child = {
-  id: string;
-  fullName: string;
-  dateOfBirth: string;
-  allergies?: string;
-  medicalNotes?: string;
-  deletedAt?: string;
-};
 
 type Household = {
   id: string;
@@ -54,7 +45,7 @@ export function HouseholdDetailClient({
   const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const canManageSoftDelete = hasRole(user?.roles, 'admin') || hasRole(user?.roles, 'leader');
+  const canManageSoftDelete = hasAnyRole(user?.roles, ['admin', 'leader']);
   const displayedChildren = viewMode === 'active' ? children : deletedChildren;
 
   const handleToggleSelect = (id: string) => {
@@ -257,9 +248,11 @@ export function HouseholdDetailClient({
                       </span>
                     )}
                   </div>
-                  <p className="text-sm text-muted-foreground">
-                    Born: {format(new Date(child.dateOfBirth), 'd MMM yyyy')}
-                  </p>
+                  {child.dateOfBirth && (
+                    <p className="text-sm text-muted-foreground">
+                      Born: {format(new Date(child.dateOfBirth), 'd MMM yyyy')}
+                    </p>
+                  )}
                   {child.allergies && (
                     <p className="text-sm text-muted-foreground">Allergies: {child.allergies}</p>
                   )}

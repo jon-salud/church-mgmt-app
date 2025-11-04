@@ -105,8 +105,11 @@ export const api = {
   async getChildren(householdId: string) {
     return apiFetch<any[]>(`/checkin/households/${householdId}/children`);
   },
-  async listDeletedChildren() {
-    return apiFetch<Array<any>>('/checkin/children/deleted/all');
+  async listDeletedChildren(householdId?: string) {
+    const url = householdId
+      ? `/checkin/children/deleted?householdId=${householdId}`
+      : '/checkin/children/deleted';
+    return apiFetch<Array<any>>(url);
   },
   async getCheckins(status: 'pending' | 'checked-in') {
     return apiFetch<any[]>(`/checkin?status=${status}`);
