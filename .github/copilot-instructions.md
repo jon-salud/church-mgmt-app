@@ -33,9 +33,20 @@ You MUST follow this protocol for all sprint‑based work.
    From `main`: `feature/{sprint-name}-main-sprint`  
    Example: `feature/soft-delete-main-sprint`
 
-2. **Create Sprint Plan**  
-   File: `docs/sprints/{sprint-name}-PLAN.md` (PLAN must be uppercase)  
-   Contents: sprint goals, phase overview, acceptance criteria, timeline, risks.
+2. **Create Sprint Plan (Collaborative Process)**  
+   a. **Architect Creates Initial Plan**: Use `@principal_architect` to create `docs/sprints/{sprint-name}-PLAN.md`  
+      - Sprint goals, phase breakdown, acceptance criteria, timeline, risks  
+      - Include code snippets (NOT complete implementation)  
+      - Technical approach and architectural decisions  
+   
+   b. **Engineer Reviews Plan**: Use `@principal_engineer` to review the plan  
+      - Validate technical feasibility  
+      - Identify implementation risks  
+      - Propose improvements/changes  
+   
+   c. **Architect Updates Plan**: Use `@principal_architect` to incorporate engineer feedback  
+      - This becomes the baseline sprint document  
+      - Ready for phase-by-phase implementation
 
 3. **Complete Sprint**  
    After all phases merged → Create PR `feature/{sprint-name}-main-sprint` → `main`  
