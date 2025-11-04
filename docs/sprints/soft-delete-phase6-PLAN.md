@@ -24,17 +24,17 @@ Phase 6 completes the soft delete implementation by adding frontend UI for House
 
 ### Success Criteria
 
-- ✅ 20 API client methods implemented with TypeScript signatures (all methods documented)
-- ✅ Backend endpoint for household dependents check added
-- ✅ Households page has complete soft delete UI (toggle, bulk, badges, loading states)
-- ✅ Single array state management pattern (no dual array sync issues)
-- ✅ Household detail page has child soft delete UI
-- ✅ Warning dialogs with accurate dependent counts
-- ✅ Optimistic updates with rollback on error
-- ✅ 17+ E2E tests passing (7 households + 7 children + 3 error scenarios)
-- ✅ Pagination for large datasets (500+ records)
-- ✅ Zero regressions in existing functionality
-- ✅ Build succeeds with zero TypeScript errors
+- [ ] 20 API client methods implemented with TypeScript signatures (all methods documented)
+- [ ] Backend endpoint for household dependents check added
+- [ ] Households page has complete soft delete UI (toggle, bulk, badges, loading states)
+- [ ] Single array state management pattern (no dual array sync issues)
+- [ ] Household detail page has child soft delete UI
+- [ ] Warning dialogs with accurate dependent counts
+- [ ] Optimistic updates with rollback on error
+- [ ] 17 E2E tests passing (7 households + 7 children + 3 error scenarios)
+- [ ] Pagination for large datasets (500+ records)
+- [ ] Zero regressions in existing functionality
+- [ ] Build succeeds with zero TypeScript errors
 
 ---
 
@@ -70,7 +70,7 @@ async getHouseholdDependents(@Param('id') id: string) {
 }
 ```
 
-**Households API Methods (12 total):**
+**Households API Methods (10 total):**
 ```typescript
 // api.client.ts - Client-side only
 export async function deleteHousehold(id: string): Promise<SuccessResponse>
@@ -835,8 +835,8 @@ const fetchHouseholds = async () => {
 
 ### Testing
 
-- ✅ 8 households E2E tests passing (including error scenario)
-- ✅ 8 children E2E tests passing (including error scenario)
+- ✅ 7 households E2E tests passing (including error scenario)
+- ✅ 7 children E2E tests passing (including error scenario)
 - ✅ 3 error scenario tests passing (network failure, partial failure, conflicts)
 - ✅ Stable selectors using data-testid
 - ✅ Tests run in isolation without flakiness
