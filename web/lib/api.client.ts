@@ -1,4 +1,4 @@
-import { PastoralCareTicket, PastoralCareComment } from './types';
+import { PastoralCareTicket, PastoralCareComment, HouseholdDependents } from './types';
 
 const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api/v1';
 
@@ -420,11 +420,7 @@ export const clientApi = {
   },
 
   async getHouseholdDependents(householdId: string) {
-    return apiFetch<{
-      activeMemberCount: number;
-      activeChildrenCount: number;
-      children: Array<{ id: string; fullName: string }>;
-    }>(`/households/${householdId}/dependents`);
+    return apiFetch<HouseholdDependents>(`/households/${householdId}/dependents`);
   },
 
   // Children soft delete methods

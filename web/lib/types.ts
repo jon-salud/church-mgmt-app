@@ -200,13 +200,15 @@ export interface Child {
   updatedAt: string;
 }
 
+export interface ChildSummary {
+  id: string;
+  fullName: string;
+}
+
 export interface HouseholdDependents {
   activeMemberCount: number;
   activeChildrenCount: number;
-  children: Array<{
-    id: string;
-    fullName: string;
-  }>;
+  children: ChildSummary[];
 }
 
 export interface PaginationParams {

@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { PastoralCareTicket, PrayerRequest } from './types';
+import { PastoralCareTicket, PrayerRequest, HouseholdDependents } from './types';
 
 const DEFAULT_API_BASE =
   process.env.API_BASE_URL ||
@@ -100,11 +100,7 @@ export const api = {
     return apiFetch<Array<any>>('/households/deleted/all');
   },
   async getHouseholdDependents(id: string) {
-    return apiFetch<{
-      activeMemberCount: number;
-      activeChildrenCount: number;
-      children: Array<{ id: string; fullName: string }>;
-    }>(`/households/${id}/dependents`);
+    return apiFetch<HouseholdDependents>(`/households/${id}/dependents`);
   },
   async getChildren(householdId: string) {
     return apiFetch<any[]>(`/checkin/households/${householdId}/children`);
