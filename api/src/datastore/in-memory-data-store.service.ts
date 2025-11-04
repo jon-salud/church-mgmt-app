@@ -332,6 +332,71 @@ export class InMemoryDataStore {
       .map(u => this.buildUserPayload(u));
   }
 
+  async listDeletedHouseholds() {
+    return clone(
+      this.households.filter(h => h.deletedAt).map(h => ({ ...h, deletedAt: h.deletedAt }))
+    );
+  }
+
+  async deleteHousehold(id: string, _actorUserId: string) {
+    const household = this.households.find(h => h.id === id && !h.deletedAt);
+    if (!household) {
+      return { success: false };
+    }
+    household.deletedAt = new Date().toISOString();
+    return { success: true };
+  }
+
+  async undeleteHousehold(id: string, _actorUserId: string) {
+    const household = this.households.find(h => h.id === id && h.deletedAt);
+    if (!household) {
+      return { success: false };
+    }
+    household.deletedAt = undefined;
+    return { success: true };
+  }
+
+  async hardDeleteHousehold(id: string, _actorUserId: string) {
+    const index = this.households.findIndex(h => h.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    this.households.splice(index, 1);
+    return { success: true };
+  }
+
+  async bulkDeleteHouseholds(
+    ids: string[],
+    _actorUserId: string
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    ids.forEach(id => {
+      const deleted = this.deleteHousehold(id, _actorUserId);
+      if ((deleted as any).success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Household not found or already deleted' });
+      }
+    });
+    return result;
+  }
+
+  async bulkUndeleteHouseholds(
+    ids: string[],
+    _actorUserId: string
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    ids.forEach(id => {
+      const undeleted = this.undeleteHousehold(id, _actorUserId);
+      if ((undeleted as any).success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Household not found or not deleted' });
+      }
+    });
+    return result;
+  }
+
   async listUsers(query?: string) {
     const lower = query?.toLowerCase();
     const list = this.users

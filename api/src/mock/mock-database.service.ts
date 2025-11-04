@@ -504,6 +504,100 @@ export class MockDatabaseService {
       .map(u => this.buildUserPayload(u));
   }
 
+  // ==================== HOUSEHOLD SOFT DELETE OPERATIONS ====================
+
+  deleteHousehold(id: string, actorUserId: string) {
+    const household = this.households.find(h => h.id === id && !h.deletedAt);
+    if (!household) {
+      return { success: false };
+    }
+    household.deletedAt = new Date().toISOString();
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'household.soft-deleted',
+      entity: 'household',
+      entityId: household.id,
+      summary: `${actorName} archived household ${household.name}`,
+      metadata: { householdId: household.id, name: household.name },
+    });
+    return { success: true };
+  }
+
+  undeleteHousehold(id: string, actorUserId: string) {
+    const household = this.households.find(h => h.id === id && h.deletedAt);
+    if (!household) {
+      return { success: false };
+    }
+    household.deletedAt = undefined;
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'household.undeleted',
+      entity: 'household',
+      entityId: household.id,
+      summary: `${actorName} restored household ${household.name}`,
+      metadata: { householdId: household.id, name: household.name },
+    });
+    return { success: true };
+  }
+
+  hardDeleteHousehold(id: string, actorUserId: string) {
+    const index = this.households.findIndex(h => h.id === id);
+    if (index === -1) {
+      return { success: false };
+    }
+    const [removed] = this.households.splice(index, 1);
+    // TODO: Orphan users - requires making householdId optional in MockProfile
+    // this.users.forEach(user => {
+    //   if (user.profile.householdId === id) {
+    //     user.profile.householdId = undefined;
+    //   }
+    // });
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'household.hard-deleted',
+      entity: 'household',
+      entityId: removed.id,
+      summary: `${actorName} permanently deleted household ${removed.name}`,
+      metadata: { householdId: removed.id, name: removed.name, deletedAt: removed.deletedAt },
+    });
+    return { success: true };
+  }
+
+  listDeletedHouseholds() {
+    return clone(
+      this.households.filter(h => h.deletedAt).map(h => ({ ...h, deletedAt: h.deletedAt }))
+    );
+  }
+
+  bulkDeleteHouseholds(ids: string[], actorUserId: string) {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    ids.forEach(id => {
+      const deleted = this.deleteHousehold(id, actorUserId);
+      if (deleted.success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Household not found or already deleted' });
+      }
+    });
+    return result;
+  }
+
+  bulkUndeleteHouseholds(ids: string[], actorUserId: string) {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    ids.forEach(id => {
+      const undeleted = this.undeleteHousehold(id, actorUserId);
+      if (undeleted.success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Household not found or not deleted' });
+      }
+    });
+    return result;
+  }
+
   private withAssignmentCount(role: MockRole) {
     const count = this.users.filter(user => user.roles.some(r => r.roleId === role.id)).length;
     return {

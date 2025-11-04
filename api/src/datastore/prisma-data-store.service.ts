@@ -356,6 +356,87 @@ export class PrismaDataStore implements DataStore {
     return profiles.map((p: any) => p.user).filter(Boolean);
   }
 
+  async listDeletedHouseholds() {
+    const churchId = await this.getPrimaryChurchId();
+    return this.client.household.findMany({
+      where: { churchId, NOT: { deletedAt: null } },
+      include: { profiles: true },
+      orderBy: { name: 'asc' },
+    });
+  }
+
+  async deleteHousehold(id: string, _actorUserId: string) {
+    const household = await this.client.household.findUnique({ where: { id } });
+    if (!household || household.deletedAt) {
+      return { success: false };
+    }
+    await this.client.household.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+    return { success: true };
+  }
+
+  async undeleteHousehold(id: string, _actorUserId: string) {
+    const household = await this.client.household.findUnique({ where: { id } });
+    if (!household || !household.deletedAt) {
+      return { success: false };
+    }
+    await this.client.household.update({
+      where: { id },
+      data: { deletedAt: null },
+    });
+    return { success: true };
+  }
+
+  async hardDeleteHousehold(id: string, _actorUserId: string) {
+    const household = await this.client.household.findUnique({ where: { id } });
+    if (!household) {
+      return { success: false };
+    }
+    // TODO: Orphan profiles - set householdId to null if needed
+    await this.client.household.delete({ where: { id } });
+    return { success: true };
+  }
+
+  async bulkDeleteHouseholds(
+    ids: string[],
+    _actorUserId: string
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const existingHouseholds = await this.client.household.findMany({
+      where: { id: { in: ids }, deletedAt: null },
+      select: { id: true },
+    });
+    const existingIds = new Set(existingHouseholds.map((h: { id: string }) => h.id));
+    const result = await this.client.household.updateMany({
+      where: { id: { in: ids }, deletedAt: null },
+      data: { deletedAt: new Date() },
+    });
+    const failed = ids
+      .filter(id => !existingIds.has(id))
+      .map(id => ({ id, reason: 'Household not found or already deleted' }));
+    return { success: result.count, failed };
+  }
+
+  async bulkUndeleteHouseholds(
+    ids: string[],
+    _actorUserId: string
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const existingHouseholds = await this.client.household.findMany({
+      where: { id: { in: ids }, NOT: { deletedAt: null } },
+      select: { id: true },
+    });
+    const existingIds = new Set(existingHouseholds.map((h: { id: string }) => h.id));
+    const result = await this.client.household.updateMany({
+      where: { id: { in: ids }, NOT: { deletedAt: null } },
+      data: { deletedAt: null },
+    });
+    const failed = ids
+      .filter(id => !existingIds.has(id))
+      .map(id => ({ id, reason: 'Household not found or not deleted' }));
+    return { success: result.count, failed };
+  }
+
   async listRoles(): Promise<StoreReturn<'listRoles'>> {
     return [];
   }

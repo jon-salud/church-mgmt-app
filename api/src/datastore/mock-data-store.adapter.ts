@@ -66,6 +66,30 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.getHouseholdMembers(householdId);
   }
 
+  async deleteHousehold(id: string, actorUserId: string) {
+    return this.mock.deleteHousehold(id, actorUserId);
+  }
+
+  async undeleteHousehold(id: string, actorUserId: string) {
+    return this.mock.undeleteHousehold(id, actorUserId);
+  }
+
+  async hardDeleteHousehold(id: string, actorUserId: string) {
+    return this.mock.hardDeleteHousehold(id, actorUserId);
+  }
+
+  async listDeletedHouseholds() {
+    return this.mock.listDeletedHouseholds();
+  }
+
+  async bulkDeleteHouseholds(ids: string[], actorUserId: string) {
+    return this.mock.bulkDeleteHouseholds(ids, actorUserId);
+  }
+
+  async bulkUndeleteHouseholds(ids: string[], actorUserId: string) {
+    return this.mock.bulkUndeleteHouseholds(ids, actorUserId);
+  }
+
   async listGroups(churchId?: string) {
     return this.mock.listGroups(churchId);
   }
