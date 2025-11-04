@@ -399,7 +399,16 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
     - Added 6 methods to MockDatabaseService with audit logging
     - All endpoints use ensureLeader() for Admin/Leader authorization
     - All builds passing, 0 compilation errors
-  - **Status:** Phase 5C next - Children backend implementation
+  - ✅ **Phase 5C:** Children backend implementation (commit 818bdf6) - Complete soft delete functionality:
+    - Created ICheckinRepository interface with 8 child soft delete methods
+    - Implemented CheckinDataStoreRepository wrapping DataStore
+    - Updated CheckinService to inject repository and add 6 soft delete methods
+    - Added 6 controller endpoints with ensureLeader() authorization (GET /children/deleted, POST /children/:id/undelete, POST /children/bulk-delete, POST /children/bulk-undelete, DELETE /children/:id/hard, updated DELETE /children/:id to soft delete)
+    - Updated MockDatabaseService with child soft delete methods and audit logging
+    - Updated all 4 datastore adapters (MockDataStoreAdapter, PrismaDataStore, PrismaMultiTenantDataStore, InMemoryDataStore)
+    - Registered repository provider in CheckinModule
+    - All builds passing, 0 compilation errors
+  - **Status:** Phase 5D next - Testing and validation
 
 ### 📝 Backlog / Upcoming
 

@@ -8,8 +8,10 @@ import { ForbiddenException } from '@nestjs/common';
  * @throws ForbiddenException if user is not an Admin or Leader
  */
 export function ensureLeader(req: any): void {
-  const role = req.user?.role;
-  if (role !== 'Admin' && role !== 'Leader') {
+  const roles: Array<{ churchId: string; role: string }> = req.user?.roles ?? [];
+  const isLeader = roles.some(role => role.role === 'Leader');
+  const isAdmin = roles.some(role => role.role === 'Admin');
+  if (!isLeader && !isAdmin) {
     throw new ForbiddenException('Admin or Leader role required');
   }
 }

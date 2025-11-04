@@ -134,10 +134,339 @@ implemented in the API.)_
 
 ---
 
+### Households
+
+This section covers endpoints for managing household records in the church management system.
+
+---
+
+#### GET /households
+
+- **Description:** Retrieves a list of all active households for the church.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    [
+      {
+        "id": "household-uuid-1",
+        "churchId": "church-uuid-1",
+        "name": "Smith Family",
+        "address": "123 Main St",
+        "memberCount": 4,
+        "members": [...],
+        "createdAt": "timestamp",
+        "updatedAt": "timestamp"
+      }
+    ]
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+
+---
+
+#### GET /households/:id
+
+- **Description:** Retrieves a single household by ID.
+- **URL Parameters:**
+  - `id` (string, required): The unique identifier of the household.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Single household object with members array.
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `404 Not Found` - If household does not exist.
+
+---
+
+#### GET /households/deleted
+
+- **Description:** Retrieves a list of all soft-deleted (archived) households. **Requires Admin or Leader role.**
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of deleted household objects with `deletedAt` timestamp.
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an Admin or Leader.
+
+---
+
+#### DELETE /households/:id
+
+- **Description:** Soft deletes a household, setting its `deletedAt` timestamp. The household is archived and excluded from default queries. **Requires Admin or Leader role.**
+- **URL Parameters:**
+  - `id` (string, required): The unique identifier of the household to delete.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "id": "household-uuid-1",
+      "deletedAt": "2024-11-04T10:30:00Z",
+      "name": "Smith Family",
+      ...
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an Admin or Leader.
+  - **Code:** `404 Not Found` - If household does not exist or is already deleted.
+
+---
+
+#### POST /households/:id/undelete
+
+- **Description:** Restores a soft-deleted household by clearing its `deletedAt` timestamp. **Requires Admin or Leader role.**
+- **URL Parameters:**
+  - `id` (string, required): The unique identifier of the household to restore.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "id": "household-uuid-1",
+      "deletedAt": null,
+      "name": "Smith Family",
+      ...
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an Admin or Leader.
+  - **Code:** `404 Not Found` - If household does not exist or is not deleted.
+
+---
+
+#### POST /households/bulk-delete
+
+- **Description:** Soft deletes multiple households in a single operation. **Requires Admin or Leader role.**
+- **Request Body:**
+
+  ```json
+  {
+    "householdIds": ["household-uuid-1", "household-uuid-2", "household-uuid-3"]
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "successCount": 2,
+      "failedCount": 1,
+      "errors": [
+        {
+          "id": "household-uuid-3",
+          "error": "Household not found"
+        }
+      ]
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an Admin or Leader.
+  - **Code:** `400 Bad Request` - If request body is invalid.
+
+---
+
+#### POST /households/bulk-undelete
+
+- **Description:** Restores multiple soft-deleted households in a single operation. **Requires Admin or Leader role.**
+- **Request Body:**
+
+  ```json
+  {
+    "householdIds": ["household-uuid-1", "household-uuid-2"]
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "successCount": 2,
+      "failedCount": 0,
+      "errors": []
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an Admin or Leader.
+
+---
+
 ### Events & Check-in
 
-_(Note: The following endpoints are planned based on the Functional Requirements but are not yet
-implemented in the API.)_
+This section covers endpoints for children check-in management.
+
+---
+
+#### GET /checkin/children
+
+- **Description:** Retrieves a list of all active children for a household.
+- **Query Parameters:**
+  - `householdId` (string, optional): Filter children by household ID.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of active child objects (excludes soft-deleted children).
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+
+---
+
+#### GET /checkin/children/:id
+
+- **Description:** Retrieves a single child by ID.
+- **URL Parameters:**
+  - `id` (string, required): The unique identifier of the child.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Single child object with household information.
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `404 Not Found` - If child does not exist.
+
+---
+
+#### GET /checkin/children/deleted
+
+- **Description:** Retrieves a list of all soft-deleted (archived) children. **Requires Admin or Leader role.**
+- **Query Parameters:**
+  - `householdId` (string, optional): Filter deleted children by household ID.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:** Array of deleted child objects with `deletedAt` timestamp.
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an Admin or Leader.
+
+---
+
+#### DELETE /checkin/children/:id
+
+- **Description:** Soft deletes a child, setting its `deletedAt` timestamp. The child is archived and excluded from check-in flows and default queries. **Requires Admin or Leader role.**
+- **URL Parameters:**
+  - `id` (string, required): The unique identifier of the child to delete.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "id": "child-uuid-1",
+      "deletedAt": "2024-11-04T10:30:00Z",
+      "fullName": "Johnny Smith",
+      ...
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an Admin or Leader.
+  - **Code:** `404 Not Found` - If child does not exist or is already deleted.
+
+---
+
+#### POST /checkin/children/:id/undelete
+
+- **Description:** Restores a soft-deleted child by clearing its `deletedAt` timestamp. **Requires Admin or Leader role.**
+- **URL Parameters:**
+  - `id` (string, required): The unique identifier of the child to restore.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "id": "child-uuid-1",
+      "deletedAt": null,
+      "fullName": "Johnny Smith",
+      ...
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an Admin or Leader.
+  - **Code:** `404 Not Found` - If child does not exist or is not deleted.
+
+---
+
+#### POST /checkin/children/bulk-delete
+
+- **Description:** Soft deletes multiple children in a single operation. **Requires Admin or Leader role.**
+- **Request Body:**
+
+  ```json
+  {
+    "childIds": ["child-uuid-1", "child-uuid-2", "child-uuid-3"]
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "successCount": 2,
+      "failedCount": 1,
+      "errors": [
+        {
+          "id": "child-uuid-3",
+          "error": "Child not found"
+        }
+      ]
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an Admin or Leader.
+  - **Code:** `400 Bad Request` - If request body is invalid.
+
+---
+
+#### POST /checkin/children/bulk-undelete
+
+- **Description:** Restores multiple soft-deleted children in a single operation. **Requires Admin or Leader role.**
+- **Request Body:**
+
+  ```json
+  {
+    "childIds": ["child-uuid-1", "child-uuid-2"]
+  }
+  ```
+
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "successCount": 2,
+      "failedCount": 0,
+      "errors": []
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If the user is not an Admin or Leader.
+
+---
 
 - **Code:** `403 Forbidden` - If the authenticated user is not an admin.
 

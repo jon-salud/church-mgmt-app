@@ -467,10 +467,10 @@ export class MockDatabaseService {
 
   listHouseholds(churchId?: string) {
     const list = this.households
-      .filter(h => !churchId || h.churchId === churchId)
+      .filter(h => !h.deletedAt && (!churchId || h.churchId === churchId))
       .map(h => {
         const members = this.users
-          .filter(u => u.profile && u.profile.householdId === h.id)
+          .filter(u => !u.deletedAt && u.profile && u.profile.householdId === h.id)
           .map(u => ({
             userId: u.id,
             firstName: u.profile.firstName,
@@ -490,7 +490,7 @@ export class MockDatabaseService {
     const household = this.households.find(h => h.id === id);
     if (!household) return null;
     const members = this.users
-      .filter(u => u.profile.householdId === id)
+      .filter(u => !u.deletedAt && u.profile && u.profile.householdId === id)
       .map(u => this.buildUserPayload(u));
     return {
       ...clone(household),
