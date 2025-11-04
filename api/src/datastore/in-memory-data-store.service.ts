@@ -2274,14 +2274,17 @@ export class InMemoryDataStore {
     _actorUserId: string
   ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
     const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
-    for (const id of ids) {
-      const deleted = this.deleteChild(id, { actorUserId: _actorUserId });
-      if ((await deleted).success) {
+    const deletePromises = ids.map(id => this.deleteChild(id, { actorUserId: _actorUserId }));
+    const deleteResults = await Promise.all(deletePromises);
+
+    deleteResults.forEach((res, idx) => {
+      if (res.success) {
         result.success += 1;
       } else {
-        result.failed.push({ id, reason: 'Child not found or already deleted' });
+        result.failed.push({ id: ids[idx], reason: 'Child not found or already deleted' });
       }
-    }
+    });
+
     return result;
   }
 
@@ -2290,14 +2293,17 @@ export class InMemoryDataStore {
     _actorUserId: string
   ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
     const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
-    for (const id of ids) {
-      const undeleted = this.undeleteChild(id, _actorUserId);
-      if ((await undeleted).success) {
+    const undeletePromises = ids.map(id => this.undeleteChild(id, _actorUserId));
+    const undeleteResults = await Promise.all(undeletePromises);
+
+    undeleteResults.forEach((res, idx) => {
+      if (res.success) {
         result.success += 1;
       } else {
-        result.failed.push({ id, reason: 'Child not found or not deleted' });
+        result.failed.push({ id: ids[idx], reason: 'Child not found or not deleted' });
       }
-    }
+    });
+
     return result;
   }
 

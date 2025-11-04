@@ -34,27 +34,37 @@ export class CheckinDataStoreRepository implements ICheckinRepository {
 
   async bulkDeleteChildren(ids: string[], actorUserId: string): Promise<BulkOperationResult> {
     const result = await this.db.bulkDeleteChildren(ids, actorUserId);
+    const failedIds: string[] = [];
+    const errors: { id: string; error: string }[] = [];
+
+    for (const f of result.failed) {
+      failedIds.push(f.id);
+      errors.push({ id: f.id, error: f.reason });
+    }
+
     return Promise.resolve({
       success: true,
       successCount: result.success,
-      failedIds: result.failed.map(f => f.id),
-      errors:
-        result.failed.length > 0
-          ? result.failed.map(f => ({ id: f.id, error: f.reason }))
-          : undefined,
+      failedIds,
+      errors: errors.length > 0 ? errors : undefined,
     });
   }
 
   async bulkUndeleteChildren(ids: string[], actorUserId: string): Promise<BulkOperationResult> {
     const result = await this.db.bulkUndeleteChildren(ids, actorUserId);
+    const failedIds: string[] = [];
+    const errors: { id: string; error: string }[] = [];
+
+    for (const f of result.failed) {
+      failedIds.push(f.id);
+      errors.push({ id: f.id, error: f.reason });
+    }
+
     return Promise.resolve({
       success: true,
       successCount: result.success,
-      failedIds: result.failed.map(f => f.id),
-      errors:
-        result.failed.length > 0
-          ? result.failed.map(f => ({ id: f.id, error: f.reason }))
-          : undefined,
+      failedIds,
+      errors: errors.length > 0 ? errors : undefined,
     });
   }
 

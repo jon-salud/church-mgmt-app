@@ -34,27 +34,37 @@ export class HouseholdsDataStoreRepository implements IHouseholdsRepository {
 
   async bulkDeleteHouseholds(ids: string[], actorUserId: string): Promise<BulkOperationResult> {
     const result = await this.db.bulkDeleteHouseholds(ids, actorUserId);
+    const failedIds: string[] = [];
+    const errors: { id: string; error: string }[] = [];
+
+    for (const f of result.failed) {
+      failedIds.push(f.id);
+      errors.push({ id: f.id, error: f.reason });
+    }
+
     return Promise.resolve({
       success: true,
       successCount: result.success,
-      failedIds: result.failed.map(f => f.id),
-      errors:
-        result.failed.length > 0
-          ? result.failed.map(f => ({ id: f.id, error: f.reason }))
-          : undefined,
+      failedIds,
+      errors: errors.length > 0 ? errors : undefined,
     });
   }
 
   async bulkUndeleteHouseholds(ids: string[], actorUserId: string): Promise<BulkOperationResult> {
     const result = await this.db.bulkUndeleteHouseholds(ids, actorUserId);
+    const failedIds: string[] = [];
+    const errors: { id: string; error: string }[] = [];
+
+    for (const f of result.failed) {
+      failedIds.push(f.id);
+      errors.push({ id: f.id, error: f.reason });
+    }
+
     return Promise.resolve({
       success: true,
       successCount: result.success,
-      failedIds: result.failed.map(f => f.id),
-      errors:
-        result.failed.length > 0
-          ? result.failed.map(f => ({ id: f.id, error: f.reason }))
-          : undefined,
+      failedIds,
+      errors: errors.length > 0 ? errors : undefined,
     });
   }
 
