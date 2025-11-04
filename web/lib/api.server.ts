@@ -191,6 +191,37 @@ export const api = {
   async deletedDocuments() {
     return apiFetch<Array<any>>('/documents/deleted');
   },
+  async listDeletedFunds(query?: string) {
+    try {
+      const url = query
+        ? `/giving/funds/deleted/all?q=${encodeURIComponent(query)}`
+        : '/giving/funds/deleted/all';
+      return await apiFetch<any[]>(url);
+    } catch (error) {
+      console.error('Failed to fetch deleted funds:', error);
+      return [];
+    }
+  },
+  async listDeletedContributions(filters?: {
+    memberId?: string;
+    fundId?: string;
+    from?: string;
+    to?: string;
+  }) {
+    try {
+      const params = new URLSearchParams();
+      if (filters?.memberId) params.append('memberId', filters.memberId);
+      if (filters?.fundId) params.append('fundId', filters.fundId);
+      if (filters?.from) params.append('from', filters.from);
+      if (filters?.to) params.append('to', filters.to);
+      const query = params.toString();
+      const url = `/giving/contributions/deleted/all${query ? `?${query}` : ''}`;
+      return await apiFetch<any[]>(url);
+    } catch (error) {
+      console.error('Failed to fetch deleted contributions:', error);
+      return [];
+    }
+  },
   async get<T>(path: string) {
     return apiFetch<T>(path);
   },

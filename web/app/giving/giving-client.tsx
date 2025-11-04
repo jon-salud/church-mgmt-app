@@ -2,45 +2,189 @@
 
 import { useMemo, useState } from 'react';
 import { format } from 'date-fns';
-import { Modal } from '@/components/ui-flowbite/modal';
+import { Modal, ConfirmDialog } from '@/components/ui-flowbite/modal';
 import { recordContributionAction, updateContributionAction } from '../actions';
+import { hasRole } from '@/lib/utils';
+import { toast } from '@/lib/toast';
+import type { User, Fund, Contribution, GivingSummary, BulkOperationResult } from '@/lib/types';
+import { clientApi } from '@/lib/api.client';
 
-type Fund = { id: string; name: string };
 type Member = { id: string; profile: { firstName?: string; lastName?: string } };
-type Contribution = {
-  id: string;
-  memberId: string;
-  amount: number;
-  date: string;
-  fundId?: string | null;
-  method: string;
-  note?: string | null;
-};
-
-type GivingSummary = {
-  totals: { overall: number; monthToDate: number; previousMonth: number; averageGift: number };
-  byFund: Array<{ fundId: string | null; name: string; amount: number }>;
-  monthly: Array<{ month: string; amount: number }>;
-};
 
 type GivingClientProps = {
   funds: Fund[];
+  deletedFunds: Fund[];
   members: Member[];
   contributions: Contribution[];
+  deletedContributions: Contribution[];
+  user: User | null;
   summary: GivingSummary;
   csvUrl: string;
 };
 
 export function GivingClient({
-  funds,
+  funds: initialFunds,
+  deletedFunds: _initialDeletedFunds,
   members,
-  contributions,
+  contributions: initialContributions,
+  deletedContributions: initialDeletedContributions,
+  user,
   summary,
   csvUrl,
 }: GivingClientProps) {
   const memberMap = useMemo(() => new Map(members.map(member => [member.id, member])), [members]);
-  const fundMap = useMemo(() => new Map(funds.map(fund => [fund.id, fund])), [funds]);
+
+  // State management for soft delete (contributions only - fund management reserved for future)
+  const [contributions, setContributions] = useState(initialContributions);
+  const [deletedContributions, setDeletedContributions] = useState(initialDeletedContributions);
+  const [showDeletedContributions, setShowDeletedContributions] = useState(false);
+  const [selectedContributionIds, setSelectedContributionIds] = useState<Set<string>>(new Set());
+  const [confirmDialog, setConfirmDialog] = useState<{
+    open: boolean;
+    title: string;
+    message: string;
+    onConfirm: () => void;
+  }>({ open: false, title: '', message: '', onConfirm: () => {} });
   const [editContribution, setEditContribution] = useState<Contribution | null>(null);
+
+  const fundMap = useMemo(() => new Map(initialFunds.map(fund => [fund.id, fund])), [initialFunds]);
+  const isAdmin = hasRole(user?.roles, 'admin');
+  const isLeader = hasRole(user?.roles, 'leader');
+  const canManage = isAdmin || isLeader;
+
+  // Handlers for soft delete operations
+  const handleArchiveContribution = async (contributionId: string) => {
+    const contribution = contributions.find(c => c.id === contributionId);
+    if (!contribution) return;
+
+    const member = memberMap.get(contribution.memberId);
+    const memberName = member
+      ? `${member.profile?.firstName ?? ''} ${member.profile?.lastName ?? ''}`.trim()
+      : contribution.memberId;
+
+    setConfirmDialog({
+      open: true,
+      title: 'Archive Contribution',
+      message: `Archive contribution of $${contribution.amount.toFixed(2)} from ${memberName}? It can be restored later.`,
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }));
+        setContributions(prev => prev.filter(c => c.id !== contributionId));
+        setDeletedContributions(prev => [
+          ...prev,
+          { ...contribution, deletedAt: new Date().toISOString() },
+        ]);
+
+        try {
+          await clientApi.deleteContribution(contributionId);
+          toast.success('Contribution archived');
+        } catch {
+          setContributions(prev => [...prev, contribution]);
+          setDeletedContributions(prev => prev.filter(c => c.id !== contributionId));
+          toast.error('Failed to archive contribution');
+        }
+      },
+    });
+  };
+
+  const handleRestoreContribution = async (contributionId: string) => {
+    const contribution = deletedContributions.find(c => c.id === contributionId);
+    if (!contribution) return;
+
+    setDeletedContributions(prev => prev.filter(c => c.id !== contributionId));
+    setContributions(prev => [...prev, { ...contribution, deletedAt: null }]);
+
+    try {
+      await clientApi.undeleteContribution(contributionId);
+      toast.success('Contribution restored');
+    } catch {
+      setDeletedContributions(prev => [...prev, contribution]);
+      setContributions(prev => prev.filter(c => c.id !== contributionId));
+      toast.error('Failed to restore contribution');
+    }
+  };
+
+  const handleBulkArchiveContributions = async () => {
+    const ids = Array.from(selectedContributionIds);
+    if (ids.length === 0) return;
+
+    setConfirmDialog({
+      open: true,
+      title: 'Archive Contributions',
+      message: `Archive ${ids.length} contribution(s)? They can be restored later.`,
+      onConfirm: async () => {
+        setConfirmDialog(prev => ({ ...prev, open: false }));
+        const contributionsToArchive = contributions.filter(c => ids.includes(c.id));
+
+        setContributions(prev => prev.filter(c => !ids.includes(c.id)));
+        setDeletedContributions(prev => [
+          ...prev,
+          ...contributionsToArchive.map(c => ({ ...c, deletedAt: new Date().toISOString() })),
+        ]);
+        setSelectedContributionIds(new Set());
+
+        try {
+          const result: BulkOperationResult = await clientApi.bulkDeleteContributions(ids);
+          if (result.failed && result.failed.length > 0) {
+            toast.warning(
+              `Archived ${result.success} contribution(s). ${result.failed.length} failed: ${result.failed.map(f => f.reason).join(', ')}`
+            );
+            const failedIds = result.failed.map(f => f.id);
+            const failedContribs = contributionsToArchive.filter(c => failedIds.includes(c.id));
+            setContributions(prev => [...prev, ...failedContribs]);
+            setDeletedContributions(prev => prev.filter(c => !failedIds.includes(c.id)));
+          } else {
+            toast.success(`${result.success} contribution(s) archived`);
+          }
+        } catch {
+          setContributions(prev => [...prev, ...contributionsToArchive]);
+          setDeletedContributions(prev => prev.filter(c => !ids.includes(c.id)));
+          setSelectedContributionIds(new Set(ids));
+          toast.error('Failed to archive contributions');
+        }
+      },
+    });
+  };
+
+  const handleBulkRestoreContributions = async () => {
+    const ids = Array.from(selectedContributionIds);
+    if (ids.length === 0) return;
+
+    const contributionsToRestore = deletedContributions.filter(c => ids.includes(c.id));
+
+    setDeletedContributions(prev => prev.filter(c => !ids.includes(c.id)));
+    setContributions(prev => [
+      ...prev,
+      ...contributionsToRestore.map(c => ({ ...c, deletedAt: null })),
+    ]);
+    setSelectedContributionIds(new Set());
+
+    try {
+      const result: BulkOperationResult = await clientApi.bulkUndeleteContributions(ids);
+      if (result.failed && result.failed.length > 0) {
+        toast.warning(
+          `Restored ${result.success} contribution(s). ${result.failed.length} failed: ${result.failed.map(f => f.reason).join(', ')}`
+        );
+        const failedIds = result.failed.map(f => f.id);
+        const failedContribs = contributionsToRestore.filter(c => failedIds.includes(c.id));
+        setDeletedContributions(prev => [...prev, ...failedContribs]);
+        setContributions(prev => prev.filter(c => !failedIds.includes(c.id)));
+      } else {
+        toast.success(`${result.success} contribution(s) restored`);
+      }
+    } catch {
+      setDeletedContributions(prev => [...prev, ...contributionsToRestore]);
+      setContributions(prev => prev.filter(c => !ids.includes(c.id)));
+      setSelectedContributionIds(new Set(ids));
+      toast.error('Failed to restore contributions');
+    }
+  };
+
+  // Computed values
+  const displayedContributions = showDeletedContributions ? deletedContributions : contributions;
+  const allContributionIds = displayedContributions.map(c => c.id);
+  const allContributionsSelected =
+    allContributionIds.length > 0 &&
+    allContributionIds.every(id => selectedContributionIds.has(id));
 
   const formatCurrency = (amount: number) => `$${amount.toFixed(2)}`;
 
@@ -53,13 +197,30 @@ export function GivingClient({
             Track gifts, edit entries, and export summaries for finance reconciliation.
           </p>
         </div>
-        <a
-          id="download-csv-link"
-          href={csvUrl}
-          className="rounded-md border border-border px-4 py-2 text-sm text-foreground transition hover:bg-muted"
-        >
-          Download CSV
-        </a>
+        <div className="flex gap-2">
+          {canManage && deletedContributions.length > 0 && (
+            <button
+              id="toggle-archived-contributions-button"
+              type="button"
+              onClick={() => {
+                setShowDeletedContributions(!showDeletedContributions);
+                setSelectedContributionIds(new Set());
+              }}
+              className="rounded-md border border-border px-4 py-2 text-sm text-foreground transition hover:bg-muted"
+            >
+              {showDeletedContributions
+                ? 'Show Active'
+                : `Show Archived (${deletedContributions.length})`}
+            </button>
+          )}
+          <a
+            id="download-csv-link"
+            href={csvUrl}
+            className="rounded-md border border-border px-4 py-2 text-sm text-foreground transition hover:bg-muted"
+          >
+            Download CSV
+          </a>
+        </div>
       </header>
 
       <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
@@ -85,6 +246,44 @@ export function GivingClient({
         />
       </section>
 
+      {/* Bulk operations bar */}
+      {canManage && selectedContributionIds.size > 0 && (
+        <div className="flex items-center justify-between rounded-lg border border-border bg-muted/50 px-4 py-3">
+          <span className="text-sm text-foreground">
+            {selectedContributionIds.size} contribution(s) selected
+          </span>
+          <div className="flex gap-2">
+            {showDeletedContributions ? (
+              <button
+                id="bulk-restore-contributions-button"
+                type="button"
+                onClick={handleBulkRestoreContributions}
+                className="rounded-md bg-emerald-600 px-4 py-2 text-sm text-white transition hover:bg-emerald-700"
+              >
+                Restore Selected
+              </button>
+            ) : (
+              <button
+                id="bulk-archive-contributions-button"
+                type="button"
+                onClick={handleBulkArchiveContributions}
+                className="rounded-md bg-amber-600 px-4 py-2 text-sm text-white transition hover:bg-amber-700"
+              >
+                Archive Selected
+              </button>
+            )}
+            <button
+              id="cancel-selection-button"
+              type="button"
+              onClick={() => setSelectedContributionIds(new Set())}
+              className="rounded-md border border-border px-4 py-2 text-sm text-foreground transition hover:bg-muted"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <div className="space-y-4">
           <div className="rounded-xl border border-border bg-card/60 p-5">
@@ -98,6 +297,25 @@ export function GivingClient({
               </caption>
               <thead className="text-left text-xs uppercase text-muted-foreground">
                 <tr>
+                  {canManage && (
+                    <th scope="col" className="w-12 py-2">
+                      <span className="sr-only">Select all contributions</span>
+                      <input
+                        id="select-all-contributions-checkbox"
+                        type="checkbox"
+                        checked={allContributionsSelected}
+                        onChange={() => {
+                          if (allContributionsSelected) {
+                            setSelectedContributionIds(new Set());
+                          } else {
+                            setSelectedContributionIds(new Set(allContributionIds));
+                          }
+                        }}
+                        className="rounded border-gray-300"
+                        aria-label="Select all contributions"
+                      />
+                    </th>
+                  )}
                   <th scope="col" className="py-2">
                     Date
                   </th>
@@ -122,16 +340,44 @@ export function GivingClient({
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {contributions.map(entry => {
+                {displayedContributions.map(entry => {
                   const member = memberMap.get(entry.memberId);
                   const fund = entry.fundId ? fundMap.get(entry.fundId) : undefined;
                   const memberName = member
                     ? `${member.profile?.firstName ?? ''} ${member.profile?.lastName ?? ''}`.trim()
                     : entry.memberId;
+                  const isArchived = !!entry.deletedAt;
                   return (
-                    <tr key={entry.id}>
+                    <tr key={entry.id} className={isArchived ? 'opacity-60' : ''}>
+                      {canManage && (
+                        <td className="py-2">
+                          <input
+                            id={`select-contribution-${entry.id}`}
+                            type="checkbox"
+                            checked={selectedContributionIds.has(entry.id)}
+                            onChange={() => {
+                              const newSet = new Set(selectedContributionIds);
+                              if (newSet.has(entry.id)) {
+                                newSet.delete(entry.id);
+                              } else {
+                                newSet.add(entry.id);
+                              }
+                              setSelectedContributionIds(newSet);
+                            }}
+                            className="rounded border-gray-300"
+                            aria-label={`Select contribution from ${memberName}`}
+                          />
+                        </td>
+                      )}
                       <td className="py-2">{format(new Date(entry.date), 'd MMM yyyy')}</td>
-                      <td className="py-2 text-foreground">{memberName || entry.memberId}</td>
+                      <td className="py-2 text-foreground">
+                        {memberName || entry.memberId}
+                        {isArchived && (
+                          <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-xs text-amber-800 dark:bg-amber-900/30 dark:text-amber-200">
+                            Archived
+                          </span>
+                        )}
+                      </td>
                       <td className="py-2 text-muted-foreground">{fund?.name ?? 'General'}</td>
                       <td className="py-2 font-medium">{formatCurrency(entry.amount)}</td>
                       <td className="py-2 text-muted-foreground capitalize">
@@ -139,14 +385,37 @@ export function GivingClient({
                       </td>
                       <td className="py-2 text-muted-foreground">{entry.note ?? ''}</td>
                       <td className="py-2 text-right">
-                        <button
-                          id={`edit-contribution-button-${entry.id}`}
-                          type="button"
-                          onClick={() => setEditContribution(entry)}
-                          className="rounded-md border border-border px-3 py-1 text-xs text-foreground transition hover:bg-muted"
-                        >
-                          Edit
-                        </button>
+                        {canManage && isArchived ? (
+                          <button
+                            id={`restore-contribution-button-${entry.id}`}
+                            type="button"
+                            onClick={() => handleRestoreContribution(entry.id)}
+                            className="rounded-md border border-emerald-600 px-3 py-1 text-xs text-emerald-600 transition hover:bg-emerald-50 dark:hover:bg-emerald-900/20"
+                          >
+                            Restore
+                          </button>
+                        ) : (
+                          <div className="flex gap-2 justify-end">
+                            <button
+                              id={`edit-contribution-button-${entry.id}`}
+                              type="button"
+                              onClick={() => setEditContribution(entry)}
+                              className="rounded-md border border-border px-3 py-1 text-xs text-foreground transition hover:bg-muted"
+                            >
+                              Edit
+                            </button>
+                            {canManage && (
+                              <button
+                                id={`archive-contribution-button-${entry.id}`}
+                                type="button"
+                                onClick={() => handleArchiveContribution(entry.id)}
+                                className="rounded-md border border-amber-600 px-3 py-1 text-xs text-amber-600 transition hover:bg-amber-50 dark:hover:bg-amber-900/20"
+                              >
+                                Archive
+                              </button>
+                            )}
+                          </div>
+                        )}
                       </td>
                     </tr>
                   );
@@ -202,7 +471,7 @@ export function GivingClient({
                   className="rounded-md border border-border bg-background px-3 py-2 text-sm"
                 >
                   <option value="">General</option>
-                  {funds.map(fund => (
+                  {initialFunds.map(fund => (
                     <option key={fund.id} value={fund.id}>
                       {fund.name}
                     </option>
@@ -332,7 +601,7 @@ export function GivingClient({
                 className="rounded-md border border-border bg-background px-3 py-2 text-sm"
               >
                 <option value="">General</option>
-                {funds.map(fund => (
+                {initialFunds.map(fund => (
                   <option key={fund.id} value={fund.id}>
                     {fund.name}
                   </option>
@@ -375,6 +644,15 @@ export function GivingClient({
           </form>
         ) : null}
       </Modal>
+
+      <ConfirmDialog
+        open={confirmDialog.open}
+        onClose={() => setConfirmDialog(prev => ({ ...prev, open: false }))}
+        title={confirmDialog.title}
+        message={confirmDialog.message}
+        onConfirm={confirmDialog.onConfirm}
+        variant="warning"
+      />
     </section>
   );
 }

@@ -292,4 +292,97 @@ export const clientApi = {
       body: JSON.stringify({ ids }),
     });
   },
+
+  // ==================== GIVING SOFT DELETE METHODS ====================
+
+  // Fund soft delete operations
+  async deleteFund(fundId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(`/giving/funds/${fundId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  async undeleteFund(fundId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(`/giving/funds/${fundId}/undelete`, {
+      method: 'POST',
+    });
+  },
+
+  async listDeletedFunds() {
+    return apiFetch<any[]>('/giving/funds/deleted/all');
+  },
+
+  async bulkDeleteFunds(ids: string[]) {
+    return apiFetch<{ success: number; failed: Array<{ id: string; reason: string }> }>(
+      '/giving/funds/bulk-delete',
+      {
+        method: 'POST',
+        body: JSON.stringify({ ids }),
+      }
+    );
+  },
+
+  async bulkUndeleteFunds(ids: string[]) {
+    return apiFetch<{ success: number; failed: Array<{ id: string; reason: string }> }>(
+      '/giving/funds/bulk-undelete',
+      {
+        method: 'POST',
+        body: JSON.stringify({ ids }),
+      }
+    );
+  },
+
+  // Contribution soft delete operations
+  async deleteContribution(contributionId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(
+      `/giving/contributions/${contributionId}`,
+      {
+        method: 'DELETE',
+      }
+    );
+  },
+
+  async undeleteContribution(contributionId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(
+      `/giving/contributions/${contributionId}/undelete`,
+      {
+        method: 'POST',
+      }
+    );
+  },
+
+  async listDeletedContributions(filters?: {
+    memberId?: string;
+    fundId?: string;
+    from?: string;
+    to?: string;
+  }) {
+    const params = new URLSearchParams();
+    if (filters?.memberId) params.append('memberId', filters.memberId);
+    if (filters?.fundId) params.append('fundId', filters.fundId);
+    if (filters?.from) params.append('from', filters.from);
+    if (filters?.to) params.append('to', filters.to);
+    const query = params.toString();
+    return apiFetch<any[]>(`/giving/contributions/deleted/all${query ? `?${query}` : ''}`);
+  },
+
+  async bulkDeleteContributions(ids: string[]) {
+    return apiFetch<{ success: number; failed: Array<{ id: string; reason: string }> }>(
+      '/giving/contributions/bulk-delete',
+      {
+        method: 'POST',
+        body: JSON.stringify({ ids }),
+      }
+    );
+  },
+
+  async bulkUndeleteContributions(ids: string[]) {
+    return apiFetch<{ success: number; failed: Array<{ id: string; reason: string }> }>(
+      '/giving/contributions/bulk-undelete',
+      {
+        method: 'POST',
+        body: JSON.stringify({ ids }),
+      }
+    );
+  },
 };

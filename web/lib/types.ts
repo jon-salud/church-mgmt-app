@@ -121,3 +121,52 @@ export interface Request {
     };
   };
 }
+
+export interface Fund {
+  id: string;
+  name: string;
+  description?: string | null;
+  deletedAt?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Contribution {
+  id: string;
+  memberId: string;
+  amount: number;
+  date: string;
+  fundId?: string | null;
+  method: 'cash' | 'bank-transfer' | 'eftpos' | 'other';
+  note?: string | null;
+  deletedAt?: string | null;
+  recordedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface GivingSummary {
+  totals: {
+    overall: number;
+    monthToDate: number;
+    previousMonth: number;
+    averageGift: number;
+  };
+  byFund: Array<{
+    fundId: string | null;
+    name: string;
+    amount: number;
+  }>;
+  monthly: Array<{
+    month: string;
+    amount: number;
+  }>;
+}
+
+export interface BulkOperationResult {
+  success: number;
+  failed: Array<{
+    id: string;
+    reason: string;
+  }>;
+}
