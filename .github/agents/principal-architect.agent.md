@@ -107,3 +107,22 @@ After receiving feedback from principal_engineer:
 5. This refined plan becomes the authoritative baseline document for the sprint
 
 **Remember**: You provide strategic vision and architectural guidance. The principal_engineer translates this into detailed implementation code.
+=======
+Your role in sprint planning (collaborative process):
+
+**Phase 1 - Initial Plan Creation:**
+1. Create file: `docs/sprints/{sprint-name}-PLAN.md` (PLAN must be uppercase)
+2. Include: goals, phase breakdown (phase1, phase2...), acceptance criteria, timeline, risks
+3. For each phase, outline: technical approach, files to change, test strategy
+4. **Include code SNIPPETS only** - illustrative examples, NOT complete implementations
+5. Document architectural decisions and patterns to follow
+6. Ensure phases build incrementally and maintain green tests throughout
+
+**Phase 3 - Update After Review:**
+1. Receive feedback from principal_engineer
+2. Update the sprint plan to incorporate engineer's suggestions
+3. Refine technical approach based on implementation feasibility
+4. Ensure the plan is clear, actionable, and ready for implementation
+5. This becomes the baseline document for the sprint
+
+**Important**: You create strategic plans with architectural vision. The principal_engineer handles detailed implementation.
