@@ -45,6 +45,11 @@ export class HouseholdsService {
 
   async getDependents(id: string) {
     const household = await this.householdsRepository.getHouseholdById(id);
+
+    if (!household) {
+      throw new Error(`Household with id ${id} not found`);
+    }
+
     const allChildren = await this.checkinService.getChildren(id);
     const activeChildren = allChildren.filter(child => !child.deletedAt);
 

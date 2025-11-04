@@ -191,8 +191,7 @@ export interface Household {
 export interface Child {
   id: string;
   householdId: string;
-  firstName: string;
-  lastName: string;
+  fullName: string;
   dateOfBirth?: string | null;
   allergies?: string | null;
   medicalNotes?: string | null;
@@ -206,8 +205,7 @@ export interface HouseholdDependents {
   activeChildrenCount: number;
   children: Array<{
     id: string;
-    firstName: string;
-    lastName: string;
+    fullName: string;
   }>;
 }
 

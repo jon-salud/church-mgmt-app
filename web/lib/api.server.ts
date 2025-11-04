@@ -103,7 +103,7 @@ export const api = {
     return apiFetch<{
       activeMemberCount: number;
       activeChildrenCount: number;
-      children: Array<{ id: string; firstName: string; lastName: string }>;
+      children: Array<{ id: string; fullName: string }>;
     }>(`/households/${id}/dependents`);
   },
   async getChildren(householdId: string) {
