@@ -385,4 +385,45 @@ export const clientApi = {
       }
     );
   },
+
+  // Households soft delete methods
+  async deleteHousehold(householdId: string) {
+    return apiFetch<{ success: boolean }>(`/households/${householdId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  async undeleteHousehold(householdId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(`/households/${householdId}/undelete`, {
+      method: 'POST',
+    });
+  },
+
+  async bulkDeleteHouseholds(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/households/bulk-delete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  async bulkUndeleteHouseholds(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/households/bulk-undelete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  async hardDeleteHousehold(householdId: string) {
+    return apiFetch<{ success: boolean }>(`/households/${householdId}/hard`, {
+      method: 'DELETE',
+    });
+  },
+
+  async getHouseholdDependents(householdId: string) {
+    return apiFetch<{
+      activeMemberCount: number;
+      activeChildrenCount: number;
+      children: Array<{ id: string; firstName: string; lastName: string }>;
+    }>(`/households/${householdId}/dependents`);
+  },
 };
