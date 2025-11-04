@@ -38,8 +38,8 @@ You MUST follow this protocol for all sprint‑based work.
    Contents: sprint goals, phase overview, acceptance criteria, timeline, risks.
 
 3. **Complete Sprint**  
-   After all phases merged → PR `feature/{sprint-name}-main-sprint` → `main`  
-   Title: `Sprint: {Sprint Name}`. Link all phase PRs & plans.
+   After all phases merged → Create PR `feature/{sprint-name}-main-sprint` → `main`  
+   Title: `Sprint: {Sprint Name}`. Link all phase PRs & plans. DO NOT merge - wait for review.
 
 ### 1.2 Phase‑Level
 
@@ -52,12 +52,13 @@ You MUST follow this protocol for all sprint‑based work.
    Include: technical approach, files to change, tests, risks & rollback, acceptance criteria.  
 4. **Implement & Review** on the phase branch; keep tests green.  
 5. **Document Accomplishments**: append `## Accomplishments` to the phase plan.  
-6. **Open Phase PR** → sprint branch (NOT `main`).  
-7. **Update `TASKS.md`** to “✅ Completed” with brief summary + commit hashes.
+6. **Create Phase PR** → sprint branch (NOT `main`) with links to plan & commits. DO NOT merge - wait for review.
+7. **Update `TASKS.md`** to "✅ Completed" with brief summary + commit hashes.
 
 **Rules Recap**  
 - **NEVER** branch a phase from `main`.  
 - **NEVER** merge a phase directly to `main`.  
+- **NEVER** auto-merge phase/sprint branches - always create PR for review.
 - **ALWAYS** create sprint plan before phases; create each phase plan before implementation.  
 - **ALWAYS** append accomplishments after completion and keep `TASKS.md` in sync.
 
@@ -92,8 +93,8 @@ You MUST pass each gate in order. If any check fails, **STOP** and ask the user.
 ### Gate E — Documentation & PRs
 - Append `## Accomplishments` to phase plan.
 - Update `TASKS.md` status.
-- Open phase PR → sprint branch with links to plan & commits.
-- On sprint completion: open sprint PR → `main`.
+- Create phase PR → sprint branch with links to plan & commits (DO NOT merge, wait for review).
+- On sprint completion: create sprint PR → `main` with links to all phase PRs (DO NOT merge, wait for review).
 
 ---
 
@@ -161,7 +162,7 @@ Before changes, identify dependencies and risks:
 3) **TDD** → write tests first; see them fail (red).  
 4) **Execute** → minimal implementation to pass tests (green); refactor safely; verify; format.  
 5) **Docs** → update `TASKS.md`; update `docs/source-of-truth/*`, `PRD.md`, `USER_MANUAL.md` if impacted; append `## Accomplishments`.  
-6) **Submit** → Phase PR → sprint branch; Sprint PR → `main` when all phases complete.
+6) **Submit** → Create Phase PR → sprint branch; Create Sprint PR → `main` when all phases complete (both PRs require review before merge).
 
 ---
 
@@ -205,3 +206,4 @@ docs/
 - [ ] Missing regression searches for symbol usages  
 - [ ] Forgetting to update `TASKS.md`  
 - [ ] Opening phase PR directly to `main`
+- [ ] Auto-merging PRs without review
