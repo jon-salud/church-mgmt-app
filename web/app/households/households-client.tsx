@@ -119,9 +119,8 @@ export function HouseholdsClient({
       const restored = deletedHouseholds.find(h => h.id === id);
       if (restored) {
         setDeletedHouseholds(deletedHouseholds.filter(h => h.id !== id));
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { deletedAt, ...restoredHousehold } = restored;
-        setHouseholds([...households, restoredHousehold]);
+        // Remove deletedAt when restoring
+        setHouseholds([...households, { ...restored, deletedAt: undefined }]);
       }
     } catch (error) {
       console.error('Failed to restore household:', error);
@@ -167,8 +166,11 @@ export function HouseholdsClient({
       if (result.success) {
         const restoredHouseholds = deletedHouseholds.filter(h => selectedIds.has(h.id));
         setDeletedHouseholds(deletedHouseholds.filter(h => !selectedIds.has(h.id)));
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        setHouseholds([...households, ...restoredHouseholds.map(({ deletedAt, ...h }) => h)]);
+        // Remove deletedAt when restoring
+        setHouseholds([
+          ...households,
+          ...restoredHouseholds.map(h => ({ ...h, deletedAt: undefined })),
+        ]);
         setSelectedIds(new Set());
       }
     } catch (error) {
@@ -216,11 +218,9 @@ export function HouseholdsClient({
             id="select-all-households"
             checked={allSelected}
             onCheckedChange={toggleSelectAll}
+            className="cursor-pointer"
           />
-          <label
-            htmlFor="select-all-households"
-            className="text-sm text-muted-foreground cursor-pointer"
-          >
+          <label htmlFor="select-all-households" className="text-sm text-muted-foreground">
             {selectedIds.size > 0 ? `${selectedIds.size} selected` : 'Select all'}
           </label>
           {selectedIds.size > 0 && (

@@ -4,7 +4,10 @@ import { HouseholdsClient } from './households-client';
 export default async function HouseholdsPage() {
   const [households, deletedHouseholds, user] = await Promise.all([
     api.households(),
-    api.listDeletedHouseholds().catch(() => []),
+    api.listDeletedHouseholds().catch(err => {
+      console.error('Failed to load deleted households:', err);
+      return [];
+    }),
     api
       .currentUser()
       .then(data => data?.user || null)
