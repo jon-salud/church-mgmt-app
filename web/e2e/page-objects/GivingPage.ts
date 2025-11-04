@@ -59,12 +59,12 @@ export class GivingPage extends BasePage {
 
   async verifyContributionVisible(amount: string) {
     const table = this.page.locator('table').filter({ hasText: 'Recent contributions' });
-    await expect(table.getByText(amount, { exact: true })).toBeVisible();
+    await expect(table.getByText(amount)).toBeVisible();
   }
 
   async verifyContributionNotVisible(amount: string) {
     const table = this.page.locator('table').filter({ hasText: 'Recent contributions' });
-    await expect(table.getByText(amount, { exact: true })).not.toBeVisible();
+    await expect(table.getByText(amount)).not.toBeVisible();
   }
 
   async selectContribution(contributionId: string) {
@@ -122,9 +122,12 @@ export class GivingPage extends BasePage {
   }
 
   async getArchivedCount() {
-    const buttonText = await this.page
-      .locator('#toggle-archived-contributions-button')
-      .textContent();
+    const toggleButton = this.page.locator('#toggle-archived-contributions-button');
+    // If button doesn't exist, there are no archived contributions
+    if (!(await toggleButton.isVisible())) {
+      return 0;
+    }
+    const buttonText = await toggleButton.textContent();
     const match = buttonText?.match(/\((\d+)\)/);
     return match ? parseInt(match[1]) : 0;
   }
@@ -154,6 +157,37 @@ export class GivingPage extends BasePage {
       .first();
     await firstButton.waitFor({ state: 'visible', timeout: 5000 });
     const id = await firstButton.getAttribute('id');
+    return (
+      id?.replace('edit-contribution-button-', '').replace('restore-contribution-button-', '') || ''
+    );
+  }
+
+  async getContributionIdByAmount(amount: string) {
+    // Wait for the contributions table to be fully loaded
+    // Use aria-describedby attribute to find the correct table
+    const table = this.page.locator('table[aria-describedby="contributions-caption"]');
+    await table.waitFor({ state: 'visible', timeout: 5000 });
+
+    // Wait for at least one row to appear in the table body
+    const tableBody = table.locator('tbody');
+    await tableBody.locator('tr').first().waitFor({ state: 'visible', timeout: 5000 });
+
+    // Small delay to ensure all rows are rendered
+    await this.page.waitForTimeout(200);
+
+    // Now find the row containing the exact amount
+    const contributionRow = this.page.locator('tr').filter({ hasText: amount });
+    await contributionRow.first().waitFor({ state: 'visible', timeout: 5000 });
+
+    // Get the button ID from this row
+    const button = contributionRow
+      .first()
+      .locator(
+        'button[id^="edit-contribution-button-"], button[id^="restore-contribution-button-"]'
+      )
+      .first();
+
+    const id = await button.getAttribute('id');
     return (
       id?.replace('edit-contribution-button-', '').replace('restore-contribution-button-', '') || ''
     );

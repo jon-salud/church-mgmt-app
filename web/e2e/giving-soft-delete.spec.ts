@@ -2,11 +2,16 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from './page-objects/LoginPage';
 import { GivingPage } from './page-objects/GivingPage';
 
+test.describe.configure({ mode: 'serial' });
+
 test.describe('Giving Soft Delete', () => {
   test.beforeEach(async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.login();
   });
+
+  // Note: Cleanup removed - tests should restore state within themselves
+  // Serial mode ensures tests run in order and don't interfere
 
   test('admin can archive and restore a single contribution', async ({ page }) => {
     const givingPage = new GivingPage(page);
@@ -16,21 +21,16 @@ test.describe('Giving Soft Delete', () => {
       await page.waitForLoadState('networkidle');
     });
 
-    await test.step('Verify Show Archived toggle is visible for admin', async () => {
-      await givingPage.verifyArchivedToggleVisible();
-    });
+    // Note: Toggle button only appears when there are archived contributions
+    // So we skip verifying it's visible initially
 
-    // Get the first contribution ID
+    // Use unique test contribution: $35.00
+    const amount = '$35.00';
     let contributionId = '';
-    await test.step('Get first contribution ID', async () => {
-      contributionId = await givingPage.getFirstContributionId();
+    await test.step('Find test contribution by amount', async () => {
+      contributionId = await givingPage.getContributionIdByAmount(amount);
       expect(contributionId).toBeTruthy();
     });
-
-    // Get the contribution amount for verification
-    const contributionRow = await givingPage.getContributionRow(contributionId);
-    const amount = await contributionRow.locator('td').nth(4).textContent();
-    if (!amount) throw new Error('No amount found');
 
     await test.step('Archive the contribution', async () => {
       await givingPage.archiveContribution(contributionId);
@@ -42,12 +42,18 @@ test.describe('Giving Soft Delete', () => {
     });
 
     await test.step('Toggle to show archived contributions', async () => {
+      // Now the toggle button should be visible since we archived something
+      await givingPage.verifyArchivedToggleVisible();
       await givingPage.toggleShowArchivedContributions();
-      await page.waitForTimeout(500);
+      // Wait for the table to update by waiting for the restore button to appear
+      await page
+        .locator(`#restore-contribution-button-${contributionId}`)
+        .waitFor({ state: 'visible' });
     });
 
     await test.step('Verify contribution appears in archived list with badge', async () => {
-      await givingPage.verifyContributionVisible(amount);
+      // Verify by checking the restore button is visible (more reliable than text matching)
+      await expect(page.locator(`#restore-contribution-button-${contributionId}`)).toBeVisible();
       await givingPage.verifyContributionArchived(contributionId);
     });
 
@@ -60,13 +66,22 @@ test.describe('Giving Soft Delete', () => {
       await givingPage.verifyContributionNotVisible(amount);
     });
 
-    await test.step('Toggle back to active contributions', async () => {
-      await givingPage.toggleShowArchivedContributions();
-      await page.waitForTimeout(500);
+    await test.step('Toggle back to active contributions if toggle exists', async () => {
+      // Check if toggle button still exists (it disappears when no archived items)
+      const toggleButton = page.locator('#toggle-archived-contributions-button');
+      if (await toggleButton.isVisible()) {
+        await toggleButton.click();
+        await page.waitForTimeout(500);
+      } else {
+        // No toggle means no archived items, navigate back to see active list
+        await givingPage.goto();
+        await page.waitForLoadState('networkidle');
+      }
     });
 
     await test.step('Verify contribution is back in active list', async () => {
-      await givingPage.verifyContributionVisible(amount);
+      // The edit button being visible confirms the contribution is in active list
+      await expect(page.locator(`#edit-contribution-button-${contributionId}`)).toBeVisible();
       await givingPage.verifyContributionNotArchived(contributionId);
     });
   });
@@ -77,33 +92,33 @@ test.describe('Giving Soft Delete', () => {
     await test.step('Navigate to giving page', async () => {
       await givingPage.goto();
       await page.waitForLoadState('networkidle');
+      // Ensure we're in active view (not archived) from any previous test state
+      // Toggle button only exists if there are archived items
+      const toggleButton = page.locator('#toggle-archived-contributions-button');
+      if (await toggleButton.isVisible()) {
+        const toggleText = await toggleButton.textContent();
+        if (toggleText?.includes('Show Active')) {
+          await toggleButton.click();
+          await page.waitForTimeout(500);
+        }
+      }
+      // If no toggle button, we're already in active view (no archived items)
     });
 
     await test.step('Verify select all checkbox is visible', async () => {
       await givingPage.verifySelectAllCheckbox();
     });
 
-    // Get first two contribution IDs
+    // Use unique test contributions: $75.00 and $85.00 (high values to avoid conflicts)
+    const amounts = ['$75.00', '$85.00'];
     const contributionIds: string[] = [];
-    await test.step('Get first two contribution IDs', async () => {
-      const editButtons = page.locator('button[id^="edit-contribution-button-"]');
-      const count = await editButtons.count();
-      if (count < 2) throw new Error('Need at least 2 contributions for bulk test');
-
-      for (let i = 0; i < Math.min(2, count); i++) {
-        const id = await editButtons.nth(i).getAttribute('id');
-        const contributionId = id?.replace('edit-contribution-button-', '') || '';
-        if (contributionId) contributionIds.push(contributionId);
+    await test.step('Find test contributions by amounts', async () => {
+      for (const amount of amounts) {
+        const id = await givingPage.getContributionIdByAmount(amount);
+        expect(id).toBeTruthy();
+        contributionIds.push(id);
       }
     });
-
-    // Get contribution amounts for verification
-    const amounts: string[] = [];
-    for (const id of contributionIds) {
-      const row = await givingPage.getContributionRow(id);
-      const amount = await row.locator('td').nth(4).textContent();
-      if (amount) amounts.push(amount);
-    }
 
     await test.step('Select multiple contributions', async () => {
       for (const id of contributionIds) {
@@ -133,9 +148,10 @@ test.describe('Giving Soft Delete', () => {
     });
 
     await test.step('Verify contributions appear in archived list', async () => {
-      for (let i = 0; i < contributionIds.length; i++) {
-        await givingPage.verifyContributionVisible(amounts[i]);
-        await givingPage.verifyContributionArchived(contributionIds[i]);
+      for (const id of contributionIds) {
+        // Verify by checking restore button is visible (more reliable than text matching)
+        await expect(page.locator(`#restore-contribution-button-${id}`)).toBeVisible();
+        await givingPage.verifyContributionArchived(id);
       }
     });
 
@@ -161,14 +177,23 @@ test.describe('Giving Soft Delete', () => {
       }
     });
 
-    await test.step('Toggle back to active contributions', async () => {
-      await givingPage.toggleShowArchivedContributions();
-      await page.waitForTimeout(500);
+    await test.step('Toggle back to active contributions if toggle exists', async () => {
+      // Check if toggle button still exists (it disappears when no archived items)
+      const toggleButton = page.locator('#toggle-archived-contributions-button');
+      if (await toggleButton.isVisible()) {
+        await toggleButton.click();
+        await page.waitForTimeout(500);
+      } else {
+        // No toggle means no archived items, navigate back to see active list
+        await givingPage.goto();
+        await page.waitForLoadState('networkidle');
+      }
     });
 
     await test.step('Verify contributions are back in active list', async () => {
-      for (const amount of amounts) {
-        await givingPage.verifyContributionVisible(amount);
+      for (const id of contributionIds) {
+        // Verify by checking edit button is visible
+        await expect(page.locator(`#edit-contribution-button-${id}`)).toBeVisible();
       }
     });
   });
@@ -179,6 +204,15 @@ test.describe('Giving Soft Delete', () => {
     await test.step('Navigate to giving page', async () => {
       await givingPage.goto();
       await page.waitForLoadState('networkidle');
+      // Ensure we're in active view (not archived) from any previous test state
+      const toggleButton = page.locator('#toggle-archived-contributions-button');
+      if (await toggleButton.isVisible()) {
+        const toggleText = await toggleButton.textContent();
+        if (toggleText?.includes('Show Active')) {
+          await toggleButton.click();
+          await page.waitForTimeout(500);
+        }
+      }
     });
 
     let initialCount = 0;
@@ -187,10 +221,44 @@ test.describe('Giving Soft Delete', () => {
       expect(initialCount).toBeGreaterThanOrEqual(0);
     });
 
-    // Archive one contribution and verify count increases
+    // Use unique test contribution: $55.00
+    const amount = '$55.00';
     let contributionId = '';
-    await test.step('Get first contribution', async () => {
-      contributionId = await givingPage.getFirstContributionId();
+    await test.step('Find test contribution by amount (or restore if archived)', async () => {
+      // First try to find it in active view
+      try {
+        contributionId = await givingPage.getContributionIdByAmount(amount);
+      } catch {
+        // If not found in active view, check archived view
+        const toggleButton = page.locator('#toggle-archived-contributions-button');
+        if (await toggleButton.isVisible()) {
+          await toggleButton.click();
+          await page.waitForTimeout(500);
+
+          // Try to find it in archived view
+          try {
+            contributionId = await givingPage.getContributionIdByAmount(amount);
+            // Found in archived view - restore it first
+            await givingPage.restoreContribution(contributionId);
+            await page.waitForTimeout(500);
+
+            // Toggle back to active view if toggle still exists
+            if (await toggleButton.isVisible()) {
+              await toggleButton.click();
+              await page.waitForTimeout(500);
+            }
+          } catch {
+            // Still not found - toggle back and fail
+            if (await toggleButton.isVisible()) {
+              await toggleButton.click();
+              await page.waitForTimeout(500);
+            }
+            throw new Error(`Could not find contribution ${amount} in active or archived view`);
+          }
+        } else {
+          throw new Error(`Could not find contribution ${amount} and no archived items to check`);
+        }
+      }
       expect(contributionId).toBeTruthy();
     });
 
@@ -208,6 +276,13 @@ test.describe('Giving Soft Delete', () => {
       await givingPage.toggleShowArchivedContributions();
       await page.waitForTimeout(500);
       await givingPage.restoreContribution(contributionId);
+      await page.waitForTimeout(500);
+      // Toggle back to active view if toggle still exists
+      const toggleButton = page.locator('#toggle-archived-contributions-button');
+      if (await toggleButton.isVisible()) {
+        await toggleButton.click();
+        await page.waitForTimeout(500);
+      }
     });
   });
 
@@ -225,14 +300,13 @@ test.describe('Giving Soft Delete', () => {
       expect(initialTotal).toBeTruthy();
     });
 
-    // Archive one contribution
+    // Use test contribution that was restored by test 1: $35.00
+    const amount = '$35.00';
+    const archivedAmount = '35.00';
     let contributionId = '';
-    let archivedAmount = '';
-    await test.step('Get first contribution', async () => {
-      contributionId = await givingPage.getFirstContributionId();
-      const row = await givingPage.getContributionRow(contributionId);
-      const amountText = await row.locator('td').nth(4).textContent();
-      archivedAmount = amountText?.replace(/[$,]/g, '') || '0';
+    await test.step('Find test contribution by amount', async () => {
+      contributionId = await givingPage.getContributionIdByAmount(amount);
+      expect(contributionId).toBeTruthy();
     });
 
     await test.step('Archive the contribution', async () => {
@@ -254,7 +328,11 @@ test.describe('Giving Soft Delete', () => {
       await page.waitForTimeout(500);
       await givingPage.restoreContribution(contributionId);
       await page.waitForTimeout(500);
-      await givingPage.toggleShowArchivedContributions();
+      // Toggle back to active view if toggle still exists
+      const toggleButton = page.locator('#toggle-archived-contributions-button');
+      if (await toggleButton.isVisible()) {
+        await toggleButton.click();
+      }
     });
 
     await test.step('Verify total giving restored', async () => {
@@ -274,8 +352,16 @@ test.describe('Giving Soft Delete', () => {
     });
 
     await test.step('Verify starting in active view', async () => {
-      const toggleText = await page.locator('#toggle-archived-contributions-button').textContent();
-      expect(toggleText).toContain('Show Archived');
+      const toggleButton = page.locator('#toggle-archived-contributions-button');
+      // If we're already in archived view from a previous test, toggle back first
+      const toggleText = await toggleButton.textContent();
+      if (toggleText?.includes('Show Active')) {
+        await toggleButton.click();
+        await page.waitForTimeout(500);
+      }
+      // Now verify we're in active view
+      const finalText = await toggleButton.textContent();
+      expect(finalText).toContain('Show Archived');
     });
 
     await test.step('Toggle to archived view', async () => {
@@ -285,7 +371,7 @@ test.describe('Giving Soft Delete', () => {
 
     await test.step('Verify now in archived view', async () => {
       const toggleText = await page.locator('#toggle-archived-contributions-button').textContent();
-      expect(toggleText).toContain('Show Active');
+      expect(toggleText).toBe('Show Active');
     });
 
     await test.step('Toggle back to active view', async () => {
@@ -323,7 +409,7 @@ test.describe('Giving Soft Delete', () => {
     });
 
     await test.step('Verify bulk action bar appears', async () => {
-      const bulkBar = page.locator('text=selected');
+      const bulkBar = page.locator('text=contribution(s) selected');
       await expect(bulkBar).toBeVisible();
     });
 
@@ -338,7 +424,7 @@ test.describe('Giving Soft Delete', () => {
     });
 
     await test.step('Verify bulk action bar disappears', async () => {
-      const bulkBar = page.locator('text=selected');
+      const bulkBar = page.locator('text=contribution(s) selected');
       await expect(bulkBar).not.toBeVisible();
     });
   });
