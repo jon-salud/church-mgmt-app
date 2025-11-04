@@ -19,7 +19,6 @@ test.describe('Households', () => {
       await householdsPage.verifyHouseholdsPage();
 
       // Verify households are displayed with member counts
-      await expect(page.getByText('Matau Family')).toBeVisible();
       await expect(page.getByRole('heading', { name: 'Matau Family' })).toBeVisible();
     });
 
