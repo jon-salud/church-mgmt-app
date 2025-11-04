@@ -9,6 +9,9 @@ import {
   UseGuards,
   Query,
   BadRequestException,
+  HttpCode,
+  HttpStatus,
+  Req,
 } from '@nestjs/common';
 import { CheckinService } from './checkin.service';
 import { CreateChildDto } from './dto/create-child.dto';
@@ -19,6 +22,8 @@ import { InitiateCheckinDto } from './dto/initiate-checkin.dto';
 import { ConfirmCheckinDto } from './dto/confirm-checkin.dto';
 import { InitiateCheckoutDto } from './dto/initiate-checkout.dto';
 import { ConfirmCheckoutDto } from './dto/confirm-checkout.dto';
+import { BulkArchiveChildrenDto, BulkRestoreChildrenDto } from './dto/bulk-operations.dto';
+import { ensureLeader } from '../../common/auth/auth.helpers';
 
 @Controller('checkin')
 @UseGuards(AuthGuard)
@@ -44,9 +49,50 @@ export class CheckinController {
     return this.checkinService.updateChild(id, updateChildDto, user.id);
   }
 
+  @Get('children/deleted')
+  listDeletedChildren(@Req() req: any) {
+    ensureLeader(req);
+    return this.checkinService.listDeletedChildren();
+  }
+
   @Delete('children/:id')
-  deleteChild(@Param('id') id: string, @CurrentUser() user: { id: string }) {
-    return this.checkinService.deleteChild(id, user.id);
+  @HttpCode(HttpStatus.OK)
+  deleteChild(@Param('id') id: string, @Req() req: any) {
+    ensureLeader(req);
+    const actorUserId = req.user?.userId || 'system';
+    return this.checkinService.deleteChild(id, actorUserId);
+  }
+
+  @Post('children/:id/undelete')
+  @HttpCode(HttpStatus.OK)
+  undeleteChild(@Param('id') id: string, @Req() req: any) {
+    ensureLeader(req);
+    const actorUserId = req.user?.userId || 'system';
+    return this.checkinService.undeleteChild(id, actorUserId);
+  }
+
+  @Post('children/bulk-delete')
+  @HttpCode(HttpStatus.OK)
+  bulkDeleteChildren(@Body() dto: BulkArchiveChildrenDto, @Req() req: any) {
+    ensureLeader(req);
+    const actorUserId = req.user?.userId || 'system';
+    return this.checkinService.bulkDeleteChildren(dto.childIds, actorUserId);
+  }
+
+  @Post('children/bulk-undelete')
+  @HttpCode(HttpStatus.OK)
+  bulkUndeleteChildren(@Body() dto: BulkRestoreChildrenDto, @Req() req: any) {
+    ensureLeader(req);
+    const actorUserId = req.user?.userId || 'system';
+    return this.checkinService.bulkUndeleteChildren(dto.childIds, actorUserId);
+  }
+
+  @Delete('children/:id/hard')
+  @HttpCode(HttpStatus.OK)
+  hardDeleteChild(@Param('id') id: string, @Req() req: any) {
+    ensureLeader(req);
+    const actorUserId = req.user?.userId || 'system';
+    return this.checkinService.hardDeleteChild(id, actorUserId);
   }
 
   @Post('initiate')

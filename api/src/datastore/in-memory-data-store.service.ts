@@ -2242,24 +2242,74 @@ export class InMemoryDataStore {
     return clone(child);
   }
 
-  async deleteChild(id: string, { actorUserId }: { actorUserId: string }) {
+  async deleteChild(id: string, { actorUserId: _actorUserId }: { actorUserId: string }) {
+    const child = this.children.find(c => c.id === id && !c.deletedAt);
+    if (!child) {
+      return { success: false };
+    }
+    child.deletedAt = new Date().toISOString();
+    return { success: true };
+  }
+
+  async undeleteChild(id: string, _actorUserId: string) {
+    const child = this.children.find(c => c.id === id && c.deletedAt);
+    if (!child) {
+      return { success: false };
+    }
+    child.deletedAt = undefined;
+    return { success: true };
+  }
+
+  async hardDeleteChild(id: string, _actorUserId: string) {
     const index = this.children.findIndex(c => c.id === id);
     if (index === -1) {
       return { success: false };
     }
-    const [removed] = this.children.splice(index, 1);
-    await this.createAuditLog({
-      actorUserId,
-      action: 'child.deleted',
-      entity: 'child',
-      entityId: removed.id,
-      summary: `${this.getUserName(actorUserId)} removed child ${removed.fullName} from household`,
-      metadata: {
-        householdId: removed.householdId,
-        childId: removed.id,
-      },
-    });
+    this.children.splice(index, 1);
     return { success: true };
+  }
+
+  async bulkDeleteChildren(
+    ids: string[],
+    _actorUserId: string
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    for (const id of ids) {
+      const deleted = this.deleteChild(id, { actorUserId: _actorUserId });
+      if ((await deleted).success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Child not found or already deleted' });
+      }
+    }
+    return result;
+  }
+
+  async bulkUndeleteChildren(
+    ids: string[],
+    _actorUserId: string
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    for (const id of ids) {
+      const undeleted = this.undeleteChild(id, _actorUserId);
+      if ((await undeleted).success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Child not found or not deleted' });
+      }
+    }
+    return result;
+  }
+
+  async listDeletedChildren() {
+    return clone(
+      this.children.filter(c => c.deletedAt).map(c => ({ ...c, deletedAt: c.deletedAt }))
+    );
+  }
+
+  async getChildById(id: string) {
+    const child = this.children.find(c => c.id === id);
+    return child ? clone(child) : null;
   }
 
   async createPushSubscription(data: {

@@ -1294,9 +1294,84 @@ export class PrismaDataStore implements DataStore {
     return child;
   }
 
-  async deleteChild(id: string) {
+  async deleteChild(id: string, _input?: { actorUserId: string }) {
+    const child = await this.client.child.findUnique({ where: { id } });
+    if (!child || child.deletedAt) {
+      return { success: false };
+    }
+    await this.client.child.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+    return { success: true };
+  }
+
+  async undeleteChild(id: string, _actorUserId: string) {
+    const child = await this.client.child.findUnique({ where: { id } });
+    if (!child || !child.deletedAt) {
+      return { success: false };
+    }
+    await this.client.child.update({
+      where: { id },
+      data: { deletedAt: null },
+    });
+    return { success: true };
+  }
+
+  async hardDeleteChild(id: string, _actorUserId: string) {
+    const child = await this.client.child.findUnique({ where: { id } });
+    if (!child) {
+      return { success: false };
+    }
     await this.client.child.delete({ where: { id } });
     return { success: true };
+  }
+
+  async bulkDeleteChildren(
+    ids: string[],
+    _actorUserId: string
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const existingChildren = await this.client.child.findMany({
+      where: { id: { in: ids }, deletedAt: null },
+      select: { id: true },
+    });
+    const existingIds = existingChildren.map((c: { id: string }) => c.id);
+    await this.client.child.updateMany({
+      where: { id: { in: existingIds } },
+      data: { deletedAt: new Date() },
+    });
+    const failed = ids
+      .filter(id => !existingIds.includes(id))
+      .map(id => ({ id, reason: 'Child not found or already deleted' }));
+    return { success: existingIds.length, failed };
+  }
+
+  async bulkUndeleteChildren(
+    ids: string[],
+    _actorUserId: string
+  ): Promise<{ success: number; failed: Array<{ id: string; reason: string }> }> {
+    const existingChildren = await this.client.child.findMany({
+      where: { id: { in: ids }, deletedAt: { not: null } },
+      select: { id: true },
+    });
+    const existingIds = existingChildren.map((c: { id: string }) => c.id);
+    await this.client.child.updateMany({
+      where: { id: { in: existingIds } },
+      data: { deletedAt: null },
+    });
+    const failed = ids
+      .filter(id => !existingIds.includes(id))
+      .map(id => ({ id, reason: 'Child not found or not deleted' }));
+    return { success: existingIds.length, failed };
+  }
+
+  async listDeletedChildren() {
+    return this.client.child.findMany({ where: { deletedAt: { not: null } } });
+  }
+
+  async getChildById(id: string) {
+    const child = await this.client.child.findUnique({ where: { id } });
+    return child;
   }
 
   async createPushSubscription(data: any) {

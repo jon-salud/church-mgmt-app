@@ -2857,23 +2857,99 @@ export class MockDatabaseService {
   }
 
   deleteChild(id: string, { actorUserId }: { actorUserId: string }) {
+    const child = this.children.find(c => c.id === id && !c.deletedAt);
+    if (!child) {
+      return { success: false };
+    }
+    child.deletedAt = new Date().toISOString();
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'child.soft-deleted',
+      entity: 'child',
+      entityId: child.id,
+      summary: `${actorName} archived child ${child.fullName}`,
+      metadata: { childId: child.id, householdId: child.householdId, fullName: child.fullName },
+    });
+    return { success: true };
+  }
+
+  undeleteChild(id: string, actorUserId: string) {
+    const child = this.children.find(c => c.id === id && c.deletedAt);
+    if (!child) {
+      return { success: false };
+    }
+    child.deletedAt = undefined;
+    const actorName = this.getUserName(actorUserId);
+    this.createAuditLog({
+      actorUserId,
+      action: 'child.undeleted',
+      entity: 'child',
+      entityId: child.id,
+      summary: `${actorName} restored child ${child.fullName}`,
+      metadata: { childId: child.id, householdId: child.householdId, fullName: child.fullName },
+    });
+    return { success: true };
+  }
+
+  hardDeleteChild(id: string, actorUserId: string) {
     const index = this.children.findIndex(c => c.id === id);
     if (index === -1) {
       return { success: false };
     }
     const [removed] = this.children.splice(index, 1);
+    const actorName = this.getUserName(actorUserId);
     this.createAuditLog({
       actorUserId,
-      action: 'child.deleted',
+      action: 'child.hard-deleted',
       entity: 'child',
       entityId: removed.id,
-      summary: `${this.getUserName(actorUserId)} removed child ${removed.fullName} from household`,
+      summary: `${actorName} permanently deleted child ${removed.fullName}`,
       metadata: {
-        householdId: removed.householdId,
         childId: removed.id,
+        householdId: removed.householdId,
+        fullName: removed.fullName,
+        deletedAt: removed.deletedAt,
       },
     });
     return { success: true };
+  }
+
+  listDeletedChildren() {
+    return clone(
+      this.children.filter(c => c.deletedAt).map(c => ({ ...c, deletedAt: c.deletedAt }))
+    );
+  }
+
+  bulkDeleteChildren(ids: string[], actorUserId: string) {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    ids.forEach(id => {
+      const deleted = this.deleteChild(id, { actorUserId });
+      if (deleted.success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Child not found or already deleted' });
+      }
+    });
+    return result;
+  }
+
+  bulkUndeleteChildren(ids: string[], actorUserId: string) {
+    const result = { success: 0, failed: [] as Array<{ id: string; reason: string }> };
+    ids.forEach(id => {
+      const undeleted = this.undeleteChild(id, actorUserId);
+      if (undeleted.success) {
+        result.success += 1;
+      } else {
+        result.failed.push({ id, reason: 'Child not found or not deleted' });
+      }
+    });
+    return result;
+  }
+
+  getChildById(id: string) {
+    const child = this.children.find(c => c.id === id);
+    return child ? clone(child) : null;
   }
 
   createPushSubscription(data: {

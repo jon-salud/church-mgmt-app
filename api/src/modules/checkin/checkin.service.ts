@@ -7,11 +7,14 @@ import { ConfirmCheckinDto } from './dto/confirm-checkin.dto';
 import { InitiateCheckoutDto } from './dto/initiate-checkout.dto';
 import { ConfirmCheckoutDto } from './dto/confirm-checkout.dto';
 import { NotificationsService } from '../notifications/notifications.service';
+import { CHECKIN_REPOSITORY, ICheckinRepository } from './checkin.repository.interface';
+import { BulkOperationResult } from './dto/bulk-operations.dto';
 
 @Injectable()
 export class CheckinService {
   constructor(
     @Inject(DATA_STORE) private readonly db: DataStore,
+    @Inject(CHECKIN_REPOSITORY) private readonly repository: ICheckinRepository,
     private readonly notificationsService: NotificationsService
   ) {}
 
@@ -28,7 +31,27 @@ export class CheckinService {
   }
 
   async deleteChild(id: string, actorUserId: string) {
-    return this.db.deleteChild(id, { actorUserId });
+    return this.repository.deleteChild(id, actorUserId);
+  }
+
+  async undeleteChild(id: string, actorUserId: string) {
+    return this.repository.undeleteChild(id, actorUserId);
+  }
+
+  async listDeletedChildren() {
+    return this.repository.listDeletedChildren();
+  }
+
+  async bulkDeleteChildren(ids: string[], actorUserId: string): Promise<BulkOperationResult> {
+    return this.repository.bulkDeleteChildren(ids, actorUserId);
+  }
+
+  async bulkUndeleteChildren(ids: string[], actorUserId: string): Promise<BulkOperationResult> {
+    return this.repository.bulkUndeleteChildren(ids, actorUserId);
+  }
+
+  async hardDeleteChild(id: string, actorUserId: string) {
+    return this.repository.hardDeleteChild(id, actorUserId);
   }
 
   async getCheckinsByEventId(eventId: string) {

@@ -454,6 +454,30 @@ export class MockDataStoreAdapter implements DataStore {
     return this.mock.deleteChild(id, input);
   }
 
+  async undeleteChild(id: string, actorUserId: string) {
+    return this.mock.undeleteChild(id, actorUserId);
+  }
+
+  async hardDeleteChild(id: string, actorUserId: string) {
+    return this.mock.hardDeleteChild(id, actorUserId);
+  }
+
+  async listDeletedChildren() {
+    return this.mock.listDeletedChildren();
+  }
+
+  async bulkDeleteChildren(ids: string[], actorUserId: string) {
+    return this.mock.bulkDeleteChildren(ids, actorUserId);
+  }
+
+  async bulkUndeleteChildren(ids: string[], actorUserId: string) {
+    return this.mock.bulkUndeleteChildren(ids, actorUserId);
+  }
+
+  async getChildById(id: string) {
+    return this.mock.getChildById(id);
+  }
+
   async createPushSubscription(data: any) {
     return this.mock.createPushSubscription(data);
   }
