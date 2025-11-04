@@ -44,6 +44,14 @@ export class HouseholdsController {
     return this.service.findOne(id);
   }
 
+  @Get(':id/dependents')
+  @ApiOperation({ summary: 'Get household dependents count for warning dialogs' })
+  @ApiOkResponse({ description: 'Active members and children counts for the household' })
+  async getDependents(@Param('id') id: string, @Req() req: any) {
+    ensureLeader(req);
+    return this.service.getDependents(id);
+  }
+
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Soft delete (archive) a household' })

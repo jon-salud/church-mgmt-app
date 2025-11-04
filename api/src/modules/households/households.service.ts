@@ -1,12 +1,14 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { HOUSEHOLDS_REPOSITORY, IHouseholdsRepository } from './households.repository.interface';
 import { BulkArchiveHouseholdsDto, BulkRestoreHouseholdsDto } from './dto/bulk-operations.dto';
+import { CheckinService } from '../checkin/checkin.service';
 
 @Injectable()
 export class HouseholdsService {
   constructor(
     @Inject(HOUSEHOLDS_REPOSITORY)
-    private readonly householdsRepository: IHouseholdsRepository
+    private readonly householdsRepository: IHouseholdsRepository,
+    private readonly checkinService: CheckinService
   ) {}
 
   async findAll() {
@@ -39,5 +41,21 @@ export class HouseholdsService {
 
   async hardDelete(id: string, actorUserId: string) {
     return this.householdsRepository.hardDeleteHousehold(id, actorUserId);
+  }
+
+  async getDependents(id: string) {
+    const household = await this.householdsRepository.getHouseholdById(id);
+    const allChildren = await this.checkinService.getChildren(id);
+    const activeChildren = allChildren.filter(child => !child.deletedAt);
+
+    // Count active members (exclude deleted members)
+    // Note: This assumes memberIds are all active; in production you'd filter deleted users
+    const activeMemberCount = household.memberIds?.length || 0;
+
+    return {
+      activeMemberCount,
+      activeChildrenCount: activeChildren.length,
+      children: activeChildren,
+    };
   }
 }
