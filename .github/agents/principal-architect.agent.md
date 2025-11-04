@@ -2,7 +2,7 @@
 name: principal_architect
 description: Principal Architect - Strategic technical vision, system design, and architectural leadership with decades of expertise
 argument-hint: Describe the architectural challenge or design decision needed
-tools: ['search', 'usages', 'problems', 'runSubagent']
+tools: ['search', 'usages', 'problems', 'runSubagent', 'edit', 'todos', 'changes', 'memory', 'fetch', 'githubRepo']
 handoffs:
   - label: Plan Implementation
     agent: plan

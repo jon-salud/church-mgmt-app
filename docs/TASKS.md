@@ -408,7 +408,16 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
     - Updated all 4 datastore adapters (MockDataStoreAdapter, PrismaDataStore, PrismaMultiTenantDataStore, InMemoryDataStore)
     - Registered repository provider in CheckinModule
     - All builds passing, 0 compilation errors
-  - **Status:** Phase 5D next - Testing and validation
+  - ✅ **Phase 5D:** Testing and documentation (commit fdc78e8) - Comprehensive test suite and documentation:
+    - Created households.spec.ts with 28 E2E tests covering list operations, create, soft delete, restore, bulk operations, edge cases, and audit logging
+    - Updated checkin.spec.ts with 40+ children soft delete tests including authorization checks, check-in exclusion, and integration tests validating household-child independence
+    - Updated DATABASE_SCHEMA.md with deletedAt column documentation for both Household and Child tables including soft delete notes and index information
+    - Updated API_DOCUMENTATION.md with 16 new soft delete endpoints (8 households + 8 children) documenting request/response formats, authorization requirements, and bulk operation return types
+    - Fixed ensureLeader() helper in auth.helpers.ts to match giving controller implementation (checking req.user.roles array)
+    - Fixed listHouseholds() and getHouseholdById() in MockDatabaseService to properly filter deleted households and users
+    - All code formatted with Prettier, build passes with 0 compilation errors, 269 acceptable lint warnings
+    - **Test Results:** 68+ new tests created (28 households + 40+ children), comprehensive coverage of soft delete operations
+  - **Status:** Phase 5 (Households & Children Backend) complete - Ready for Phase 6 (Frontend implementation)
 
 ### 📝 Backlog / Upcoming
 
