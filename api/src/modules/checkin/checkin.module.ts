@@ -17,5 +17,6 @@ import { CHECKIN_REPOSITORY } from './checkin.repository.interface';
       useClass: CheckinDataStoreRepository,
     },
   ],
+  exports: [CheckinService],
 })
 export class CheckinModule {}

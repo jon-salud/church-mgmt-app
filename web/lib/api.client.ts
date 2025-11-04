@@ -1,4 +1,4 @@
-import { PastoralCareTicket, PastoralCareComment } from './types';
+import { PastoralCareTicket, PastoralCareComment, HouseholdDependents } from './types';
 
 const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api/v1';
 
@@ -384,5 +384,78 @@ export const clientApi = {
         body: JSON.stringify({ ids }),
       }
     );
+  },
+
+  // Households soft delete methods
+  async deleteHousehold(householdId: string) {
+    return apiFetch<{ success: boolean }>(`/households/${householdId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  async undeleteHousehold(householdId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(`/households/${householdId}/undelete`, {
+      method: 'POST',
+    });
+  },
+
+  async bulkDeleteHouseholds(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/households/bulk-delete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  async bulkUndeleteHouseholds(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/households/bulk-undelete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  async hardDeleteHousehold(householdId: string) {
+    return apiFetch<{ success: boolean }>(`/households/${householdId}/hard`, {
+      method: 'DELETE',
+    });
+  },
+
+  async getHouseholdDependents(householdId: string) {
+    return apiFetch<HouseholdDependents>(`/households/${householdId}/dependents`);
+  },
+
+  // Children soft delete methods
+  async deleteChild(childId: string) {
+    return apiFetch<{ success: boolean }>(`/checkin/children/${childId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  async undeleteChild(childId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(
+      `/checkin/children/${childId}/undelete`,
+      {
+        method: 'POST',
+      }
+    );
+  },
+
+  async bulkDeleteChildren(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/checkin/children/bulk-delete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  async bulkUndeleteChildren(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/checkin/children/bulk-undelete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  async hardDeleteChild(childId: string) {
+    return apiFetch<{ success: boolean }>(`/checkin/children/${childId}/hard`, {
+      method: 'DELETE',
+    });
   },
 };

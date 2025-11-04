@@ -37,6 +37,14 @@ export class HouseholdsController {
     return this.service.findAllDeleted();
   }
 
+  @Get(':id/dependents')
+  @ApiOperation({ summary: 'Get household dependents count for warning dialogs' })
+  @ApiOkResponse({ description: 'Active members and children counts for the household' })
+  async getDependents(@Param('id') id: string, @Req() req: any) {
+    ensureLeader(req);
+    return this.service.getDependents(id);
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Get a single household by ID' })
   @ApiOkResponse({ description: 'The household with the specified ID' })

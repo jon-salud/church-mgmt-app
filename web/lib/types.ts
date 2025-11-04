@@ -170,3 +170,60 @@ export interface BulkOperationResult {
     reason: string;
   }>;
 }
+
+export interface SuccessResponse {
+  success: boolean;
+  reason?: string;
+}
+
+export interface Household {
+  id: string;
+  churchId: string;
+  name: string;
+  address?: string | null;
+  phone?: string | null;
+  memberIds: string[];
+  deletedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Child {
+  id: string;
+  householdId: string;
+  fullName: string;
+  dateOfBirth?: string | null;
+  allergies?: string | null;
+  medicalNotes?: string | null;
+  deletedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ChildSummary {
+  id: string;
+  fullName: string;
+}
+
+export interface HouseholdDependents {
+  activeMemberCount: number;
+  activeChildrenCount: number;
+  children: ChildSummary[];
+}
+
+export interface PaginationParams {
+  page?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  meta: {
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}
