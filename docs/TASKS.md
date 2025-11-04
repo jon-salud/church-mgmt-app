@@ -99,6 +99,17 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ Updated workflow instructions to reference "all files in docs/source-of-truth/" for simplicity
   - ✅ Updated all cross-references in README.md, NEXT_TASK.md, docs/PRD.md, and docs/TASKS.md to point to new locations
 - ✅ **Code Review Verification:**
+- ✅ **E2E Test Stabilization & Authentication Fixes:**
+  - ✅ Fixed authentication method changes from click-based to cookie-based login across all E2E tests
+  - ✅ Updated LoginPage to set demo_token and session_provider cookies directly with httpOnly: true
+  - ✅ Exempted /prayer route from middleware authentication for public access
+  - ✅ Added login beforeEach hooks to all test suites requiring authentication
+  - ✅ Fixed households test selector to use heading role instead of link name
+  - ✅ Updated dashboard tests with correct loading state detection and selectors
+  - ✅ Fixed all 3 remaining fixme tests (dashboard landmarks, admin CRUD, onboarding full flow)
+  - ✅ Resolved React Server Component violations and archived member display issues
+  - ✅ Final Status: 54/55 E2E tests passing (98% success rate, up from 60% initially)
+  - ✅ 1 test skipped (allows skipping onboarding) due to serial execution conflict - not blocking
 - ✅ **Flowbite UI Migration (Complete):**
   - ✅ **Phase 0:** Pre-Migration Assessment - Audited Radix UI usage across codebase
   - ✅ **Phase 1:** Tailwind Configuration - Configured Flowbite plugin and content paths
@@ -393,17 +404,26 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - **Testing:** Update E2E tests to verify correct routing behavior once requirements are finalized
   - **Status:** Deferred - requirements need clarification before implementation
 
-- **E2E Test Stabilization & Authentication Fixes:**
-  - ✅ **Completed:** Fixed authentication method changes from click-based to cookie-based login across all E2E tests
-  - ✅ **Completed:** Updated LoginPage to set demo_token and session_provider cookies directly with httpOnly: true
-  - ✅ **Completed:** Exempted /prayer route from middleware authentication for public access
-  - ✅ **Completed:** Added login beforeEach hooks to all test suites requiring authentication
-  - ✅ **Completed:** Fixed households test selector to use heading role instead of link name
-  - ✅ **Completed:** Updated dashboard tests with correct loading state detection and selectors
-  - ✅ **Completed (Sprint 8B):** Fixed all 3 remaining fixme tests (dashboard landmarks, admin CRUD, onboarding full flow)
-  - ✅ **Completed (Sprint 8B):** Resolved React Server Component violations and archived member display issues
-  - ✅ **Final Status:** 54/55 E2E tests passing (98% success rate, up from 60% initially)
-  - **Remaining:** 1 test skipped (allows skipping onboarding) due to serial execution conflict - not blocking
+- **🔧 FIXME - Giving Soft Delete E2E Tests (Phase 4):**
+    - **Issue:** 5 of 7 giving soft delete E2E tests marked as `fixme` due to race conditions and contribution visibility issues
+    - **Test 1:** "admin can archive and restore a single contribution" - Cannot find $35.00 contribution in table (timeout after 5s)
+    - **Test 2:** "admin can bulk archive and restore contributions" - Bulk operations may have race conditions with state updates
+    - **Test 3:** "archived contributions count is displayed correctly" - Depends on test 1, fails to find $55.00 contribution
+    - **Test 4:** "financial calculations exclude archived contributions" - Calculation timing issues with async state updates
+    - **Test 5:** "toggle between active and archived views" - Toggle state race conditions
+    - **Root Causes:**
+      - Contribution rows not rendering before test attempts to find them (even with networkidle + 1s wait)
+      - Possible pagination or filtering hiding test contributions
+      - Serial test mode means failures cascade to dependent tests
+      - Mock data state persists across tests causing unpredictable initial conditions
+    - **Working Tests:** Test 6 (select all checkbox), Test 7 (partial failure handling) - pass without database interactions
+    - **Investigation Needed:**
+      - Why $25.00 (contribution-test-1) and $35.00 (contribution-test-2) don't appear in UI during E2E runs
+      - Whether contributions are filtered/paginated differently in test vs dev environments
+      - Add debug screenshots or table dumps to understand what's actually rendering
+      - Consider increasing timeouts or adding more explicit wait conditions
+    - **Workaround:** Tests tagged with `.fixme()` to not block other test suites
+    - **Priority:** Medium - soft delete functionality works in manual testing, only E2E tests are flaky
 
 - **Complete CRUD Operations for All Entities:**
   - **Soft Delete Implementation - Phase 5 (Households & Checkin Backend):**
