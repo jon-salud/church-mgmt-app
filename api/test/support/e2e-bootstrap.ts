@@ -408,6 +408,20 @@ export async function bootstrapApp(customize?: (builder: any) => Promise<void> |
         serviceName: 'AnnouncementsService',
         prop: 'announcementsService',
       },
+      {
+        controllerPath: '../../src/modules/households/households.controller',
+        controllerName: 'HouseholdsController',
+        servicePath: '../../src/modules/households/households.service',
+        serviceName: 'HouseholdsService',
+        prop: 'service',
+      },
+      {
+        controllerPath: '../../src/modules/checkin/checkin.controller',
+        controllerName: 'CheckinController',
+        servicePath: '../../src/modules/checkin/checkin.service',
+        serviceName: 'CheckinService',
+        prop: 'checkinService',
+      },
     ];
     for (const p of controllerPatches) {
       try {
@@ -837,6 +851,8 @@ export async function bootstrapTestApp(
         path: '../../src/modules/audit/projections.service',
       },
       { name: 'GivingService', path: '../../src/modules/giving/giving.service' },
+      { name: 'HouseholdsService', path: '../../src/modules/households/households.service' },
+      { name: 'CheckinService', path: '../../src/modules/checkin/checkin.service' },
     ];
 
     for (const { name, path } of serviceResolutions) {
@@ -926,6 +942,18 @@ export async function bootstrapTestApp(
         path: '../../src/modules/giving/giving.controller',
         serviceProp: 'givingService',
         serviceName: 'GivingService',
+      },
+      {
+        name: 'HouseholdsController',
+        path: '../../src/modules/households/households.controller',
+        serviceProp: 'service',
+        serviceName: 'HouseholdsService',
+      },
+      {
+        name: 'CheckinController',
+        path: '../../src/modules/checkin/checkin.controller',
+        serviceProp: 'checkinService',
+        serviceName: 'CheckinService',
       },
     ];
 

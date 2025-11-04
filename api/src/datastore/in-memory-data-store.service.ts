@@ -2337,7 +2337,9 @@ export class InMemoryDataStore {
   }
 
   async getChildren(householdId: string) {
-    return clone(this.children.filter(child => child.householdId === householdId));
+    return clone(
+      this.children.filter(child => child.householdId === householdId && !child.deletedAt)
+    );
   }
 
   async getCheckinsByEventId(eventId: string) {

@@ -45,6 +45,7 @@ export class CheckinDataStoreRepository implements ICheckinRepository {
     return Promise.resolve({
       success: true,
       successCount: result.success,
+      failedCount: result.failed.length,
       failedIds,
       errors: errors.length > 0 ? errors : undefined,
     });
@@ -63,6 +64,7 @@ export class CheckinDataStoreRepository implements ICheckinRepository {
     return Promise.resolve({
       success: true,
       successCount: result.success,
+      failedCount: result.failed.length,
       failedIds,
       errors: errors.length > 0 ? errors : undefined,
     });

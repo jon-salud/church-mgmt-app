@@ -2971,7 +2971,9 @@ export class MockDatabaseService {
   }
 
   getChildren(householdId: string) {
-    return clone(this.children.filter(child => child.householdId === householdId));
+    return clone(
+      this.children.filter(child => child.householdId === householdId && !child.deletedAt)
+    );
   }
 
   getCheckinsByEventId(eventId: string) {

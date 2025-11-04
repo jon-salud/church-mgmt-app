@@ -24,6 +24,7 @@ export class BulkRestoreHouseholdsDto {
 export interface BulkOperationResult {
   success: boolean;
   successCount: number;
+  failedCount: number;
   failedIds: string[];
   errors?: Array<{ id: string; error: string }>;
 }
