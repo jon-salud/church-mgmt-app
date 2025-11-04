@@ -383,7 +383,16 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ### 🔄 In Progress
 
-- **None** - Phase 4 complete, ready to proceed with Phase 5 or other priorities
+- **Complete CRUD Operations - Soft Delete Implementation Phase 5 (Households & Checkin Backend):**
+  - **Sprint:** Soft Delete Main Sprint
+  - **Branch:** `feature/soft-delete-phase5-households-backend`
+  - **Plan:** `docs/sprints/soft-delete-phase5-PLAN.md`
+  - **Scope:** Backend implementation of soft delete for Households and Children entities
+  - **Database:** Add `deletedAt` columns to Household and Child tables with migration scripts
+  - **Backend:** Implement soft delete methods in data stores, services, and controllers for both entities
+  - **Authorization:** Admin/Leader-only access with proper role guards
+  - **Testing:** Unit tests for repository/service layers, integration tests for controllers, manual validation
+  - **Status:** Database migration next
 
 ### 📝 Backlog / Upcoming
 
@@ -436,8 +445,6 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
     - **Priority:** Medium - soft delete functionality works in manual testing, only E2E tests are flaky
 
 - **Complete CRUD Operations for All Entities:**
-  - **Soft Delete Implementation - Phase 5 (Households & Checkin Backend):**
-    - **Backend:** Implement soft delete for Households and Children entities
   - **Soft Delete Implementation - Phase 6 (Households & Checkin Frontend):**
     - **Frontend:** Implement soft delete UI for Households and Children
   - **Soft Delete Implementation - Phase 7 (Final Validation):**
