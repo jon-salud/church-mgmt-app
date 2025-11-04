@@ -1,29 +1,17 @@
-import Link from 'next/link';
 import { api } from '../../lib/api.server';
+import { HouseholdsClient } from './households-client';
 
 export default async function HouseholdsPage() {
-  const households = await api.households();
+  const [households, deletedHouseholds, user] = await Promise.all([
+    api.households(),
+    api.listDeletedHouseholds().catch(() => []),
+    api
+      .currentUser()
+      .then(data => data?.user || null)
+      .catch(() => null),
+  ]);
 
   return (
-    <div>
-      <h1 className="text-2xl font-bold">Households</h1>
-      <div className="mt-4">
-        <div className="flex flex-col gap-4">
-          {households.map((household: any) => (
-            <Link
-              id={`household-link-${household.id}`}
-              key={household.id}
-              href={`/households/${household.id}`}
-              className="block rounded-lg border border-border p-4 transition hover:bg-muted"
-            >
-              <h2 className="text-lg font-semibold">{household.name}</h2>
-              <p className="text-sm text-muted-foreground">
-                {household.memberCount} member{household.memberCount === 1 ? '' : 's'}
-              </p>
-            </Link>
-          ))}
-        </div>
-      </div>
-    </div>
+    <HouseholdsClient households={households} deletedHouseholds={deletedHouseholds} user={user} />
   );
 }
