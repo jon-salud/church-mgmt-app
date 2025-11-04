@@ -426,4 +426,40 @@ export const clientApi = {
       children: Array<{ id: string; firstName: string; lastName: string }>;
     }>(`/households/${householdId}/dependents`);
   },
+
+  // Children soft delete methods
+  async deleteChild(childId: string) {
+    return apiFetch<{ success: boolean }>(`/checkin/children/${childId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  async undeleteChild(childId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(
+      `/checkin/children/${childId}/undelete`,
+      {
+        method: 'POST',
+      }
+    );
+  },
+
+  async bulkDeleteChildren(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/checkin/children/bulk-delete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  async bulkUndeleteChildren(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/checkin/children/bulk-undelete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  async hardDeleteChild(childId: string) {
+    return apiFetch<{ success: boolean }>(`/checkin/children/${childId}/hard`, {
+      method: 'DELETE',
+    });
+  },
 };
