@@ -1499,11 +1499,7 @@ export class PrismaMultiTenantDataStore implements DataStore {
     });
   }
 
-  async deleteChild(
-    id: string,
-    { actorUserId: _actorUserId }: { actorUserId: string },
-    context?: ExecutionContext
-  ): Promise<any> {
+  async deleteChild(id: string, actorUserId: string, context?: ExecutionContext): Promise<any> {
     const client = await this.getTenantClient(context);
     const child = await client.child.findUnique({ where: { id } });
     if (!child || child.deletedAt) {

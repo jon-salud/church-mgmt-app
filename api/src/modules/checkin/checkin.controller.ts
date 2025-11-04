@@ -59,7 +59,7 @@ export class CheckinController {
   @HttpCode(HttpStatus.OK)
   deleteChild(@Param('id') id: string, @Req() req: any) {
     ensureLeader(req);
-    const actorUserId = req.user?.userId || 'system';
+    const actorUserId = req.user?.id || 'system';
     return this.checkinService.deleteChild(id, actorUserId);
   }
 
@@ -67,7 +67,7 @@ export class CheckinController {
   @HttpCode(HttpStatus.OK)
   undeleteChild(@Param('id') id: string, @Req() req: any) {
     ensureLeader(req);
-    const actorUserId = req.user?.userId || 'system';
+    const actorUserId = req.user?.id || 'system';
     return this.checkinService.undeleteChild(id, actorUserId);
   }
 
@@ -75,7 +75,7 @@ export class CheckinController {
   @HttpCode(HttpStatus.OK)
   bulkDeleteChildren(@Body() dto: BulkArchiveChildrenDto, @Req() req: any) {
     ensureLeader(req);
-    const actorUserId = req.user?.userId || 'system';
+    const actorUserId = req.user?.id || 'system';
     return this.checkinService.bulkDeleteChildren(dto.childIds, actorUserId);
   }
 
@@ -83,7 +83,7 @@ export class CheckinController {
   @HttpCode(HttpStatus.OK)
   bulkUndeleteChildren(@Body() dto: BulkRestoreChildrenDto, @Req() req: any) {
     ensureLeader(req);
-    const actorUserId = req.user?.userId || 'system';
+    const actorUserId = req.user?.id || 'system';
     return this.checkinService.bulkUndeleteChildren(dto.childIds, actorUserId);
   }
 
@@ -91,7 +91,7 @@ export class CheckinController {
   @HttpCode(HttpStatus.OK)
   hardDeleteChild(@Param('id') id: string, @Req() req: any) {
     ensureLeader(req);
-    const actorUserId = req.user?.userId || 'system';
+    const actorUserId = req.user?.id || 'system';
     return this.checkinService.hardDeleteChild(id, actorUserId);
   }
 

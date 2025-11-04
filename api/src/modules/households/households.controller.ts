@@ -50,7 +50,7 @@ export class HouseholdsController {
   @ApiOkResponse({ description: 'The household was successfully archived' })
   delete(@Param('id') id: string, @Req() req: any) {
     ensureLeader(req);
-    const actorUserId = req.user?.userId || 'system';
+    const actorUserId = req.user?.id || 'system';
     return this.service.delete(id, actorUserId);
   }
 
@@ -60,7 +60,7 @@ export class HouseholdsController {
   @ApiOkResponse({ description: 'The household was successfully restored' })
   undelete(@Param('id') id: string, @Req() req: any) {
     ensureLeader(req);
-    const actorUserId = req.user?.userId || 'system';
+    const actorUserId = req.user?.id || 'system';
     return this.service.undelete(id, actorUserId);
   }
 
@@ -86,11 +86,11 @@ export class HouseholdsController {
 
   @Delete(':id/hard')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Permanently delete a household (Admin only)' })
+  @ApiOperation({ summary: 'Permanently delete a household (cannot be undone)' })
   @ApiOkResponse({ description: 'The household was permanently deleted' })
   hardDelete(@Param('id') id: string, @Req() req: any) {
     ensureLeader(req);
-    const actorUserId = req.user?.userId || 'system';
+    const actorUserId = req.user?.id || 'system';
     return this.service.hardDelete(id, actorUserId);
   }
 }
