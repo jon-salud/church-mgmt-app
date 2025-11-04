@@ -388,11 +388,18 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - **Branch:** `feature/soft-delete-phase5-households-backend`
   - **Plan:** `docs/sprints/soft-delete-phase5-PLAN.md`
   - **Scope:** Backend implementation of soft delete for Households and Children entities
-  - **Database:** Add `deletedAt` columns to Household and Child tables with migration scripts
-  - **Backend:** Implement soft delete methods in data stores, services, and controllers for both entities
-  - **Authorization:** Admin/Leader-only access with proper role guards
-  - **Testing:** Unit tests for repository/service layers, integration tests for controllers, manual validation
-  - **Status:** Database migration next
+  - ✅ **Phase 5A:** Database migrations (commit b1dfe15) - Added `deletedAt` columns to Household and Child tables with indexes, created rollback SQL
+  - ✅ **Phase 5A.5:** Module dependencies (commit b1dfe15) - Created ensureLeader() helper, bulk operation DTOs, updated module imports
+  - ✅ **Phase 5B:** Households backend implementation (commit 626c2a7) - Complete soft delete functionality:
+    - Created IHouseholdsRepository interface with 8 soft delete operations
+    - Implemented HouseholdsDataStoreRepository with DataStore adapter
+    - Updated HouseholdsService to use repository pattern
+    - Added 8 controller endpoints (delete, undelete, bulk operations, hard delete, list deleted)
+    - Implemented soft delete in all 4 datastore adapters (MockDataStore, PrismaDataStore, PrismaMultiTenantDataStore, InMemoryDataStore)
+    - Added 6 methods to MockDatabaseService with audit logging
+    - All endpoints use ensureLeader() for Admin/Leader authorization
+    - All builds passing, 0 compilation errors
+  - **Status:** Phase 5C next - Children backend implementation
 
 ### 📝 Backlog / Upcoming
 
