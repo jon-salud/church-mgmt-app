@@ -50,9 +50,9 @@ export class CheckinController {
   }
 
   @Get('children/deleted')
-  listDeletedChildren(@Req() req: any) {
+  listDeletedChildren(@Query('householdId') householdId: string | undefined, @Req() req: any) {
     ensureLeader(req);
-    return this.checkinService.listDeletedChildren();
+    return this.checkinService.listDeletedChildren(householdId);
   }
 
   @Delete('children/:id')

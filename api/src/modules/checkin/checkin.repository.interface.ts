@@ -10,7 +10,7 @@ export interface ICheckinRepository {
   // Soft delete operations
   deleteChild(id: string, actorUserId: string): Promise<{ success: boolean }>;
   undeleteChild(id: string, actorUserId: string): Promise<{ success: boolean }>;
-  listDeletedChildren(): Promise<any[]>;
+  listDeletedChildren(householdId?: string): Promise<any[]>;
   bulkDeleteChildren(ids: string[], actorUserId: string): Promise<BulkOperationResult>;
   bulkUndeleteChildren(ids: string[], actorUserId: string): Promise<BulkOperationResult>;
 

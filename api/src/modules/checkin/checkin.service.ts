@@ -38,8 +38,8 @@ export class CheckinService {
     return this.repository.undeleteChild(id, actorUserId);
   }
 
-  async listDeletedChildren() {
-    return this.repository.listDeletedChildren();
+  async listDeletedChildren(householdId?: string) {
+    return this.repository.listDeletedChildren(householdId);
   }
 
   async bulkDeleteChildren(ids: string[], actorUserId: string): Promise<BulkOperationResult> {

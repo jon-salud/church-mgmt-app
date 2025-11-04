@@ -27,9 +27,12 @@ export class CheckinDataStoreRepository implements ICheckinRepository {
     return Promise.resolve(result);
   }
 
-  async listDeletedChildren(): Promise<any[]> {
+  async listDeletedChildren(householdId?: string): Promise<any[]> {
     const children = await this.db.listDeletedChildren();
-    return Promise.resolve(children);
+    if (householdId) {
+      return children.filter(child => child.householdId === householdId);
+    }
+    return children;
   }
 
   async bulkDeleteChildren(ids: string[], actorUserId: string): Promise<BulkOperationResult> {
