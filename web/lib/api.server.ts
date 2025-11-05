@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { PastoralCareTicket, PrayerRequest } from './types';
+import { PastoralCareTicket, PrayerRequest, HouseholdDependents } from './types';
 
 const DEFAULT_API_BASE =
   process.env.API_BASE_URL ||
@@ -96,8 +96,20 @@ export const api = {
   async household(id: string) {
     return apiFetch<any>(`/households/${id}`);
   },
+  async listDeletedHouseholds() {
+    return apiFetch<Array<any>>('/households/deleted/all');
+  },
+  async getHouseholdDependents(id: string) {
+    return apiFetch<HouseholdDependents>(`/households/${id}/dependents`);
+  },
   async getChildren(householdId: string) {
     return apiFetch<any[]>(`/checkin/households/${householdId}/children`);
+  },
+  async listDeletedChildren(householdId?: string) {
+    const url = householdId
+      ? `/checkin/children/deleted?householdId=${householdId}`
+      : '/checkin/children/deleted';
+    return apiFetch<Array<any>>(url);
   },
   async getCheckins(status: 'pending' | 'checked-in') {
     return apiFetch<any[]>(`/checkin?status=${status}`);
@@ -108,6 +120,9 @@ export const api = {
   async group(id: string) {
     return apiFetch<any>(`/groups/${id}`);
   },
+  async listDeletedGroups() {
+    return apiFetch<Array<any>>('/groups/deleted/all');
+  },
   async events() {
     return apiFetch<Array<any>>('/events');
   },
@@ -116,6 +131,9 @@ export const api = {
   },
   async announcements() {
     return apiFetch<Array<any>>('/announcements');
+  },
+  async listDeletedAnnouncements() {
+    return apiFetch<Array<any>>('/announcements/deleted/all');
   },
   async roles() {
     return apiFetch<Array<any>>('/roles');
@@ -184,6 +202,37 @@ export const api = {
   },
   async deletedDocuments() {
     return apiFetch<Array<any>>('/documents/deleted');
+  },
+  async listDeletedFunds(query?: string) {
+    try {
+      const url = query
+        ? `/giving/funds/deleted/all?q=${encodeURIComponent(query)}`
+        : '/giving/funds/deleted/all';
+      return await apiFetch<any[]>(url);
+    } catch (error) {
+      console.error('Failed to fetch deleted funds:', error);
+      return [];
+    }
+  },
+  async listDeletedContributions(filters?: {
+    memberId?: string;
+    fundId?: string;
+    from?: string;
+    to?: string;
+  }) {
+    try {
+      const params = new URLSearchParams();
+      if (filters?.memberId) params.append('memberId', filters.memberId);
+      if (filters?.fundId) params.append('fundId', filters.fundId);
+      if (filters?.from) params.append('from', filters.from);
+      if (filters?.to) params.append('to', filters.to);
+      const query = params.toString();
+      const url = `/giving/contributions/deleted/all${query ? `?${query}` : ''}`;
+      return await apiFetch<any[]>(url);
+    } catch (error) {
+      console.error('Failed to fetch deleted contributions:', error);
+      return [];
+    }
   },
   async get<T>(path: string) {
     return apiFetch<T>(path);

@@ -199,6 +199,9 @@ export interface MockFund {
   id: string;
   churchId: string;
   name: string;
+  description?: string;
+  createdAt?: string;
+  updatedAt?: string;
   deletedAt?: string;
 }
 
@@ -766,6 +769,7 @@ export const mockAnnouncementReads: MockAnnouncementRead[] = [
 export const mockFunds: MockFund[] = [
   { id: 'fund-general', churchId, name: 'General Offering' },
   { id: 'fund-missions', churchId, name: 'Missions' },
+  { id: 'fund-building', churchId, name: 'Building Fund' },
 ];
 
 export const mockContributions: MockContribution[] = [
@@ -787,6 +791,97 @@ export const mockContributions: MockContribution[] = [
     amount: 40.0,
     method: 'cash',
     fundId: 'fund-missions',
+  },
+  {
+    id: 'contribution-orphaned-1',
+    churchId,
+    memberId: 'user-member-1',
+    date: makeDate(-5, 10),
+    amount: 50.0,
+    method: 'bank-transfer',
+    fundId: undefined,
+    note: 'Building fund contribution (fund deleted)',
+  },
+  {
+    id: 'contribution-deleted-1',
+    churchId,
+    memberId: 'user-member-2',
+    date: makeDate(-3, 14),
+    amount: 100.0,
+    method: 'eftpos',
+    fundId: 'fund-general',
+    deletedAt: makeDate(-1, 10),
+  },
+  // Additional contributions for E2E tests - each test uses a unique amount
+  {
+    id: 'contribution-test-1',
+    churchId,
+    memberId: 'user-member-3',
+    date: makeDate(-4, 10),
+    amount: 25.0,
+    method: 'cash',
+    fundId: 'fund-general',
+    note: 'Test contribution 1',
+  },
+  {
+    id: 'contribution-test-2',
+    churchId,
+    memberId: 'user-member-2',
+    date: makeDate(-4, 9),
+    amount: 35.0,
+    method: 'bank-transfer',
+    fundId: 'fund-missions',
+    note: 'Test contribution 2',
+  },
+  {
+    id: 'contribution-test-3',
+    churchId,
+    memberId: 'user-member-1',
+    date: makeDate(-4, 8),
+    amount: 45.0,
+    method: 'eftpos',
+    fundId: 'fund-general',
+    note: 'Test contribution 3',
+  },
+  {
+    id: 'contribution-test-4',
+    churchId,
+    memberId: 'user-member-2',
+    date: makeDate(-4, 7),
+    amount: 55.0,
+    method: 'cash',
+    fundId: 'fund-building',
+    note: 'Test contribution 4',
+  },
+  {
+    id: 'contribution-test-5',
+    churchId,
+    memberId: 'user-member-3',
+    date: makeDate(-4, 6),
+    amount: 65.0,
+    method: 'bank-transfer',
+    fundId: 'fund-general',
+    note: 'Test contribution 5',
+  },
+  {
+    id: 'contribution-test-6',
+    churchId,
+    memberId: 'user-member-2',
+    date: makeDate(-4, 5),
+    amount: 75.0,
+    method: 'eftpos',
+    fundId: 'fund-missions',
+    note: 'Test contribution 6',
+  },
+  {
+    id: 'contribution-test-7',
+    churchId,
+    memberId: 'user-member-1',
+    date: makeDate(-4, 4),
+    amount: 85.0,
+    method: 'cash',
+    fundId: 'fund-general',
+    note: 'Test contribution 7',
   },
 ];
 

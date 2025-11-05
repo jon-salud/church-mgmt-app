@@ -19,7 +19,6 @@ test.describe('Households', () => {
       await householdsPage.verifyHouseholdsPage();
 
       // Verify households are displayed with member counts
-      await expect(page.getByText('Matau Family')).toBeVisible();
       await expect(page.getByRole('heading', { name: 'Matau Family' })).toBeVisible();
     });
 
@@ -30,7 +29,7 @@ test.describe('Households', () => {
 
       // Verify household details are displayed
       await expect(page.getByRole('heading', { name: 'Members' })).toBeVisible();
-      await expect(page.getByText(/Head|Spouse|Child/)).toBeVisible(); // Should show household roles
+      await expect(page.getByText(/^(Head|Spouse)$/)).toBeVisible(); // Should show household roles
     });
   });
 });

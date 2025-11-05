@@ -121,3 +121,109 @@ export interface Request {
     };
   };
 }
+
+export interface Fund {
+  id: string;
+  name: string;
+  description?: string | null;
+  deletedAt?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface Contribution {
+  id: string;
+  memberId: string;
+  amount: number;
+  date: string;
+  fundId?: string | null;
+  method: 'cash' | 'bank-transfer' | 'eftpos' | 'other';
+  note?: string | null;
+  deletedAt?: string | null;
+  recordedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface GivingSummary {
+  totals: {
+    overall: number;
+    monthToDate: number;
+    previousMonth: number;
+    averageGift: number;
+  };
+  byFund: Array<{
+    fundId: string | null;
+    name: string;
+    amount: number;
+  }>;
+  monthly: Array<{
+    month: string;
+    amount: number;
+  }>;
+}
+
+export interface BulkOperationResult {
+  success: number;
+  failed: Array<{
+    id: string;
+    reason: string;
+  }>;
+}
+
+export interface SuccessResponse {
+  success: boolean;
+  reason?: string;
+}
+
+export interface Household {
+  id: string;
+  churchId: string;
+  name: string;
+  address?: string | null;
+  phone?: string | null;
+  memberIds: string[];
+  deletedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Child {
+  id: string;
+  householdId: string;
+  fullName: string;
+  dateOfBirth?: string | null;
+  allergies?: string | null;
+  medicalNotes?: string | null;
+  deletedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ChildSummary {
+  id: string;
+  fullName: string;
+}
+
+export interface HouseholdDependents {
+  activeMemberCount: number;
+  activeChildrenCount: number;
+  children: ChildSummary[];
+}
+
+export interface PaginationParams {
+  page?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  meta: {
+    total: number;
+    page: number;
+    pageSize: number;
+    totalPages: number;
+  };
+}

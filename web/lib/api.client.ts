@@ -1,10 +1,17 @@
-import { PastoralCareTicket, PastoralCareComment } from './types';
+import { PastoralCareTicket, PastoralCareComment, HouseholdDependents } from './types';
 
 const DEFAULT_API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:3001/api/v1';
 
 async function apiFetch<T>(path: string, init?: RequestInit) {
   const headers = new Headers(init?.headers || {});
-  headers.set('Content-Type', 'application/json');
+  // Only set Content-Type to application/json if body is present, not FormData/Blob/URLSearchParams, and Content-Type is not already set
+  if (
+    init?.body &&
+    !headers.has('Content-Type') &&
+    typeof init.body === 'string' // assume JSON.stringify has been called
+  ) {
+    headers.set('Content-Type', 'application/json');
+  }
 
   // Include demo token in Authorization header for testing environments
   // In production, authentication is handled via cookies
@@ -229,5 +236,226 @@ export const clientApi = {
   },
   async listDeletedDocuments() {
     return apiFetch<any[]>('/documents/deleted');
+  },
+  // Groups soft delete methods
+  async deleteGroup(groupId: string) {
+    return apiFetch<{ success: boolean }>(`/groups/${groupId}`, {
+      method: 'DELETE',
+    });
+  },
+  async undeleteGroup(groupId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(`/groups/${groupId}/undelete`, {
+      method: 'POST',
+    });
+  },
+  async listDeletedGroups() {
+    return apiFetch<any[]>('/groups/deleted/all');
+  },
+  async bulkDeleteGroups(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/groups/bulk-delete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+  async bulkUndeleteGroups(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/groups/bulk-undelete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+  // Announcements soft delete methods
+  async deleteAnnouncement(announcementId: string) {
+    return apiFetch<{ success: boolean }>(`/announcements/${announcementId}`, {
+      method: 'DELETE',
+    });
+  },
+  async undeleteAnnouncement(announcementId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(
+      `/announcements/${announcementId}/undelete`,
+      {
+        method: 'POST',
+      }
+    );
+  },
+  async listDeletedAnnouncements() {
+    return apiFetch<any[]>('/announcements/deleted/all');
+  },
+  async bulkDeleteAnnouncements(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/announcements/bulk-delete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+  async bulkUndeleteAnnouncements(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/announcements/bulk-undelete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  // ==================== GIVING SOFT DELETE METHODS ====================
+
+  // Fund soft delete operations
+  async deleteFund(fundId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(`/giving/funds/${fundId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  async undeleteFund(fundId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(`/giving/funds/${fundId}/undelete`, {
+      method: 'POST',
+    });
+  },
+
+  async listDeletedFunds() {
+    return apiFetch<any[]>('/giving/funds/deleted/all');
+  },
+
+  async bulkDeleteFunds(ids: string[]) {
+    return apiFetch<{ success: number; failed: Array<{ id: string; reason: string }> }>(
+      '/giving/funds/bulk-delete',
+      {
+        method: 'POST',
+        body: JSON.stringify({ ids }),
+      }
+    );
+  },
+
+  async bulkUndeleteFunds(ids: string[]) {
+    return apiFetch<{ success: number; failed: Array<{ id: string; reason: string }> }>(
+      '/giving/funds/bulk-undelete',
+      {
+        method: 'POST',
+        body: JSON.stringify({ ids }),
+      }
+    );
+  },
+
+  // Contribution soft delete operations
+  async deleteContribution(contributionId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(
+      `/giving/contributions/${contributionId}`,
+      {
+        method: 'DELETE',
+      }
+    );
+  },
+
+  async undeleteContribution(contributionId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(
+      `/giving/contributions/${contributionId}/undelete`,
+      {
+        method: 'POST',
+      }
+    );
+  },
+
+  async listDeletedContributions(filters?: {
+    memberId?: string;
+    fundId?: string;
+    from?: string;
+    to?: string;
+  }) {
+    const params = new URLSearchParams();
+    if (filters?.memberId) params.append('memberId', filters.memberId);
+    if (filters?.fundId) params.append('fundId', filters.fundId);
+    if (filters?.from) params.append('from', filters.from);
+    if (filters?.to) params.append('to', filters.to);
+    const query = params.toString();
+    return apiFetch<any[]>(`/giving/contributions/deleted/all${query ? `?${query}` : ''}`);
+  },
+
+  async bulkDeleteContributions(ids: string[]) {
+    return apiFetch<{ success: number; failed: Array<{ id: string; reason: string }> }>(
+      '/giving/contributions/bulk-delete',
+      {
+        method: 'POST',
+        body: JSON.stringify({ ids }),
+      }
+    );
+  },
+
+  async bulkUndeleteContributions(ids: string[]) {
+    return apiFetch<{ success: number; failed: Array<{ id: string; reason: string }> }>(
+      '/giving/contributions/bulk-undelete',
+      {
+        method: 'POST',
+        body: JSON.stringify({ ids }),
+      }
+    );
+  },
+
+  // Households soft delete methods
+  async deleteHousehold(householdId: string) {
+    return apiFetch<{ success: boolean }>(`/households/${householdId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  async undeleteHousehold(householdId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(`/households/${householdId}/undelete`, {
+      method: 'POST',
+    });
+  },
+
+  async bulkDeleteHouseholds(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/households/bulk-delete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  async bulkUndeleteHouseholds(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/households/bulk-undelete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  async hardDeleteHousehold(householdId: string) {
+    return apiFetch<{ success: boolean }>(`/households/${householdId}/hard`, {
+      method: 'DELETE',
+    });
+  },
+
+  async getHouseholdDependents(householdId: string) {
+    return apiFetch<HouseholdDependents>(`/households/${householdId}/dependents`);
+  },
+
+  // Children soft delete methods
+  async deleteChild(childId: string) {
+    return apiFetch<{ success: boolean }>(`/checkin/children/${childId}`, {
+      method: 'DELETE',
+    });
+  },
+
+  async undeleteChild(childId: string) {
+    return apiFetch<{ success: boolean; reason?: string }>(
+      `/checkin/children/${childId}/undelete`,
+      {
+        method: 'POST',
+      }
+    );
+  },
+
+  async bulkDeleteChildren(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/checkin/children/bulk-delete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  async bulkUndeleteChildren(ids: string[]) {
+    return apiFetch<{ success: boolean; count: number }>('/checkin/children/bulk-undelete', {
+      method: 'POST',
+      body: JSON.stringify({ ids }),
+    });
+  },
+
+  async hardDeleteChild(childId: string) {
+    return apiFetch<{ success: boolean }>(`/checkin/children/${childId}/hard`, {
+      method: 'DELETE',
+    });
   },
 };

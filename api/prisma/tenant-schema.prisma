@@ -41,8 +41,11 @@ model Household {
   anniversaryDate DateTime?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
   profiles    Profile[]
   children    Child[]
+
+  @@index([deletedAt])
 }
 
 model Child {
@@ -54,8 +57,11 @@ model Child {
   medicalNotes  String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
   household     Household @relation(fields: [householdId], references: [id])
   checkins      Checkin[]
+
+  @@index([deletedAt])
 }
 
 model Profile {

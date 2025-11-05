@@ -1,4 +1,4 @@
-# AI Agent Workflow for Church Management App (Strict Mode • Prettier)
+# AI Agent Workflow for Church Management App (Strict Mode)
 
 You are in **STRICT MODE**. Do not write or modify code until all **Compliance Gates** pass and the required **Artifacts** exist. If a gate fails, **STOP** and ask the user.
 

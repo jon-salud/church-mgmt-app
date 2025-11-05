@@ -94,11 +94,33 @@ The demo uses automatic authentication with the `demo-admin` token. No manual lo
 
 ### Giving & Finances
 
-- `GET /giving/funds` - List giving funds
-- `GET /giving/contributions` - List contributions
+#### Funds
+- `GET /giving/funds` - List active giving funds
+- `GET /giving/funds/deleted/all` - List deleted funds
+- `GET /giving/funds/:id` - Get fund details
+- `POST /giving/funds` - Create new fund
+- `PATCH /giving/funds/:id` - Update fund
+- `DELETE /giving/funds/:id` - Soft delete fund
+- `DELETE /giving/funds/:id/hard` - Hard delete fund (permanent)
+- `POST /giving/funds/:id/undelete` - Restore deleted fund
+- `POST /giving/funds/bulk-delete` - Bulk soft delete funds
+- `POST /giving/funds/bulk-undelete` - Bulk restore funds
+
+#### Contributions
+- `GET /giving/contributions` - List active contributions
+- `GET /giving/contributions/deleted/all` - List deleted contributions
+- `GET /giving/contributions/:id` - Get contribution details
 - `POST /giving/contributions` - Record contribution
 - `PATCH /giving/contributions/:id` - Update contribution
+- `DELETE /giving/contributions/:id` - Soft delete contribution
+- `DELETE /giving/contributions/:id/hard` - Hard delete contribution (permanent)
+- `POST /giving/contributions/:id/undelete` - Restore deleted contribution
+- `POST /giving/contributions/bulk-delete` - Bulk soft delete contributions
+- `POST /giving/contributions/bulk-undelete` - Bulk restore contributions
+
+#### Reports
 - `GET /giving/reports/summary` - Financial summary
+- `GET /giving/contributions.csv` - Export contributions as CSV
 - `GET /giving/contributions.csv` - Export contributions
 
 ### Settings & Administration

@@ -17,6 +17,9 @@ export default async function MemberDetailPage({ params }: MemberDetailProps) {
   const churchId = me?.user?.roles[0]?.churchId;
   const settings = churchId ? await api.getSettings(churchId) : null;
   const children = member.household?.id ? await api.getChildren(member.household.id) : [];
+  const deletedChildren = member.household?.id
+    ? await api.listDeletedChildren(member.household.id).catch(() => [])
+    : [];
 
   const isOwnProfile = me?.user?.id === params.id;
   const prayerRequests = isOwnProfile ? await api.getPrayerRequests() : [];
@@ -27,7 +30,9 @@ export default async function MemberDetailPage({ params }: MemberDetailProps) {
       roles={roles}
       settings={settings}
       children={children}
+      deletedChildren={deletedChildren}
       prayerRequests={prayerRequests}
+      user={me?.user || null}
     />
   );
 }

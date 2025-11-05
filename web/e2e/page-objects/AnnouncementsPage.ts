@@ -75,4 +75,116 @@ export class AnnouncementsPage extends BasePage {
     const announcement = this.page.locator('article').filter({ hasText: title });
     await expect(announcement.getByText(expectedStatus)).toBeVisible();
   }
+
+  // Soft delete methods
+  async toggleShowArchived() {
+    await this.page.locator('#show-archived-announcements').click();
+  }
+
+  async verifyArchivedToggleVisible() {
+    await expect(this.page.locator('label:has(#show-archived-announcements)')).toBeVisible();
+  }
+
+  async archiveAnnouncement(title: string) {
+    const announcement = this.page.locator('article').filter({ hasText: title });
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/announcements/') && response.request().method() === 'DELETE'
+    );
+    await announcement
+      .locator(`#archive-announcement-${await this.getAnnouncementId(title)}`)
+      .click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
+  }
+
+  async restoreAnnouncement(title: string) {
+    const announcement = this.page.locator('article').filter({ hasText: title });
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/announcements/') &&
+        response.url().includes('/undelete') &&
+        response.request().method() === 'POST'
+    );
+    await announcement
+      .locator(`#restore-announcement-${await this.getAnnouncementId(title)}`)
+      .click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
+  }
+
+  async verifyAnnouncementArchived(title: string) {
+    const announcement = this.page.locator('article').filter({ hasText: title });
+    await expect(announcement.getByText('Archived')).toBeVisible();
+  }
+
+  async verifyAnnouncementNotArchived(title: string) {
+    const announcement = this.page.locator('article').filter({ hasText: title });
+    await expect(announcement.getByText('Archived')).not.toBeVisible();
+  }
+
+  async verifyAnnouncementVisible(title: string) {
+    await expect(this.page.locator('article').filter({ hasText: title })).toBeVisible();
+  }
+
+  async verifyAnnouncementNotVisible(title: string) {
+    await expect(this.page.locator('article').filter({ hasText: title })).not.toBeVisible();
+  }
+
+  async selectAnnouncement(title: string) {
+    const announcement = this.page.locator('article').filter({ hasText: title });
+    const checkbox = announcement.locator('input[type="checkbox"]').first();
+    await checkbox.check();
+  }
+
+  async verifySelectAllCheckbox() {
+    await expect(this.page.locator('#select-all-announcements')).toBeVisible();
+  }
+
+  async selectAllAnnouncements() {
+    await this.page.locator('#select-all-announcements').check();
+  }
+
+  async bulkArchiveAnnouncements() {
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/announcements/bulk-delete') &&
+        response.request().method() === 'POST'
+    );
+    await this.page.once('dialog', dialog => dialog.accept());
+    await this.page.locator('#bulk-archive-announcements-button').click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
+  }
+
+  async bulkRestoreAnnouncements() {
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/announcements/bulk-undelete') &&
+        response.request().method() === 'POST'
+    );
+    await this.page.once('dialog', dialog => dialog.accept());
+    await this.page.locator('#bulk-restore-announcements-button').click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
+  }
+
+  async confirmBulkAction() {
+    await this.page.once('dialog', dialog => dialog.accept());
+  }
+
+  async verifyBulkArchiveButtonVisible() {
+    await expect(this.page.locator('#bulk-archive-announcements-button')).toBeVisible();
+  }
+
+  async verifyBulkRestoreButtonVisible() {
+    await expect(this.page.locator('#bulk-restore-announcements-button')).toBeVisible();
+  }
+
+  private async getAnnouncementId(title: string): Promise<string> {
+    const announcement = this.page.locator('article').filter({ hasText: title });
+    const archiveButton = announcement.locator('button[id^="archive-announcement-"]').first();
+    const id = await archiveButton.getAttribute('id');
+    return id?.replace('archive-announcement-', '') || '';
+  }
 }

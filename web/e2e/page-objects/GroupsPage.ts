@@ -68,4 +68,102 @@ export class GroupsPage extends BasePage {
   private getMemberRow(firstName: string, lastName: string) {
     return this.page.getByRole('row', { name: new RegExp(`${firstName}\\s+${lastName}`) });
   }
+
+  // Soft delete methods
+  async toggleShowArchived() {
+    await this.page.locator('#show-archived-groups').click();
+  }
+
+  async verifyArchivedToggleVisible() {
+    await expect(this.page.locator('label:has(#show-archived-groups)')).toBeVisible();
+  }
+
+  async archiveGroup(groupName: string) {
+    const groupCard = this.page.locator('article').filter({ hasText: groupName });
+    const responsePromise = this.page.waitForResponse(
+      response => response.url().includes('/groups/') && response.request().method() === 'DELETE'
+    );
+    await groupCard.locator('button[id^="archive-group-"]').click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
+  }
+
+  async restoreGroup(groupName: string) {
+    const groupCard = this.page.locator('article').filter({ hasText: groupName });
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/groups/') &&
+        response.url().includes('/undelete') &&
+        response.request().method() === 'POST'
+    );
+    await groupCard.locator('button[id^="restore-group-"]').click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
+  }
+
+  async verifyGroupArchived(groupName: string) {
+    const groupCard = this.page.locator('article').filter({ hasText: groupName });
+    await expect(groupCard.getByText('Archived')).toBeVisible();
+  }
+
+  async verifyGroupNotArchived(groupName: string) {
+    const groupCard = this.page.locator('article').filter({ hasText: groupName });
+    await expect(groupCard.getByText('Archived')).not.toBeVisible();
+  }
+
+  async verifyGroupVisible(groupName: string) {
+    await expect(this.page.locator('article').filter({ hasText: groupName })).toBeVisible();
+  }
+
+  async verifyGroupNotVisible(groupName: string) {
+    await expect(this.page.locator('article').filter({ hasText: groupName })).not.toBeVisible();
+  }
+
+  async selectGroup(groupName: string) {
+    const groupCard = this.page.locator('article').filter({ hasText: groupName });
+    const checkbox = groupCard.locator('input[type="checkbox"]').first();
+    await checkbox.check();
+  }
+
+  async verifySelectAllCheckbox() {
+    await expect(this.page.locator('#select-all-groups')).toBeVisible();
+  }
+
+  async selectAllGroups() {
+    await this.page.locator('#select-all-groups').check();
+  }
+
+  async bulkArchiveGroups() {
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/groups/bulk-delete') && response.request().method() === 'POST'
+    );
+    await this.page.once('dialog', dialog => dialog.accept());
+    await this.page.locator('#bulk-archive-groups-button').click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
+  }
+
+  async bulkRestoreGroups() {
+    const responsePromise = this.page.waitForResponse(
+      response =>
+        response.url().includes('/groups/bulk-undelete') && response.request().method() === 'POST'
+    );
+    await this.page.once('dialog', dialog => dialog.accept());
+    await this.page.locator('#bulk-restore-groups-button').click();
+    await responsePromise;
+    await this.page.waitForTimeout(200);
+  }
+
+  async confirmBulkAction() {
+    await this.page.once('dialog', dialog => dialog.accept());
+  }
+
+  async verifyBulkArchiveButtonVisible() {
+    await expect(this.page.locator('#bulk-archive-groups-button')).toBeVisible();
+  }
+
+  async verifyBulkRestoreButtonVisible() {
+    await expect(this.page.locator('#bulk-restore-groups-button')).toBeVisible();
+  }
 }

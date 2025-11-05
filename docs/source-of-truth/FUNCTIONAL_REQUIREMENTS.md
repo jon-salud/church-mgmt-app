@@ -403,3 +403,96 @@ understood to be included in the full document._
 - **FR-VISIT-003:** Visitor-to-member conversion pathway with data continuity, consent management, and profile migration.
 - **FR-VISIT-004:** Public resource access for service information, beliefs, and next steps toward membership with minimal barriers.
 - **FR-VISIT-005:** Privacy controls with transparent data usage statements, consent management, and easy opt-out mechanisms.
+
+---
+
+## FR-ARCH-010: Soft Delete System
+
+### Overview
+All major entities support soft delete functionality allowing administrators to archive records without permanent data loss.
+
+### Functional Requirements
+
+**FR-ARCH-010-01: Archive Records**
+- Users with Admin or Leader roles can archive records
+- Archived records are hidden from default list views
+- Archived records retain all data and relationships
+- Archive operation sets deletedAt timestamp
+
+**FR-ARCH-010-02: Restore Records**
+- Archived records can be restored to active state
+- Restore operation clears deletedAt timestamp
+- Restored records appear in default list views immediately
+- All original data and relationships are preserved
+
+**FR-ARCH-010-03: Bulk Operations**
+- Multiple records can be archived in a single operation
+- Multiple records can be restored in a single operation
+- Bulk operations return success/failure counts
+- Failed operations do not affect successful ones
+
+**FR-ARCH-010-04: Authorization**
+- Only Admin and Leader roles can archive/restore
+- Member role cannot access soft delete functionality
+- Unauthorized attempts return 403 Forbidden
+- UI controls are hidden for unauthorized roles
+
+**FR-ARCH-010-05: Cascade Behavior**
+- Soft delete does NOT automatically cascade
+- Warning dialogs appear for dependent relationships
+- Users must explicitly archive dependent records
+- Example: Archiving household requires separate child archiving
+
+**FR-ARCH-010-06: Audit Trail**
+- All archive operations are logged
+- All restore operations are logged
+- Logs include actor, timestamp, entity type, entity ID
+- Audit logs cannot be soft deleted
+
+### Supported Entities
+- Users (Admin only for soft delete)
+- Events
+- Groups
+- Announcements
+- Contributions
+- Funds
+- Households
+- Children
+
+### UI/UX Requirements
+
+**FR-ARCH-010-07: Toggle View**
+- "Show Archived" toggle for Admin/Leader roles
+- Toggle switches between active and archived views
+- Badge displays count of archived items
+- Toggle state persists during session
+
+**FR-ARCH-010-08: Bulk Selection**
+- Checkboxes for selecting multiple items
+- "Select All" checkbox for current view
+- Bulk action buttons appear when items selected
+- Actions: Archive, Restore (context-dependent)
+
+**FR-ARCH-010-09: Visual Indicators**
+- Archived items display "Archived" badge
+- Archived items have distinct visual styling
+- Loading states during async operations
+- Success/error messages for operations
+
+**FR-ARCH-010-10: Warning Dialogs**
+- Warning appears when archiving items with dependents
+- Dialog shows count of active dependent records
+- User must confirm to proceed with archive
+- Option to cancel and view dependents
+
+### Related Requirements
+- **FR-SEC-003:** Role-based access control and permission checks (Admin/Leader authorization)
+- **Note:** Comprehensive audit trail implemented for all soft delete operations (actor, timestamp, entity)
+- **FR-DATA-001:** Multi-tenancy (churchId isolation)
+- **BR-DATA-005:** Data Retention and Recovery (Business Requirements)
+
+---
+
+**Document Version:** 2.1.0  
+**Last Updated:** 5 November 2025  
+**Change:** Added FR-ARCH-010 for soft delete system (Sprint: Soft Delete Main Sprint)

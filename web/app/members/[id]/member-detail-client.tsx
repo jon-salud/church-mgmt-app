@@ -4,34 +4,129 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { format } from 'date-fns';
 import { Modal } from '@/components/ui-flowbite/modal';
+import { Checkbox } from '@/components/ui-flowbite/checkbox';
+import { Button } from '@/components/ui-flowbite/button';
 import { updateMemberAction, deleteMemberAction, updatePrayerRequestAction } from '../../actions';
+import { clientApi } from '@/lib/api.client';
+import { hasAnyRole } from '@/lib/utils';
+import { Archive, ArchiveRestore } from 'lucide-react';
+import { PrayerRequest, User, Child } from '@/lib/types';
 
-import { PrayerRequest } from '@/lib/types';
+type ViewMode = 'active' | 'deleted';
 
 type MemberDetailClientProps = {
   member: any;
   roles: Array<{ id: string; name: string; slug?: string }>;
   settings: any;
-  children: any[];
+  children: Child[];
+  deletedChildren: Child[];
   prayerRequests: PrayerRequest[];
+  user: User | null;
 };
 
 export function MemberDetailClient({
   member,
   roles,
   settings,
-  children,
+  children: initialChildren,
+  deletedChildren: initialDeletedChildren,
   prayerRequests,
+  user,
 }: MemberDetailClientProps) {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isRemoveOpen, setIsRemoveOpen] = useState(false);
   const [isManageChildrenOpen, setIsManageChildrenOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>('active');
+  const [children, setChildren] = useState<Child[]>(initialChildren);
+  const [deletedChildren, setDeletedChildren] = useState<Child[]>(initialDeletedChildren);
+  const [selectedChildren, setSelectedChildren] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
   const enabledFields = settings?.optionalFields ?? {};
   const primaryRoleId =
     member.roles?.[0]?.roleId ??
     roles.find(role => role.slug === 'member')?.id ??
     roles[0]?.id ??
     '';
+
+  const canManageSoftDelete = hasAnyRole(user?.roles, ['admin', 'leader']);
+  const displayedChildren = viewMode === 'active' ? children : deletedChildren;
+
+  const handleToggleSelect = (id: string) => {
+    setSelectedChildren(prev =>
+      prev.includes(id) ? prev.filter(cid => cid !== id) : [...prev, id]
+    );
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    setSelectedChildren(checked ? displayedChildren.map(c => c.id) : []);
+  };
+
+  const handleArchive = async (id: string) => {
+    setIsLoading(true);
+    try {
+      await clientApi.deleteChild(id);
+      const archived = children.find(c => c.id === id);
+      if (archived) {
+        setChildren(prev => prev.filter(c => c.id !== id));
+        setDeletedChildren(prev => [...prev, { ...archived, deletedAt: new Date().toISOString() }]);
+      }
+      setSelectedChildren([]);
+    } catch (error) {
+      console.error('Failed to archive child:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRestore = async (id: string) => {
+    setIsLoading(true);
+    try {
+      await clientApi.undeleteChild(id);
+      const restored = deletedChildren.find(c => c.id === id);
+      if (restored) {
+        setDeletedChildren(prev => prev.filter(c => c.id !== id));
+        setChildren(prev => [...prev, { ...restored, deletedAt: undefined }]);
+      }
+      setSelectedChildren([]);
+    } catch (error) {
+      console.error('Failed to restore child:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleBulkArchive = async () => {
+    setIsLoading(true);
+    try {
+      await clientApi.bulkDeleteChildren(selectedChildren);
+      const archived = children.filter(c => selectedChildren.includes(c.id));
+      setChildren(prev => prev.filter(c => !selectedChildren.includes(c.id)));
+      setDeletedChildren(prev => [
+        ...prev,
+        ...archived.map(c => ({ ...c, deletedAt: new Date().toISOString() })),
+      ]);
+      setSelectedChildren([]);
+    } catch (error) {
+      console.error('Failed to bulk archive children:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleBulkRestore = async () => {
+    setIsLoading(true);
+    try {
+      await clientApi.bulkUndeleteChildren(selectedChildren);
+      const restored = deletedChildren.filter(c => selectedChildren.includes(c.id));
+      setDeletedChildren(prev => prev.filter(c => !selectedChildren.includes(c.id)));
+      setChildren(prev => [...prev, ...restored.map(c => ({ ...c, deletedAt: undefined }))]);
+      setSelectedChildren([]);
+    } catch (error) {
+      console.error('Failed to bulk restore children:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <section className="space-y-6">
@@ -500,40 +595,146 @@ export function MemberDetailClient({
             </div>
           </div>
           <div>
-            <h3 className="text-lg font-medium text-foreground">Existing Children</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-medium text-foreground">Existing Children</h3>
+              {canManageSoftDelete && (
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setViewMode(viewMode === 'active' ? 'deleted' : 'active');
+                    setSelectedChildren([]);
+                  }}
+                  data-testid="toggle-children-view"
+                >
+                  {viewMode === 'active' ? 'Show Archived' : 'Show Active'}
+                </Button>
+              )}
+            </div>
+
+            {canManageSoftDelete && displayedChildren.length > 0 && (
+              <div className="mt-3 flex items-center gap-3">
+                <Checkbox
+                  id="select-all-children"
+                  checked={
+                    selectedChildren.length === displayedChildren.length &&
+                    displayedChildren.length > 0
+                  }
+                  onCheckedChange={handleSelectAll}
+                  disabled={isLoading}
+                  className="cursor-pointer"
+                  data-testid="select-all-children"
+                />
+                <label htmlFor="select-all-children" className="text-sm text-muted-foreground">
+                  Select All ({displayedChildren.length})
+                </label>
+                {selectedChildren.length > 0 && (
+                  <div className="ml-auto flex gap-2">
+                    {viewMode === 'active' ? (
+                      <Button
+                        variant="outline"
+                        onClick={handleBulkArchive}
+                        disabled={isLoading}
+                        data-testid="bulk-archive-children"
+                      >
+                        <Archive className="mr-2 h-4 w-4" />
+                        Archive ({selectedChildren.length})
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="outline"
+                        onClick={handleBulkRestore}
+                        disabled={isLoading}
+                        data-testid="bulk-restore-children"
+                      >
+                        <ArchiveRestore className="mr-2 h-4 w-4" />
+                        Restore ({selectedChildren.length})
+                      </Button>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+
             <ul className="mt-2 space-y-2">
-              {children.length > 0 ? (
-                children.map(child => (
+              {displayedChildren.length > 0 ? (
+                displayedChildren.map(child => (
                   <li
                     key={child.id}
-                    className="flex items-center justify-between rounded-md border border-border bg-card p-3 text-sm"
+                    className={`flex items-center gap-3 rounded-md border border-border p-3 text-sm ${
+                      child.deletedAt ? 'bg-muted/50 opacity-60' : 'bg-card'
+                    }`}
+                    data-testid={`child-${child.id}`}
                   >
-                    <div>
-                      <p className="font-medium text-card-foreground">{child.fullName}</p>
-                      <p className="text-xs text-muted-foreground">
-                        Born: {format(new Date(child.dateOfBirth), 'd MMM yyyy')}
-                      </p>
+                    {canManageSoftDelete && (
+                      <>
+                        <Checkbox
+                          id={`select-child-${child.id}`}
+                          checked={selectedChildren.includes(child.id)}
+                          onCheckedChange={() => handleToggleSelect(child.id)}
+                          disabled={isLoading}
+                          className="cursor-pointer"
+                        />
+                        <label htmlFor={`select-child-${child.id}`} className="sr-only">
+                          Select {child.fullName}
+                        </label>
+                      </>
+                    )}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium text-card-foreground">{child.fullName}</p>
+                        {child.deletedAt && (
+                          <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
+                            Archived
+                          </span>
+                        )}
+                      </div>
+                      {child.dateOfBirth && (
+                        <p className="text-xs text-muted-foreground">
+                          Born: {format(new Date(child.dateOfBirth), 'd MMM yyyy')}
+                        </p>
+                      )}
                     </div>
                     <div className="flex gap-2">
-                      <button
-                        id={`edit-child-button-${child.id}`}
-                        type="button"
-                        className="rounded-md bg-muted px-3 py-1 text-xs font-medium text-muted-foreground transition hover:bg-muted/90"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        id={`remove-child-button-${child.id}`}
-                        type="button"
-                        className="rounded-md border border-destructive bg-destructive px-3 py-1 text-xs font-medium text-destructive-foreground transition hover:bg-destructive/90"
-                      >
-                        Remove
-                      </button>
+                      {!child.deletedAt && (
+                        <button
+                          id={`edit-child-button-${child.id}`}
+                          type="button"
+                          className="rounded-md bg-muted px-3 py-1 text-xs font-medium text-muted-foreground transition hover:bg-muted/90"
+                        >
+                          Edit
+                        </button>
+                      )}
+                      {canManageSoftDelete && (
+                        <Button
+                          variant="outline"
+                          onClick={() =>
+                            child.deletedAt ? handleRestore(child.id) : handleArchive(child.id)
+                          }
+                          disabled={isLoading}
+                          data-testid={`${child.deletedAt ? 'restore' : 'archive'}-child-${child.id}`}
+                        >
+                          {child.deletedAt ? (
+                            <>
+                              <ArchiveRestore className="mr-1 h-3 w-3" />
+                              Restore
+                            </>
+                          ) : (
+                            <>
+                              <Archive className="mr-1 h-3 w-3" />
+                              Archive
+                            </>
+                          )}
+                        </Button>
+                      )}
                     </div>
                   </li>
                 ))
               ) : (
-                <li className="text-sm text-muted-foreground">No children in this household.</li>
+                <li className="text-sm text-muted-foreground">
+                  {viewMode === 'active'
+                    ? 'No children in this household.'
+                    : 'No archived children.'}
+                </li>
               )}
             </ul>
           </div>

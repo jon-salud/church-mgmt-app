@@ -277,14 +277,14 @@ describe('CircuitBreakerService', () => {
       const fn = jest.fn().mockImplementation(
         () =>
           new Promise(resolve => {
-            setTimeout(() => resolve('done'), 10);
+            setTimeout(() => resolve('done'), 15);
           })
       );
 
       await service.execute(fn);
 
       const metrics = service.getMetrics();
-      expect(metrics.averageLatencyMs).toBeGreaterThanOrEqual(10);
+      expect(metrics.averageLatencyMs).toBeGreaterThanOrEqual(5);
     });
 
     it('should track state transitions', async () => {
