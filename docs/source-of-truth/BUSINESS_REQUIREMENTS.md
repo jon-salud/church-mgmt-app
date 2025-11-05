@@ -228,3 +228,54 @@ capabilities without altering data isolation or privacy commitments.
 - All users will have access to a modern web browser and a stable internet connection.
 - The initial version will not include native mobile applications for iOS or Android.
 - Each church client is responsible for its own user management and data entry.
+
+---
+
+## BR-DATA-005: Data Retention and Recovery
+
+### Business Objective
+Enable safe data management with ability to recover from accidental deletions while maintaining data integrity and compliance.
+
+### Business Requirements
+
+**BR-DATA-005-01: Soft Delete by Default**
+- All major entities use soft delete instead of hard delete
+- Protects against accidental data loss
+- Enables recovery of archived records
+- Maintains referential integrity
+
+**BR-DATA-005-02: Role-Based Archive Control**
+- Only administrators and ministry leaders can archive records
+- Prevents unauthorized data manipulation
+- Maintains data governance controls
+- Audit trail for all archive operations
+
+**BR-DATA-005-03: Independent Archive Actions**
+- Related records are not automatically archived
+- Requires explicit user action for dependent records
+- Prevents unintended data loss
+- Provides clarity on archive scope
+
+**BR-DATA-005-04: Data Visibility Control**
+- Archived records hidden from member view
+- Archived records accessible to admin/leader
+- Clear visual distinction between active and archived
+- Easy toggle between views
+
+### Business Value
+- **Risk Mitigation**: Protects against accidental data deletion
+- **Compliance**: Supports data retention policies
+- **Operational Flexibility**: Enables seasonal data management (e.g., archive past events)
+- **Cost Efficiency**: Reduces support requests for data recovery
+
+### Success Metrics
+- Zero data loss incidents
+- <1 minute average recovery time
+- >95% user satisfaction with archive/restore functionality
+- Reduced support tickets related to deleted data
+
+---
+
+**Document Version:** 2.1.0  
+**Last Updated:** 5 November 2025  
+**Change:** Added BR-DATA-005 for data retention and recovery (Sprint: Soft Delete Main Sprint)

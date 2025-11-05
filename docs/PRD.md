@@ -45,7 +45,12 @@ The initial release of the platform will focus on the following core functionali
   members to church staff.
 - **Event & Service Check-in:** A system for tracking attendance at services and events.
 - **Child Check-in and Safety:** A comprehensive child check-in system with household management and safety features.
-- **Soft Delete Functionality:** Archive members, events, and roles instead of permanent deletion to maintain data integrity and audit trails.
+- **Soft Delete System:** Archive and restore functionality for all major entities
+  - Role-based access control (Admin/Leader only)
+  - Bulk archive/restore operations
+  - No cascade deletion - explicit archiving required
+  - Complete audit trail
+  - Performance optimized with indexed queries
 - **Onboarding Wizard:** A guided setup process for new Church Administrators.
 - **Document Library:** A secure, role-based repository for file sharing.
 - **Small Group Resource Sharing:** Functionality for small groups to share resources via web links.
@@ -75,6 +80,14 @@ by a `churchId` on all relevant tables.
 - **Database:** PostgreSQL with Prisma ORM
 - **Styling:** Tailwind CSS with Flowbite (migrated from Radix UI in Nov 2024)
 - **Testing:** Vitest (backend), Playwright (end-to-end)
+
+### 4.2.1. Soft Delete Implementation
+- **Database**: deletedAt TIMESTAMP column on all major tables
+- **Indexing**: B-tree indexes on deletedAt columns for efficient filtering
+- **API**: RESTful endpoints for archive/restore/bulk operations
+- **Authorization**: Enforced at controller level using RolesGuard
+- **Audit**: All operations logged to audit system
+- **Performance**: <100ms single operations, <5s for 100 items bulk
 
 ### 4.3. Data Model
 
