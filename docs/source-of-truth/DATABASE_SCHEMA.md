@@ -11,6 +11,38 @@ timestamp field. Records are marked as deleted rather than physically removed to
 trails and data integrity. Application queries automatically filter out deleted records unless
 explicitly querying for audit/compliance purposes.
 
+## 1.1 Soft Delete Architecture
+
+### Overview
+All major entities implement soft delete using `deletedAt` TIMESTAMP column.
+Records are marked as deleted rather than physically removed to maintain audit trails and data integrity.
+
+### Cascade Behavior
+- **No auto-cascade**: Archiving an entity does NOT automatically archive related entities
+- **Explicit action required**: Users must manually archive dependents
+- **Warning dialogs**: UI shows active dependent counts before archiving
+- **Example**: Archiving household does NOT automatically archive children
+
+### Authorization
+- **Admin and Leader roles only** can perform soft delete operations
+- **Member role** cannot access soft delete functionality
+- **Users exception**: Only Admin can soft delete users (not Leaders)
+- **Enforced at controller level** using `ensureLeader()` or `ensureAdmin()` guards
+
+### Performance
+- **Indexed queries**: All deletedAt columns have B-tree indexes
+- **Efficient filtering**: Default queries use `WHERE deletedAt IS NULL`
+- **Bulk operations**: Optimized for 100+ item operations
+- **Query pattern**: `prisma.findMany({ where: { deletedAt: null } })`
+
+### Affected Tables
+The following 8 tables implement soft delete:
+- Users, Events, Groups, Announcements, Contributions, Funds, Households, Children
+
+### Index Definitions
+All soft delete enabled tables have indexes on deletedAt column:
+- `@@index([deletedAt])` on all 8 tables in Prisma schema
+
 ---
 
 ## 2. Core Tables
@@ -621,3 +653,22 @@ explicitly querying for audit/compliance purposes.
 - `enrolledAt` (Timestamp, Not Null)
 - `completedAt` (Timestamp)
 - `nextActionAt` (Timestamp)
+
+---
+
+## Change Log
+
+### Version 2.1.0 - 5 November 2025
+- Completed soft delete implementation across 8 major tables
+- Added indexes on deletedAt columns for all affected tables
+- No cascade delete behavior - explicit archiving required
+- Role-based authorization (Admin/Leader only, Admin-only for Users)
+- Complete audit trail for all soft delete operations
+- Sprint: Soft Delete Main Sprint (feature/soft-delete-main-sprint)
+- Total commits: 486 commits
+- Start date: October 18, 2025
+
+### Version 2.0.0 - October 2025
+- Initial schema design
+- Multi-tenancy implementation with churchId
+- Core modules: Users, Events, Groups, Giving, Households, Children

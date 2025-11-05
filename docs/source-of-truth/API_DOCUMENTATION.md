@@ -1482,3 +1482,49 @@ This section covers endpoints related to managing church events and volunteer co
 - **Success Response:**
   - **Code:** `201 Created`
   - **Content:** Enrollment record.
+
+---
+
+## Soft Delete Common Behaviors
+
+### Authorization
+- Only Admin and Leader roles can perform soft delete operations
+- Members can view active records but cannot access archived items
+- Attempting soft delete as Member returns 403 Forbidden
+- **Exception**: Users module requires Admin role (Leaders cannot soft delete users)
+
+### Filtering
+- All list endpoints exclude soft deleted items by default
+- Use `/deleted/all` endpoint to retrieve archived items
+- GET by ID checks deletedAt and returns 404 if archived
+- Query pattern: `WHERE deletedAt IS NULL` for active records
+
+### Cascade Behavior
+- Soft delete does NOT cascade to related entities
+- Example: Archiving household does NOT archive children
+- Warning dialogs appear when archiving items with active dependents
+- Users must explicitly archive dependent records
+- See [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md#11-soft-delete-architecture) for full cascade behavior documentation
+
+### Audit Logging
+- All soft delete operations are logged to audit system
+- Includes actor, timestamp, entity type, and entity ID
+- Both archive and restore actions are audited
+- Bulk operations log individual item operations
+
+### Performance
+- deletedAt columns are indexed for efficient filtering
+- Bulk operations are optimized for large datasets
+- Typical performance: <100ms single item, <5s for 100 items
+- See [FUNCTIONAL_REQUIREMENTS.md](./FUNCTIONAL_REQUIREMENTS.md) for performance requirements (FR-ARCH-010)
+
+### Related Documentation
+- [DATABASE_SCHEMA.md](./DATABASE_SCHEMA.md) - Soft Delete Architecture
+- [FUNCTIONAL_REQUIREMENTS.md](./FUNCTIONAL_REQUIREMENTS.md) - FR-ARCH-010
+- [BUSINESS_REQUIREMENTS.md](./BUSINESS_REQUIREMENTS.md) - BR-DATA-005
+
+---
+
+**Document Version:** 2.1.0  
+**Last Updated:** 5 November 2025  
+**Status:** Complete
