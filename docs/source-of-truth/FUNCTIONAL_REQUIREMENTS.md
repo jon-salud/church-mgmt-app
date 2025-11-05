@@ -486,8 +486,8 @@ All major entities support soft delete functionality allowing administrators to 
 - Option to cancel and view dependents
 
 ### Related Requirements
-- **FR-AUTH-002:** Role-based access control (Admin/Leader authorization)
-- **FR-AUDIT-001:** Audit trail for all operations
+- **FR-SEC-003:** Role-based access control and permission checks (Admin/Leader authorization)
+- **Note:** Comprehensive audit trail implemented for all soft delete operations (actor, timestamp, entity)
 - **FR-DATA-001:** Multi-tenancy (churchId isolation)
 - **BR-DATA-005:** Data Retention and Recovery (Business Requirements)
 

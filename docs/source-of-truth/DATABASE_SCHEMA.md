@@ -36,8 +36,17 @@ Records are marked as deleted rather than physically removed to maintain audit t
 - **Query pattern**: `prisma.findMany({ where: { deletedAt: null } })`
 
 ### Affected Tables
-The following 8 tables implement soft delete:
-- Users, Events, Groups, Announcements, Contributions, Funds, Households, Children
+
+The following 9 tables implement soft delete:
+- `users` - User accounts
+- `events` - Calendar events  
+- `groups` - Small groups and communities
+- `announcements` - Church announcements
+- `contributions` - Giving contributions/transactions
+- `funds` - Giving funds/campaigns
+- `households` - Family households
+- `children` - Child records for check-in
+- `documents` - Document library files
 
 ### Index Definitions
 All soft delete enabled tables have indexes on deletedAt column:
