@@ -11,7 +11,7 @@
 
 ## Executive Summary
 
-Successfully completed comprehensive soft delete implementation across the Church Management System, covering **8 major database tables**, **7 core modules**, and **54 API endpoints**. The sprint delivered a unified, production-ready soft delete architecture with full backend implementation, comprehensive frontend UI, extensive test coverage (380 API tests, 67 E2E tests), and complete documentation updates across all source-of-truth documents.
+Successfully completed comprehensive soft delete implementation across the Church Management System, covering **9 major database tables**, **7 core modules**, and **54 API endpoints**. The sprint delivered a unified, production-ready soft delete architecture with full backend implementation, comprehensive frontend UI, extensive test coverage (380 API tests, 67 E2E tests), and complete documentation updates across all source-of-truth documents.
 
 ### Key Achievements
 
@@ -29,7 +29,7 @@ Successfully completed comprehensive soft delete implementation across the Churc
 
 | Objective | Status | Outcome |
 |-----------|--------|---------|
-| Backend soft delete for all core entities | ✅ Complete | 8 tables, 54 endpoints implemented |
+| Backend soft delete for all core entities | ✅ Complete | 9 tables, 54 endpoints implemented |
 | Consistent frontend UX across modules | ✅ Complete | 7 modules with unified UI patterns |
 | Comprehensive test coverage | ✅ Complete | 380 API + 67 E2E tests passing |
 | Data integrity & cascade behavior | ✅ Complete | Referential integrity enforced |
@@ -46,8 +46,8 @@ Successfully completed comprehensive soft delete implementation across the Churc
 **Completed:** October 18, 2025
 
 #### Deliverables
-- ✅ Database migrations adding `deletedAt TIMESTAMP` to 8 tables:
-  - `users`, `events`, `groups`, `announcements`, `giving_transactions`, `households`, `children`, `documents`
+- ✅ Database migrations adding `deletedAt TIMESTAMP` to 9 tables:
+  - `users`, `events`, `groups`, `announcements`, `contributions`, `funds`, `households`, `children`, `documents`
 - ✅ B-tree indexes on `deletedAt` columns for query performance
 - ✅ Schema validation tests (8 tests passing)
 - ✅ DATABASE_SCHEMA.md updated with soft delete architecture section
