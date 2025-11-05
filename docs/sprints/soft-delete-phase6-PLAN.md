@@ -915,7 +915,121 @@ After Phase 6 completion:
 
 ## Accomplishments
 
-*This section will be populated after phase completion.*
+**Phase 6 Status:** ✅ Complete  
+**Total Commits:** 10 commits (excluding merges)  
+**Total PRs:** 4 merged PRs (#167, #169, #170, #171)  
+**Completion Date:** 4 November 2025
+
+### Implementation Summary
+
+**Step 1: Backend Endpoint & API Client Layer (3 hours)**
+- ✅ Created backend endpoint `GET /households/:id/dependents` for accurate dependent counts (commit `3ac12a0`)
+- ✅ Added 12 households API client methods (delete, undelete, bulk operations, list deleted) (commit `cda5c93`)
+- ✅ Added 8 children API client methods with SSR support (commit `8c371fa`)
+- ✅ Extracted Household and Child types to `web/lib/types.ts` for shared type definitions
+- ✅ Fixed null check and type mismatch issues in API layer (commit `05812bb`)
+
+**Step 2: Households Page UI (5-6 hours)**
+- ✅ Implemented complete soft delete UI for households page (commit `6b09ecf`)
+- ✅ Added "Show Archived" toggle with role-based access (Admin/Leader only)
+- ✅ Implemented bulk selection with archive/restore operations
+- ✅ Added loading states for all async operations
+- ✅ Implemented warning dialog using new dependents endpoint for accurate counts
+- ✅ Added optimistic updates with rollback on error
+- ✅ Single array state management pattern (no sync issues)
+- ✅ Fixed ambiguous text selector in E2E tests (commit `0b5dec6`)
+- ✅ Addressed review feedback for code quality improvements (commit `3ea8b92`)
+
+**Step 3: Children UI (4-5 hours)**
+- ✅ Implemented children soft delete UI in household detail page (commit `c117861`)
+- ✅ Added toggle for archived children view
+- ✅ Implemented bulk archive/restore for children
+- ✅ Added archived badges and role-based controls
+- ✅ Excluded archived children from check-in flows
+
+**Step 4: E2E Testing & Final Fixes (3 hours)**
+- ✅ Created comprehensive E2E test suite (17 tests total)
+- ✅ Addressed data isolation, performance optimization, and test stability issues (commit `823c46f`)
+- ✅ Improved route ordering and type consistency (commit `0bf03fe`)
+- ✅ Added circular dependency documentation
+
+### Key Achievements
+
+1. **Complete Feature Parity**: Households and children now have identical soft delete functionality to previous phases (groups, announcements, giving)
+
+2. **Backend Enhancement**: New `/households/:id/dependents` endpoint provides accurate real-time dependent counts for warning dialogs
+
+3. **Type Safety**: All types extracted to shared location eliminating type drift across components
+
+4. **State Management**: Single array pattern with display-time filtering prevents synchronization issues
+
+5. **Performance**: Optimized bulk operations and implemented efficient filtering strategies
+
+6. **Testing**: 17 comprehensive E2E tests covering all workflows including error scenarios
+
+7. **Code Quality**: Zero TypeScript errors, zero linting errors, proper accessibility compliance
+
+### Files Modified
+
+**Backend (API):**
+- `api/src/modules/households/households.controller.ts` - Added dependents endpoint
+- `api/src/modules/households/households.service.ts` - Enhanced with dependent checking logic
+
+**Frontend (Web):**
+- `web/lib/api.client.ts` - Added 20 soft delete API methods
+- `web/lib/api.server.ts` - Added 3 SSR methods for server-side rendering
+- `web/lib/types.ts` - Extracted Household and Child type definitions
+- `web/app/households/page.tsx` - Server component to fetch deleted data
+- `web/app/households/households-client.tsx` - Complete soft delete UI implementation
+- `web/app/households/[id]/page.tsx` - Fetch deleted children
+- `web/app/households/[id]/household-detail-client.tsx` - Children soft delete UI
+
+**Testing (E2E):**
+- `web/e2e/households.spec.ts` - 7 household soft delete test cases
+- `web/e2e/children.spec.ts` - 7 children soft delete test cases
+- `web/e2e/error-scenarios.spec.ts` - 3 error handling test cases
+- `web/e2e/page-objects/HouseholdsPage.ts` - Page object for stable selectors
+- `web/e2e/page-objects/HouseholdDetailPage.ts` - Page object for children
+
+### Test Results
+
+- ✅ All API tests passing (350+ tests)
+- ✅ All E2E tests passing (65+ tests including 17 new Phase 6 tests)
+- ✅ Zero regressions introduced
+- ✅ Build succeeds with zero errors
+- ✅ Lint passes with zero new warnings
+
+### Code Review Outcomes
+
+**PR #167:** Initial API layer implementation
+- Merged after addressing type safety and null check issues
+
+**PR #169:** Households UI implementation
+- Merged after fixing text selectors and improving code quality
+- Addressed route ordering and circular dependency documentation
+
+**PR #170:** Children UI implementation
+- Merged with comprehensive feature implementation
+
+**PR #171:** Final fixes and validation
+- Addressed data isolation concerns
+- Optimized performance for large datasets
+- Fixed test stability issues
+- Merged to sprint branch
+
+### Lessons Learned
+
+1. **Single Array Pattern**: Using one array with display-time filtering is cleaner than maintaining separate active/archived arrays
+2. **Backend Dependencies**: Creating dedicated endpoints for complex checks (like dependents) provides better accuracy than client-side calculations
+3. **Type Extraction**: Centralized type definitions prevent drift and improve maintainability
+4. **Test Stability**: Data-testid selectors and proper test isolation are critical for reliable E2E tests
+5. **Code Review Value**: Multiple review cycles caught important issues with performance, data isolation, and type safety
+
+### Next Steps
+
+Phase 6 is complete and merged to the sprint branch `feature/soft-delete-main-sprint`. 
+
+**Ready to proceed to Phase 7: Final Validation & Documentation**
 
 ---
 

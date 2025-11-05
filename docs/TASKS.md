@@ -393,14 +393,38 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - ✅ **Code Review Fixes:** Standardized user ID extraction to req.user?.id across all controllers, resolved merge conflict in principal-architect.agent.md
   - ✅ **Status:** Phase 5 complete and merged to feature/soft-delete-main-sprint
 
+- ✅ **Soft Delete Implementation - Phase 6 (Households & Checkin Frontend):**
+  - **Sprint:** Soft Delete Main Sprint
+  - **Branch:** `feature/soft-delete-phase6-households-frontend` (merged to sprint branch)
+  - **Plan:** `docs/sprints/soft-delete-phase6-PLAN.md` (with accomplishments section)
+  - **Scope:** Frontend UI implementation of soft delete for Households and Children
+  - ✅ **Step 1: Backend Endpoint & API Client Layer** - Created GET /households/:id/dependents endpoint for accurate dependent counts; added 12 households API methods and 8 children API methods; extracted types to web/lib/types.ts
+  - ✅ **Step 2: Households Page UI** - Implemented complete soft delete UI with "Show Archived" toggle, bulk operations, loading states, warning dialogs, optimistic updates with rollback; single array state management pattern
+  - ✅ **Step 3: Children UI** - Implemented children soft delete UI in household detail page with toggle, bulk operations, archived badges, role-based controls; excluded archived children from check-in flows
+  - ✅ **Step 4: E2E Testing & Fixes** - Created 17 comprehensive E2E tests (7 households + 7 children + 3 error scenarios); addressed data isolation, performance, and test stability issues
+  - ✅ **Test Results:** All API tests passing (350+), all E2E tests passing (65+ including 17 new Phase 6 tests), zero regressions
+  - ✅ **Code Quality:** Zero TypeScript errors, zero linting errors, proper accessibility compliance with labels and ARIA attributes
+  - ✅ **Commits:** 10 commits across 4 PRs (#167, #169, #170, #171)
+    - `3ac12a0` - feat(households): add GET /households/:id/dependents endpoint
+    - `cda5c93` - feat(web): add households soft delete API client methods
+    - `8c371fa` - feat(web): complete API layer for households and children soft delete
+    - `05812bb` - fix: address review issues - null check and type mismatch
+    - `0bf03fe` - refactor: improve code quality - route order, type consistency, circular dependency docs
+    - `6b09ecf` - feat: implement households soft delete UI
+    - `3ea8b92` - refactor: address review feedback - improve code quality
+    - `0b5dec6` - fix: remove ambiguous text selector in households E2E test
+    - `c117861` - feat: implement Step 3 - children soft delete UI
+    - `823c46f` - fix: address review issues - data isolation, performance, and test fixes
+  - ✅ **Status:** Phase 6 complete and merged to feature/soft-delete-main-sprint
+
 ### 🔄 In Progress
 
-- **Complete CRUD Operations - Soft Delete Implementation Phase 6 (Households & Checkin Frontend):**
+- **Complete CRUD Operations - Soft Delete Implementation Phase 7 (Final Validation & Documentation):**
   - **Sprint:** Soft Delete Main Sprint
-  - **Branch:** `feature/soft-delete-phase6-households-frontend`
-  - **Plan:** `docs/sprints/soft-delete-phase6-PLAN.md`
-  - **Scope:** Frontend UI implementation of soft delete for Households and Children
-  - **Status:** Ready to start - Phase 5 (backend) merged to sprint branch
+  - **Branch:** `feature/soft-delete-main-sprint`
+  - **Plan:** `docs/sprints/soft-delete-PLAN.md`
+  - **Scope:** Final validation, documentation updates, sprint closure
+  - **Status:** Ready to start - Phase 6 complete and merged to sprint branch
 
 ### 📝 Backlog / Upcoming
 
