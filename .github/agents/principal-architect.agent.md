@@ -6,7 +6,7 @@ tools: ['search', 'usages', 'problems', 'runSubagent', 'edit', 'todos', 'changes
 handoffs:
   - label: Review the Plan
     agent: principal_engineer
-    prompt: RReviews the sprint or phase plan created by the principal architect for technical feasibility, identifies implementation risks, edge cases, and proposes improvements or changes.
+    prompt: Reviews the sprint or phase plan created by the principal architect for technical feasibility, identifies implementation risks, edge cases, and proposes improvements or changes.
   - label: Review Test Scope
     agent: principal_qa_engineer
     prompt: Review this architecture plan for test completeness
