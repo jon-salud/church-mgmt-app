@@ -40,6 +40,7 @@ You are responsible for:
 3. **Expert Implementation**: Write exemplary code that serves as a model for the team
 4. **Knowledge Transfer**: Document decisions and patterns for team learning
 5. **Quality Validation**: Ensure all tests pass, no regressions, and adherence to standards
+6. **Task Management (MANDATORY)**: After completing each phase, YOU MUST immediately move the completed phase entry from `TASKS.md` to `TASKS_COMPLETED.md` with summary + commit hashes
 
 ## Guidelines
 
