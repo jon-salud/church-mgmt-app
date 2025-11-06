@@ -34,7 +34,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   const theme = '${theme.themePreference}';
                   document.documentElement.setAttribute('data-theme', theme);
                 } catch (e) {
-                  // Silently fail - defaults will apply
+                  // Log error for debugging (safe because it's in try-catch)
+                  if (typeof console !== 'undefined') {
+                    console.warn('Failed to apply theme:', e);
+                  }
+                  // Defaults will apply
                 }
               })();
             `,

@@ -1,6 +1,6 @@
 'use server';
 
-import { cookies } from 'next/headers';
+import { apiFetch } from '../../lib/api.server';
 
 /**
  * User theme preferences from the API
@@ -19,8 +19,43 @@ const THEME_DEFAULTS: ThemePreferences = {
 };
 
 /**
+ * Valid theme preset values (used for validation and XSS prevention)
+ */
+const VALID_THEMES = ['original', 'vibrant-blue', 'teal-accent', 'warm-accent'] as const;
+
+/**
+ * Type guard to validate API response structure
+ * Prevents XSS attacks and runtime errors from malformed data
+ */
+function isValidThemeResponse(data: unknown): data is ThemePreferences {
+  if (!data || typeof data !== 'object') {
+    return false;
+  }
+
+  const obj = data as Record<string, unknown>;
+
+  // Validate themePreference is a string and matches enum
+  if (
+    typeof obj.themePreference !== 'string' ||
+    !VALID_THEMES.includes(obj.themePreference as any)
+  ) {
+    return false;
+  }
+
+  // Validate themeDarkMode is a boolean
+  if (typeof obj.themeDarkMode !== 'boolean') {
+    return false;
+  }
+
+  return true;
+}
+
+/**
  * Fetches the current user's theme preferences from the API.
  * This is a server action that runs on the server-side only.
+ *
+ * Uses the standard apiFetch helper for consistency with other API calls.
+ * Validates API response to prevent XSS and runtime errors.
  *
  * @returns User's theme preferences or defaults if not authenticated/failed
  *
@@ -32,32 +67,19 @@ const THEME_DEFAULTS: ThemePreferences = {
  * ```
  */
 export async function getUserTheme(): Promise<ThemePreferences> {
-  const cookieStore = cookies();
-  const token = cookieStore.get('demo_token')?.value;
-
-  // Return defaults for unauthenticated users
-  if (!token) {
-    return THEME_DEFAULTS;
-  }
-
   try {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-    const response = await fetch(`${apiUrl}/api/users/me/theme`, {
-      headers: {
-        Cookie: `demo_token=${token}`,
-      },
-      cache: 'no-store', // Always fetch fresh theme preferences
-      next: { revalidate: 0 }, // Disable caching in Next.js
-    });
+    // Use standard apiFetch helper (handles auth, base URL, errors)
+    const data = await apiFetch<unknown>('/users/me/theme');
 
-    if (!response.ok) {
-      console.warn(`Failed to fetch user theme (status ${response.status}), using defaults`);
+    // Validate response structure (prevents XSS and runtime errors)
+    if (!isValidThemeResponse(data)) {
+      console.warn('Invalid theme data from API, using defaults:', data);
       return THEME_DEFAULTS;
     }
 
-    const data = await response.json();
     return data;
   } catch (error) {
+    // apiFetch throws on auth errors, network errors, non-200 responses
     console.error('Error fetching user theme:', error);
     return THEME_DEFAULTS;
   }
