@@ -15,10 +15,8 @@ export default async function DashboardPage() {
   return (
     <section className="space-y-8">
       <div>
-        <h1 className="text-3xl font-semibold tracking-tight">
-          {isLeader ? 'Ministry Dashboard' : 'Dashboard'}
-        </h1>
-        <p className="text-sm text-muted-foreground">
+        <h1 className="heading-1">{isLeader ? 'Ministry Dashboard' : 'Dashboard'}</h1>
+        <p className="caption-text">
           {isLeader
             ? 'Overview of your ministry activities and pastoral care needs.'
             : 'Snapshot of community health and activity.'}
@@ -229,7 +227,7 @@ function StatCard({
   return (
     <dl
       data-testid={testId}
-      className="rounded-xl border border-border bg-card p-4 shadow-lg shadow-shadow"
+      className="rounded-lg border border-border bg-card p-4 shadow-md hover:shadow-lg transition-shadow duration-200"
     >
       <dt className="text-xs uppercase tracking-wide text-muted-foreground">{label}</dt>
       <dd className="mt-2 text-2xl font-semibold text-foreground">{value}</dd>
@@ -240,9 +238,9 @@ function StatCard({
 
 function Card({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <section className="rounded-xl border border-border bg-card p-5 shadow-lg shadow-shadow">
-      <h2 className="text-lg font-semibold text-foreground">{title}</h2>
-      <div className="mt-4 space-y-3 text-sm text-foreground">{children}</div>
+    <section className="rounded-lg border border-border bg-card p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
+      <h2 className="heading-2">{title}</h2>
+      <div className="mt-4 space-y-3 body-text">{children}</div>
     </section>
   );
 }
