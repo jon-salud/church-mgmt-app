@@ -45,19 +45,17 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
   return (
     <section className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold">{group.name}</h1>
-        <p className="text-sm text-muted-foreground">
-          {group.description || 'No description yet.'}
-        </p>
+        <h1 className="heading-1">{group.name}</h1>
+        <p className="caption-text">{group.description || 'No description yet.'}</p>
         <p className="text-xs text-muted-foreground">
           Meeting {group.meetingDay || 'TBA'} {group.meetingTime && `· ${group.meetingTime}`} •
           Tags: {group.tags?.join(', ') || 'None'}
         </p>
       </div>
 
-      <section className="rounded-xl border border-border bg-card p-5">
+      <section className="rounded-lg border border-border bg-card p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <h2 className="text-lg font-semibold text-card-foreground">Members</h2>
+          <h2 className="heading-2">Members</h2>
           <button
             id="add-member-button"
             type="button"
@@ -117,8 +115,8 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
         </table>
       </section>
 
-      <section className="rounded-xl border border-border bg-card p-5">
-        <h2 className="text-lg font-semibold">Upcoming events</h2>
+      <section className="rounded-lg border border-border bg-card p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
+        <h2 className="heading-2">Upcoming events</h2>
         {group.events?.length ? (
           <ul className="mt-3 space-y-2 text-sm">
             {group.events.map((event: any) => (
@@ -135,9 +133,9 @@ export function GroupDetailClient({ group, allMembers }: GroupDetailClientProps)
         )}
       </section>
 
-      <section className="rounded-xl border border-border bg-card p-5">
+      <section className="rounded-lg border border-border bg-card p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-          <h2 className="text-lg font-semibold text-card-foreground">Resources</h2>
+          <h2 className="heading-2">Resources</h2>
           <button
             id="add-resource-button"
             type="button"
