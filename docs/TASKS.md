@@ -25,14 +25,8 @@ This file tracks **current and immediately upcoming work**. For historical conte
 - Comprehensive E2E testing and documentation
 
 **Phases:**
-- ✅ **Phase 1: Database Schema & API Foundation (2.5-3.5h)** - Completed
-  - Branch: `feature/user-theme-preferences-phase1-database-api`
-  - Plan: `docs/sprints/user-theme-preferences-phase1-PLAN.md`
-  - Merged to sprint branch
-- ✅ **Phase 2: CSS Theme System (2-3h)** - Completed
-  - Branch: `feature/user-theme-preferences-phase2-css-themes`
-  - Plan: `docs/sprints/user-theme-preferences-phase2-PLAN.md`
-  - Merged to sprint branch
+- ✅ **Phase 1: Database Schema & API Foundation (2.5-3.5h)** - Completed (moved to TASKS_COMPLETED.md)
+- ✅ **Phase 2: CSS Theme System (2-3h)** - Completed (moved to TASKS_COMPLETED.md)
 - 🔄 **Phase 3: Settings UI (4-5h)** - In Progress
   - Branch: `feature/user-theme-preferences-phase3-settings-ui`
   - Plan: `docs/sprints/user-theme-preferences-phase3-PLAN.md`

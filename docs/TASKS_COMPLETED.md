@@ -8,6 +8,51 @@ This file contains the complete history of shipped features, sprints, and migrat
 
 ### Shipped Features & Sprints
 
+#### User Theme Preferences Sprint (November 2025)
+- **Branch:** `feature/user-theme-preferences-main-sprint`
+- **Sprint Plan:** `docs/sprints/user-theme-preferences-PLAN.md`
+- **Status:** In Progress (Phase 3 of 5)
+- **Scope:** User theme customization with 4 color presets, dark mode toggle, settings UI, real-time theme switching
+- **Timeline:** 14.5-19.5 hours total (2-3 days)
+
+**Completed Phases:**
+
+- **Phase 1: Database Schema & API Foundation (2.5-3.5h)** ✅ Completed
+  - Branch: `feature/user-theme-preferences-phase1-database-api`
+  - Plan: `docs/sprints/user-theme-preferences-phase1-PLAN.md`
+  - Summary: Database schema migration adding `theme_preference` (enum) and `theme_dark_mode` (boolean) to users table. Created GET/PATCH `/api/v1/users/me/theme` endpoints with validation. All tests passing.
+  - Accomplishments:
+    - Prisma schema updated with ThemePreset enum (original, vibrant-blue, teal-accent, warm-accent)
+    - Migration `20250107000000_add_user_theme_preferences` created and applied
+    - UsersController endpoints: GET /users/me/theme (fetch preferences), PATCH /users/me/theme (update preferences)
+    - DTO validation with class-validator (IsEnum, IsBoolean)
+    - UsersService methods: getUserTheme(), updateUserTheme()
+    - Integration tests for both endpoints (happy path, validation, auth)
+    - Zero regressions (all existing tests passing)
+  - Files Modified: `api/prisma/tenant-schema.prisma`, `api/src/modules/users/users.controller.ts`, `api/src/modules/users/users.service.ts`, `api/src/modules/users/dto/update-theme.dto.ts` (created), `api/src/modules/users/types/theme.types.ts` (created)
+  - Commits: `a3f8b21` (initial implementation), `e7d9c54` (test fixes)
+  - Merged: To sprint branch on 6 November 2025
+
+- **Phase 2: CSS Theme System (2-3h)** ✅ Completed
+  - Branch: `feature/user-theme-preferences-phase2-css-themes`
+  - Plan: `docs/sprints/user-theme-preferences-phase2-PLAN.md`
+  - Summary: CSS custom properties for 4 theme presets, server-side theme fetching with getUserTheme() action, FOUC prevention via inline blocking script, dark mode integration with next-themes. Production-ready with security hardening.
+  - Accomplishments:
+    - CSS theme system: Added `[data-theme]` attribute selectors to `globals.css` for 4 presets (original, vibrant-blue, teal-accent, warm-accent)
+    - Each theme overrides `--primary`, `--accent`, `--ring` CSS variables (WCAG AA compliant)
+    - Server action `getUserTheme()` created in `web/app/actions/theme.ts`
+    - Integrated with `apiFetch` helper for consistency (auto auth headers)
+    - Type guard validation (`isValidThemePreferences`) for runtime safety and XSS prevention
+    - Layout integration: `web/app/layout.tsx` calls `getUserTheme()` server-side, applies `data-theme` attribute to `<html>`
+    - FOUC prevention: Inline blocking script in `<head>` with error logging
+    - Updated ThemeProvider to use user's dark mode preference (not system)
+    - Code review improvements: API response validation, error logging, XSS protection, apiFetch usage, Accomplishments documentation
+  - Files Created: `web/app/actions/theme.ts` (90 lines with validation)
+  - Files Modified: `web/app/globals.css` (~30 lines for theme presets), `web/app/layout.tsx` (~20 lines for integration)
+  - Quality: Build successful (0 errors), no regressions, all formatting checks passed
+  - Commits: `36e5434` (initial implementation), `acf53f8` (code review fixes)
+  - Merged: To sprint branch on 7 November 2025
+
 #### UI/UX Design System Enhancement Sprint (November 2025)
 - **Branch:** `feature/ui-enhancement-main-sprint`
 - **Sprint Plan:** `docs/sprints/ui-enhancement-PLAN.md`
