@@ -341,7 +341,7 @@ hover:shadow-lg transition-shadow duration-200
 
 **Typography Pattern:**
 - Page titles: `heading-1` (text-3xl font-bold tracking-tight)
-- Section headers: `heading-2` (text-xl font-semibold text-foreground)
+- Section headers: `heading-2` (text-2xl font-semibold text-foreground)
 - Captions/metadata: `caption-text` (text-sm text-muted-foreground)
 - Body text: `body-text` (text-sm text-foreground)
 
