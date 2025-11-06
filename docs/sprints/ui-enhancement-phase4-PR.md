@@ -48,16 +48,15 @@ Implemented WCAG 2.1 AA accessibility enhancements with focus on motion preferen
   *:focus-visible {
     @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
   }
-  
-  button:focus-visible,
-  a:focus-visible,
-  input:focus-visible,
-  textarea:focus-visible,
-  select:focus-visible {
-    @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
-  }
 }
 ```
+
+**Code Review Update (Commit 2aecc14):**
+- ✅ Removed redundant element-specific focus-visible selectors
+- Universal `*:focus-visible` already applies to all interactive elements
+- Simplified from 10 lines to 4 lines (9 lines removed)
+- Improved maintainability following DRY principle
+- Same functionality, cleaner code
 
 **Benefits:**
 - Clear visual indicators for keyboard navigation
