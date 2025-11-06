@@ -4,9 +4,18 @@ import * as React from 'react';
 import { Card as FlowbiteCard } from 'flowbite-react';
 import { cn } from '@/lib/utils';
 
-// Maintain exact same API as current Card component
+/**
+ * Enhanced Card component with subtle elevation and hover states.
+ * Uses Tailwind's shadow scale (ADR-002) for consistent depth.
+ */
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => <FlowbiteCard ref={ref} className={cn(className)} {...props} />
+  ({ className, ...props }, ref) => (
+    <FlowbiteCard
+      ref={ref}
+      className={cn('shadow-sm hover:shadow-md transition-shadow duration-200', className)}
+      {...props}
+    />
+  )
 );
 Card.displayName = 'Card';
 
