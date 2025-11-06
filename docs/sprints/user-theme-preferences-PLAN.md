@@ -13,7 +13,13 @@ Implement a comprehensive user theme preference system that allows users to sele
 
 ### Context
 
-The application currently supports light/dark mode based on system preferences only. Based on the interactive theme demo (`docs/modal-theme-preview/index.html`), we've identified 4 viable theme presets (Original, Vibrant Blue, Teal Accent, Warm Accent) that can be offered as user preferences. This sprint will make theme selection a first-class feature accessible through user settings.
+The application currently supports light/dark mode based on system preferences only. Based on the **interactive theme demo** (`docs/modal-theme-preview/index.html`), we've identified 4 viable theme presets (Original, Vibrant Blue, Teal Accent, Warm Accent) that can be offered as user preferences. This sprint will make theme selection a first-class feature accessible through user settings.
+
+**🎨 Interactive Demo:** The theme demo page includes a fully functional prototype with:
+- All 4 theme presets working in light and dark modes
+- Component showcase (buttons, forms, cards, tables, modals)
+- Live theme switching without page reload
+- Visual proof that themes work correctly with the design system
 
 ---
 
@@ -84,6 +90,7 @@ The application currently supports light/dark mode based on system preferences o
 - Each preset defines both light and dark mode color tokens
 - Ensure backward compatibility with existing design system
 - Test all presets with component library
+- **Reference implementation:** `docs/modal-theme-preview/index.html` contains working CSS for all presets
 
 **CSS Structure:**
 ```css
@@ -589,7 +596,8 @@ These are NOT in scope for this sprint but worth documenting:
 ## References
 
 **Relevant Files:**
-- `docs/modal-theme-preview/index.html` - Theme demo (proof of concept)
+- `docs/modal-theme-preview/index.html` - **Interactive theme demo** (proof of concept with all 4 presets)
+- `docs/modal-theme-preview/README.md` - Demo usage instructions
 - `docs/DESIGN_SYSTEM.md` - Design system documentation
 - `docs/CODING_STANDARDS.md` - Code quality standards
 - `web/app/globals.css` - CSS custom properties (authoritative)
