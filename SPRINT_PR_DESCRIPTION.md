@@ -1,4 +1,4 @@
-# Sprint: UI/UX Design System Enhancement (Phases 0-5)
+# Sprint: UI/UX Design System Enhancement (Phases 0-6)
 
 ## 📋 Overview
 
@@ -6,7 +6,7 @@
 **Target Branch:** `main`  
 **Sprint Type:** Design System Enhancement  
 **Duration:** 13-16 days (estimated), Completed: November 2025  
-**Total Phases:** 6 (Phases 0-5)  
+**Total Phases:** 7 (Phases 0-6)  
 **Design System Maturity:** Level 2 → Level 3
 
 ---
@@ -271,6 +271,49 @@ Practical UI implementation guidelines with 6 subsections:
 
 ---
 
+### Phase 6: Source-of-Truth Documentation Alignment
+**PR:** [#TBD]  
+**Status:** ✅ Merged to sprint branch  
+**Duration:** 2 hours
+
+**Deliverables:**
+
+#### 1. ARCHITECTURE.md - Section 2.3: UI/Design System Architecture (~150 lines)
+Comprehensive architecture documentation for the design system:
+
+- **Technology Stack:** Tailwind CSS 3.4+, Flowbite React 0.12.10, design token system
+- **Design Token System:** 50+ CSS variables in HSL color space, semantic naming, dark mode support
+- **Component Library Architecture:** 13 wrapper components, wrapper pattern benefits, component design principles
+- **Accessibility Architecture:** WCAG 2.1 AA compliance strategy, focus management, color contrast, motion preferences, semantic HTML, keyboard navigation
+- **Design System Maturity:** Level 3 documentation with references to DESIGN_SYSTEM.md and CODING_STANDARDS.md
+
+#### 2. FUNCTIONAL_REQUIREMENTS.md - Section A.0: UI/Design System Requirements (~165 lines)
+Detailed functional requirements for the UI/design system:
+
+- **FR-UI-001 to FR-UI-030:** Design token system (CSS variables, HSL color space, border-radius, shadows, typography, spacing, dark mode, component library integration)
+- **FR-A11Y-001 to FR-A11Y-035:** WCAG 2.1 AA accessibility requirements (focus indicators, color contrast 4.5:1/3:1, keyboard navigation, screen reader support, semantic HTML, motion preferences, touch targets 44x44px)
+- **FR-UX-001 to FR-UX-029:** User experience requirements (interactive feedback, loading states, error states, success feedback, responsive design, consistency)
+
+#### 3. Accuracy Corrections (Commit 73ea2a9)
+Fixed documentation inconsistencies to match actual implementation:
+
+- **Border-radius tokens:** Corrected from `sm (0.125rem)` to `sm (0.375rem)`, added `xl (1rem)`
+- **Component count:** Corrected from "20+ components" to "13 components" (verified against ui-flowbite/ directory)
+- **Typography classes:** Corrected from "11 classes" to "10 classes" (heading-display through heading-5, body-text, body-text-sm, caption-text, caption-text-xs)
+- **Size references:** Changed from pixel values to Tailwind class references for consistency
+
+**Purpose:**  
+Ensures future developers have complete architectural context and functional requirements for the design system implemented in Phases 0-5. Provides traceability for design decisions and accessibility compliance.
+
+**Validation:**
+- All values verified against actual implementation (globals.css, ui-flowbite/ directory)
+- Zero code changes - documentation-only updates
+- No regression risk
+
+**Commits:** be5be47, 73ea2a9
+
+---
+
 ## 📊 Overall Sprint Metrics
 
 ### Code Quality
@@ -294,9 +337,10 @@ Practical UI implementation guidelines with 6 subsections:
 
 ### Documentation
 - **New Files Created:** 2 major docs (DESIGN_SYSTEM.md, Phase PRs)
-- **Files Updated:** 1 major doc (CODING_STANDARDS.md)
-- **Total Lines Added:** 1,300+ lines of documentation
+- **Files Updated:** 3 major docs (CODING_STANDARDS.md, ARCHITECTURE.md, FUNCTIONAL_REQUIREMENTS.md)
+- **Total Lines Added:** 1,630+ lines of documentation (Phase 5: 1,300+, Phase 6: 330+)
 - **Cross-References:** All docs linked for easy navigation
+- **Source-of-Truth Alignment:** Complete architectural and functional requirements documentation
 
 ### Design System Impact
 - **Pages Enhanced:** 20+ pages with consistent design patterns
@@ -317,6 +361,7 @@ All phase PRs merge into this sprint branch:
 4. **Phase 3:** [PR #182](https://github.com/jon-salud/church-mgmt-app/pull/182) - Page-Level Refinements
 5. **Phase 4:** [PR #184](https://github.com/jon-salud/church-mgmt-app/pull/184) - Accessibility & Motion Preferences
 6. **Phase 5:** [PR #TBD] - Documentation & Testing
+7. **Phase 6:** [PR #TBD] - Source-of-Truth Documentation Alignment
 
 **Sprint Plan:** `docs/sprints/ui-enhancement-PLAN.md`
 
