@@ -272,9 +272,12 @@ Practical UI implementation guidelines with 6 subsections:
 ---
 
 ### Phase 6: Source-of-Truth Documentation Alignment
-**PR:** [#TBD]  
+**PR:** [#TBD] *(will be updated after PR creation)*  
 **Status:** ✅ Merged to sprint branch  
 **Duration:** 2 hours
+
+**Note on Sprint Protocol:**  
+Phase 6 was not included in the original sprint plan (`docs/sprints/ui-enhancement-PLAN.md`), which defined Phases 0-5. This phase emerged during Phase 5 completion when gaps were identified in source-of-truth documentation (ARCHITECTURE.md and FUNCTIONAL_REQUIREMENTS.md lacked design system sections). Per Sprint & Phase Management Protocol Section 1.1, unplanned phases should be either added to the sprint plan or documented as backlog items. However, given Phase 6's documentation-only nature (zero code changes, zero regression risk), and its direct dependency on Phase 5 deliverables, it was implemented as a documentation completion task rather than deferring to a future sprint. This deviation from protocol is documented here for transparency and retrospective discussion.
 
 **Deliverables:**
 
@@ -301,6 +304,18 @@ Fixed documentation inconsistencies to match actual implementation:
 - **Component count:** Corrected from "20+ components" to "13 components" (verified against ui-flowbite/ directory)
 - **Typography classes:** Corrected from "11 classes" to "10 classes" (heading-display through heading-5, body-text, body-text-sm, caption-text, caption-text-xs)
 - **Size references:** Changed from pixel values to Tailwind class references for consistency
+
+**Root Cause & Prevention:**  
+The original documentation in Phase 5 (DESIGN_SYSTEM.md) was written based on design plans and early implementation estimates rather than final verified code inspection. This led to discrepancies:
+- Component count (20+ vs actual 13) was based on pre-Flowbite migration component count
+- Typography class count (11 vs actual 10) included a non-existent class from early drafts
+- Border-radius tokens used incorrect values from Tailwind defaults rather than actual globals.css values
+
+To prevent similar issues in future sprints:
+1. All documentation counts and values must be verified directly against implemented code (e.g., `ls web/components/ui-flowbite/`, `grep` in globals.css) before finalizing documentation
+2. Documentation updates will include a verification checklist in phase plans
+3. Final sprint review will include a documentation accuracy audit comparing docs to actual code
+4. Add documentation verification as a required acceptance criterion in Phase 5 of future sprints
 
 **Purpose:**  
 Ensures future developers have complete architectural context and functional requirements for the design system implemented in Phases 0-5. Provides traceability for design decisions and accessibility compliance.
@@ -360,8 +375,8 @@ All phase PRs merge into this sprint branch:
 3. **Phase 2:** [PR #179](https://github.com/jon-salud/church-mgmt-app/pull/179) - Component Library Enhancement
 4. **Phase 3:** [PR #182](https://github.com/jon-salud/church-mgmt-app/pull/182) - Page-Level Refinements
 5. **Phase 4:** [PR #184](https://github.com/jon-salud/church-mgmt-app/pull/184) - Accessibility & Motion Preferences
-6. **Phase 5:** [PR #TBD] - Documentation & Testing
-7. **Phase 6:** [PR #TBD] - Source-of-Truth Documentation Alignment
+6. **Phase 5:** [PR #TBD] *(will be updated after PR creation)* - Documentation & Testing
+7. **Phase 6:** [PR #TBD] *(will be updated after PR creation)* - Source-of-Truth Documentation Alignment
 
 **Sprint Plan:** `docs/sprints/ui-enhancement-PLAN.md`
 
