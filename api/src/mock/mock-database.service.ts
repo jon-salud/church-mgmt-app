@@ -133,6 +133,9 @@ interface UserCreateInput {
   allergiesOrMedicalNotes?: string;
   parentalConsentOnFile?: boolean;
   pastoralNotes?: string;
+  // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
+  themePreference?: string;
+  themeDarkMode?: boolean;
 }
 
 interface UserUpdateInput {
@@ -166,6 +169,9 @@ interface UserUpdateInput {
   allergiesOrMedicalNotes?: string;
   parentalConsentOnFile?: boolean;
   pastoralNotes?: string;
+  // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
+  themePreference?: string;
+  themeDarkMode?: boolean;
 }
 
 interface UserDeleteInput {
