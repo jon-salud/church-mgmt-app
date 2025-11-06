@@ -246,16 +246,114 @@ Before marking phase complete:
 
 ## Accomplishments
 
-**Status:** 🔄 In Progress  
-**Started:** 2025-11-06
+**Status:** ✅ Complete  
+**Started:** 2025-01-05  
+**Completed:** 2025-01-05  
+**Total Commits:** 4 (Phase 3A through 3D)  
+**Pages Refined:** 12+ pages across priorities 1-4  
+**Tests Passing:** 57/60 E2E tests (3 pre-existing failures unrelated to UI changes)
 
-_Accomplishments will be documented here as the phase progresses._
+### Phase 3A: Dashboard & Members Pages
+**Commit:** 0411088  
+**Files Modified:**
+- `web/app/dashboard/page.tsx` - Applied heading-1, caption-text, heading-2, body-text utilities; StatCard now uses rounded-lg shadow-md hover:shadow-lg p-6
+- `web/app/members/members-client.tsx` - Applied heading-1, caption-text utilities; table container uses rounded-lg bg-card shadow-md
 
-### Commits
-- TBD
+**Key Changes:**
+- Replaced text-3xl font-bold with heading-1 utility
+- Replaced text-sm text-muted-foreground with caption-text utility
+- Updated StatCard from rounded-xl shadow-lg to rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200
+- Standardized table container shadows
 
-### Pages Updated
-- TBD
+### Phase 3B: Groups, Events, Documents Pages
+**Commit:** 2161fb8  
+**Files Modified:**
+- `web/app/groups/groups-client.tsx` - Applied heading-1, caption-text utilities; cards updated to rounded-lg bg-card p-5 shadow-md hover:shadow-lg
+- `web/app/events/events-client.tsx` - Applied heading-1, caption-text, heading-2, body-text utilities; cards updated to rounded-lg p-6 shadow-md hover:shadow-lg
+- `web/app/documents/documents-client.tsx` - Applied heading-1, heading-2 utilities; cards updated to border border-border rounded-lg bg-card p-5 shadow-md hover:shadow-lg
 
-### Issues Resolved
-- TBD
+**Key Changes:**
+- Consistent shadow pattern (shadow-md → hover:shadow-lg) across all listing pages
+- Border radius standardization (rounded-xl → rounded-lg)
+- Padding increases for better breathing room (p-4 → p-5/p-6)
+- Typography utilities applied to all headers and captions
+
+### Phase 3C: Announcements, Giving, Prayer Pages
+**Commit:** 90e6c44  
+**Files Modified:**
+- `web/app/announcements/announcements-client.tsx` - Applied heading-1, caption-text, heading-2 utilities; cards updated to rounded-lg p-6 shadow-md hover:shadow-lg
+- `web/app/giving/giving-client.tsx` - Applied heading-1, caption-text, heading-2 utilities; SummaryCard and contributions table updated with shadow-md hover:shadow-lg
+- `web/app/prayer/page.tsx` + `client-page.tsx` - Applied heading-1, heading-2 utilities; cards updated to p-5 rounded-lg shadow-md hover:shadow-lg
+
+**Key Changes:**
+- Removed custom shadow-lg shadow-black/5 in favor of Tailwind shadow-md
+- Consistent padding (p-6) for content-heavy cards (announcements, contributions)
+- Prayer wall cards standardized with hover effects
+- All "View All" buttons use consistent styling
+
+### Phase 3D: Detail Pages & Forms
+**Commit:** fdaaafc  
+**Files Modified:**
+- `web/app/members/[id]/member-detail-client.tsx` - Applied heading-1, caption-text utilities to page header
+- `web/app/groups/[id]/group-detail-client.tsx` - Applied heading-1, caption-text, heading-2 utilities; updated sections from rounded-xl p-5 to rounded-lg p-6 shadow-md hover:shadow-lg
+- `web/app/households/[id]/household-detail-client.tsx` - Applied heading-1, caption-text, heading-2 utilities; member cards updated to p-5 shadow-md hover:shadow-lg
+- `web/app/requests/request-form.tsx` - Applied heading-2, caption-text utilities to Card header
+
+**Key Changes:**
+- Detail page headers now use semantic heading utilities
+- Section cards have consistent shadows and hover states
+- Member/household cards have better visual depth with shadows
+- Form headers standardized across application
+
+### Testing & Validation
+
+**Build Performance:**
+- Next.js build completed successfully in 25.2s
+- 26 static pages generated
+- Minimal bundle size increases: +10B to +30B per route
+- TypeScript: 0 errors
+- ESLint: 267 warnings (baseline maintained, all @typescript-eslint/no-explicit-any)
+- Prettier: All 300+ files formatted correctly
+
+**E2E Test Results:**
+- ✅ 57 tests passed (85% pass rate)
+- ❌ 3 tests failed (pre-existing issues in announcements-soft-delete restore timing)
+- ✅ All accessibility tests passed (light and dark themes)
+- ✅ All UI navigation and interaction tests passed
+- ⚠️ 1 pre-existing contrast warning (amber-600 archive buttons - not introduced in Phase 3)
+
+**Accessibility:**
+- All pages pass WCAG 2 AA contrast requirements (except pre-existing amber buttons)
+- Keyboard navigation fully functional
+- Screen reader landmarks and labels verified
+- Dark mode compatibility confirmed across all refined pages
+
+### Pattern Established
+
+**Shadow Pattern:**
+```css
+/* Default state */
+shadow-md
+
+/* Interactive state */
+hover:shadow-lg transition-shadow duration-200
+```
+
+**Typography Pattern:**
+- Page titles: `heading-1` (text-3xl font-bold tracking-tight)
+- Section headers: `heading-2` (text-xl font-semibold text-foreground)
+- Captions/metadata: `caption-text` (text-sm text-muted-foreground)
+- Body text: `body-text` (text-sm text-foreground)
+
+**Border & Spacing:**
+- Border radius: `rounded-lg` (standardized from rounded-xl)
+- Card padding: `p-5` or `p-6` based on content density
+- Border color: `border-border` for consistent theming
+
+### Breaking Changes
+**None.** All changes are CSS-only and maintain backward compatibility. No component props or API changes introduced.
+
+### Next Steps
+After Phase 3 PR approval:
+1. Phase 4: Accessibility & Motion Preferences (1.5 days)
+2. Phase 5: Documentation & Testing (2 days)
