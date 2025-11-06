@@ -44,7 +44,131 @@ church clients and the system owner.
 - **Scope:** Contains features for observability, client resource management, billing/subscription
   management, and platform-wide notifications.
 
-### 2.3. Justification for Separation
+### 2.3. UI/Design System Architecture
+
+The frontend applications implement a comprehensive design system built on modern web standards with accessibility and consistency as core principles.
+
+#### 2.3.1. Technology Stack
+
+- **Styling Framework:** Tailwind CSS 3.4+ - Utility-first CSS framework providing the foundation for all styling
+- **Component Library:** Flowbite React 0.12.10 - React component library with 13 wrapper components in `web/components/ui-flowbite/`
+- **Design Token System:** CSS custom properties in HSL color space defined in `web/app/globals.css` (50+ tokens)
+- **Icon Library:** Lucide React 0.546.0 - Consistent iconography across the application
+- **Utility Libraries:** clsx, tailwind-merge, class-variance-authority for dynamic styling and component variants
+
+#### 2.3.2. Design Token System
+
+The design system uses CSS custom properties (CSS variables) for all design tokens, enabling theme consistency and dark mode support:
+
+- **Color Tokens:** Semantic color system with HSL values
+  - Background/foreground pairs: `--background`, `--foreground`, `--card`, `--card-foreground`
+  - Semantic colors: `--primary`, `--secondary`, `--accent`, `--muted`, `--destructive`
+  - Interactive states: `--ring` (focus), `--border`, `--input`
+  - Popover/modal: `--popover`, `--popover-foreground`
+- **Shadow Scale:** Tailwind's built-in shadow utilities (`shadow-sm` through `shadow-2xl`)
+- **Border Radius:** Five-level scale from `--radius-sm` (0.375rem) to `--radius-full` (9999px)
+- **Typography Scale:** Ten utility classes from `.heading-display` (text-4xl) to `.caption-text-xs` (text-xs)
+- **Spacing:** Tailwind's default spacing scale (0.25rem base unit)
+
+**Dark Mode Implementation:**
+- System preference detection with manual toggle override
+- HSL color space enables precise lightness adjustments between themes
+- Background/card contrast: 8% lightness difference for visual hierarchy
+- All color tokens have light and dark mode variants
+
+#### 2.3.3. Component Library Architecture
+
+All UI components are located in `web/components/ui-flowbite/` and follow a wrapper pattern:
+
+**Wrapper Pattern Benefits:**
+- Maintains consistent API across component library migrations
+- Encapsulates Flowbite-specific implementation details
+- Enables gradual component enhancements without breaking changes
+- Provides type-safe React component interfaces
+
+**Core Components (13 total):**
+- **Button:** 5 variants (default, outline, secondary, ghost, destructive) mapped to Flowbite color system
+- **Card:** Elevation system using Tailwind shadows (sm: resting, md: default, lg: hover, xl: modal)
+- **Input/Textarea:** Error state support, focus indicators, consistent styling
+- **Form Components:** Select, Checkbox, Label with WCAG-compliant markup
+- **Overlay Components:** Dialog, Modal, DropdownMenu with focus trap and keyboard navigation
+- **Data Display:** Table, Progress with responsive design
+- **Layout:** PageHeader for consistent page structure
+
+**Component Design Principles:**
+- Design tokens over hardcoded values
+- Backward compatibility maintained through wrapper API
+- TypeScript strict mode for type safety
+- Composition patterns for flexibility
+- Progressive enhancement for advanced features
+
+#### 2.3.4. Accessibility Architecture
+
+WCAG 2.1 AA compliance is achieved through systematic implementation:
+
+**Focus Management:**
+- Universal focus-visible styling: 2px solid ring with 2px offset
+- Custom ring color via `--ring` CSS variable
+- Focus trap in modals and overlays
+- Skip links for keyboard navigation
+
+**Color Contrast:**
+- Minimum 4.5:1 ratio for normal text
+- Minimum 3:1 ratio for large text (18pt+)
+- Verified against both light and dark mode backgrounds
+- Design token system ensures compliant color pairings
+
+**Motion Preferences:**
+- `prefers-reduced-motion` media query support
+- Disables animations and transitions for users who prefer reduced motion
+- Fallback to instant state changes
+
+**Semantic HTML:**
+- Proper heading hierarchy (h1 → h6)
+- ARIA labels on icon-only buttons
+- ARIA live regions for dynamic content
+- Landmark regions for screen reader navigation
+
+**Keyboard Navigation:**
+- Full keyboard access to all interactive elements
+- Logical tab order across forms and pages
+- Escape key support for closing modals/dropdowns
+- Enter/Space activation for custom controls
+
+#### 2.3.5. Design System Documentation
+
+Comprehensive documentation ensures developer adoption and consistency:
+
+- **DESIGN_SYSTEM.md:** Authoritative design system reference (800+ lines)
+  - Complete token reference with code examples
+  - Component usage guidelines and variants
+  - Accessibility requirements and patterns
+  - Migration guide for adopting design system
+- **CODING_STANDARDS.md Section 5.6:** Practical implementation guidelines (276 lines)
+  - Design token usage rules
+  - Component variant selection guide
+  - Layout patterns and code examples
+  - Testing checklists for UI changes
+  - Common mistakes and best practices
+
+#### 2.3.6. Design System Maturity
+
+Current maturity level: **Level 3** (Documented Design System)
+- ✅ Consistent component library with defined patterns
+- ✅ Comprehensive documentation for developers
+- ✅ Design token system with semantic naming
+- ✅ Accessibility compliance verified
+- ⏳ Future Level 4: Automated token generation, Storybook, visual regression testing
+
+**References:**
+- Design System Documentation: `docs/DESIGN_SYSTEM.md`
+- Coding Standards: `docs/CODING_STANDARDS.md` (Section 5.6)
+- Component Library: `web/components/ui-flowbite/`
+- Design Tokens: `web/app/globals.css`
+- Tailwind Configuration: `web/tailwind.config.ts`
+- Flowbite Migration: `docs/FLOWBITE_MIGRATION.md`
+
+### 2.4. Justification for Separation
 
 This dual-application approach was chosen for several key reasons:
 
