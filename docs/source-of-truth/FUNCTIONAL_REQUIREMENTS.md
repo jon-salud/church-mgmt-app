@@ -18,6 +18,198 @@ This document details the functional requirements for the Church Management Appl
 
 ---
 
+## A.0. UI/Design System Requirements
+
+These requirements establish the foundational user interface design system that applies across all features and pages in the application.
+
+### A.0.1. Design Token System
+
+- **FR-UI-001:** The system shall use CSS custom properties (CSS variables) for all color tokens to enable consistent theming and dark mode support.
+- **FR-UI-002:** Color tokens shall use HSL color space to enable precise lightness adjustments between light and dark themes.
+- **FR-UI-003:** Background and card colors shall maintain a minimum 2% lightness difference for visual hierarchy and depth.
+- **FR-UI-004:** All semantic colors shall have both light and dark mode variants defined in `web/app/globals.css`.
+- **FR-UI-005:** The system shall support five border-radius tokens: sm (0.125rem), default (0.375rem), md (0.5rem), lg (1rem), and full (9999px).
+
+### A.0.2. Component Variants
+
+- **FR-UI-006:** Button components shall support five distinct variants:
+  - `default` - Primary action button (blue background)
+  - `outline` - Secondary action with border only
+  - `secondary` - Muted action (gray background)
+  - `ghost` - Transparent background with hover state
+  - `destructive` - Dangerous action (red background)
+- **FR-UI-007:** Only one primary (default) button shall appear per page section or form.
+- **FR-UI-008:** Card components shall support three elevation levels using Tailwind shadow utilities:
+  - `shadow-sm` - Subtle depth for resting cards
+  - `shadow-md` - Default card elevation
+  - `shadow-lg` - Elevated state for hover or emphasis
+- **FR-UI-009:** Modal and overlay components shall use `shadow-xl` for maximum visual depth.
+- **FR-UI-010:** Input and Textarea components shall support an optional `error` prop that displays validation error states using Flowbite's `color='failure'` styling.
+
+### A.0.3. Typography System
+
+- **FR-UI-011:** The system shall provide eleven typography utility classes spanning from `.heading-display` (72px) to `.caption-text-xs` (10px).
+- **FR-UI-012:** Typography utilities shall include:
+  - Display headings: `heading-display`, `heading-1`, `heading-2`, `heading-3`
+  - Body text: `body-text-lg`, `body-text`, `body-text-sm`
+  - Labels: `label-text`, `label-text-sm`
+  - Captions: `caption-text`, `caption-text-xs`
+- **FR-UI-013:** All typography classes shall be defined in `web/app/globals.css` with consistent line-height ratios.
+
+### A.0.4. Shadow System
+
+- **FR-UI-014:** The system shall use Tailwind's built-in shadow scale exclusively (no custom CSS shadow variables).
+- **FR-UI-015:** Shadow utilities shall be applied according to component elevation hierarchy:
+  - Buttons: `shadow-sm`
+  - Cards (resting): `shadow-md`
+  - Cards (hover): `shadow-lg`
+  - Modals/overlays: `shadow-xl`
+  - Large dialogs: `shadow-2xl`
+- **FR-UI-016:** Interactive elements shall include `transition-shadow duration-200` for smooth elevation changes.
+
+### A.0.5. Dark Mode
+
+- **FR-UI-017:** The application shall detect and respect the user's system-preferred color scheme (light or dark).
+- **FR-UI-018:** Users shall be able to manually toggle between light and dark modes, overriding system preference.
+- **FR-UI-019:** Dark mode shall be implemented using Tailwind's `dark:` class variants with `darkMode: 'class'` configuration.
+- **FR-UI-020:** All design tokens shall have corresponding dark mode values that maintain WCAG 2.1 AA color contrast requirements.
+- **FR-UI-021:** Dark mode background/card contrast shall be a minimum 8% lightness difference for visual hierarchy.
+
+### A.0.6. Component Library Integration
+
+- **FR-UI-022:** All UI components shall be located in `web/components/ui-flowbite/` directory.
+- **FR-UI-023:** Components shall wrap Flowbite React components while maintaining a consistent API across library migrations.
+- **FR-UI-024:** Component wrappers shall accept all standard HTML attributes for their respective elements via props spreading.
+- **FR-UI-025:** Components shall use the `cn()` utility function for merging Tailwind classes to allow className overrides.
+- **FR-UI-026:** TypeScript strict mode shall be enabled for all component files with no `any` types in public APIs.
+
+### A.0.7. Spacing and Layout
+
+- **FR-UI-027:** The system shall use Tailwind's default spacing scale (0.25rem base unit) for all spacing values.
+- **FR-UI-028:** Standard spacing patterns shall be:
+  - Card padding: `p-6` (1.5rem) for standard content, `p-4` (1rem) for compact layouts
+  - Section spacing: `space-y-6` for standard vertical rhythm, `space-y-4` for tighter groupings
+  - Form field spacing: `space-y-4` between fields, `gap-4` for inline field groups
+- **FR-UI-029:** Container widths shall use Tailwind's responsive container classes with appropriate breakpoints.
+- **FR-UI-030:** Grid layouts shall use Tailwind's grid utilities with responsive column counts (e.g., `grid-cols-1 md:grid-cols-2 lg:grid-cols-3`).
+
+---
+
+## A.0.8. Accessibility (WCAG 2.1 AA Compliance)
+
+These requirements ensure the application meets WCAG 2.1 Level AA accessibility standards for inclusive user experience.
+
+### A.0.8.1. Focus Indicators
+
+- **FR-A11Y-001:** All interactive elements shall display a visible focus indicator when focused via keyboard navigation.
+- **FR-A11Y-002:** The universal focus indicator shall be a 2px solid ring using the `--ring` CSS variable with a 2px offset.
+- **FR-A11Y-003:** Focus indicators shall be visible in both light and dark modes with sufficient contrast against all backgrounds.
+- **FR-A11Y-004:** Custom interactive components shall include explicit focus states using `focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2`.
+- **FR-A11Y-005:** Focus shall never be completely hidden or removed from interactive elements.
+
+### A.0.8.2. Color Contrast
+
+- **FR-A11Y-006:** Normal text (under 18pt or under 14pt bold) shall have a minimum contrast ratio of 4.5:1 against its background.
+- **FR-A11Y-007:** Large text (18pt and larger, or 14pt bold and larger) shall have a minimum contrast ratio of 3:1 against its background.
+- **FR-A11Y-008:** All design token color pairings shall be verified for WCAG 2.1 AA contrast compliance in both light and dark modes.
+- **FR-A11Y-009:** UI components in disabled states shall maintain a minimum contrast ratio of 3:1 to remain perceivable.
+- **FR-A11Y-010:** Interactive elements shall not rely on color alone to convey information (e.g., error states shall include icons and text).
+
+### A.0.8.3. Keyboard Navigation
+
+- **FR-A11Y-011:** All interactive functionality shall be operable through keyboard interface without requiring specific timings.
+- **FR-A11Y-012:** Tab order shall follow a logical sequence matching the visual layout of the page.
+- **FR-A11Y-013:** Modal dialogs shall trap focus within the modal when open, preventing tab navigation to background content.
+- **FR-A11Y-014:** Modal dialogs shall return focus to the triggering element upon closing.
+- **FR-A11Y-015:** Dropdown menus shall be navigable using arrow keys, with Enter/Space to select and Escape to close.
+- **FR-A11Y-016:** Skip links shall be provided to allow keyboard users to bypass repetitive navigation and jump to main content.
+- **FR-A11Y-017:** Custom controls (e.g., date pickers, toggles) shall respond to standard keyboard interactions (Enter, Space, Arrow keys, Escape).
+
+### A.0.8.4. Screen Reader Support
+
+- **FR-A11Y-018:** Icon-only buttons shall include ARIA labels to provide text equivalents for screen reader users.
+- **FR-A11Y-019:** Form inputs shall be associated with their labels using explicit `htmlFor`/`id` relationships or implicit nesting.
+- **FR-A11Y-020:** Error messages shall be associated with their form fields using `aria-describedby`.
+- **FR-A11Y-021:** Dynamic content updates (e.g., success messages, loading states) shall use ARIA live regions (`aria-live="polite"` or `aria-live="assertive"`).
+- **FR-A11Y-022:** Images shall include descriptive `alt` text; decorative images shall use empty alt attributes (`alt=""`).
+- **FR-A11Y-023:** Complex interactive components (e.g., tabs, accordions) shall use appropriate ARIA roles and states.
+
+### A.0.8.5. Semantic HTML
+
+- **FR-A11Y-024:** Pages shall use a proper heading hierarchy (h1, h2, h3, etc.) without skipping levels.
+- **FR-A11Y-025:** Each page shall have exactly one h1 element representing the main page title.
+- **FR-A11Y-026:** Landmark regions shall be used to structure page layout: `<header>`, `<nav>`, `<main>`, `<footer>`, `<aside>`.
+- **FR-A11Y-027:** Lists shall use appropriate semantic markup (`<ul>`, `<ol>`, `<dl>`) when presenting list content.
+- **FR-A11Y-028:** Tables shall include `<thead>`, `<tbody>`, and `<th>` elements with `scope` attributes for data tables.
+
+### A.0.8.6. Motion Preferences
+
+- **FR-A11Y-029:** The system shall respect the user's `prefers-reduced-motion` operating system setting.
+- **FR-A11Y-030:** When `prefers-reduced-motion: reduce` is detected, all animations and transitions shall be disabled or reduced to minimal duration (0.01ms).
+- **FR-A11Y-031:** Essential motion (e.g., indicating loading states) shall use non-motion alternatives when motion is reduced (e.g., opacity changes instead of slide transitions).
+- **FR-A11Y-032:** Decorative animations shall be disabled entirely when reduced motion is preferred.
+
+### A.0.8.7. Touch Target Size
+
+- **FR-A11Y-033:** All interactive elements (buttons, links, form controls) shall have a minimum touch target size of 44x44 CSS pixels.
+- **FR-A11Y-034:** If visual size is smaller than 44x44px, clickable areas shall be expanded using padding or pseudo-elements.
+- **FR-A11Y-035:** Adjacent interactive elements shall maintain adequate spacing to prevent accidental activation.
+
+---
+
+## A.0.9. User Experience (UX) Requirements
+
+These requirements define expected user experience patterns and interactive behaviors across the application.
+
+### A.0.9.1. Interactive Feedback
+
+- **FR-UX-001:** Interactive elements shall provide visual feedback for all user actions (hover, focus, active states).
+- **FR-UX-002:** Hover states shall be applied to clickable cards, buttons, and links using appropriate visual changes (shadow elevation, background color, or opacity).
+- **FR-UX-003:** Clickable elements shall display `cursor-pointer` to indicate interactivity.
+- **FR-UX-004:** Active state feedback shall be provided when buttons are pressed (e.g., slight scale or brightness change).
+- **FR-UX-005:** Disabled elements shall be visually distinct (reduced opacity, grayscale) and shall not respond to pointer events.
+
+### A.0.9.2. Loading States
+
+- **FR-UX-006:** Asynchronous operations (e.g., form submissions, data fetches) shall display loading indicators to provide feedback.
+- **FR-UX-007:** Loading states shall include either a spinner component or skeleton screens for content placeholders.
+- **FR-UX-008:** Buttons performing async actions shall display a loading spinner and be disabled during operation.
+- **FR-UX-009:** Page-level loading shall use a top-loading bar or full-page skeleton to indicate progress.
+- **FR-UX-010:** Loading indicators shall include accessible labels for screen reader users (e.g., `aria-label="Loading..."`).
+
+### A.0.9.3. Error States
+
+- **FR-UX-011:** Form validation errors shall be displayed inline below the relevant input field.
+- **FR-UX-012:** Error messages shall be clear, specific, and actionable (e.g., "Email is required" not "Invalid input").
+- **FR-UX-013:** Form inputs with errors shall display error styling (red border, error icon) and associated error text.
+- **FR-UX-014:** Global errors (e.g., network failures) shall be displayed in a toast notification or alert banner.
+- **FR-UX-015:** Error states shall persist until the user takes corrective action or dismisses the error.
+
+### A.0.9.4. Success Feedback
+
+- **FR-UX-016:** Successful operations (e.g., form submissions, record creation) shall display confirmation messages.
+- **FR-UX-017:** Success messages shall use toast notifications or inline alerts with appropriate success styling (green, checkmark icon).
+- **FR-UX-018:** Success messages shall auto-dismiss after 5 seconds or allow manual dismissal.
+- **FR-UX-019:** Critical success actions (e.g., account deletion) shall include persistent confirmation and navigation to appropriate next screen.
+
+### A.0.9.5. Responsive Design
+
+- **FR-UX-020:** The application shall be fully functional and visually appropriate on mobile (320px+), tablet (768px+), and desktop (1024px+) viewports.
+- **FR-UX-021:** Navigation shall adapt to screen size: mobile hamburger menu, tablet/desktop sidebar.
+- **FR-UX-022:** Data tables shall be responsive, using horizontal scroll on mobile or card-based layouts where appropriate.
+- **FR-UX-023:** Form layouts shall stack vertically on mobile and use grid layouts on larger screens.
+- **FR-UX-024:** Touch interactions shall be optimized for mobile devices (44px minimum touch targets, swipe gestures where appropriate).
+
+### A.0.9.6. Consistency
+
+- **FR-UX-025:** All pages shall use consistent layout patterns: PageHeader component for page titles and actions.
+- **FR-UX-026:** Similar actions shall use consistent button variants across the application (e.g., all delete actions use destructive variant).
+- **FR-UX-027:** Spacing, typography, and color usage shall follow the design system guidelines in `docs/DESIGN_SYSTEM.md`.
+- **FR-UX-028:** Iconography shall be consistent across the application using the Lucide React icon library exclusively.
+- **FR-UX-029:** Empty states shall provide clear messaging and actionable next steps (e.g., "No events yet. Create your first event.").
+
+---
+
 ## A.1. Onboarding Wizard
 
 This feature guides a new Church Administrator through the initial setup of their account. It is
