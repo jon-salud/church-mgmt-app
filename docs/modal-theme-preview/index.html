@@ -1,0 +1,1010 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Modal Theme Preview — Church Management App</title>
+    <style>
+      /* Design tokens (subset from DESIGN_SYSTEM.md) */
+      :root {
+        --background: 210 20% 98%;
+        --background-subtle: 210 20% 96%;
+        --card: 0 0% 100%;
+        --card-hover: 210 20% 99%;
+
+        --primary: 222.2 47.4% 11.2%;
+        --primary-foreground: 210 40% 98%;
+
+        --destructive: 0 84.2% 40.2%;
+        --destructive-foreground: 210 40% 98%;
+
+        --muted: 210 40% 96.1%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+
+        --border: 214.3 31.8% 91.4%;
+        --ring: 222.2 84% 4.9%;
+
+        --radius-xl: 1rem;
+        --base-font-size: 16px;
+      }
+
+      /* Dark mode tokens */
+      [data-theme='dark'] {
+        --background: 222 15% 12%;
+        --background-subtle: 222 15% 18%;
+        --card: 222 15% 16%;
+        --card-hover: 222 15% 20%;
+
+        --primary: 210 40% 68%;
+        --primary-foreground: 222 15% 12%;
+
+        --destructive: 0 84.2% 50%;
+        --destructive-foreground: 222 15% 12%;
+
+        --muted: 222 15% 24%;
+        --muted-foreground: 215 12% 70%;
+
+        --border: 222 15% 22%;
+        --ring: 210 84% 60%;
+      }
+
+      /* Modal overlay & container */
+      .overlay {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+      }
+      .modal {
+        box-sizing: border-box;
+        background: hsl(var(--card));
+        color: hsl(var(--muted-foreground));
+        border-radius: var(--radius-xl);
+        box-shadow: 0 20px 40px rgba(2, 6, 23, 0.3);
+        border: 1px solid hsl(var(--border));
+        max-height: 90vh;
+        overflow-y: auto;
+        overflow-x: hidden;
+      }
+      .modal header {
+        padding: 16px 20px;
+        border-bottom: 1px solid hsl(var(--border));
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .modal .body {
+        padding: 18px 20px;
+      }
+      .modal .footer {
+        padding: 14px 20px;
+        border-top: 1px solid hsl(var(--border));
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+      }
+
+      /* size variants */
+      .modal-sm {
+        width: min(380px, calc(100% - 48px));
+      }
+      .modal-md {
+        width: min(640px, calc(100% - 48px));
+      }
+      .modal-lg {
+        width: min(900px, calc(100% - 48px));
+      }
+      .modal-xl {
+        width: min(1100px, calc(100% - 48px));
+      }
+      .modal-full {
+        width: 100vw;
+        height: 100vh;
+        border-radius: 0;
+      }
+
+      /* Preset picker */
+      .preset-group {
+        margin-bottom: 16px;
+      }
+      .preset-picker {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .preset-button {
+        display: flex;
+        gap: 4px;
+        align-items: center;
+        padding: 6px;
+        border-radius: 8px;
+        border: 1px solid transparent;
+        background: transparent;
+        cursor: pointer;
+      }
+      .preset-button .swatch {
+        width: 18px;
+        height: 18px;
+        border-radius: 4px;
+        display: inline-block;
+        border: 1px solid rgba(0, 0, 0, 0.06);
+      }
+      .preset-button.selected {
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+        border-color: rgba(59, 130, 246, 0.16);
+      }
+
+      /* form styles */
+      label {
+        display: block;
+        font-size: 0.8125rem; /* 13px @ 16px base */
+        margin-bottom: 0.375rem; /* 6px */
+        color: hsl(var(--muted-foreground));
+      }
+      input,
+      textarea,
+      select {
+        box-sizing: border-box;
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 8px;
+        border: 1px solid hsl(var(--border));
+        background: hsl(var(--card));
+        color: hsl(var(--muted-foreground));
+      }
+      .field {
+        margin-bottom: 12px;
+      }
+
+      /* small helpers */
+      .muted {
+        color: hsl(var(--muted-foreground));
+        font-size: 0.8125rem; /* 13px @ 16px base */
+      }
+
+      /* focus ring */
+      :focus {
+        outline: none;
+        box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+      }
+
+      /* Button styles */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 8px 16px;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        border: 1px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+      .btn-primary {
+        background: hsl(var(--primary));
+        color: hsl(var(--primary-foreground));
+      }
+      .btn-primary:hover {
+        background: hsl(var(--primary) / 0.9);
+      }
+      .btn-outline {
+        background: transparent;
+        color: hsl(var(--muted-foreground));
+        border-color: hsl(var(--border));
+      }
+      .btn-outline:hover {
+        background: hsl(var(--muted));
+      }
+      .btn-destructive {
+        background: hsl(var(--destructive));
+        color: hsl(var(--destructive-foreground));
+      }
+      .btn-destructive:hover {
+        background: hsl(var(--destructive) / 0.9);
+      }
+      .btn-secondary {
+        background: hsl(var(--muted));
+        color: hsl(var(--muted-foreground));
+        border-color: hsl(var(--border));
+      }
+      .btn-secondary:hover {
+        background: hsl(var(--muted) / 0.8);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: hsl(var(--muted-foreground));
+      }
+      .btn-ghost:hover {
+        background: hsl(var(--muted) / 0.5);
+      }
+      .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      /* Heading styles */
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      strong {
+        color: hsl(var(--primary));
+      }
+
+      /* hide overlay initially */
+      .hidden {
+        display: none;
+      }
+
+      /* Layout styles */
+      html {
+        font-size: var(--base-font-size);
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: hsl(var(--background));
+        color: hsl(var(--muted-foreground));
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+      .card {
+        background: hsl(var(--card));
+        border-radius: var(--radius-xl);
+        border: 1px solid hsl(var(--border));
+        padding: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        align-items: center;
+      }
+
+      /* Loading spinner */
+      .spinner {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        border: 2px solid hsl(var(--muted));
+        border-top-color: hsl(var(--primary));
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .spinner.hidden {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="card">
+        <h1>Modal Theme Preview</h1>
+        <p class="muted">
+          Modal size variants with light and dark theme presets. This demo includes Create, Edit and
+          Delete confirmation modals.
+        </p>
+
+        <div class="controls" style="margin-top: 16px">
+          <label class="muted" style="margin-right: 8px">Font:</label>
+          <select
+            id="fontSize"
+            style="
+              padding: 8px;
+              border-radius: 8px;
+              border: 1px solid hsl(var(--border));
+              background: transparent;
+              color: inherit;
+            "
+          >
+            <option value="14px">Small (14px)</option>
+            <option value="16px" selected>Default (16px)</option>
+            <option value="18px">Large (18px)</option>
+            <option value="20px">XL (20px)</option>
+          </select>
+
+          <button id="openCreate" class="btn btn-primary" style="margin-left: auto">
+            Open Create (md)
+          </button>
+          <button id="openEdit" class="btn btn-outline">Open Edit (lg)</button>
+          <button id="openDelete" class="btn btn-destructive">Open Delete (sm)</button>
+          <span id="loadingSpinner" class="spinner hidden"></span>
+        </div>
+
+        <hr style="margin: 18px 0; opacity: 0.06" />
+
+        <h2 style="margin-top: 24px">Light Theme Presets</h2>
+        <div class="preset-group">
+          <div id="lightPresetPicker" class="preset-picker" aria-label="Light theme color presets">
+            <button class="preset-button" data-preset="original" title="Original">
+              <span class="swatch" style="background: hsl(210 20% 98%)"></span>
+              <span class="swatch" style="background: hsl(222.2 47.4% 11.2%)"></span>
+              <span class="swatch" style="background: hsl(0 84.2% 40.2%)"></span>
+            </button>
+            <button class="preset-button" data-preset="vibrant" title="Vibrant Blue">
+              <span class="swatch" style="background: hsl(210 96% 56%)"></span>
+              <span class="swatch" style="background: hsl(215 60% 45%)"></span>
+              <span class="swatch" style="background: hsl(0 72% 45%)"></span>
+            </button>
+            <button class="preset-button" data-preset="teal" title="Teal Accent">
+              <span class="swatch" style="background: hsl(200 70% 40%)"></span>
+              <span class="swatch" style="background: hsl(180 62% 34%)"></span>
+              <span class="swatch" style="background: hsl(359 62% 45%)"></span>
+            </button>
+            <button class="preset-button" data-preset="warm" title="Warm Accent">
+              <span class="swatch" style="background: hsl(35 95% 90%)"></span>
+              <span class="swatch" style="background: hsl(28 65% 40%)"></span>
+              <span class="swatch" style="background: hsl(4 78% 48%)"></span>
+            </button>
+          </div>
+        </div>
+
+        <h2 style="margin-top: 24px">Dark Theme Presets</h2>
+        <div class="preset-group">
+          <div id="darkPresetPicker" class="preset-picker" aria-label="Dark theme color presets">
+            <button class="preset-button" data-preset="original-dark" title="Original (Dark)">
+              <span class="swatch" style="background: hsl(222 15% 12%)"></span>
+              <span class="swatch" style="background: hsl(210 40% 68%)"></span>
+              <span class="swatch" style="background: hsl(0 84.2% 50%)"></span>
+            </button>
+            <button class="preset-button" data-preset="vibrant-dark" title="Vibrant Blue (Dark)">
+              <span class="swatch" style="background: hsl(222 15% 12%)"></span>
+              <span class="swatch" style="background: hsl(210 70% 50%)"></span>
+              <span class="swatch" style="background: hsl(0 80% 50%)"></span>
+            </button>
+            <button class="preset-button" data-preset="teal-dark" title="Teal Accent (Dark)">
+              <span class="swatch" style="background: hsl(222 15% 12%)"></span>
+              <span class="swatch" style="background: hsl(180 70% 50%)"></span>
+              <span class="swatch" style="background: hsl(0 80% 50%)"></span>
+            </button>
+            <button class="preset-button" data-preset="warm-dark" title="Warm Accent (Dark)">
+              <span class="swatch" style="background: hsl(222 15% 12%)"></span>
+              <span class="swatch" style="background: hsl(30 80% 50%)"></span>
+              <span class="swatch" style="background: hsl(0 80% 50%)"></span>
+            </button>
+            <button class="preset-button" data-preset="high-contrast" title="High Contrast (Dark)">
+              <span class="swatch" style="background: hsl(0 0% 0%)"></span>
+              <span class="swatch" style="background: hsl(222.2 60% 30%)"></span>
+              <span class="swatch" style="background: hsl(0 80% 35%)"></span>
+            </button>
+          </div>
+        </div>
+
+        <hr style="margin: 18px 0; opacity: 0.06" />
+
+        <h2 style="margin-top: 24px">Components Showcase</h2>
+        <p class="muted" style="margin-bottom: 16px">
+          Interactive examples of all UI components used in the app. All components respond to theme
+          changes.
+        </p>
+
+        <!-- Buttons Section -->
+        <div class="card" style="margin-bottom: 16px">
+          <h3>Buttons</h3>
+          <p class="muted" style="margin-bottom: 12px">
+            5 variants for different action hierarchies
+          </p>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px">
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-outline">Outline</button>
+            <button class="btn btn-secondary">Secondary</button>
+            <button class="btn btn-ghost">Ghost</button>
+            <button class="btn btn-destructive">Destructive</button>
+            <button class="btn btn-primary" disabled>Disabled</button>
+          </div>
+        </div>
+
+        <!-- Form Elements Section -->
+        <div class="card" style="margin-bottom: 16px">
+          <h3>Form Elements</h3>
+          <p class="muted" style="margin-bottom: 12px">Input, textarea, select, and checkbox</p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px">
+            <div class="field">
+              <label for="demo-input">Text Input</label>
+              <input id="demo-input" type="text" placeholder="Enter text..." />
+            </div>
+            <div class="field">
+              <label for="demo-select">Select Dropdown</label>
+              <select id="demo-select">
+                <option>Choose option...</option>
+                <option>Option 1</option>
+                <option>Option 2</option>
+                <option>Option 3</option>
+              </select>
+            </div>
+            <div class="field" style="grid-column: 1 / -1">
+              <label for="demo-textarea">Textarea</label>
+              <textarea id="demo-textarea" rows="3" placeholder="Enter longer text..."></textarea>
+            </div>
+            <div class="field">
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer">
+                <input type="checkbox" style="width: auto" />
+                <span>Checkbox option</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card Layouts Section -->
+        <div class="card" style="margin-bottom: 16px">
+          <h3>Card Layouts</h3>
+          <p class="muted" style="margin-bottom: 12px">Responsive card grid pattern</p>
+          <div
+            style="
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 12px;
+            "
+          >
+            <div class="card" style="padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)">
+              <strong style="display: block; margin-bottom: 4px">Card Title</strong>
+              <p class="muted" style="font-size: 0.875rem">
+                Card content goes here with a description.
+              </p>
+            </div>
+            <div class="card" style="padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)">
+              <strong style="display: block; margin-bottom: 4px">Card Title</strong>
+              <p class="muted" style="font-size: 0.875rem">
+                Card content goes here with a description.
+              </p>
+            </div>
+            <div class="card" style="padding: 16px; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1)">
+              <strong style="display: block; margin-bottom: 4px">Card Title</strong>
+              <p class="muted" style="font-size: 0.875rem">
+                Card content goes here with a description.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table Section -->
+        <div class="card" style="margin-bottom: 16px">
+          <h3>Table</h3>
+          <p class="muted" style="margin-bottom: 12px">Data table with header and rows</p>
+          <table style="width: 100%; border-collapse: collapse">
+            <thead>
+              <tr style="border-bottom: 1px solid hsl(var(--border))">
+                <th
+                  style="
+                    text-align: left;
+                    padding: 8px;
+                    font-weight: 600;
+                    color: hsl(var(--primary));
+                  "
+                >
+                  Name
+                </th>
+                <th
+                  style="
+                    text-align: left;
+                    padding: 8px;
+                    font-weight: 600;
+                    color: hsl(var(--primary));
+                  "
+                >
+                  Role
+                </th>
+                <th
+                  style="
+                    text-align: left;
+                    padding: 8px;
+                    font-weight: 600;
+                    color: hsl(var(--primary));
+                  "
+                >
+                  Status
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr style="border-bottom: 1px solid hsl(var(--border))">
+                <td style="padding: 8px">John Doe</td>
+                <td style="padding: 8px">Member</td>
+                <td style="padding: 8px">
+                  <span
+                    style="
+                      padding: 2px 8px;
+                      background: hsl(var(--muted));
+                      border-radius: 4px;
+                      font-size: 0.75rem;
+                    "
+                    >Active</span
+                  >
+                </td>
+              </tr>
+              <tr style="border-bottom: 1px solid hsl(var(--border))">
+                <td style="padding: 8px">Jane Smith</td>
+                <td style="padding: 8px">Leader</td>
+                <td style="padding: 8px">
+                  <span
+                    style="
+                      padding: 2px 8px;
+                      background: hsl(var(--muted));
+                      border-radius: 4px;
+                      font-size: 0.75rem;
+                    "
+                    >Active</span
+                  >
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 8px">Bob Johnson</td>
+                <td style="padding: 8px">Volunteer</td>
+                <td style="padding: 8px">
+                  <span
+                    style="
+                      padding: 2px 8px;
+                      background: hsl(var(--muted));
+                      border-radius: 4px;
+                      font-size: 0.75rem;
+                    "
+                    >Active</span
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Progress Bar Section -->
+        <div class="card" style="margin-bottom: 16px">
+          <h3>Progress Indicator</h3>
+          <p class="muted" style="margin-bottom: 12px">Loading and progress states</p>
+          <div
+            style="
+              width: 100%;
+              background: hsl(var(--muted));
+              height: 8px;
+              border-radius: 4px;
+              overflow: hidden;
+            "
+          >
+            <div
+              style="
+                width: 65%;
+                height: 100%;
+                background: hsl(var(--primary));
+                transition: width 0.3s ease;
+              "
+            ></div>
+          </div>
+          <p class="muted" style="margin-top: 8px; font-size: 0.75rem">65% complete</p>
+        </div>
+
+        <hr style="margin: 18px 0; opacity: 0.06" />
+
+        <p class="muted">
+          Notes: Escape closes, overlay click closes (except delete), keyboard focus is trapped
+          inside the modal while open.
+        </p>
+      </div>
+    </div>
+
+    <!-- Modals -->
+    <div
+      id="overlay-create"
+      class="overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="create-title"
+    >
+      <div class="modal modal-md" role="document" onkeydown="" tabindex="-1">
+        <header>
+          <div>
+            <strong id="create-title">Create Member</strong>
+            <div class="muted" style="font-size: 12px">Add a new member quickly</div>
+          </div>
+          <button aria-label="Close create" class="btn btn-outline" data-close>✕</button>
+        </header>
+        <div class="body">
+          <form id="createForm">
+            <div class="field">
+              <label for="name">Full name</label><input id="name" name="name" required />
+            </div>
+            <div class="field">
+              <label for="email">Email</label><input id="email" name="email" type="email" />
+            </div>
+            <div class="field">
+              <label for="role">Role</label>
+              <select id="role" name="role">
+                <option>Member</option>
+                <option>Leader</option>
+              </select>
+            </div>
+          </form>
+        </div>
+        <div class="footer">
+          <button class="btn btn-outline" data-close>Cancel</button>
+          <button class="btn btn-primary" id="createSave">Create</button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="overlay-edit"
+      class="overlay hidden"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="edit-title"
+    >
+      <div class="modal modal-lg" role="document" tabindex="-1">
+        <header>
+          <div>
+            <strong id="edit-title">Edit Member</strong>
+            <div class="muted" style="font-size: 12px">Update member details and relationships</div>
+          </div>
+          <button aria-label="Close edit" class="btn btn-outline" data-close>✕</button>
+        </header>
+        <div class="body">
+          <form id="editForm">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px">
+              <div class="field">
+                <label for="first">First name</label><input id="first" name="first" />
+              </div>
+              <div class="field">
+                <label for="last">Last name</label><input id="last" name="last" />
+              </div>
+            </div>
+            <div class="field">
+              <label for="phone">Phone</label><input id="phone" name="phone" />
+            </div>
+            <div class="field">
+              <label for="notes">Notes</label><textarea id="notes" rows="4"></textarea>
+            </div>
+            <div class="field">
+              <label>Groups</label>
+              <div style="display: flex; gap: 8px">
+                <button class="btn btn-outline">Youth</button
+                ><button class="btn btn-outline">Choir</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="footer">
+          <button class="btn btn-outline" data-close>Cancel</button>
+          <button class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+
+    <div
+      id="overlay-delete"
+      class="overlay hidden"
+      role="alertdialog"
+      aria-modal="true"
+      aria-labelledby="delete-title"
+      aria-describedby="delete-desc"
+    >
+      <div class="modal modal-sm" role="document" tabindex="-1">
+        <header>
+          <div>
+            <strong id="delete-title">Delete Member</strong>
+          </div>
+        </header>
+        <div class="body">
+          <p id="delete-desc">
+            This member has <strong>3</strong> dependent records (giving). Deleting will archive the
+            record. This action can be undone from the Archived list.
+          </p>
+        </div>
+        <div class="footer">
+          <button class="btn btn-outline" data-close>Cancel</button>
+          <button class="btn btn-destructive" id="confirmDelete">Delete</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Lightweight modal behavior: open/close, overlay click, escape, focus trap
+      function trapFocus(container) {
+        const focusable =
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])';
+        const nodes = Array.from(container.querySelectorAll(focusable)).filter(
+          n => !n.hasAttribute('disabled')
+        );
+        if (nodes.length) nodes[0].focus();
+
+        function handleKey(e) {
+          if (e.key === 'Tab') {
+            const idx = nodes.indexOf(document.activeElement);
+            if (e.shiftKey) {
+              if (idx === 0) {
+                e.preventDefault();
+                nodes[nodes.length - 1].focus();
+              }
+            } else {
+              if (idx === nodes.length - 1) {
+                e.preventDefault();
+                nodes[0].focus();
+              }
+            }
+          } else if (e.key === 'Escape') {
+            // handled globally
+          }
+        }
+        container._trap = handleKey;
+        container.addEventListener('keydown', handleKey);
+      }
+
+      function releaseTrap(container) {
+        if (container && container._trap) {
+          container.removeEventListener('keydown', container._trap);
+          delete container._trap;
+        }
+      }
+
+      function openOverlay(id, options = {}) {
+        const overlay = document.getElementById(id);
+        if (!overlay) return;
+        overlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        const modal = overlay.querySelector('.modal');
+        // save previous active
+        overlay._prevActive = document.activeElement;
+        trapFocus(modal);
+
+        // Escape closes
+        overlay._esc = e => {
+          if (e.key === 'Escape') closeOverlay(id);
+        };
+        window.addEventListener('keydown', overlay._esc);
+
+        // overlay click closes unless disabled
+        overlay.addEventListener('mousedown', ev => {
+          if (options.disableOverlayClose) return;
+          if (ev.target === overlay) closeOverlay(id);
+        });
+      }
+
+      function closeOverlay(id) {
+        const overlay = document.getElementById(id);
+        if (!overlay) return;
+        overlay.classList.add('hidden');
+        document.body.style.overflow = '';
+        const modal = overlay.querySelector('.modal');
+        releaseTrap(modal);
+        if (overlay._esc) {
+          window.removeEventListener('keydown', overlay._esc);
+          delete overlay._esc;
+        }
+        // restore focus
+        if (overlay._prevActive && typeof overlay._prevActive.focus === 'function')
+          overlay._prevActive.focus();
+      }
+
+      // Wait for DOM to be ready before initializing
+      document.addEventListener('DOMContentLoaded', () => {
+        // Color presets
+        const presets = {
+          original: {
+            '--background': '210 20% 98%',
+            '--background-subtle': '210 20% 96%',
+            '--card': '0 0% 100%',
+            '--card-hover': '210 20% 99%',
+            '--primary': '222.2 47.4% 11.2%',
+            '--primary-foreground': '210 40% 98%',
+            '--destructive': '0 84.2% 40.2%',
+            '--destructive-foreground': '210 40% 98%',
+            '--muted': '210 40% 96.1%',
+            '--muted-foreground': '215.4 16.3% 46.9%',
+            '--border': '214.3 31.8% 91.4%',
+          },
+          vibrant: {
+            '--background': '210 20% 98%',
+            '--background-subtle': '210 20% 96%',
+            '--card': '0 0% 100%',
+            '--card-hover': '210 20% 99%',
+            '--primary': '215 60% 45%',
+            '--primary-foreground': '210 40% 98%',
+            '--destructive': '0 72% 45%',
+            '--destructive-foreground': '210 40% 98%',
+            '--muted': '210 40% 96.1%',
+            '--muted-foreground': '215.4 16.3% 46.9%',
+            '--border': '214.3 31.8% 91.4%',
+          },
+          teal: {
+            '--background': '210 20% 98%',
+            '--background-subtle': '210 20% 96%',
+            '--card': '0 0% 100%',
+            '--card-hover': '210 20% 99%',
+            '--primary': '180 62% 34%',
+            '--primary-foreground': '210 40% 98%',
+            '--destructive': '359 62% 45%',
+            '--destructive-foreground': '210 40% 98%',
+            '--muted': '210 40% 96.1%',
+            '--muted-foreground': '215.4 16.3% 46.9%',
+            '--border': '214.3 31.8% 91.4%',
+          },
+          warm: {
+            '--background': '210 20% 98%',
+            '--background-subtle': '210 20% 96%',
+            '--card': '0 0% 100%',
+            '--card-hover': '210 20% 99%',
+            '--primary': '28 65% 40%',
+            '--primary-foreground': '210 40% 98%',
+            '--destructive': '4 78% 48%',
+            '--destructive-foreground': '210 40% 98%',
+            '--muted': '210 40% 96.1%',
+            '--muted-foreground': '215.4 16.3% 46.9%',
+            '--border': '214.3 31.8% 91.4%',
+          },
+          'high-contrast': {
+            '--background': '0 0% 0%',
+            '--background-subtle': '0 0% 8%',
+            '--card': '0 0% 12%',
+            '--card-hover': '0 0% 16%',
+            '--primary': '222.2 60% 30%',
+            '--primary-foreground': '210 40% 98%',
+            '--destructive': '0 80% 35%',
+            '--destructive-foreground': '210 40% 98%',
+            '--muted': '0 0% 12%',
+            '--muted-foreground': '210 40% 98%',
+            '--border': '0 0% 18%',
+          },
+          'original-dark': {
+            '--background': '222 15% 12%',
+            '--background-subtle': '222 15% 18%',
+            '--card': '222 15% 16%',
+            '--card-hover': '222 15% 20%',
+            '--primary': '210 40% 68%',
+            '--primary-foreground': '222 15% 12%',
+            '--destructive': '0 84.2% 50%',
+            '--destructive-foreground': '222 15% 12%',
+            '--muted': '222 15% 24%',
+            '--muted-foreground': '215 12% 70%',
+            '--border': '222 15% 22%',
+          },
+          'vibrant-dark': {
+            '--background': '222 15% 12%',
+            '--background-subtle': '222 15% 18%',
+            '--card': '222 15% 16%',
+            '--card-hover': '222 15% 20%',
+            '--primary': '210 70% 50%',
+            '--primary-foreground': '222 15% 12%',
+            '--destructive': '0 80% 50%',
+            '--destructive-foreground': '222 15% 12%',
+            '--muted': '222 15% 24%',
+            '--muted-foreground': '215 12% 70%',
+            '--border': '222 15% 22%',
+          },
+          'teal-dark': {
+            '--background': '222 15% 12%',
+            '--background-subtle': '222 15% 18%',
+            '--card': '222 15% 16%',
+            '--card-hover': '222 15% 20%',
+            '--primary': '180 70% 50%',
+            '--primary-foreground': '222 15% 12%',
+            '--destructive': '0 80% 50%',
+            '--destructive-foreground': '222 15% 12%',
+            '--muted': '222 15% 24%',
+            '--muted-foreground': '215 12% 70%',
+            '--border': '222 15% 22%',
+          },
+          'warm-dark': {
+            '--background': '222 15% 12%',
+            '--background-subtle': '222 15% 18%',
+            '--card': '222 15% 16%',
+            '--card-hover': '222 15% 20%',
+            '--primary': '30 80% 50%',
+            '--primary-foreground': '222 15% 12%',
+            '--destructive': '0 80% 50%',
+            '--destructive-foreground': '222 15% 12%',
+            '--muted': '222 15% 24%',
+            '--muted-foreground': '215 12% 70%',
+            '--border': '222 15% 22%',
+          },
+        };
+
+        function applyPreset(name) {
+          const preset = presets[name];
+          if (!preset) return;
+          Object.keys(preset).forEach(key => {
+            document.documentElement.style.setProperty(key, preset[key]);
+          });
+        }
+
+        // Utility functions
+        function showSpinner() {
+          const spinner = document.getElementById('loadingSpinner');
+          if (spinner) spinner.classList.remove('hidden');
+        }
+
+        function hideSpinner() {
+          const spinner = document.getElementById('loadingSpinner');
+          if (spinner) {
+            setTimeout(() => spinner.classList.add('hidden'), 300);
+          }
+        }
+
+        // Set initial preset to 'original' (light theme default)
+        window._currentPreset = 'original';
+        applyPreset('original');
+        document.querySelector('[data-preset="original"]')?.classList.add('selected');
+
+        document
+          .getElementById('openCreate')
+          .addEventListener('click', () => openOverlay('overlay-create'));
+        document
+          .getElementById('openEdit')
+          .addEventListener('click', () => openOverlay('overlay-edit'));
+        document
+          .getElementById('openDelete')
+          .addEventListener('click', () =>
+            openOverlay('overlay-delete', { disableOverlayClose: true })
+          );
+
+        // Font size control
+        const fontSizeSelect = document.getElementById('fontSize');
+        fontSizeSelect.addEventListener('change', e => {
+          showSpinner();
+          document.documentElement.style.setProperty('--base-font-size', e.target.value);
+          hideSpinner();
+        });
+
+        // wire up visual preset buttons
+        document.querySelectorAll('.preset-button').forEach(btn => {
+          btn.addEventListener('click', e => {
+            showSpinner();
+            const p = btn.getAttribute('data-preset');
+            applyPreset(p);
+            window._currentPreset = p;
+            document
+              .querySelectorAll('.preset-button')
+              .forEach(b => b.classList.remove('selected'));
+            btn.classList.add('selected');
+            hideSpinner();
+          });
+        });
+
+        // wire close buttons
+        document.querySelectorAll('[data-close]').forEach(btn =>
+          btn.addEventListener('click', e => {
+            const overlay = e.target.closest('.overlay');
+            if (overlay) closeOverlay(overlay.id);
+          })
+        );
+
+        document.getElementById('createSave').addEventListener('click', e => {
+          e.preventDefault();
+          // simple validation demo
+          const name = document.getElementById('name');
+          if (!name.value.trim()) {
+            name.focus();
+            name.style.boxShadow = '0 0 0 4px rgba(220,38,38,0.12)';
+            return;
+          }
+          closeOverlay('overlay-create');
+          alert('Created (demo)');
+        });
+
+        document.getElementById('confirmDelete').addEventListener('click', e => {
+          closeOverlay('overlay-delete');
+          alert('Deleted (demo)');
+        });
+
+        // restore focus ring cleanup when interacting inputs
+        document
+          .querySelectorAll('input,textarea,select')
+          .forEach(i => i.addEventListener('input', () => (i.style.boxShadow = '')));
+      });
+    </script>
+  </body>
+</html>
