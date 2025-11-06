@@ -147,10 +147,8 @@ export function GroupsClient({
     <section className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold">Groups & Ministries</h1>
-          <p className="text-sm text-muted-foreground">
-            Track life groups, ministries, and their leaders.
-          </p>
+          <h1 className="heading-1">Groups & Ministries</h1>
+          <p className="caption-text">Track life groups, ministries, and their leaders.</p>
         </div>
         {isAdmin && (
           <div className="flex items-center gap-4">
@@ -170,7 +168,7 @@ export function GroupsClient({
       </div>
 
       {isAdmin && displayGroups.length > 0 && (
-        <div className="flex items-center gap-3 rounded-lg border border-border bg-card/60 p-3">
+        <div className="flex items-center gap-3 rounded-lg border border-border bg-card p-3 shadow-md">
           <Checkbox
             id="select-all-groups"
             checked={allSelected}
@@ -214,7 +212,7 @@ export function GroupsClient({
         {displayGroups.map(group => (
           <article
             key={group.id}
-            className={`rounded-xl border border-border bg-card/60 p-4 transition ${
+            className={`rounded-lg border border-border bg-card p-5 shadow-md hover:shadow-lg transition-shadow duration-200 ${
               showArchived ? 'opacity-60' : ''
             }`}
           >

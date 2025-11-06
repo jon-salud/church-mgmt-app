@@ -118,10 +118,8 @@ export function EventsClient({ events, members, groups, me }: EventsClientProps)
     <section className="space-y-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold">Events & Attendance</h1>
-          <p className="text-sm text-muted-foreground">
-            Record attendance for services, rehearsals, and training.
-          </p>
+          <h1 className="heading-1">Events & Attendance</h1>
+          <p className="caption-text">Record attendance for services, rehearsals, and training.</p>
           {isOffline ? (
             <p className="text-xs text-amber-300">
               Offline mode: displaying the last synced events, groups, and members available on this
@@ -157,10 +155,13 @@ export function EventsClient({ events, members, groups, me }: EventsClientProps)
           const startDisplay = format(new Date(event.startAt), 'EEE d MMM, h:mma');
           const endDisplay = format(new Date(event.endAt), 'h:mma');
           return (
-            <article key={event.id} className="rounded-xl border border-border bg-card/60 p-5">
+            <article
+              key={event.id}
+              className="rounded-lg border border-border bg-card p-6 shadow-md hover:shadow-lg transition-shadow duration-200"
+            >
               <header className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
                 <div>
-                  <h2 className="text-xl font-semibold text-foreground">{event.title}</h2>
+                  <h2 className="heading-2">{event.title}</h2>
                   <p className="text-xs text-muted-foreground">
                     {startDisplay} – {endDisplay} · {event.location || 'TBA'}
                   </p>
@@ -211,7 +212,7 @@ export function EventsClient({ events, members, groups, me }: EventsClientProps)
               <div className="mt-4 grid gap-4 md:grid-cols-2">
                 <div>
                   <h3 className="text-sm font-semibold text-foreground">Attendance Status</h3>
-                  <ul className="mt-2 grid gap-2 text-sm">
+                  <ul className="mt-2 grid gap-2 body-text">
                     {event.attendance.map((record: any) => (
                       <li
                         key={record.userId}
