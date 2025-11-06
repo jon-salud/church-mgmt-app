@@ -192,8 +192,8 @@ export function GivingClient({
     <section className="space-y-6">
       <header className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold">Giving records</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="heading-1">Giving records</h1>
+          <p className="caption-text">
             Track gifts, edit entries, and export summaries for finance reconciliation.
           </p>
         </div>
@@ -286,8 +286,8 @@ export function GivingClient({
 
       <div className="grid gap-6 lg:grid-cols-[2fr_1fr]">
         <div className="space-y-4">
-          <div className="rounded-xl border border-border bg-card/60 p-5">
-            <h2 className="text-lg font-semibold">Recent contributions</h2>
+          <div className="rounded-lg border border-border bg-card p-6 shadow-md hover:shadow-lg transition-shadow duration-200">
+            <h2 className="heading-2">Recent contributions</h2>
             <table className="mt-3 min-w-full text-sm" aria-describedby="contributions-caption">
               <caption
                 id="contributions-caption"
@@ -685,7 +685,9 @@ function SummaryCard({ label, value, variant = 'default' }: SummaryCardProps) {
   const selectedVariant = variants[variant];
 
   return (
-    <div className={`rounded-xl border border-border ${selectedVariant.bg} p-4`}>
+    <div
+      className={`rounded-lg border border-border ${selectedVariant.bg} p-5 shadow-md hover:shadow-lg transition-shadow duration-200`}
+    >
       <p className={`text-xs uppercase tracking-wide ${selectedVariant.labelColor}`}>{label}</p>
       <p className="mt-2 text-2xl font-semibold text-foreground">{value}</p>
     </div>

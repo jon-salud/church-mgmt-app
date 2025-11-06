@@ -132,10 +132,10 @@ export function MemberDetailClient({
     <section className="space-y-6">
       <div className="flex flex-col gap-3 md:flex-row md:items-baseline md:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold">
+          <h1 className="heading-1">
             {member.profile?.firstName} {member.profile?.lastName}
           </h1>
-          <p className="text-sm text-muted-foreground">{member.primaryEmail}</p>
+          <p className="caption-text">{member.primaryEmail}</p>
         </div>
         <div className="flex gap-2">
           <button

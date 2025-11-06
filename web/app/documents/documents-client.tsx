@@ -141,7 +141,7 @@ export function DocumentsClient({ documents: initialDocuments, roles, me }: Docu
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Document Library</h1>
+        <h1 className="heading-1">Document Library</h1>
         {isAdmin && (
           <Button onClick={handleUploadClick} data-testid="upload-document-button">
             <UploadIcon className="mr-2 h-4 w-4" />
@@ -165,14 +165,14 @@ export function DocumentsClient({ documents: initialDocuments, roles, me }: Docu
           {documents.map(doc => (
             <div
               key={doc.id}
-              className="border rounded-lg p-4 hover:shadow-lg transition-shadow"
+              className="border border-border rounded-lg bg-card p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
               data-testid={`document-card-${doc.id}`}
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center">
                   <FileIcon className="h-8 w-8 text-blue-500 mr-2" />
                   <div>
-                    <h3 className="font-semibold text-lg">{doc.title}</h3>
+                    <h3 className="heading-2">{doc.title}</h3>
                     <p className="text-sm text-gray-500">{doc.fileName}</p>
                   </div>
                 </div>

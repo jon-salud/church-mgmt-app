@@ -72,10 +72,8 @@ export function RequestForm({ initialRequestTypes, churchId: _churchId }: Reques
     <form onSubmit={handleSubmit}>
       <Card>
         <CardHeader>
-          <h2 className="text-2xl font-semibold leading-none tracking-tight">
-            Member Request Form
-          </h2>
-          <p className="text-sm text-muted-foreground">{getFormDescription()}</p>
+          <h2 className="heading-2">Member Request Form</h2>
+          <p className="caption-text">{getFormDescription()}</p>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
