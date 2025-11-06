@@ -208,7 +208,7 @@ test('failed API call rolls back theme', async ({ page }) => {
 | Phase 2 | 2-3h | 2-3h | No change |
 | Phase 3 | 3-4h | 3.5-4.5h | +30m for optimistic updates |
 | Phase 4 | 2-3h | 2.5-3.5h | +30m for FOUC prevention |
-| Phase 5 | 2-3h | 2.5-3.5h | +30m for concrete tests |
+| Phase 5 | 2-3h | 3-4h | +1h for concrete E2E tests |
 | **Total** | **11-16h** | **13-18h** | **+2h for production readiness** |
 
 **Justification for +2 Hours:**

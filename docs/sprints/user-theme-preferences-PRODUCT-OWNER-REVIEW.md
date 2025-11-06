@@ -18,7 +18,7 @@ This product owner review focuses on **user experience, feature discoverability,
 - **User Experience:** Good → **Excellent**
 - **Feature Discoverability:** Low → **High**
 - **Documentation Quality:** Partial → **Complete**
-- **Timeline Impact:** +1 hour (13-18h → 14-19h)
+- **Timeline Impact:** +1 hour (13.5-18.5h → 14.5-19.5h)
 - **Risk Level:** No change (Very Low)
 
 ---
@@ -255,8 +255,10 @@ All documentation files updated with complete, actionable content.
 - Phase 2: 2-3 hours (no change)
 - **Phase 3: 4-5 hours (+30 min navigation, +30 min visual feedback)**
 - Phase 4: 2.5-3.5 hours (no change)
-- **Phase 5: 3-3.5 hours (+30 min detailed documentation)**
-- **Total: 14-19 hours (+1 hour)**
+- **Phase 5: 3-4 hours (+1h from engineer for concrete E2E tests, detailed docs included)**
+- **Total: 14-19.5 hours (+1 hour)**
+
+**Note:** Phase 5 detailed documentation was included in engineer's +1h estimate.
 
 ### Timeline Justification
 **+1 hour investment provides:**
@@ -343,7 +345,7 @@ All documentation files updated with complete, actionable content.
 | **USER_MANUAL.md** | "Update with guide" | Complete Section 2.4 specification |
 | **Settings Architecture** | Assumed exists | Planned for scalability with tabs |
 | **Documentation Detail** | Generic mentions | Exact content specified for each file |
-| **Timeline** | 13-18 hours | 14-19 hours (+1h) |
+| **Timeline** | 13.5-18.5 hours | 14.5-19.5 hours (+1h) |
 | **Feature Adoption Risk** | HIGH | LOW |
 
 ---
@@ -383,7 +385,7 @@ All documentation files updated with complete, actionable content.
 
 1. ✅ **Product Owner Approval:** APPROVED (+1 hour justified)
 2. ✅ **Sprint Plan Updated:** All 5 gaps resolved in plan document
-3. ⏳ **User Final Approval:** Review updated plan (14-19h timeline)
+3. ⏳ **User Final Approval:** Review updated plan (14.5-19.5h timeline)
 4. ⏳ **Move to TASKS.md:** Transfer sprint from TASKS_BACKLOG.md to "🔄 In Progress"
 5. ⏳ **Begin Implementation:** Start Phase 1 with complete specifications
 
@@ -391,7 +393,7 @@ All documentation files updated with complete, actionable content.
 
 ## Questions for User
 
-1. **Timeline Approval:** Accept +1 hour increase for UX completeness? (14-19h total)
+1. **Timeline Approval:** Accept +1 hour increase for UX completeness? (14.5-19.5h total)
 2. **Navigation Strategy:** Prefer main nav link + user menu, or just one?
 3. **Announcement Banner:** Show "Personalize your experience" banner on first login?
 4. **Theme Preview Scope:** Keep simple color swatches or add full component preview? (latter adds +30-45 min)

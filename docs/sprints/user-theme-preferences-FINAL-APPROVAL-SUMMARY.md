@@ -12,9 +12,9 @@
 | Reviewer | Role | Status | Timeline Impact |
 |----------|------|--------|-----------------|
 | @principal_designer | Sprint Author | ✅ Plan Created | 11-16 hours (baseline) |
-| @principal_engineer | Technical Review | ✅ APPROVED WITH MODIFICATIONS | +2 hours (13-18h) |
-| @product_owner | UX/Product Review | ✅ APPROVED WITH ENHANCEMENTS | +1 hour (14-19h) |
-| **User** | **Final Approval** | **⏳ PENDING** | **14-19 hours total** |
+| @principal_engineer | Technical Review | ✅ APPROVED WITH MODIFICATIONS | +2.5 hours (13.5-18.5h) |
+| @product_owner | UX/Product Review | ✅ APPROVED WITH ENHANCEMENTS | +1 hour (14.5-19.5h) |
+| **User** | **Final Approval** | **⏳ PENDING** | **14.5-19.5 hours total** |
 
 ---
 
@@ -25,9 +25,9 @@ The User Theme Preferences sprint has undergone comprehensive technical and prod
 ### What Changed?
 
 **Original Plan:** 11-16 hours, 5 phases  
-**After Engineer Review:** 13-18 hours (+2h for production readiness)  
-**After Product Owner Review:** 14-19 hours (+1h for complete UX)  
-**Total Increase:** +3 hours (27% increase, fully justified)
+**After Engineer Review:** 13.5-18.5 hours (+2.5h for production readiness)  
+**After Product Owner Review:** 14.5-19.5 hours (+1h for complete UX)  
+**Total Increase:** +3.5 hours (32% increase, fully justified)d)
 
 ### Risk Assessment
 
@@ -92,9 +92,9 @@ The User Theme Preferences sprint has undergone comprehensive technical and prod
 
 | Investment | Benefit | ROI |
 |------------|---------|-----|
-| **+2 hours (Engineer)** | Type safety, FOUC prevention, concrete tests | Fewer bugs, better performance, confident deployment |
+| **+2.5 hours (Engineer)** | Type safety, FOUC prevention, concrete E2E tests | Fewer bugs, better performance, confident deployment |
 | **+1 hour (Product Owner)** | User discovery, complete docs, visual feedback | High adoption, self-service support, future-proof architecture |
-| **Total: +3 hours** | Production-ready code + excellent UX | **Prevents:** low adoption, support burden, future refactoring |
+| **Total: +3.5 hours** | Production-ready code + excellent UX | **Prevents:** low adoption, support burden, future refactoring |
 
 **Is +3 hours worth it?** Absolutely. The alternative:
 - Without engineer review: potential bugs, FOUC issues, maintenance headaches
@@ -130,7 +130,7 @@ The User Theme Preferences sprint has undergone comprehensive technical and prod
 - Dual-attribute theme system
 - Seamless theme transitions
 
-**Phase 5: Testing & Docs (3-3.5h)**
+**Phase 5: Testing & Docs (3-4h)**
 - 5 E2E test scenarios with Playwright
 - Performance tests (<100ms theme switch)
 - Accessibility tests (WCAG 2.1 AA)
@@ -265,7 +265,7 @@ Before approving, please confirm:
 | **Settings Architecture** | Ad-hoc | Scalable tabbed interface |
 | **USER_MANUAL.md** | "Update guide" | Complete Section 2.4 specification |
 | **Documentation** | Generic mentions | Exact specifications for each file |
-| **Timeline** | 11-16 hours | 14-19 hours (+3h justified) |
+| **Timeline** | 11-16 hours | 14.5-19.5 hours (+3.5h justified) |
 | **Risk Level** | Medium | Very Low (technical + product) |
 | **Feature Adoption** | Unknown (likely low) | High (multiple discovery paths) |
 

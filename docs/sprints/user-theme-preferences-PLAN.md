@@ -50,7 +50,7 @@ The application currently supports light/dark mode based on system preferences o
 
 ## Phase Breakdown
 
-### Phase 1: Database Schema & API Foundation (2-3 hours)
+### Phase 1: Database Schema & API Foundation (2.5-3.5 hours)
 **Branch:** `feature/user-theme-preferences-phase1-database-api`  
 **Plan:** `docs/sprints/user-theme-preferences-phase1-PLAN.md`
 
@@ -144,7 +144,7 @@ The application currently supports light/dark mode based on system preferences o
 
 ---
 
-### Phase 3: Settings UI (3.5-4.5 hours)
+### Phase 3: Settings UI (4-5 hours)
 **Branch:** `feature/user-theme-preferences-phase3-settings-ui`  
 **Plan:** `docs/sprints/user-theme-preferences-phase3-PLAN.md`
 
@@ -286,7 +286,7 @@ The application currently supports light/dark mode based on system preferences o
 
 ---
 
-### Phase 4: Theme Application & Root Layout (2-3 hours)
+### Phase 4: Theme Application & Root Layout (2.5-3.5 hours)
 **Branch:** `feature/user-theme-preferences-phase4-theme-application`  
 **Plan:** `docs/sprints/user-theme-preferences-phase4-PLAN.md`
 
@@ -354,7 +354,7 @@ const darkModePreference = user?.themeDarkMode; // null = system
 
 ---
 
-### Phase 5: E2E Testing & Documentation (2-3 hours)
+### Phase 5: E2E Testing & Documentation (3-4 hours)
 **Branch:** `feature/user-theme-preferences-phase5-testing-docs`  
 **Plan:** `docs/sprints/user-theme-preferences-phase5-PLAN.md`
 
@@ -691,7 +691,7 @@ All existing components automatically inherit theme tokens via CSS custom proper
 
 ## Timeline Estimate
 
-**Total Sprint Duration:** 14-19 hours (2-3 days for single developer)
+**Total Sprint Duration:** 14.5-19.5 hours (2-3 days for single developer)
 
 | Phase | Estimated Time | Critical Path | Notes |
 |-------|----------------|---------------|-------|
@@ -699,18 +699,18 @@ All existing components automatically inherit theme tokens via CSS custom proper
 | Phase 2: CSS Themes | 2-3 hours | Yes | No change |
 | Phase 3: Settings UI | 4-5 hours | Yes | +30 min optimistic updates, +30 min UX enhancements |
 | Phase 4: Theme Application | 2.5-3.5 hours | Yes | +30 min for FOUC prevention |
-| Phase 5: Testing & Docs | 3-3.5 hours | No (parallel) | +30 min tests, +30 min detailed docs |
+| Phase 5: Testing & Docs | 3-4 hours | No (parallel) | +1h for concrete E2E tests & detailed docs |
 
 **Timeline Changes:**
-- **Engineer Review:** +2 hours (type safety, FOUC, concrete tests)
+- **Engineer Review:** +2.5 hours (type safety, FOUC, concrete E2E tests)
 - **Product Owner Review:** +1 hour (user discovery, visual feedback, detailed docs)
-- **Original estimate:** 11-16 hours → **Final estimate:** 14-19 hours
-- **Total increase:** +3 hours (27% increase)
+- **Original estimate:** 11-16 hours → **Final estimate:** 14.5-19.5 hours
+- **Total increase:** +3.5 hours (32% increase)
 - **Justification:** Production-readiness + complete UX worth the investment
 
 **Critical Path:** Phases 1-4 must be completed sequentially. Phase 5 can start once Phase 3 is complete.
 
-**Contingency:** Add 20% buffer (2-3 hours) for unexpected issues.
+**Contingency:** Add 20% buffer (3-4 hours) for unexpected issues.
 
 ---
 
