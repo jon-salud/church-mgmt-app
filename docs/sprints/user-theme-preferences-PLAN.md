@@ -144,16 +144,29 @@ The application currently supports light/dark mode based on system preferences o
 
 ---
 
-### Phase 3: Settings UI (3-4 hours)
+### Phase 3: Settings UI (3.5-4.5 hours)
 **Branch:** `feature/user-theme-preferences-phase3-settings-ui`  
 **Plan:** `docs/sprints/user-theme-preferences-phase3-PLAN.md`
 
 **Scope:**
-- Create/update Settings page at `/settings`
+- **Settings Page Architecture Decision:**
+  - Verify if `/settings` page exists; if not, create with proper routing
+  - Plan for future settings sections (Account, Notifications, Privacy)
+  - Use tabbed interface or accordion sections for scalability
+  - Ensure RBAC: all authenticated users can access their own settings
+- **User Discovery & Navigation:**
+  - Add "Settings" link to main navigation menu (visible to all authenticated users)
+  - Add user menu dropdown with "Settings" option (top-right avatar/profile menu)
+  - Consider subtle announcement banner on first login: "Personalize your experience in Settings"
+  - Add tooltip on settings icon: "Customize theme and preferences"
 - Add "Appearance" section with:
-  - Theme preset dropdown (Select component)
+  - Theme preset selector with **descriptive labels and visual previews**
   - Dark mode toggle (Checkbox component)
-  - Preview cards showing theme colors
+  - **Visual feedback enhancements:**
+    - Theme preview thumbnails (mini color swatches for each preset)
+    - Descriptive labels: "Original (Classic Blue)", "Vibrant Blue (Energetic)", etc.
+    - "Reset to Default" button to restore Original theme + system preference
+    - Loading spinner during theme application
 - Integrate with API endpoints from Phase 1
 - **Implement optimistic UI updates with proper error handling**
 - **Add rollback mechanism for failed updates**
@@ -167,6 +180,12 @@ The application currently supports light/dark mode based on system preferences o
 - Error state triggers rollback + error toast
 - Success triggers revalidation via useTransition
 
+**Product Owner Additions:**
+- User discovery strategy: navigation integration + announcement banner
+- Visual feedback: theme preview thumbnails, descriptive labels, reset button
+- Settings architecture: plan for future sections, tabbed/accordion interface
+- Timeline: +30 minutes for complete UX implementation
+
 **UI Mockup:**
 ```tsx
 <Card>
@@ -175,16 +194,50 @@ The application currently supports light/dark mode based on system preferences o
     <CardDescription>Customize your theme and color preferences</CardDescription>
   </CardHeader>
   <CardContent className="space-y-6">
-    {/* Theme Preset Selector */}
+    {/* Theme Preset Selector with Visual Previews */}
     <div>
-      <Label>Theme</Label>
+      <Label>Color Theme</Label>
       <Select value={theme} onValueChange={handleThemeChange}>
-        <SelectItem value="original">Original</SelectItem>
-        <SelectItem value="vibrant-blue">Vibrant Blue</SelectItem>
-        <SelectItem value="teal-accent">Teal Accent</SelectItem>
-        <SelectItem value="warm-accent">Warm Accent</SelectItem>
+        <SelectItem value="original">
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1">
+              <div className="w-3 h-3 rounded-full bg-[hsl(222.2,47.4%,11.2%)]" />
+              <div className="w-3 h-3 rounded-full bg-[hsl(210,40%,96.1%)]" />
+            </div>
+            <span>Original (Classic Blue)</span>
+          </div>
+        </SelectItem>
+        <SelectItem value="vibrant-blue">
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1">
+              <div className="w-3 h-3 rounded-full bg-[hsl(210,100%,50%)]" />
+              <div className="w-3 h-3 rounded-full bg-[hsl(220,30%,97%)]" />
+            </div>
+            <span>Vibrant Blue (Energetic)</span>
+          </div>
+        </SelectItem>
+        <SelectItem value="teal-accent">
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1">
+              <div className="w-3 h-3 rounded-full bg-[hsl(175,80%,35%)]" />
+              <div className="w-3 h-3 rounded-full bg-[hsl(180,20%,97%)]" />
+            </div>
+            <span>Teal Accent (Professional)</span>
+          </div>
+        </SelectItem>
+        <SelectItem value="warm-accent">
+          <div className="flex items-center gap-2">
+            <div className="flex gap-1">
+              <div className="w-3 h-3 rounded-full bg-[hsl(25,90%,48%)]" />
+              <div className="w-3 h-3 rounded-full bg-[hsl(30,25%,97%)]" />
+            </div>
+            <span>Warm Accent (Welcoming)</span>
+          </div>
+        </SelectItem>
       </Select>
-      {/* Preview cards showing theme colors */}
+      <p className="text-sm text-muted-foreground mt-2">
+        Choose a color scheme that matches your preference
+      </p>
     </div>
     
     {/* Dark Mode Toggle */}
@@ -197,20 +250,37 @@ The application currently supports light/dark mode based on system preferences o
       </div>
       <Checkbox checked={darkMode} onCheckedChange={handleDarkModeChange} />
     </div>
+    
+    {/* Reset Button */}
+    <div className="pt-4 border-t">
+      <Button variant="outline" onClick={handleReset}>
+        Reset to Default
+      </Button>
+      <p className="text-sm text-muted-foreground mt-2">
+        Restore Original theme and system dark mode preference
+      </p>
+    </div>
   </CardContent>
 </Card>
 ```
 
 **Files to Modify:**
-- `web/app/settings/page.tsx` - Settings page (create if doesn't exist)
-- `web/app/settings/appearance-settings.tsx` - Appearance section component
+- `web/app/settings/page.tsx` - Settings page with tabbed/accordion interface
+- `web/app/settings/layout.tsx` - Settings layout with navigation (NEW)
+- `web/app/settings/appearance/page.tsx` - Appearance section component
+- `web/components/navigation/main-nav.tsx` - Add "Settings" link
+- `web/components/navigation/user-menu.tsx` - Add "Settings" option to dropdown
+- `web/components/settings/theme-selector.tsx` - Theme selector with visual previews (NEW)
 - `web/lib/api.ts` - Add theme API client methods
 
 **Risks:**
-- Settings page might not exist yet (need to create from scratch)
+- Settings page might not exist yet (need to create from scratch with proper architecture)
+- Navigation menu structure needs updating (potential conflicts with existing nav)
 - Need proper RBAC - all authenticated users should access their settings
+- Visual preview thumbnails might not render correctly in all themes
 
 **Rollback:**
+- Remove settings navigation links
 - Hide settings UI
 - Users default to Original theme + system preference
 
@@ -290,17 +360,29 @@ const darkModePreference = user?.themeDarkMode; // null = system
 
 **Scope:**
 - Write E2E tests for theme preference flow:
-  - User navigates to settings
+  - User navigates to settings (via main nav or user menu)
   - Selects different theme preset
   - Toggles dark mode
   - Verifies theme persists after reload
+  - Tests "Reset to Default" button
 - **Concrete Playwright test scenarios** with expect assertions
 - **Performance budget validation** (theme switch <100ms)
 - **WCAG 2.1 AA automated contrast testing**
-- Update API documentation with new endpoints
-- Update USER_MANUAL.md with theme preferences guide
-- Update DATABASE_SCHEMA.md with new User fields
-- Create migration guide for existing users
+- **Update USER_MANUAL.md with comprehensive theme guide:**
+  - Add new Section 2.4: "Personalizing Your Experience"
+  - Step-by-step instructions with screenshots:
+    - How to access Settings page (via main nav or user menu)
+    - How to select a theme preset (with preview thumbnails explained)
+    - How to toggle dark mode
+    - How to reset to default settings
+  - Explanation of each theme preset (Original, Vibrant Blue, Teal Accent, Warm Accent)
+  - Visual comparison: light vs dark mode for each preset
+  - Troubleshooting: "Theme not applying? Try refreshing the page."
+  - Accessibility note: All themes meet WCAG 2.1 AA contrast standards
+- Update API_DOCUMENTATION.md with new theme endpoints
+- Update DATABASE_SCHEMA.md with User.themePreference and User.themeDarkMode fields
+- Update DESIGN_SYSTEM.md with theme preset documentation
+- Create migration guide for existing users (all default to Original theme)
 
 **Engineer Modifications:**
 - 5 specific Playwright test scenarios with code examples
@@ -337,12 +419,15 @@ test('theme switches in under 100ms', async ({ page }) => {
 
 **Files to Modify:**
 - `web/e2e/settings-theme.spec.ts` - E2E tests with Playwright
+- `web/e2e/settings-navigation.spec.ts` - Test settings page discovery (NEW)
 - **`web/e2e/theme-performance.spec.ts` - Performance tests (NEW)**
 - **`web/e2e/theme-accessibility.spec.ts` - Accessibility tests (NEW)**
-- `docs/source-of-truth/API_DOCUMENTATION.md` - API docs
-- `docs/source-of-truth/DATABASE_SCHEMA.md` - Schema docs
-- `docs/USER_MANUAL.md` - User guide
-- `docs/DESIGN_SYSTEM.md` - Theme documentation
+- `docs/source-of-truth/API_DOCUMENTATION.md` - Document GET/PATCH /api/users/me/theme
+- `docs/source-of-truth/DATABASE_SCHEMA.md` - Document User.themePreference & User.themeDarkMode
+- **`docs/USER_MANUAL.md` - Add Section 2.4 "Personalizing Your Experience" (detailed above)**
+- `docs/DESIGN_SYSTEM.md` - Document 4 theme presets with color values and usage guidelines
+- **`docs/screenshots/settings-appearance-light.png` - Screenshot for user manual (NEW)**
+- **`docs/screenshots/settings-appearance-dark.png` - Screenshot for user manual (NEW)**
 
 **Risks:**
 - E2E tests might be flaky if theme transitions aren't stable → **MITIGATED with concrete assertions**
@@ -606,20 +691,22 @@ All existing components automatically inherit theme tokens via CSS custom proper
 
 ## Timeline Estimate
 
-**Total Sprint Duration:** 13-18 hours (2-3 days for single developer)
+**Total Sprint Duration:** 14-19 hours (2-3 days for single developer)
 
-| Phase | Estimated Time | Critical Path | Engineer Notes |
-|-------|----------------|---------------|----------------|
+| Phase | Estimated Time | Critical Path | Notes |
+|-------|----------------|---------------|-------|
 | Phase 1: Database & API | 2.5-3.5 hours | Yes | +30 min for enum & DTOs |
 | Phase 2: CSS Themes | 2-3 hours | Yes | No change |
-| Phase 3: Settings UI | 3.5-4.5 hours | Yes | +30 min for optimistic updates |
+| Phase 3: Settings UI | 4-5 hours | Yes | +30 min optimistic updates, +30 min UX enhancements |
 | Phase 4: Theme Application | 2.5-3.5 hours | Yes | +30 min for FOUC prevention |
-| Phase 5: Testing & Docs | 2.5-3.5 hours | No (parallel) | +30 min for concrete tests |
+| Phase 5: Testing & Docs | 3-3.5 hours | No (parallel) | +30 min tests, +30 min detailed docs |
 
-**Timeline Changes from Engineer Review:**
-- Added +2 hours total for improved type safety, FOUC prevention, and concrete tests
-- Original estimate: 11-16 hours → Updated estimate: 13-18 hours
-- **Justification:** Production-readiness improvements worth the time investment
+**Timeline Changes:**
+- **Engineer Review:** +2 hours (type safety, FOUC, concrete tests)
+- **Product Owner Review:** +1 hour (user discovery, visual feedback, detailed docs)
+- **Original estimate:** 11-16 hours → **Final estimate:** 14-19 hours
+- **Total increase:** +3 hours (27% increase)
+- **Justification:** Production-readiness + complete UX worth the investment
 
 **Critical Path:** Phases 1-4 must be completed sequentially. Phase 5 can start once Phase 3 is complete.
 
@@ -644,12 +731,16 @@ All existing components automatically inherit theme tokens via CSS custom proper
 - [ ] Design system documentation updated
 
 ### Phase 3: Settings UI
-- [ ] Settings page accessible at `/settings`
-- [ ] Theme dropdown lists 4 presets
+- [ ] Settings page accessible at `/settings` with proper architecture
+- [ ] "Settings" link visible in main navigation menu
+- [ ] "Settings" option in user menu dropdown (top-right)
+- [ ] Theme selector lists 4 presets with descriptive labels
+- [ ] Visual preview thumbnails (color swatches) for each theme
+- [ ] "Reset to Default" button restores Original theme + system preference
 - [ ] Dark mode toggle works correctly
-- [ ] Preview cards show theme colors
+- [ ] Loading spinner during theme application
 - [ ] Success toast appears on save
-- [ ] Error handling for API failures
+- [ ] Error handling for API failures with rollback
 
 ### Phase 4: Theme Application
 - [ ] Root layout fetches user theme preferences
@@ -659,12 +750,19 @@ All existing components automatically inherit theme tokens via CSS custom proper
 - [ ] Theme changes apply instantly from settings
 
 ### Phase 5: Testing & Docs
-- [ ] E2E tests cover all theme flows
+- [ ] E2E tests cover all theme flows (including navigation discovery)
+- [ ] Performance tests validate <100ms theme switching
+- [ ] Accessibility tests validate WCAG 2.1 AA compliance
 - [ ] All tests passing (unit + integration + E2E)
-- [ ] API_DOCUMENTATION.md updated
-- [ ] DATABASE_SCHEMA.md updated
-- [ ] USER_MANUAL.md includes theme guide
-- [ ] DESIGN_SYSTEM.md documents presets
+- [ ] API_DOCUMENTATION.md documents GET/PATCH /api/users/me/theme
+- [ ] DATABASE_SCHEMA.md documents User.themePreference & User.themeDarkMode
+- [ ] **USER_MANUAL.md Section 2.4 "Personalizing Your Experience" complete:**
+  - [ ] Step-by-step instructions with navigation paths
+  - [ ] Explanation of all 4 theme presets
+  - [ ] Screenshots of settings page (light and dark mode)
+  - [ ] Troubleshooting section
+  - [ ] Accessibility note about WCAG compliance
+- [ ] DESIGN_SYSTEM.md documents all theme presets with color values
 
 ---
 
@@ -765,21 +863,38 @@ These are NOT in scope for this sprint but worth documenting:
 
 **Principal Designer (Sprint Author):** @principal_designer  
 **Principal Engineer (Technical Review):** @principal_engineer  
+**Product Owner (UX Review):** @product_owner  
 **Date Created:** 7 November 2025  
-**Date Reviewed:** 7 November 2025  
+**Date Reviewed (Engineer):** 7 November 2025  
+**Date Reviewed (Product Owner):** 7 November 2025  
 **Status:** Approved with Modifications  
-**Review Document:** See `docs/sprints/user-theme-preferences-ENGINEER-REVIEW.md` for detailed technical analysis
+**Review Documents:**
+- Technical: `docs/sprints/user-theme-preferences-ENGINEER-REVIEW.md`
+- UX/Product: Integrated into this plan (see Product Owner Additions)
 
 **Engineer Recommendation:** APPROVED WITH MODIFICATIONS (+2 hours)  
 Risk Level: Low → Very Low  
 Production Readiness: High
 
-**Modifications Summary:**
+**Engineer Modifications Summary:**
 1. ✅ TypeScript enums for type safety
 2. ✅ Dual-attribute theme approach (works with next-themes)
 3. ✅ Inline blocking script for FOUC prevention
 4. ✅ Optimistic updates with proper rollback
 5. ✅ Concrete Playwright test scenarios
+
+**Product Owner Recommendation:** APPROVED WITH UX ENHANCEMENTS (+1 hour)  
+User Experience: Good → Excellent  
+Discoverability: Low → High
+
+**Product Owner Additions Summary:**
+1. ✅ User discovery strategy (navigation integration, announcement banner)
+2. ✅ Detailed USER_MANUAL.md specifications (Section 2.4 with screenshots)
+3. ✅ Settings page architecture planning (tabbed interface, future sections)
+4. ✅ Visual feedback enhancements (preview thumbnails, descriptive labels, reset button)
+5. ✅ Complete documentation specifications (exactly what to write where)
+
+**Final Timeline:** 14-19 hours (was 11-16h, +3h total)
 
 **Next Steps:**
 1. ✅ User approves modified plan
