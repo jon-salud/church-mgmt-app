@@ -113,6 +113,9 @@ export interface MockUser {
   roles: Array<{ churchId: string; roleId: string }>;
   profile: MockProfile;
   deletedAt?: string;
+  // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
+  themePreference?: string;
+  themeDarkMode?: boolean;
 }
 
 export interface MockGroupMember {

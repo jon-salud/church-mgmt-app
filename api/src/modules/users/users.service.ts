@@ -1,11 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { IUsersRepository, USER_REPOSITORY } from './users.repository.interface';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateThemeDto } from './dto/theme.dto';
 import { User } from '../../domain/entities/User';
 import { UserId } from '../../domain/value-objects/UserId';
 import { Email } from '../../domain/value-objects/Email';
 import { randomUUID } from 'node:crypto';
+import { ThemePreset, isValidThemePreset } from './types/theme.types';
 
 @Injectable()
 export class UsersService {
@@ -93,6 +95,59 @@ export class UsersService {
 
     // Use the invitations service to send bulk invitations
     return this.repo.bulkCreateInvitations(user.churchId, emails, undefined, actorId, 'member');
+  }
+
+  /**
+   * Get user's theme preferences
+   * @param userId User ID
+   * @returns Theme preferences or defaults
+   */
+  async getUserTheme(userId: string) {
+    const id = UserId.create(userId);
+    const user = await this.repo.getUserProfile(id);
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      themePreference: (user.themePreference as ThemePreset) || ThemePreset.ORIGINAL,
+      themeDarkMode: user.themeDarkMode ?? false,
+    };
+  }
+
+  /**
+   * Update user's theme preferences
+   * @param userId User ID
+   * @param updateThemeDto Theme updates
+   * @returns Updated theme preferences
+   */
+  async updateUserTheme(userId: string, updateThemeDto: UpdateThemeDto) {
+    // Validate theme preset if provided
+    if (updateThemeDto.themePreference && !isValidThemePreset(updateThemeDto.themePreference)) {
+      throw new BadRequestException('Invalid theme preset');
+    }
+
+    const id = UserId.create(userId);
+    const actorId = id; // User updating their own theme
+
+    const updateData: any = { actorUserId: actorId };
+    if (updateThemeDto.themePreference !== undefined) {
+      updateData.themePreference = updateThemeDto.themePreference;
+    }
+    if (updateThemeDto.themeDarkMode !== undefined) {
+      updateData.themeDarkMode = updateThemeDto.themeDarkMode;
+    }
+
+    const updatedUser = await this.repo.updateUser(id, updateData);
+    if (!updatedUser) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      themePreference: (updatedUser.themePreference as ThemePreset) || ThemePreset.ORIGINAL,
+      themeDarkMode: updatedUser.themeDarkMode ?? false,
+    };
   }
 
   private toUserResponse(user: User) {
