@@ -52,6 +52,41 @@
     */
   }
 
+  /* ============================================
+     THEME PRESETS
+     User-selectable color schemes via data-theme attribute
+     ============================================ */
+
+  /* Original Theme - Default (no overrides needed) */
+  /* Uses the :root values defined above */
+
+  /* Vibrant Blue Theme - High saturation blue for energy and clarity */
+  [data-theme='vibrant-blue'] {
+    --primary: 217 91% 60%; /* Blue 500 */
+    --primary-foreground: 0 0% 100%;
+    --accent: 217 91% 60%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 217 91% 60%;
+  }
+
+  /* Teal Accent Theme - Calming teal for professional and modern feel */
+  [data-theme='teal-accent'] {
+    --primary: 173 80% 40%; /* Teal 600 */
+    --primary-foreground: 0 0% 100%;
+    --accent: 173 80% 40%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 173 80% 40%;
+  }
+
+  /* Warm Accent Theme - Warm orange for approachability and community */
+  [data-theme='warm-accent'] {
+    --primary: 24 95% 53%; /* Orange 500 */
+    --primary-foreground: 0 0% 100%;
+    --accent: 24 95% 53%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 24 95% 53%;
+  }
+
   .dark {
     /* Background - keep existing dark background */
     --background: 222.2 84% 4.9%;
