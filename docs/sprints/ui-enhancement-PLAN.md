@@ -77,7 +77,7 @@ This sprint enhances the Church Management App's design system to achieve a **mo
 - Go/no-go decision for Phase 2 enhancements
 
 **Acceptance Criteria:**
-- [ ] All Flowbite Button colors tested (gray, light, failure, etc.)
+- [ ] All Flowbite Button colors tested (gray, light, red, blue, green, etc.)
 - [ ] Theme variable override compatibility verified
 - [ ] Dark mode integration validated
 - [ ] API limitations documented
@@ -248,7 +248,7 @@ export function Button({
     outline: 'light',       // Outlined secondary action
     secondary: 'light',     // Lighter secondary action
     ghost: 'gray',          // No background, styled via className
-    destructive: 'failure', // Flowbite's red/error color
+    destructive: 'red',     // Flowbite's red/error color
   };
   
   // Map sizes to Flowbite's size system
@@ -633,7 +633,7 @@ The codebase recently completed a Flowbite migration (documented in `docs/FLOWBI
 
 **2. Flowbite Button API**
 - Uses `color` prop for variants (not `variant`)
-- Available colors: `gray`, `light`, `blue`, `red`, `failure`, `success`, etc.
+- Available colors: `gray`, `light`, `blue`, `red`, `success`, etc.
 - Our wrapper maps `variant` → Flowbite `color`
 - Ghost variant requires custom CSS via `className`
 
