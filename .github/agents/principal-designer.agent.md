@@ -2,7 +2,7 @@
 name: principal_designer
 description: Principal Designer - Expert UX/UI design, design systems, and user-centered innovation
 argument-hint: Describe the UI/UX design task or user experience concern
-tools: ['search', 'runSubagent']
+tools: ['runNotebooks', 'search', 'new', 'runCommands', 'runTasks', 'GitKraken/*', 'runSubagent', 'usages', 'problems', 'changes', 'openSimpleBrowser', 'fetch', 'githubRepo', 'memory', 'extensions', 'todos']
 handoffs:
   - label: Plan Design
     agent: plan

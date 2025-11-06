@@ -419,12 +419,22 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
 
 ### 🔄 In Progress
 
-- **Complete CRUD Operations - Soft Delete Implementation Phase 7 (Final Validation & Documentation):**
-  - **Sprint:** Soft Delete Main Sprint
-  - **Branch:** `feature/soft-delete-main-sprint`
-  - **Plan:** `docs/sprints/soft-delete-PLAN.md`
-  - **Scope:** Final validation, documentation updates, sprint closure
-  - **Status:** Ready to start - Phase 6 complete and merged to sprint branch
+- **UI/UX Design System Enhancement Sprint:**
+  - **Sprint:** UI Enhancement
+  - **Branch:** `feature/ui-enhancement-main-sprint`
+  - **Plan:** `docs/sprints/ui-enhancement-PLAN.md`
+  - **Scope:** Enhance design system with visual depth, component refinement, accessibility improvements
+  - **Status:** Phase 0 complete - Phase 1 in progress
+  - **Phases:**
+    - ✅ Phase 0: Flowbite API Research & Validation (0.5d) - Complete (commits: dad5083, cafe3fd, f178fde)
+      - Research doc: `docs/sprints/ui-enhancement-phase0-RESEARCH.md`
+      - Enhanced Button component with 5 variants (default, outline, secondary, ghost, destructive)
+      - All technical blockers cleared for Phase 1
+    - Phase 1: Design Token System Enhancement (visual hierarchy, shadow scale, color refinement)
+    - Phase 2: Component Library Enhancement (Button, Card, Input refinements)
+    - Phase 3: Page-Level Refinements (consistent shadows, spacing, hover states)
+    - Phase 4: Accessibility & Motion Preferences (WCAG 2.1 AA compliance)
+    - Phase 5: Documentation & Testing (design system docs, regression testing)
 
 ### 📝 Backlog / Upcoming
 
