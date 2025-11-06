@@ -424,15 +424,16 @@ quickly. When you pull an item from backlog, move it into **In Progress** before
   - **Branch:** `feature/ui-enhancement-main-sprint`
   - **Plan:** `docs/sprints/ui-enhancement-PLAN.md`
   - **Scope:** Enhance design system with visual depth, component refinement, accessibility improvements
-  - **Status:** Phase 0 complete - Phase 1 in progress
+  - **Status:** Phase 2 complete - Phase 3 next
   - **Completed Phases:**
-    - ✅ Phase 0: Flowbite API Research & Validation (PR #178) - Research doc, Button enhancement, technical validation
+    - ✅ Phase 0: Flowbite API Research & Validation (PR #178) - Research doc, Button enhancement, technical validation (Commits: d3ee610, dfc9039, 6e25e58, ddab451)
+    - ✅ Phase 1: Design Token System Enhancement (Merged to sprint) - globals.css with background colors (210 20% 98%), card colors (222.2 70% 8%), typography utilities, shadow documentation per ADR-002 (Commits: d3ee610, dfc9039, 6e25e58, ddab451)
+    - ✅ Phase 2: Component Library Enhancement (PR pending) - Card with Tailwind shadows (shadow-sm, hover:shadow-md), Input with error prop + Flowbite color='failure', Textarea matching Input error states. All backward compatible, 0 TypeScript errors, 267 ESLint warnings (baseline). (Branch: feature/ui-enhancement-phase2-component-library, Plan: docs/sprints/ui-enhancement-phase2-PLAN.md, Commits: 3210482, fae46a0)
   - **In Progress:**
-    - 🔄 Phase 1: Design Token System Enhancement (Branch: `feature/ui-enhancement-phase1-design-tokens`, Plan: `docs/sprints/ui-enhancement-phase1-PLAN.md`)
+    - None - awaiting direction to merge Phase 2 and proceed to Phase 3
   - **Upcoming Phases:**
-    - Phase 2: Component Library Enhancement (Button, Card, Input refinements)
-    - Phase 3: Page-Level Refinements (consistent shadows, spacing, hover states)
-    - Phase 4: Accessibility & Motion Preferences (WCAG 2.1 AA compliance)
+    - Phase 3: Page-Level Refinements (apply Card/Button enhancements across 20+ pages, consistent shadows, spacing, hover states)
+    - Phase 4: Accessibility & Motion Preferences (WCAG 2.1 AA compliance, reduced motion support)
     - Phase 5: Documentation & Testing (design system docs, regression testing)
 
 ### 📝 Backlog / Upcoming
