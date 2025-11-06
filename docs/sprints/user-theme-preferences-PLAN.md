@@ -3,7 +3,9 @@
 **Sprint Name:** user-theme-preferences  
 **Branch:** `feature/user-theme-preferences-main-sprint`  
 **Created:** 7 November 2025  
-**Status:** Planning (Awaiting @principal_engineer Review)
+**Engineer Review:** Completed 7 November 2025  
+**Status:** Planning (Approved with Modifications)  
+**Review Document:** `docs/sprints/user-theme-preferences-ENGINEER-REVIEW.md`
 
 ---
 
@@ -55,18 +57,27 @@ The application currently supports light/dark mode based on system preferences o
 **Scope:**
 - Add `themePreference` (string, nullable) to User model in tenant schema
 - Add `themeDarkMode` (boolean, nullable) to User model
+- **Create TypeScript enum** `ThemePreset` with values: `ORIGINAL`, `VIBRANT_BLUE`, `TEAL_ACCENT`, `WARM_ACCENT`
 - Create Prisma migration for new fields
 - Implement API endpoints:
   - `GET /api/users/me/theme` - Get current user's theme preferences
-  - `PATCH /api/users/me/theme` - Update theme preferences
-- Add validation: `themePreference` enum ("original", "vibrant-blue", "teal-accent", "warm-accent")
+  - `PATCH /api/users/me/theme` - Update theme preferences with **type-safe DTOs**
+- Add validation: `themePreference` enum with **class-validator decorators**
+- **Type-safe request/response DTOs** with OpenAPI documentation
 - Write unit tests for API endpoints
+
+**Engineer Modifications:**
+- Use TypeScript enum instead of string literals for type safety
+- Create proper DTOs with class-validator decorators
+- Generate OpenAPI docs automatically from DTOs
 
 **Files to Modify:**
 - `api/prisma/tenant-schema.prisma` - Add theme fields to User model
+- **`api/src/modules/users/theme.enum.ts` - ThemePreset enum (NEW)**
 - `api/src/modules/users/users.controller.ts` - New theme endpoints
 - `api/src/modules/users/users.service.ts` - Theme preference logic
-- `api/src/modules/users/dto/` - Create theme DTOs
+- **`api/src/modules/users/dto/update-theme.dto.ts` - Request DTO with validation (NEW)**
+- **`api/src/modules/users/dto/theme-response.dto.ts` - Response DTO (NEW)**
 - `api/test/unit/users-theme.spec.ts` - Unit tests
 
 **Risks:**
@@ -90,7 +101,10 @@ The application currently supports light/dark mode based on system preferences o
 - Each preset defines both light and dark mode color tokens
 - Ensure backward compatibility with existing design system
 - Test all presets with component library
+- **Validate WCAG 2.1 AA contrast with automated testing**
 - **Reference implementation:** `docs/modal-theme-preview/index.html` contains working CSS for all presets
+
+**Engineer Note:** CSS structure approved. Recommend automated contrast testing in Phase 5.
 
 **CSS Structure:**
 ```css
@@ -141,9 +155,17 @@ The application currently supports light/dark mode based on system preferences o
   - Dark mode toggle (Checkbox component)
   - Preview cards showing theme colors
 - Integrate with API endpoints from Phase 1
-- Add optimistic UI updates for instant feedback
+- **Implement optimistic UI updates with proper error handling**
+- **Add rollback mechanism for failed updates**
+- **Use React's `useTransition` for seamless revalidation**
 - Handle loading/error states
 - Add success toast notifications
+
+**Engineer Modifications:**
+- Manual optimistic updates with try/catch rollback
+- Previous state stored before optimistic change
+- Error state triggers rollback + error toast
+- Success triggers revalidation via useTransition
 
 **UI Mockup:**
 ```tsx
@@ -200,31 +222,60 @@ The application currently supports light/dark mode based on system preferences o
 
 **Scope:**
 - Fetch user theme preferences in root layout server component
-- Apply `data-theme` attribute to `<html>` element
-- Apply `.dark` class based on `themeDarkMode` preference
-- Create theme context provider for client-side theme changes
+- **Apply dual-attribute approach:** `data-theme` for presets, `class="dark"` for dark mode
+- **Integrate with existing next-themes library** (don't replace it)
+- **Add inline blocking script to prevent FOUC**
+- Update `ThemeProvider` component to manage both attributes
 - Handle theme transitions smoothly (no flash of unstyled content)
 - Support system preference fallback if user hasn't set preferences
+
+**Engineer Modifications:**
+- Use dual-attribute approach to work with existing next-themes
+  - `data-theme="vibrant-blue"` for color preset
+  - `class="dark"` managed by next-themes for light/dark mode
+- Add inline `<script>` in `<head>` to apply theme before React hydration
+- Enhance `ThemeProvider` with new props: `themePreset`, `darkModePreference`
+- Server-side fetch of preferences, client-side application
 
 **Theme Application Logic:**
 ```typescript
 // Server-side (root layout)
 const user = await getAuthenticatedUser();
 const themePreference = user?.themePreference || 'original';
-const darkMode = user?.themeDarkMode ?? systemPreference;
+const darkModePreference = user?.themeDarkMode; // null = system
 
-// Apply to HTML element
-<html data-theme={themePreference} className={darkMode ? 'dark' : ''}>
+// Apply to HTML element via inline script + ThemeProvider
+<html lang="en" suppressHydrationWarning>
+  <head>
+    <script dangerouslySetInnerHTML={{
+      __html: `
+        (function() {
+          const theme = '${themePreference}';
+          document.documentElement.setAttribute('data-theme', theme);
+        })();
+      `
+    }} />
+  </head>
+  <body>
+    <ThemeProvider 
+      themePreset={themePreference} 
+      darkModePreference={darkModePreference}
+    >
+      {children}
+    </ThemeProvider>
+  </body>
+</html>
 ```
 
 **Files to Modify:**
-- `web/app/layout.tsx` - Root layout server component
-- `web/components/theme-provider.tsx` - Update theme provider (if needed)
+- `web/app/layout.tsx` - Root layout server component with inline script
+- `web/components/theme-provider.tsx` - Enhanced with themePreset and darkModePreference props
 - `web/components/theme-switcher.tsx` - Update theme switcher to use user prefs
+- **`web/lib/theme-utils.ts` - Helper functions for theme management (NEW)**
 
 **Risks:**
-- Flash of unstyled content (FOUC) during initial load
-- Theme provider conflicts with existing dark mode implementation
+- Flash of unstyled content (FOUC) during initial load → **MITIGATED with inline blocking script**
+- Theme provider conflicts with existing dark mode implementation → **MITIGATED with dual-attribute approach**
 - Need to handle unauthenticated users gracefully
 
 **Rollback:**
@@ -243,28 +294,60 @@ const darkMode = user?.themeDarkMode ?? systemPreference;
   - Selects different theme preset
   - Toggles dark mode
   - Verifies theme persists after reload
+- **Concrete Playwright test scenarios** with expect assertions
+- **Performance budget validation** (theme switch <100ms)
+- **WCAG 2.1 AA automated contrast testing**
 - Update API documentation with new endpoints
 - Update USER_MANUAL.md with theme preferences guide
 - Update DATABASE_SCHEMA.md with new User fields
 - Create migration guide for existing users
 
+**Engineer Modifications:**
+- 5 specific Playwright test scenarios with code examples
+- Performance assertions using `page.waitForTimeout` guards
+- Automated contrast testing with accessibility tree validation
+- Error handling verification in E2E tests
+
 **E2E Test Scenarios:**
-1. User with no preferences → defaults to Original + system
-2. User selects Vibrant Blue theme → persists across reload
-3. User toggles dark mode → applies immediately
-4. User changes theme in settings → UI updates without reload
-5. Theme preset works correctly in light and dark modes
+1. **Default Behavior:** User with no preferences → defaults to Original + system
+2. **Theme Selection:** User selects Vibrant Blue → persists across reload
+3. **Dark Mode Toggle:** User toggles dark mode → applies immediately
+4. **Instant Updates:** Theme change in settings → UI updates without reload
+5. **Error Handling:** API failure → rollback + error message
+
+**Concrete Playwright Examples:**
+```typescript
+test('theme persists after page reload', async ({ page }) => {
+  await page.goto('/settings');
+  await page.selectOption('[data-testid="theme-selector"]', 'vibrant-blue');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'vibrant-blue');
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'vibrant-blue');
+});
+
+test('theme switches in under 100ms', async ({ page }) => {
+  await page.goto('/settings');
+  const startTime = Date.now();
+  await page.selectOption('[data-testid="theme-selector"]', 'teal-accent');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'teal-accent');
+  const duration = Date.now() - startTime;
+  expect(duration).toBeLessThan(100);
+});
+```
 
 **Files to Modify:**
-- `web/e2e/settings-theme.spec.ts` - E2E tests
+- `web/e2e/settings-theme.spec.ts` - E2E tests with Playwright
+- **`web/e2e/theme-performance.spec.ts` - Performance tests (NEW)**
+- **`web/e2e/theme-accessibility.spec.ts` - Accessibility tests (NEW)**
 - `docs/source-of-truth/API_DOCUMENTATION.md` - API docs
 - `docs/source-of-truth/DATABASE_SCHEMA.md` - Schema docs
 - `docs/USER_MANUAL.md` - User guide
 - `docs/DESIGN_SYSTEM.md` - Theme documentation
 
 **Risks:**
-- E2E tests might be flaky if theme transitions aren't stable
+- E2E tests might be flaky if theme transitions aren't stable → **MITIGATED with concrete assertions**
 - Documentation might miss edge cases
+- Performance budget might fail on slow CI → **MITIGATED with reasonable 100ms budget**
 
 **Rollback:**
 - N/A (testing and docs don't affect production)
@@ -523,15 +606,20 @@ All existing components automatically inherit theme tokens via CSS custom proper
 
 ## Timeline Estimate
 
-**Total Sprint Duration:** 11-16 hours (2-3 days for single developer)
+**Total Sprint Duration:** 13-18 hours (2-3 days for single developer)
 
-| Phase | Estimated Time | Critical Path |
-|-------|----------------|---------------|
-| Phase 1: Database & API | 2-3 hours | Yes |
-| Phase 2: CSS Themes | 2-3 hours | Yes |
-| Phase 3: Settings UI | 3-4 hours | Yes |
-| Phase 4: Theme Application | 2-3 hours | Yes |
-| Phase 5: Testing & Docs | 2-3 hours | No (parallel) |
+| Phase | Estimated Time | Critical Path | Engineer Notes |
+|-------|----------------|---------------|----------------|
+| Phase 1: Database & API | 2.5-3.5 hours | Yes | +30 min for enum & DTOs |
+| Phase 2: CSS Themes | 2-3 hours | Yes | No change |
+| Phase 3: Settings UI | 3.5-4.5 hours | Yes | +30 min for optimistic updates |
+| Phase 4: Theme Application | 2.5-3.5 hours | Yes | +30 min for FOUC prevention |
+| Phase 5: Testing & Docs | 2.5-3.5 hours | No (parallel) | +30 min for concrete tests |
+
+**Timeline Changes from Engineer Review:**
+- Added +2 hours total for improved type safety, FOUC prevention, and concrete tests
+- Original estimate: 11-16 hours → Updated estimate: 13-18 hours
+- **Justification:** Production-readiness improvements worth the time investment
 
 **Critical Path:** Phases 1-4 must be completed sequentially. Phase 5 can start once Phase 3 is complete.
 
@@ -676,15 +764,27 @@ These are NOT in scope for this sprint but worth documenting:
 ## Sign-off
 
 **Principal Designer (Sprint Author):** @principal_designer  
+**Principal Engineer (Technical Review):** @principal_engineer  
 **Date Created:** 7 November 2025  
-**Status:** Awaiting @principal_engineer Review
+**Date Reviewed:** 7 November 2025  
+**Status:** Approved with Modifications  
+**Review Document:** See `docs/sprints/user-theme-preferences-ENGINEER-REVIEW.md` for detailed technical analysis
+
+**Engineer Recommendation:** APPROVED WITH MODIFICATIONS (+2 hours)  
+Risk Level: Low → Very Low  
+Production Readiness: High
+
+**Modifications Summary:**
+1. ✅ TypeScript enums for type safety
+2. ✅ Dual-attribute theme approach (works with next-themes)
+3. ✅ Inline blocking script for FOUC prevention
+4. ✅ Optimistic updates with proper rollback
+5. ✅ Concrete Playwright test scenarios
 
 **Next Steps:**
-1. @principal_engineer reviews plan for technical feasibility
-2. @principal_engineer proposes improvements/changes
-3. @principal_designer incorporates feedback
-4. User approves plan
-5. Begin Phase 1 implementation
+1. ✅ User approves modified plan
+2. Move sprint from TASKS_BACKLOG.md to TASKS.md "🔄 In Progress"
+3. Begin Phase 1 implementation
 
 ---
 
