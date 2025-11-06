@@ -29,10 +29,13 @@ This file tracks **current and immediately upcoming work**. For historical conte
   - Branch: `feature/user-theme-preferences-phase1-database-api`
   - Plan: `docs/sprints/user-theme-preferences-phase1-PLAN.md`
   - Merged to sprint branch
-- 🔄 **Phase 2: CSS Theme System (2-3h)** - In Progress
+- ✅ **Phase 2: CSS Theme System (2-3h)** - Completed
   - Branch: `feature/user-theme-preferences-phase2-css-themes`
   - Plan: `docs/sprints/user-theme-preferences-phase2-PLAN.md`
-- ⏳ **Phase 3: Settings UI (4-5h)** - Not Started
+  - Merged to sprint branch
+- 🔄 **Phase 3: Settings UI (4-5h)** - In Progress
+  - Branch: `feature/user-theme-preferences-phase3-settings-ui`
+  - Plan: `docs/sprints/user-theme-preferences-phase3-PLAN.md`
 - ⏳ **Phase 4: Theme Application (2.5-3.5h)** - Not Started
 - ⏳ **Phase 5: Testing & Docs (3-4h)** - Not Started
 
