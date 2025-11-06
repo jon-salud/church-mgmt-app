@@ -9,10 +9,10 @@ You are in **STRICT MODE**. Do not write or modify code until all **Compliance G
 ## 0) Execution Contract (MUST READ FIRST)
 
 **Authoritative sources (priority order):**
-1) **User’s current explicit request**
+1) **User's current explicit request**
 2) **This document** (Strict Mode)
 3) **Codebase** (actual files on disk)
-4) Project docs (e.g., `TASKS.md`, `PRD.md`)
+4) Project docs (e.g., `TASKS.md` for current work, `TASKS_BACKLOG.md`, `TASKS_COMPLETED.md`, `TASKS_FUTURE.md`, `PRD.md`)
 
 **Non‑negotiables (MUST):**
 - Never commit directly to `main`.
@@ -54,7 +54,7 @@ You MUST follow this protocol for all sprint‑based work.
 
 ### 1.2 Phase‑Level
 
-1. **Move Phase to In Progress** in `TASKS.md`.  
+1. **Move Phase to In Progress** in `TASKS.md` (check `TASKS_BACKLOG.md` for planned work).  
 2. **Create Phase Branch** from the sprint branch:  
    `feature/{sprint-name}-phase{N}-{brief-description}`.  
 3. **Create Phase Plan BEFORE coding**:  
@@ -64,7 +64,7 @@ You MUST follow this protocol for all sprint‑based work.
 4. **Implement & Review** on the phase branch; keep tests green.  
 5. **Document Accomplishments**: append `## Accomplishments` to the phase plan.  
 6. **Create Phase PR** → sprint branch (NOT `main`) with links to plan & commits. DO NOT merge - wait for review.
-7. **Update `TASKS.md`** to "✅ Completed" with brief summary + commit hashes.
+7. **Update `TASKS.md`** to "✅ Completed" with brief summary + commit hashes. Move completed work to `TASKS_COMPLETED.md` for historical record.
 
 **Rules Recap**  
 - **NEVER** branch a phase from `main`.  
@@ -80,7 +80,8 @@ You MUST follow this protocol for all sprint‑based work.
 You MUST pass each gate in order. If any check fails, **STOP** and ask the user.
 
 ### Gate A — Readiness & Understanding
-- Read `TASKS.md` and relevant `docs/source-of-truth/*`.
+- Read `TASKS.md` for current work, `TASKS_BACKLOG.md` for upcoming features, and relevant `docs/source-of-truth/*`.
+- Check `TASKS_COMPLETED.md` for historical context if needed.
 - Ask clarifying questions until **zero ambiguity**.
 - Produce **Readiness Receipt JSON** (see §3) and wait for explicit approval.
 
@@ -168,11 +169,11 @@ Before changes, identify dependencies and risks:
 
 ## 6) End‑to‑End Workflow
 
-1) **Understand** → read `TASKS.md`, `docs/source-of-truth/*`; ask questions.  
+1) **Understand** → read `TASKS.md` (current work), `TASKS_BACKLOG.md` (upcoming), `TASKS_COMPLETED.md` (history as needed), `docs/source-of-truth/*`; ask questions.  
 2) **Plan** → produce step‑by‑step plan + **Readiness Receipt JSON**; wait for approval.  
 3) **TDD** → write tests first; see them fail (red).  
 4) **Execute** → minimal implementation to pass tests (green); refactor safely; verify; format.  
-5) **Docs** → update `TASKS.md`; update `docs/source-of-truth/*`, `PRD.md`, `USER_MANUAL.md` if impacted; append `## Accomplishments`.  
+5) **Docs** → update `TASKS.md` (current work); move completed items to `TASKS_COMPLETED.md`; update `docs/source-of-truth/*`, `PRD.md`, `USER_MANUAL.md` if impacted; append `## Accomplishments`.  
 6) **Submit** → Create Phase PR → sprint branch; Create Sprint PR → `main` when all phases complete (both PRs require review before merge).
 
 ---
@@ -215,6 +216,6 @@ docs/
 - [ ] Implementing without user‑approved **Readiness Receipt**  
 - [ ] Running multiple formatters or skipping format checks  
 - [ ] Missing regression searches for symbol usages  
-- [ ] Forgetting to update `TASKS.md`  
+- [ ] Forgetting to update `TASKS.md` and move completed work to `TASKS_COMPLETED.md`  
 - [ ] Opening phase PR directly to `main`
 - [ ] Auto-merging PRs without review
