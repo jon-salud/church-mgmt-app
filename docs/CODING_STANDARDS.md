@@ -146,7 +146,7 @@ about for all developers.
   - Implement proper validation before state updates
   - Always handle edge cases (undefined, null, empty strings)
 
-### 5.3. Styling
+### 5.5. Styling
 
 - **Tailwind CSS:** All styling should be done using Tailwind CSS utility classes. Avoid writing
   custom CSS files.
@@ -159,6 +159,281 @@ about for all developers.
 - **Component Selection:**
   - **Flowbite Components** (`ui-flowbite/`): Alert, Button, Checkbox, Dialog, Dropdown, Input, Label, Modal, Progress, Select, Spinner, Table, Textarea
   - **Legacy Components** (`ui/`): Modal (custom), PageHeader, Card, Table (custom), Progress (custom)
+
+### 5.6. UI Component Guidelines
+
+See [`docs/DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) for the comprehensive design system reference. This section provides practical rules for consistent UI implementation.
+
+#### 5.6.1. Design Token Usage
+
+**Color System (HSL-based):**
+- Always use CSS custom properties from `web/app/globals.css`:
+  - Backgrounds: `--background`, `--background-subtle`
+  - Cards: `--card`, `--card-hover`
+  - Semantic colors: `--primary`, `--secondary`, `--destructive`, `--muted`
+- Never hardcode colors (e.g., `#fff`, `rgb()`, `oklch()`)
+- Use Tailwind utilities that map to these tokens: `bg-card`, `text-primary`, `border-border`
+- Tokens automatically adapt to light/dark mode
+
+**Border Radius:**
+- Use tokens from globals.css: `--radius-sm` (6px), `--radius` (8px), `--radius-lg` (12px), `--radius-xl` (16px), `--radius-full` (pill)
+- Cards: `rounded-lg` (12px)
+- Buttons: `rounded` (8px)
+- Inputs: `rounded` (8px)
+- Badges/Pills: `rounded-full`
+- Modals: `rounded-lg` (12px)
+
+**Shadows (for elevation/depth):**
+- Buttons (default): `shadow-sm` (subtle)
+- Cards (resting): `shadow-md` (medium)
+- Cards (hover): `shadow-lg` (large, interactive feedback)
+- Modals/Dialogs: `shadow-xl` (extra large)
+- Avoid `shadow` (default Tailwind) unless specifically needed
+- Never use `shadow-2xl` (reserved for tooltips/popovers)
+
+**Typography:**
+- Use utility classes from `globals.css`:
+  - Display: `.heading-display` (3rem bold, page titles)
+  - Headings: `.heading-1` through `.heading-5` (2.25rem → 1rem)
+  - Body: `.body-text` (1rem) and `.body-text-sm` (0.875rem)
+  - Captions: `.caption-text` (0.75rem) and `.caption-text-xs` (0.625rem)
+- Never use arbitrary text sizes (e.g., `text-[18px]`)
+- Prefer semantic classes over Tailwind size utilities (e.g., `.heading-2` over `text-2xl font-bold`)
+
+**Spacing:**
+- Use Tailwind spacing scale (0.25rem = 1 unit, 0.5rem = 2 units, etc.)
+- Standard gaps:
+  - Card padding: `p-6` (1.5rem)
+  - Section spacing: `space-y-6` (1.5rem)
+  - Form field groups: `space-y-4` (1rem)
+  - Button groups: `space-x-2` (0.5rem)
+  - Tight groups: `space-y-2` (0.5rem)
+
+#### 5.6.2. Component Variants
+
+**Button:**
+```tsx
+// Primary action (most important on page)
+<Button variant="default">Save</Button>
+
+// Secondary action (less important)
+<Button variant="outline">Cancel</Button>
+
+// Destructive action (delete, remove)
+<Button variant="destructive">Delete</Button>
+
+// Ghost action (minimal visual weight)
+<Button variant="ghost">View Details</Button>
+
+// Link action (text-like)
+<Button variant="link">Learn More</Button>
+```
+
+**Rules:**
+- Only ONE primary button (`variant="default"`) per visible section
+- Destructive buttons must confirm before action (modal or inline confirmation)
+- Loading state: `<Button disabled>{isLoading ? 'Loading...' : 'Submit'}</Button>`
+- Icons: left-aligned for actions, right-aligned for navigation
+
+**Card:**
+```tsx
+// Default card (content container)
+<Card className="shadow-md">
+  <CardHeader>
+    <CardTitle>Title</CardTitle>
+    <CardDescription>Optional subtitle</CardDescription>
+  </CardHeader>
+  <CardContent>
+    {/* Main content */}
+  </CardContent>
+</Card>
+
+// Interactive card (clickable, hoverable)
+<Card className="shadow-md hover:shadow-lg cursor-pointer transition-shadow">
+  {/* Content */}
+</Card>
+
+// Elevated card (higher visual priority)
+<Card className="shadow-lg">
+  {/* Content */}
+</Card>
+```
+
+**Rules:**
+- Default elevation: `shadow-md`
+- Interactive cards: add `hover:shadow-lg` and `cursor-pointer`
+- Important/modal cards: `shadow-xl`
+- Never stack cards inside cards (flatten hierarchy)
+- Card padding: `p-6` for content, `p-4` for compact layouts
+
+**Input & Textarea:**
+```tsx
+// Text input
+<Input type="text" placeholder="Enter text" />
+
+// Required field
+<Input type="text" required />
+
+// Error state (validation)
+<Input type="text" error="This field is required" className="border-destructive" />
+
+// Disabled state
+<Input type="text" disabled />
+
+// Textarea (multiline)
+<Textarea rows={4} placeholder="Enter description" />
+```
+
+**Rules:**
+- Always pair with `<Label>` for accessibility
+- Show error messages below input (red text, `text-destructive`)
+- Use `placeholder` for hints, not as label replacement
+- Disabled inputs: `opacity-50 cursor-not-allowed`
+- Error state: `border-destructive focus:ring-destructive`
+
+**Select (Dropdown):**
+```tsx
+<Select value={value} onChange={setValue}>
+  <option value="">Select an option</option>
+  <option value="option1">Option 1</option>
+  <option value="option2">Option 2</option>
+</Select>
+```
+
+**Rules:**
+- Always include a default "Select..." option with empty value
+- Use `value` (controlled) not `defaultValue` (uncontrolled)
+- For accessibility: wrap in `<Label>` or use `aria-label`
+- Multi-select: consider checkbox list instead of native `<select multiple>`
+
+#### 5.6.3. Layout Patterns
+
+**Page Header:**
+```tsx
+<div className="mb-6">
+  <h1 className="heading-2 mb-2">Page Title</h1>
+  <p className="body-text-sm text-muted-foreground">Optional description</p>
+</div>
+```
+
+**Form Layout:**
+```tsx
+<form className="space-y-4">
+  <div className="space-y-2">
+    <Label htmlFor="field">Field Label</Label>
+    <Input id="field" type="text" />
+  </div>
+  <div className="space-y-2">
+    <Label htmlFor="textarea">Description</Label>
+    <Textarea id="textarea" rows={3} />
+  </div>
+  <div className="flex gap-2 justify-end">
+    <Button variant="outline">Cancel</Button>
+    <Button variant="default">Submit</Button>
+  </div>
+</form>
+```
+
+**Card Grid (responsive):**
+```tsx
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+  <Card className="shadow-md">...</Card>
+  <Card className="shadow-md">...</Card>
+  <Card className="shadow-md">...</Card>
+</div>
+```
+
+**List Pattern:**
+```tsx
+<div className="space-y-4">
+  {items.map(item => (
+    <Card key={item.id} className="shadow-md hover:shadow-lg cursor-pointer transition-shadow">
+      {/* Item content */}
+    </Card>
+  ))}
+</div>
+```
+
+#### 5.6.4. Accessibility Requirements
+
+**Focus States:**
+- All interactive elements must have visible focus indicators
+- Universal focus style: `ring-2 ring-ring ring-offset-2 ring-offset-background`
+- Never remove focus outlines with `outline-none` without replacement
+- Test keyboard navigation (Tab, Shift+Tab, Enter, Escape)
+
+**Motion Preferences:**
+- All animations/transitions respect `prefers-reduced-motion` media query
+- Default: `transition-all duration-200`
+- Reduced motion: `transition-none` or instant changes
+- Avoid gratuitous animation (subtle > flashy)
+
+**Color Contrast:**
+- All text must meet WCAG 2.1 AA standards (4.5:1 for normal text, 3:1 for large text)
+- Test in both light and dark modes
+- Never rely on color alone to convey information (add icons or text)
+
+**Semantic HTML:**
+- Use proper heading hierarchy (`<h1>` → `<h2>` → `<h3>`)
+- Use `<button>` for actions, `<a>` for navigation
+- Form inputs must have associated `<label>` elements
+- Use ARIA attributes when semantic HTML is insufficient
+
+**Keyboard Navigation:**
+- All interactive elements must be keyboard accessible
+- Modal dialogs: trap focus, close on Escape
+- Dropdowns: arrow keys for navigation, Enter to select
+- Skip links: provide "Skip to main content" for screen readers
+
+#### 5.6.5. Testing UI Changes
+
+Before committing UI changes, verify:
+
+1. **Visual Regression:**
+   - Test in both light and dark modes
+   - Verify on multiple screen sizes (mobile, tablet, desktop)
+   - Check hover states, focus states, active states
+   - Confirm shadows, spacing, and typography are consistent
+
+2. **Accessibility:**
+   - Run keyboard-only navigation test (unplug mouse)
+   - Verify all interactive elements have focus indicators
+   - Check color contrast with browser DevTools
+   - Test with screen reader (VoiceOver on macOS, NVDA on Windows)
+
+3. **Responsive Design:**
+   - Test breakpoints: `sm` (640px), `md` (768px), `lg` (1024px), `xl` (1280px)
+   - Verify no horizontal scroll on small screens
+   - Check touch target sizes (minimum 44x44px for mobile)
+
+4. **Performance:**
+   - Avoid excessive re-renders (use React DevTools Profiler)
+   - Optimize images (use Next.js `<Image>` component)
+   - Minimize layout shifts (reserve space for dynamic content)
+
+#### 5.6.6. Common Mistakes to Avoid
+
+❌ **Don't:**
+- Hardcode colors (`bg-white`, `text-black`, hex values)
+- Use arbitrary values (`p-[23px]`, `text-[17px]`)
+- Mix shadow sizes inconsistently (button with `shadow-xl`, card with `shadow-sm`)
+- Skip hover states on interactive elements
+- Use `shadow` (Tailwind default) for cards or buttons
+- Nest cards inside cards
+- Remove focus outlines without replacement
+- Use `any` type in TypeScript
+- Create one-off component variants (extend existing variants instead)
+
+✅ **Do:**
+- Use design tokens (`bg-card`, `text-primary`, `shadow-md`)
+- Use standard spacing scale (`p-6`, `gap-4`, `space-y-2`)
+- Apply consistent shadows: buttons `shadow-sm`, cards `shadow-md`, modals `shadow-xl`
+- Add hover states (`hover:shadow-lg`, `hover:bg-accent`)
+- Use `shadow-sm` for buttons, `shadow-md` for cards at rest
+- Flatten card hierarchies with sections or dividers
+- Maintain visible focus indicators on all interactive elements
+- Type everything explicitly (no `any`)
+- Reuse existing components and variants from `ui-flowbite/`
 
 ---
 
