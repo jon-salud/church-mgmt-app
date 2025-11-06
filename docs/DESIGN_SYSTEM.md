@@ -246,7 +246,7 @@ shadow-2xl  /* Maximum elevation - rarely used */
 
 | Component | Default | Hover | Purpose |
 |-----------|---------|-------|---------|
-| **Cards** | `shadow-sm` | `shadow-md` | List items, content cards |
+| **Cards** | `shadow-md` | `shadow-lg` | List items, content cards |
 | **Forms** | `shadow-sm` | - | Input fields (focus uses ring) |
 | **Dropdowns** | `shadow-md` | - | Menus, select options |
 | **Modals** | `shadow-lg` | - | Dialogs, overlays |
