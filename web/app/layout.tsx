@@ -3,6 +3,7 @@ import './globals.css';
 import { ServiceWorkerRegister } from '../components/service-worker-register';
 import { ThemeProvider } from '../components/theme-provider';
 import { AppLayout } from './app-layout';
+import { getUserTheme } from './actions/theme';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,10 +18,35 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Fetch user theme preferences server-side (before hydration)
+  const theme = await getUserTheme();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning data-theme={theme.themePreference}>
+      <head>
+        {/* Inline script to prevent FOUC (Flash of Unstyled Content) */}
+        {/* This applies the theme before React hydration */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const theme = '${theme.themePreference}';
+                  document.documentElement.setAttribute('data-theme', theme);
+                } catch (e) {
+                  // Silently fail - defaults will apply
+                }
+              })();
+            `,
+          }}
+        />
+      </head>
       <body className="min-h-screen">
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme={theme.themeDarkMode ? 'dark' : 'light'}
+          enableSystem={false}
+        >
           <AppLayout>{children}</AppLayout>
           <ServiceWorkerRegister />
         </ThemeProvider>
