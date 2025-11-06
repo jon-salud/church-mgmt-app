@@ -51,7 +51,7 @@ The frontend applications implement a comprehensive design system built on moder
 #### 2.3.1. Technology Stack
 
 - **Styling Framework:** Tailwind CSS 3.4+ - Utility-first CSS framework providing the foundation for all styling
-- **Component Library:** Flowbite React 0.12.10 - React component library with 20+ wrapper components in `web/components/ui-flowbite/`
+- **Component Library:** Flowbite React 0.12.10 - React component library with 13 wrapper components in `web/components/ui-flowbite/`
 - **Design Token System:** CSS custom properties in HSL color space defined in `web/app/globals.css` (50+ tokens)
 - **Icon Library:** Lucide React 0.546.0 - Consistent iconography across the application
 - **Utility Libraries:** clsx, tailwind-merge, class-variance-authority for dynamic styling and component variants
@@ -66,8 +66,8 @@ The design system uses CSS custom properties (CSS variables) for all design toke
   - Interactive states: `--ring` (focus), `--border`, `--input`
   - Popover/modal: `--popover`, `--popover-foreground`
 - **Shadow Scale:** Tailwind's built-in shadow utilities (`shadow-sm` through `shadow-2xl`)
-- **Border Radius:** Five-level scale from `--radius-sm` (0.125rem) to `--radius-full` (9999px)
-- **Typography Scale:** Eleven utility classes from `.heading-display` (72px) to `.caption-text-xs` (10px)
+- **Border Radius:** Five-level scale from `--radius-sm` (0.375rem) to `--radius-full` (9999px)
+- **Typography Scale:** Ten utility classes from `.heading-display` (text-4xl) to `.caption-text-xs` (text-xs)
 - **Spacing:** Tailwind's default spacing scale (0.25rem base unit)
 
 **Dark Mode Implementation:**
@@ -86,13 +86,13 @@ All UI components are located in `web/components/ui-flowbite/` and follow a wrap
 - Enables gradual component enhancements without breaking changes
 - Provides type-safe React component interfaces
 
-**Core Components:**
+**Core Components (13 total):**
 - **Button:** 5 variants (default, outline, secondary, ghost, destructive) mapped to Flowbite color system
 - **Card:** Elevation system using Tailwind shadows (sm: resting, md: default, lg: hover, xl: modal)
 - **Input/Textarea:** Error state support, focus indicators, consistent styling
 - **Form Components:** Select, Checkbox, Label with WCAG-compliant markup
-- **Overlay Components:** Dialog, Modal, Dropdown with focus trap and keyboard navigation
-- **Data Display:** Table, Progress, Alert with responsive design
+- **Overlay Components:** Dialog, Modal, DropdownMenu with focus trap and keyboard navigation
+- **Data Display:** Table, Progress with responsive design
 - **Layout:** PageHeader for consistent page structure
 
 **Component Design Principles:**

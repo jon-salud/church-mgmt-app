@@ -28,7 +28,7 @@ These requirements establish the foundational user interface design system that 
 - **FR-UI-002:** Color tokens shall use HSL color space to enable precise lightness adjustments between light and dark themes.
 - **FR-UI-003:** Background and card colors shall maintain a minimum 2% lightness difference for visual hierarchy and depth.
 - **FR-UI-004:** All semantic colors shall have both light and dark mode variants defined in `web/app/globals.css`.
-- **FR-UI-005:** The system shall support five border-radius tokens: sm (0.125rem), default (0.375rem), md (0.5rem), lg (1rem), and full (9999px).
+- **FR-UI-005:** The system shall support five border-radius tokens: sm (0.375rem), default (0.5rem), lg (0.75rem), xl (1rem), and full (9999px).
 
 ### A.0.2. Component Variants
 
@@ -48,11 +48,10 @@ These requirements establish the foundational user interface design system that 
 
 ### A.0.3. Typography System
 
-- **FR-UI-011:** The system shall provide eleven typography utility classes spanning from `.heading-display` (72px) to `.caption-text-xs` (10px).
+- **FR-UI-011:** The system shall provide ten typography utility classes spanning from `.heading-display` (text-4xl) to `.caption-text-xs` (text-xs).
 - **FR-UI-012:** Typography utilities shall include:
-  - Display headings: `heading-display`, `heading-1`, `heading-2`, `heading-3`
-  - Body text: `body-text-lg`, `body-text`, `body-text-sm`
-  - Labels: `label-text`, `label-text-sm`
+  - Display headings: `heading-display`, `heading-1`, `heading-2`, `heading-3`, `heading-4`, `heading-5`
+  - Body text: `body-text`, `body-text-sm`
   - Captions: `caption-text`, `caption-text-xs`
 - **FR-UI-013:** All typography classes shall be defined in `web/app/globals.css` with consistent line-height ratios.
 
