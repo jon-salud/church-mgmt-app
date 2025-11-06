@@ -263,8 +263,8 @@ export function AnnouncementsClient({
     <section className="space-y-6">
       <header className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div className="space-y-2">
-          <h1 className="text-3xl font-semibold">Announcements</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="heading-1">Announcements</h1>
+          <p className="caption-text">
             Share updates across the church or target specific groups with scheduling controls.
           </p>
           {isOffline ? (
@@ -302,7 +302,7 @@ export function AnnouncementsClient({
       </header>
 
       {isAdmin && sortedAnnouncements.length > 0 && (
-        <div className="flex items-center gap-3 rounded-lg border border-border bg-card/60 p-3">
+        <div className="flex items-center gap-3 rounded-lg border border-border bg-card p-3 shadow-md">
           <Checkbox
             id="select-all-announcements"
             checked={allSelected}
@@ -353,7 +353,7 @@ export function AnnouncementsClient({
           return (
             <article
               key={announcement.id}
-              className={`rounded-xl border border-border bg-card/60 p-5 shadow-lg shadow-black/5 ${
+              className={`rounded-lg border border-border bg-card p-6 shadow-md hover:shadow-lg transition-shadow duration-200 ${
                 announcement.deletedAt ? 'opacity-60' : ''
               }`}
             >
@@ -375,9 +375,7 @@ export function AnnouncementsClient({
                   <header className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                     <div className="space-y-2">
                       <div className="flex items-center gap-2">
-                        <h2 className="text-xl font-semibold text-foreground">
-                          {announcement.title}
-                        </h2>
+                        <h2 className="heading-2">{announcement.title}</h2>
                         {announcement.deletedAt && (
                           <span className="rounded-full border border-border px-2 py-0.5 text-xs uppercase tracking-wide text-muted-foreground">
                             Archived

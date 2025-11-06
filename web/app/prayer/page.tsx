@@ -7,7 +7,7 @@ export default async function PrayerWallPage() {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Public Prayer Wall</h1>
+      <h1 className="heading-1 mb-4">Public Prayer Wall</h1>
       <PrayerWallClientPage prayerRequests={prayerRequests} />
     </div>
   );
