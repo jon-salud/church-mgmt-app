@@ -163,24 +163,26 @@ export class ThemeResponseDto {
   type: ThemeResponseDto,
 })
 @ApiResponse({ status: 401, description: 'Unauthorized' })
-async getMyTheme(@Request() req): Promise<ThemeResponseDto> {
-  const userId = req.user.sub;
-  const churchId = req.user.churchId;
+async getMyTheme(@Req() req: any): Promise<ThemeResponseDto> {
+  const userId = req.user.id; // JWT contains user.id, not user.sub
   
-  const theme = await this.usersService.getUserTheme(userId, churchId);
-  
-  return {
-    themePreference: theme.themePreference || ThemePreset.ORIGINAL,
-    themeDarkMode: theme.themeDarkMode ?? false,
-  };
+  // Tenant isolation handled by repository layer via User entity
+  return this.usersService.getUserTheme(userId);
 }
 ```
 
 **Design Decisions:**
-- Uses existing authentication middleware (JWT)
-- Leverages `req.user` for tenant isolation (`churchId`)
-- Returns defaults for users without preferences
+- Uses existing authentication middleware (JWT with `req.user.id`)
+- Tenant isolation handled transparently by User entity (contains `churchId`)
+- Repository pattern ensures data access is tenant-scoped automatically
+- Returns defaults for users without preferences (ORIGINAL theme + light mode)
 - OpenAPI documentation auto-generated from decorators
+
+**Note on Tenant Isolation:**
+The JWT contains `user.id` (not `user.sub` or `user.churchId`). The repository layer fetches the User entity, which includes `churchId` as a property. This means:
+- No need to pass `churchId` as a parameter to service methods
+- Tenant isolation is guaranteed by the domain model architecture
+- User can only access/modify their own theme (controlled by `userId`)
 
 #### Endpoint 2: Update Current User's Theme
 
@@ -196,22 +198,13 @@ async getMyTheme(@Request() req): Promise<ThemeResponseDto> {
 @ApiResponse({ status: 400, description: 'Invalid theme data' })
 @ApiResponse({ status: 401, description: 'Unauthorized' })
 async updateMyTheme(
-  @Request() req,
-  @Body() updateThemeDto: UpdateThemeDto,
+  @Req() req: any,
+  @Body() updateThemeDto: UpdateThemeDto
 ): Promise<ThemeResponseDto> {
-  const userId = req.user.sub;
-  const churchId = req.user.churchId;
+  const userId = req.user.id; // JWT contains user.id
   
-  const updatedTheme = await this.usersService.updateUserTheme(
-    userId,
-    churchId,
-    updateThemeDto,
-  );
-  
-  return {
-    themePreference: updatedTheme.themePreference as ThemePreset,
-    themeDarkMode: updatedTheme.themeDarkMode,
-  };
+  // Tenant isolation handled by repository layer via User entity
+  return this.usersService.updateUserTheme(userId, updateThemeDto);
 }
 ```
 
@@ -219,92 +212,77 @@ async updateMyTheme(
 - Accepts partial updates (only changed fields)
 - Returns full theme state after update
 - Automatic validation via `UpdateThemeDto`
-- Tenant-scoped update (prevents cross-church modifications)
+- Tenant-scoped update (user can only modify their own theme)
+- Repository pattern ensures tenant isolation via User entity
 
 ### 5. Service Layer Implementation
 
 **Location:** `api/src/modules/users/users.service.ts` (modifications)
 
+**Implementation Pattern:** Uses repository pattern (IUsersRepository) instead of direct Prisma access. Tenant isolation is handled transparently by the User domain entity and repository layer.
+
 ```typescript
 /**
  * Get user's theme preferences
- * @param userId User ID
- * @param churchId Church ID (tenant isolation)
+ * @param userId User ID (tenant isolation handled by repository)
  * @returns Theme preferences or defaults
  */
-async getUserTheme(userId: string, churchId: string) {
-  const user = await this.prisma.user.findUnique({
-    where: {
-      id_churchId: {
-        id: userId,
-        churchId: churchId,
-      },
-    },
-    select: {
-      themePreference: true,
-      themeDarkMode: true,
-    },
-  });
+async getUserTheme(userId: string) {
+  const id = UserId.create(userId);
+  const user = await this.repo.getUserProfile(id);
 
   if (!user) {
     throw new NotFoundException('User not found');
   }
 
   return {
-    themePreference: user.themePreference || ThemePreset.ORIGINAL,
+    themePreference: (user.themePreference as ThemePreset) || ThemePreset.ORIGINAL,
     themeDarkMode: user.themeDarkMode ?? false,
   };
 }
 
 /**
  * Update user's theme preferences
- * @param userId User ID
- * @param churchId Church ID (tenant isolation)
+ * @param userId User ID (tenant isolation handled by repository)
  * @param updateThemeDto Theme updates
  * @returns Updated theme preferences
  */
-async updateUserTheme(
-  userId: string,
-  churchId: string,
-  updateThemeDto: UpdateThemeDto,
-) {
+async updateUserTheme(userId: string, updateThemeDto: UpdateThemeDto) {
   // Validate theme preset if provided
-  if (updateThemeDto.themePreference && 
-      !isValidThemePreset(updateThemeDto.themePreference)) {
+  if (updateThemeDto.themePreference && !isValidThemePreset(updateThemeDto.themePreference)) {
     throw new BadRequestException('Invalid theme preset');
   }
 
-  const updatedUser = await this.prisma.user.update({
-    where: {
-      id_churchId: {
-        id: userId,
-        churchId: churchId,
-      },
-    },
-    data: {
-      ...(updateThemeDto.themePreference !== undefined && {
-        themePreference: updateThemeDto.themePreference,
-      }),
-      ...(updateThemeDto.themeDarkMode !== undefined && {
-        themeDarkMode: updateThemeDto.themeDarkMode,
-      }),
-    },
-    select: {
-      themePreference: true,
-      themeDarkMode: true,
-    },
-  });
+  const id = UserId.create(userId);
+  const actorId = id; // User updating their own theme
 
-  return updatedUser;
+  const updateData: any = { actorUserId: actorId };
+  if (updateThemeDto.themePreference !== undefined) {
+    updateData.themePreference = updateThemeDto.themePreference;
+  }
+  if (updateThemeDto.themeDarkMode !== undefined) {
+    updateData.themeDarkMode = updateThemeDto.themeDarkMode;
+  }
+
+  const updatedUser = await this.repo.updateUser(id, updateData);
+  if (!updatedUser) {
+    throw new NotFoundException('User not found');
+  }
+
+  return {
+    themePreference: (updatedUser.themePreference as ThemePreset) || ThemePreset.ORIGINAL,
+    themeDarkMode: updatedUser.themeDarkMode ?? false,
+  };
 }
 ```
 
 **Service Layer Responsibilities:**
-- Tenant isolation via composite key (`id_churchId`)
+- Tenant isolation handled by repository layer (User entity contains churchId)
 - Default value handling for nullable fields
 - Additional validation beyond DTOs
-- Prisma transaction management
+- Repository pattern for data access (not direct Prisma)
 - Proper error handling (NotFoundException, BadRequestException)
+- Uses domain value objects (UserId) for type safety
 
 ---
 
