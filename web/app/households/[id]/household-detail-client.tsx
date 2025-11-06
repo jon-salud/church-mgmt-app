@@ -128,12 +128,12 @@ export function HouseholdDetailClient({
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold">{household.name}</h1>
-        <p className="text-sm text-muted-foreground">{household.address}</p>
+        <h1 className="heading-1">{household.name}</h1>
+        <p className="caption-text">{household.address}</p>
       </div>
 
       <div>
-        <h2 className="text-xl font-bold">Members</h2>
+        <h2 className="heading-2">Members</h2>
         <div className="mt-4 flex flex-col gap-4">
           {household.members?.length ? (
             household.members.map(member => (
@@ -141,9 +141,9 @@ export function HouseholdDetailClient({
                 id={`member-link-${member.id}`}
                 key={member.id}
                 href={`/members/${member.id}`}
-                className="block rounded-lg border border-border p-4 transition hover:bg-muted"
+                className="block rounded-lg border border-border p-5 shadow-md hover:shadow-lg transition-shadow duration-200"
               >
-                <h3 className="text-lg font-semibold">
+                <h3 className="heading-2">
                   {member.profile?.firstName} {member.profile?.lastName}
                 </h3>
                 <p className="text-sm text-muted-foreground">{member.profile?.householdRole}</p>
@@ -157,7 +157,7 @@ export function HouseholdDetailClient({
 
       <div>
         <div className="flex items-center justify-between">
-          <h2 className="text-xl font-bold">Children</h2>
+          <h2 className="heading-2">Children</h2>
           {canManageSoftDelete && (
             <Button
               variant="outline"

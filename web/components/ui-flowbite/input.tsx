@@ -4,12 +4,24 @@ import * as React from 'react';
 import { TextInput } from 'flowbite-react';
 import type { TextInputProps } from 'flowbite-react';
 
-// Maintain exact same API as current Input component
-type Props = React.InputHTMLAttributes<HTMLInputElement>;
+/**
+ * Enhanced Input component with error state support.
+ * Uses Flowbite's color='failure' prop for error styling (red borders and focus rings).
+ */
+type Props = React.InputHTMLAttributes<HTMLInputElement> & {
+  error?: boolean;
+};
 
 export const Input = React.forwardRef<HTMLInputElement, Props>(
-  ({ className = '', ...props }, ref) => {
-    return <TextInput ref={ref} className={className} {...(props as TextInputProps)} />;
+  ({ className = '', error = false, ...props }, ref) => {
+    return (
+      <TextInput
+        ref={ref}
+        color={error ? 'failure' : undefined}
+        className={className}
+        {...(props as TextInputProps)}
+      />
+    );
   }
 );
 

@@ -68,8 +68,8 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
     <section className="space-y-6">
       <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="space-y-1">
-          <h1 className="text-3xl font-semibold">Member Directory</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 className="heading-1">Member Directory</h1>
+          <p className="caption-text">
             Search and drill into profiles, roles, and group involvement.
           </p>
         </div>
@@ -115,7 +115,7 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
         </div>
       </header>
 
-      <div className="overflow-x-auto rounded-xl border border-border bg-card/60">
+      <div className="overflow-x-auto rounded-lg border border-border bg-card shadow-md">
         <table className="min-w-full text-sm" aria-describedby="members-table-caption">
           <caption
             id="members-table-caption"

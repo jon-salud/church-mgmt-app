@@ -16,8 +16,11 @@ export function PrayerWallClientPage({ prayerRequests }: { prayerRequests: Praye
   return (
     <div className="space-y-4">
       {prayerRequests.map(request => (
-        <div key={request.id} className="p-4 border border-border bg-card rounded-md">
-          <h2 className="text-xl font-bold">{request.title}</h2>
+        <div
+          key={request.id}
+          className="p-5 border border-border bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
+        >
+          <h2 className="heading-2">{request.title}</h2>
           <p className="text-foreground">{request.description}</p>
           <div className="flex items-center justify-between mt-4">
             <span className="text-sm text-muted-foreground">
