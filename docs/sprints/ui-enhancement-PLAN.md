@@ -77,7 +77,7 @@ This sprint enhances the Church Management App's design system to achieve a **mo
 - Go/no-go decision for Phase 2 enhancements
 
 **Acceptance Criteria:**
-- [ ] All Flowbite Button colors tested (gray, light, failure, etc.)
+- [ ] All Flowbite Button colors tested (gray, light, red, blue, green, etc.)
 - [ ] Theme variable override compatibility verified
 - [ ] Dark mode integration validated
 - [ ] API limitations documented
@@ -143,14 +143,11 @@ This sprint enhances the Church Management App's design system to achieve a **mo
     --background: 222.2 84% 4.9%;        /* Keep existing */
     --background-subtle: 217.2 32.6% 17.5%;
     --card: 222.2 70% 8%;                /* Subtle lift (refined from 15%) */
-    --card-hover: 222.2 70% 10%;         /* Hover state
+    --card-hover: 222.2 70% 10%;         /* Hover state */
     
-    /* Dark mode shadows - more pronounced */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
-    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4), 0 1px 2px -1px rgb(0 0 0 / 0.4);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.6), 0 4px 6px -4px rgb(0 0 0 / 0.6);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.7), 0 8px 10px -6px rgb(0 0 0 / 0.7);
+    /* NOTE: No custom shadow variables for dark mode. */
+    /* Tailwind's built-in shadow utilities (e.g., shadow-sm, shadow, shadow-md, etc.) */
+    /* automatically adjust for dark mode based on the theme. */
   }
 }
 
@@ -248,7 +245,7 @@ export function Button({
     outline: 'light',       // Outlined secondary action
     secondary: 'light',     // Lighter secondary action
     ghost: 'gray',          // No background, styled via className
-    destructive: 'failure', // Flowbite's red/error color
+    destructive: 'red',     // Flowbite's red/error color
   };
   
   // Map sizes to Flowbite's size system
@@ -633,7 +630,7 @@ The codebase recently completed a Flowbite migration (documented in `docs/FLOWBI
 
 **2. Flowbite Button API**
 - Uses `color` prop for variants (not `variant`)
-- Available colors: `gray`, `light`, `blue`, `red`, `failure`, `success`, etc.
+- Available colors: `gray`, `light`, `blue`, `red`, `success`, etc.
 - Our wrapper maps `variant` → Flowbite `color`
 - Ghost variant requires custom CSS via `className`
 
@@ -1012,7 +1009,7 @@ Light Mode:
 
 Dark Mode:
   --background: 222.2 84% 4.9%
-  --card: 217.2 32.6% 15%
+  --card: 222.2 70% 8%
   --primary: 210 40% 98%
   --accent: 217.2 32.6% 17.5%
 ```
