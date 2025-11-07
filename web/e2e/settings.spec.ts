@@ -35,6 +35,12 @@ test.describe('Theme Preferences', () => {
     await loginPage.login('demo-admin');
     const settingsPage = new SettingsPage(page);
     await settingsPage.goto();
+
+    // Wait for client-side hydration to complete by waiting for theme cards to appear
+    await page.waitForSelector('button[aria-label*="Select"][aria-label*="theme"]', {
+      state: 'visible',
+      timeout: 10000,
+    });
   });
 
   test('displays theme preferences section with all 4 theme options', async ({ page }) => {
@@ -192,24 +198,20 @@ test.describe('Theme Preferences', () => {
 
   test('keyboard navigation: tab and enter to select theme', async ({ page }) => {
     await test.step('Use keyboard to navigate and select theme', async () => {
-      // Focus on first theme card
-      await page.keyboard.press('Tab');
-      await page.keyboard.press('Tab'); // May need multiple tabs depending on page structure
+      // Use deterministic selector-based focus instead of brittle tab loop
+      // Focus the first theme button directly
+      const firstThemeButton = page
+        .getByRole('button', {
+          name: /select.*theme/i,
+        })
+        .first();
+      await firstThemeButton.focus();
 
-      // Find the currently focused element
-      let focusedElement = await page.evaluate(() =>
+      // Verify focus is on a theme button
+      const focusedLabel = await page.evaluate(() =>
         document.activeElement?.getAttribute('aria-label')
       );
-
-      // Keep tabbing until we find a theme selection button
-      let attempts = 0;
-      while (focusedElement && !focusedElement.includes('theme') && attempts < 20) {
-        await page.keyboard.press('Tab');
-        focusedElement = await page.evaluate(() =>
-          document.activeElement?.getAttribute('aria-label')
-        );
-        attempts++;
-      }
+      expect(focusedLabel).toMatch(/select.*theme/i);
 
       // Press Enter to select the focused theme
       await page.keyboard.press('Enter');

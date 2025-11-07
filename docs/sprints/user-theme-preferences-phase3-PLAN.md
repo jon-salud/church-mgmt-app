@@ -1041,7 +1041,7 @@ Phase 4 (Theme Application) can proceed with:
 - ✅ Real-time theme switching functional (optimistic UI)
 - ✅ Theme preferences persisting to database via Phase 1 API
 - ✅ Dark mode toggle integrated with next-themes
-- ✅ No regressions in existing features
+- ⚠️ No regressions in existing features *(except: restore functionality in announcements soft-delete has 3 failing tests; see `announcements-soft-delete.spec.ts` lines 13, 165, 212, marked with FIXME comments for separate investigation)*
 - ✅ Responsive layout (mobile + desktop)
 
 ### Risks Mitigated

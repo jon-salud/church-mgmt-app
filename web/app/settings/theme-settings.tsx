@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui-flowbi
 import { Label } from '@/components/ui-flowbite/label';
 import { updateUserTheme } from '@/app/actions/theme';
 import { useTheme } from 'next-themes';
+import { toast } from '@/lib/toast';
 
 type ThemePreset = 'original' | 'vibrant-blue' | 'teal-accent' | 'warm-accent';
 
@@ -190,19 +191,6 @@ export function ThemeSettings({ initialTheme }: ThemeSettingsProps) {
     document.documentElement.setAttribute('data-theme', initialTheme.themePreference);
   }, [initialTheme.themePreference]);
 
-  // Determine which palette set to show based on current light/dark mode
-  // Use resolvedTheme as fallback when theme is 'system'
-  // Fall back to initialTheme.themeDarkMode for SSR/initial render
-  const currentTheme = mounted
-    ? theme === 'system'
-      ? resolvedTheme
-      : theme
-    : initialTheme.themeDarkMode
-      ? 'dark'
-      : 'light';
-  const isDarkMode = currentTheme === 'dark';
-  const themes = isDarkMode ? darkThemes : lightThemes;
-
   // Don't render theme cards until mounted to avoid hydration mismatch
   // This prevents showing wrong colors during SSR
   if (!mounted) {
@@ -220,6 +208,16 @@ export function ThemeSettings({ initialTheme }: ThemeSettingsProps) {
     );
   }
 
+  // Determine which palette set to show based on current light/dark mode
+  // Use resolvedTheme as fallback when theme is 'system'
+  const getCurrentThemeMode = (): string => {
+    // Client-side: use next-themes resolved value
+    return theme === 'system' ? (resolvedTheme ?? 'light') : (theme ?? 'light');
+  };
+  const currentTheme = getCurrentThemeMode();
+  const isDarkMode = currentTheme === 'dark';
+  const themes = isDarkMode ? darkThemes : lightThemes;
+
   const handleThemeChange = async (themeId: ThemePreset) => {
     setSelectedTheme(themeId);
 
@@ -235,7 +233,11 @@ export function ThemeSettings({ initialTheme }: ThemeSettingsProps) {
       });
     } catch (error) {
       console.error('Failed to save theme preference:', error);
-      // Optionally revert on error or show toast notification
+      toast.error('Failed to save theme preference. Please try again.');
+
+      // Revert to previous theme on error
+      setSelectedTheme(initialTheme.themePreference as ThemePreset);
+      document.documentElement.setAttribute('data-theme', initialTheme.themePreference);
     } finally {
       setIsSaving(false);
     }

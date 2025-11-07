@@ -50,6 +50,12 @@ export function Button({ variant = 'default', size = 'default', className = '', 
   };
 
   // Primary variant uses CSS variables for theming
+  // NOTE: Using !important (via Tailwind's ! prefix) to override Flowbite's default styles.
+  // This is a known limitation requiring monitoring during Flowbite upgrades.
+  // Alternative considered: Extending Flowbite theme config, but would require
+  // maintaining separate theme configs and lose benefits of CSS custom properties.
+  // Trade-off: !important provides cleaner integration with our theme system at cost of
+  // potential brittleness. See docs/sprints/user-theme-preferences-phase3-PLAN.md
   const primaryStyles =
     variant === 'primary'
       ? '!bg-primary !text-primary-foreground hover:!bg-primary/90 focus:!ring-primary'
