@@ -80,9 +80,9 @@ All soft delete enabled tables have indexes on deletedAt column:
 
 - **`themePreference`**: User's selected color theme preset from the following options:
   - `original` (default) - Clean emerald green design
-  - `vibrant-blue` - Bold blue accents with high contrast
-  - `teal-accent` - Calming teal tones
-  - `warm-accent` - Orange and amber warm tones
+  - `vibrant_blue` - Bold blue accents with high contrast
+  - `teal_accent` - Calming teal tones
+  - `warm_accent` - Orange and amber warm tones
   
 - **`themeDarkMode`**: User's dark mode preference:
   - `true` - Dark mode enabled (dark background, light text)
