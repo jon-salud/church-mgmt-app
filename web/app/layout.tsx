@@ -1,4 +1,5 @@
 import { Metadata, Viewport } from 'next';
+import { cookies } from 'next/headers';
 import './globals.css';
 import { ServiceWorkerRegister } from '../components/service-worker-register';
 import { ThemeProvider } from '../components/theme-provider';
@@ -19,8 +20,17 @@ export const viewport: Viewport = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Check if user is authenticated by checking for session/demo tokens
+  const cookieStore = cookies();
+  const sessionToken = cookieStore.get('session_token');
+  const demoToken = cookieStore.get('demo_token');
+  const isAuthenticated = !!(sessionToken || demoToken);
+
   // Fetch user theme preferences server-side (before hydration)
-  const theme = await getUserTheme();
+  // Use default theme for unauthenticated users
+  const theme = isAuthenticated
+    ? await getUserTheme()
+    : { themePreference: 'original' as const, themeDarkMode: false };
 
   return (
     <html lang="en" suppressHydrationWarning data-theme={theme.themePreference}>

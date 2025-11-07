@@ -2,6 +2,11 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from './page-objects/LoginPage';
 
 test.describe('Unauthenticated User Theme Handling', () => {
+  // Clear all cookies before each test to ensure truly unauthenticated state
+  test.beforeEach(async ({ context }) => {
+    await context.clearCookies();
+  });
+
   test('login page uses default theme for unauthenticated users', async ({ page }) => {
     // Set up console error monitoring BEFORE navigation
     const consoleErrors: string[] = [];

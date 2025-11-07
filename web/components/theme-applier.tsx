@@ -23,7 +23,7 @@ export function ThemeApplier({ themePreference }: ThemeApplierProps) {
   useEffect(() => {
     // For auth pages, always use 'original' theme
     // This prevents user themes from persisting to unauthenticated state
-    const isAuthPage = pathname === '/login' || pathname?.startsWith('/oauth');
+    const isAuthPage = pathname != null && (pathname === '/login' || pathname.startsWith('/oauth'));
     const themeToApply = isAuthPage ? 'original' : themePreference;
 
     // Apply theme attribute to HTML element
