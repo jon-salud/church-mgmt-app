@@ -4,6 +4,9 @@
 
 @layer base {
   :root {
+    /* Font Size - User configurable base font size */
+    --base-font-size: 16px; /* Default font size */
+
     /* Background - subtle blue-gray for warmth and depth */
     --background: 210 20% 98%;
     --background-subtle: 210 20% 96%;
@@ -156,6 +159,12 @@
   * {
     @apply border-border;
   }
+
+  /* Base font size on html element for rem scaling */
+  html {
+    font-size: var(--base-font-size, 16px);
+  }
+
   body {
     @apply bg-background text-foreground;
   }

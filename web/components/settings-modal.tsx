@@ -90,11 +90,8 @@ export function SettingsModal({
         fontSizePreference: draftFontSize,
       });
 
-      // Success - close modal (changes already applied to DOM)
-      onClose();
-
-      // Optional: Show success toast
-      // toast.success('Preferences saved!');
+      // Success - refresh page to fetch updated preferences from server
+      window.location.reload();
     } catch (err) {
       setError('Failed to save preferences. Please try again.');
       console.error('Save preferences error:', err);
@@ -174,11 +171,16 @@ export function SettingsModal({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-end gap-2 p-6 border-t">
-          <Button variant="outline" onClick={handleClose}>
+        <div className="flex items-center justify-end gap-3 p-6 border-t bg-muted/50">
+          <Button variant="outline" onClick={handleClose} disabled={isSaving} className="px-6">
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={!hasChanges || isSaving}>
+          <Button
+            variant="primary"
+            onClick={handleSave}
+            disabled={!hasChanges || isSaving}
+            className="px-6"
+          >
             {isSaving ? 'Saving...' : 'Save Changes'}
           </Button>
         </div>

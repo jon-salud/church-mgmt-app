@@ -10,6 +10,17 @@ export enum ThemePreset {
 }
 
 /**
+ * Supported font size presets for the application.
+ * Maps to CSS custom property overrides in web layer.
+ */
+export enum FontSizePreset {
+  SMALL = '14px',
+  DEFAULT = '16px',
+  LARGE = '18px',
+  EXTRA_LARGE = '20px',
+}
+
+/**
  * User's complete theme configuration
  */
 export interface ThemePreferences {
@@ -18,8 +29,24 @@ export interface ThemePreferences {
 }
 
 /**
+ * User's complete preferences configuration (theme + font size)
+ */
+export interface UserPreferences {
+  themePreference: ThemePreset;
+  themeDarkMode: boolean;
+  fontSizePreference: FontSizePreset;
+}
+
+/**
  * Type guard to validate theme preset strings
  */
 export function isValidThemePreset(value: string): value is ThemePreset {
   return Object.values(ThemePreset).includes(value as ThemePreset);
+}
+
+/**
+ * Type guard to validate font size preset strings
+ */
+export function isValidFontSizePreset(value: string): value is FontSizePreset {
+  return Object.values(FontSizePreset).includes(value as FontSizePreset);
 }

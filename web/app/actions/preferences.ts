@@ -84,7 +84,7 @@ function isValidPreferencesResponse(data: unknown): data is UserPreferences {
 export async function getUserPreferences(): Promise<UserPreferences> {
   try {
     // Use standard apiFetch helper (handles auth, base URL, errors)
-    const data = await apiFetch<unknown>('/users/me/preferences');
+    const data = await apiFetch<unknown>('/users/me/theme');
 
     // Validate response structure (prevents XSS and runtime errors)
     if (!isValidPreferencesResponse(data)) {
@@ -136,7 +136,7 @@ export interface UpdatePreferencesDto {
 export async function updateUserPreferences(dto: UpdatePreferencesDto): Promise<void> {
   try {
     // Use standard apiFetch helper (handles auth, base URL, errors)
-    await apiFetch('/users/me/preferences', {
+    await apiFetch('/users/me/theme', {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
