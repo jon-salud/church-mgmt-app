@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui-flowbite/card';
 import { Label } from '@/components/ui-flowbite/label';
-import { Checkbox } from '@/components/ui-flowbite/checkbox';
 import { updateUserTheme } from '@/app/actions/theme';
 import { useTheme } from 'next-themes';
 
@@ -27,7 +26,9 @@ interface ThemeOption {
   };
 }
 
-const themes: ThemeOption[] = [
+// Theme palettes for both light and dark modes
+// Each theme has distinct colors for light and dark variants
+const lightThemes: ThemeOption[] = [
   {
     id: 'original',
     name: 'Original',
@@ -66,6 +67,49 @@ const themes: ThemeOption[] = [
       background: 'hsl(210, 20%, 98%)' /* Light blue-gray background */,
       primary: 'hsl(28, 65%, 40%)' /* Warm orange-brown */,
       destructive: 'hsl(4, 78%, 48%)' /* Warm red */,
+    },
+  },
+];
+
+const darkThemes: ThemeOption[] = [
+  {
+    id: 'original',
+    name: 'Original',
+    description: 'Classic blue-gray theme',
+    colors: {
+      background: 'hsl(222, 15%, 12%)' /* Very dark blue-gray background */,
+      primary: 'hsl(210, 40%, 68%)' /* Light blue-gray primary */,
+      destructive: 'hsl(0, 84%, 50%)' /* Bright red */,
+    },
+  },
+  {
+    id: 'vibrant-blue',
+    name: 'Vibrant Blue',
+    description: 'Bright and energetic',
+    colors: {
+      background: 'hsl(222, 15%, 12%)' /* Very dark blue-gray background */,
+      primary: 'hsl(215, 70%, 60%)' /* Bright light blue */,
+      destructive: 'hsl(0, 80%, 55%)' /* Bright red */,
+    },
+  },
+  {
+    id: 'teal-accent',
+    name: 'Teal Accent',
+    description: 'Calm and professional',
+    colors: {
+      background: 'hsl(222, 15%, 12%)' /* Very dark blue-gray background */,
+      primary: 'hsl(180, 70%, 45%)' /* Bright teal */,
+      destructive: 'hsl(359, 75%, 50%)' /* Warm red */,
+    },
+  },
+  {
+    id: 'warm-accent',
+    name: 'Warm Accent',
+    description: 'Friendly and inviting',
+    colors: {
+      background: 'hsl(222, 15%, 12%)' /* Very dark blue-gray background */,
+      primary: 'hsl(28, 80%, 55%)' /* Bright warm orange */,
+      destructive: 'hsl(4, 85%, 55%)' /* Bright warm red */,
     },
   },
 ];
@@ -135,16 +179,18 @@ function ThemePreviewCard({ theme, isSelected, onSelect }: ThemePreviewCardProps
 
 export function ThemeSettings({ initialTheme }: ThemeSettingsProps) {
   const [selectedTheme, setSelectedTheme] = useState<ThemePreset>(initialTheme.themePreference);
-  const [darkMode, setDarkMode] = useState(initialTheme.themeDarkMode);
   const [isSaving, setIsSaving] = useState(false);
-  const { setTheme } = useTheme();
+  const { theme } = useTheme(); // Get current theme mode (light/dark) from header toggle
 
   // Apply the initial theme from server on component mount
   // This ensures the theme is set even when navigating to settings page
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', initialTheme.themePreference);
-    setTheme(initialTheme.themeDarkMode ? 'dark' : 'light');
-  }, [initialTheme.themePreference, initialTheme.themeDarkMode, setTheme]);
+  }, [initialTheme.themePreference]);
+
+  // Determine which palette set to show based on current light/dark mode
+  const isDarkMode = theme === 'dark';
+  const themes = isDarkMode ? darkThemes : lightThemes;
 
   const handleThemeChange = async (themeId: ThemePreset) => {
     setSelectedTheme(themeId);
@@ -152,36 +198,16 @@ export function ThemeSettings({ initialTheme }: ThemeSettingsProps) {
     // Update DOM immediately (instant visual feedback)
     document.documentElement.setAttribute('data-theme', themeId);
 
-    // Persist to backend
+    // Persist to backend (dark mode is managed by header ThemeSwitcher)
     setIsSaving(true);
     try {
       await updateUserTheme({
         themePreference: themeId,
-        themeDarkMode: darkMode,
+        themeDarkMode: isDarkMode, // Save current dark mode state
       });
     } catch (error) {
       console.error('Failed to save theme preference:', error);
       // Optionally revert on error or show toast notification
-    } finally {
-      setIsSaving(false);
-    }
-  };
-
-  const handleDarkModeToggle = async (enabled: boolean) => {
-    setDarkMode(enabled);
-
-    // Update dark mode immediately via next-themes
-    setTheme(enabled ? 'dark' : 'light');
-
-    // Persist to backend
-    setIsSaving(true);
-    try {
-      await updateUserTheme({
-        themePreference: selectedTheme,
-        themeDarkMode: enabled,
-      });
-    } catch (error) {
-      console.error('Failed to save dark mode preference:', error);
     } finally {
       setIsSaving(false);
     }
@@ -193,23 +219,12 @@ export function ThemeSettings({ initialTheme }: ThemeSettingsProps) {
         <CardTitle>Theme Preferences</CardTitle>
       </CardHeader>
       <CardContent className="space-y-6">
-        {/* Dark Mode Toggle */}
-        <div className="flex items-center justify-between">
-          <div className="space-y-0.5">
-            <Label htmlFor="dark-mode" className="text-base font-medium cursor-pointer">
-              Dark Mode
-            </Label>
-            <p className="text-sm text-muted-foreground">
-              Switch between light and dark appearance
-            </p>
-          </div>
-          <Checkbox
-            id="dark-mode"
-            checked={darkMode}
-            onCheckedChange={handleDarkModeToggle}
-            disabled={isSaving}
-            className="h-5 w-5"
-          />
+        {/* Info: Dark mode toggle is in the header */}
+        <div className="rounded-md bg-muted/50 p-3 border border-border">
+          <p className="text-sm text-muted-foreground">
+            💡 <strong>Tip:</strong> Use the light/dark toggle in the header to switch between
+            modes. The theme previews below will update to show colors for the current mode.
+          </p>
         </div>
 
         {/* Theme Selector */}
