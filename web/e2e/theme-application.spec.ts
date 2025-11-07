@@ -5,6 +5,16 @@ test.describe('Theme Application Across Pages', () => {
   test.beforeEach(async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.login('demo-admin');
+
+    // Reset to original theme to ensure test isolation
+    await page.goto('http://localhost:3000/settings');
+    await page.waitForSelector('button[aria-label*="Select"][aria-label*="theme"]', {
+      state: 'visible',
+      timeout: 10000,
+    });
+    const originalCard = page.getByRole('button', { name: /select original theme/i });
+    await originalCard.click();
+    await expect(page.locator('html')).toHaveAttribute('data-theme', 'original');
   });
 
   test('theme applies consistently across all page types', async ({ page }) => {
