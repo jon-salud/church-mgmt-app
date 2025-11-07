@@ -32,8 +32,8 @@ const themes: ThemeOption[] = [
     name: 'Original',
     description: 'Classic blue-gray theme',
     colors: {
-      primary: 'hsl(217, 91%, 60%)',
-      accent: 'hsl(217, 91%, 60%)',
+      primary: 'hsl(222, 47%, 11%)' /* Dark slate - primary foreground */,
+      accent: 'hsl(210, 40%, 96%)' /* Light gray-blue - accent */,
     },
   },
   {
@@ -50,8 +50,8 @@ const themes: ThemeOption[] = [
     name: 'Teal Accent',
     description: 'Calm and professional',
     colors: {
-      primary: 'hsl(173, 80%, 40%)',
-      accent: 'hsl(173, 80%, 40%)',
+      primary: 'hsl(173, 80%, 40%)' /* Teal 600 */,
+      accent: 'hsl(173, 60%, 65%)' /* Lighter teal */,
     },
   },
   {
@@ -59,8 +59,8 @@ const themes: ThemeOption[] = [
     name: 'Warm Accent',
     description: 'Friendly and inviting',
     colors: {
-      primary: 'hsl(24, 95%, 53%)',
-      accent: 'hsl(24, 95%, 53%)',
+      primary: 'hsl(24, 95%, 53%)' /* Orange 500 */,
+      accent: 'hsl(45, 90%, 60%)' /* Warm yellow-orange */,
     },
   },
 ];

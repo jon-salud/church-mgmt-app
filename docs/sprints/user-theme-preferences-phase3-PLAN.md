@@ -1055,3 +1055,201 @@ Phase 4 (Theme Application) can proceed with:
 **Phase 3 Status:** ✅ **COMPLETE** - Ready for Phase 4
 
 ---
+
+## Critical Bug Fixes & Design Improvements (Post-Initial Implementation)
+
+**Timeline:** Additional 3-4 hours of bug fixes and design improvements  
+**Commits:** `9b9d112`, `c3ab12f`, `11ec5c8`, `f5a8008`
+
+### Issue 1: Theme System Completely Non-Functional
+
+**Discovery:** After user testing, themes had no visual effect. All UI elements remained the same color regardless of theme selection.
+
+**Root Cause:** Hardcoded Tailwind colors (`bg-blue-600`, `text-blue-500`) scattered throughout codebase. These don't respond to CSS variable changes.
+
+**Investigation:**
+- Grepped for `bg-blue-`, `text-blue-`, `text-red-`, `bg-green-` patterns
+- Found 20+ instances across 15+ files
+- Identified pattern: old code used direct Tailwind colors instead of semantic tokens
+
+**Solution (Commit 9b9d112):**
+1. **Primary Color Standardization:**
+   - `bg-blue-600` → `bg-primary` (5 files: error.tsx, pastoral-care, documents, dashboard)
+   - `text-blue-500/600` → `text-primary` (4 files)
+   - Added `variant="primary"` to Button component using CSS variables
+
+2. **Error State Standardization:**
+   - All `text-red-*` → `text-destructive` (login, delete buttons, error messages)
+   - All `bg-red-*` → `bg-destructive/10` (error alerts, borders)
+
+3. **Success State Standardization:**
+   - All `text-green-*` → `text-primary` (import results, success messages)
+   - All `bg-green-*` → `bg-primary/10` (success alerts)
+
+**Files Fixed (18 total):**
+- error.tsx, pastoral-care/client-page.tsx, documents/documents-client.tsx
+- dashboard/page.tsx, login/page.tsx, onboarding/* (3 files)
+- pastoral-care/new/page.tsx, prayer/new/client-page.tsx
+- requests/request-form.tsx, checkin/dashboard/checkin-dashboard-client.tsx
+- theme-switcher.tsx, sidebar-nav.tsx
+
+**Result:** ✅ All UI elements now respond to theme changes
+
+---
+
+### Issue 2: Headers Not Responding to Theme
+
+**Discovery:** User reported "some are getting ok but not the headers"
+
+**Root Cause:** Navigation components and page headers using hardcoded slate/gray colors.
+
+**Solution (Commit c3ab12f):**
+1. **ThemeSwitcher:** `border-slate-600` → `border-border`, hover colors → semantic tokens
+2. **Sidebar Navigation:**
+   - Section headings: `text-slate-500` → `text-muted-foreground`
+   - Active nav: `bg-slate-200` → `bg-primary/10 text-primary font-semibold`
+   - Inactive nav: `text-slate-700` → `text-foreground hover:bg-muted hover:text-primary`
+   - Icons: `text-slate-500` → `text-muted-foreground group-hover:text-primary`
+
+**Result:** ✅ All navigation and headers respond to themes
+
+---
+
+### Issue 3: Theme Settings Not Persisting Across Navigation
+
+**Discovery:** User reported "the settings are not persisting, when i select something and go to another page to check, nothing changed. When I go back to the setting page it resets to the default"
+
+**Root Cause:** 
+- Layout.tsx sets data-theme server-side (initial load only)
+- Next.js App Router doesn't re-run server components during client-side navigation
+- Inline script prevents FOUC but doesn't run on navigation
+
+**Solution (Commit 11ec5c8):**
+1. **Created ThemeApplier Component:**
+   ```tsx
+   'use client';
+   export function ThemeApplier({ themePreference }: ThemeApplierProps) {
+     useEffect(() => {
+       document.documentElement.setAttribute('data-theme', themePreference);
+     }, [themePreference]);
+     return null;
+   }
+   ```
+
+2. **Integrated into Layout:**
+   - Added ThemeApplier inside ThemeProvider
+   - Runs on every route change (Next.js App Router behavior)
+   - Ensures theme applies on client-side navigation
+
+3. **Added useEffect to ThemeSettings:**
+   - Syncs initial theme state on component mount
+   - Ensures settings page reflects saved theme immediately
+
+**Files Modified:**
+- Created: `web/components/theme-applier.tsx` (24 lines)
+- Modified: `web/app/layout.tsx` (integrated ThemeApplier)
+- Modified: `web/app/settings/theme-settings.tsx` (added sync useEffect)
+
+**Result:** ✅ Theme persists across all navigation (client-side and server-side)
+
+---
+
+### Issue 4: Poor Visual Hierarchy (Design Critique)
+
+**Discovery:** User reported "when the setting is set, it changed the page header to be the same color as the headers within the page. When I looked at it, it does not look good"
+
+**Root Cause:** Agent initially made ALL headings use `text-primary` (theme color), creating overwhelming visual noise and poor hierarchy.
+
+**Design Analysis:**
+- **Problem:** Everything same color = no visual hierarchy, hard to scan
+- **Solution:** Separate structural elements (neutral) from interactive elements (theme colors)
+
+**Design Principle Applied:**
+```
+SHOULD use theme colors (text-primary):
+✓ Buttons, links (calls to action)
+✓ Active navigation items
+✓ Interactive elements
+
+SHOULD stay neutral (text-foreground):
+✓ App/church name (branding)
+✓ Page titles (content hierarchy)
+✓ Section headings (semantic structure)
+✓ Body text, labels
+```
+
+**Solution (Commit f5a8008):**
+1. **Church name header:** `text-primary` → `text-foreground` (structural branding)
+2. **Page title h1:** `text-primary` → `text-foreground` (content hierarchy)
+3. **Card titles:** `text-primary` → `text-foreground` (semantic headings)
+4. **Keep buttons/links as text-primary** (calls to action)
+5. **Keep active nav as text-primary** (current state indicator)
+
+**Files Modified:**
+- `web/app/app-layout.tsx` (church name)
+- `web/components/ui-flowbite/page-header.tsx` (page titles)
+- `web/components/ui-flowbite/card.tsx` (card titles)
+
+**Result:** ✅ Proper visual hierarchy: neutral structure + colored interactions
+
+---
+
+### E2E Test Suite
+
+**Created:** `web/e2e/settings.spec.ts` (351 lines, 14 comprehensive tests)
+
+**Coverage:**
+1. ✅ Settings page renders user preferences section
+2. ✅ Theme cards display correctly (4 themes with colors)
+3. ✅ Dark mode toggle functional
+4. ✅ Theme selection updates visual state
+5. ✅ Theme persistence after navigation
+6. ✅ Theme persistence after page reload
+7. ✅ Dark mode persistence after navigation
+8. ✅ Dark mode persistence after page reload
+9. ✅ Multiple theme switches work correctly
+10. ✅ Responsive layout (mobile/desktop)
+11. ✅ Keyboard navigation (Tab + Enter/Space)
+12. ✅ CSS variables update correctly (data-theme attribute)
+13. ✅ Theme-specific colors apply (primary color verification)
+14. ✅ Accessibility (ARIA labels, focus indicators)
+
+**Testing Tools:**
+- Playwright with TypeScript
+- Bash script runner: `bash scripts/run-e2e.sh settings.spec.ts`
+- Cookie-based auth: `demo_token=demo-admin`
+
+**Result:** ✅ All 14 tests passing, comprehensive coverage
+
+---
+
+### Final Statistics
+
+**Total Work:**
+- **Initial Implementation:** ~3 hours (within 4-5h estimate)
+- **Bug Fixes & Design:** ~4 hours (unplanned, critical for usability)
+- **Total Phase 3:** ~7 hours
+
+**Files Changed:**
+- **Created:** 3 files (theme-settings.tsx, theme-applier.tsx, settings.spec.ts)
+- **Modified:** 21 files (comprehensive color audit across codebase)
+- **Total Lines:** ~900+ lines added/modified
+
+**Impact:**
+- 18 files fixed for theme responsiveness
+- 20+ hardcoded color patterns replaced
+- Full theme persistence mechanism implemented
+- Proper visual hierarchy established
+- Comprehensive E2E test coverage
+
+**Quality Metrics:**
+- ✅ TypeScript: 0 errors
+- ✅ ESLint: 0 new warnings (270 pre-existing unchanged)
+- ✅ Prettier: All files formatted
+- ✅ Build: Successful (26 routes)
+- ✅ E2E Tests: 14/14 passing
+
+**Phase 3 Final Status:** ✅ **PRODUCTION READY**
+
+---
+
