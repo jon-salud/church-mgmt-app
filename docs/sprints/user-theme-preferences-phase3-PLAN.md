@@ -1048,6 +1048,88 @@ Phase 4 (Theme Application) can proceed with:
 
 - ✅ Duplicate colors fixed (vibrant-blue now distinct from original)
 - ✅ Redundant error logging removed (cleaner logs)
+- ✅ Dark mode toggle consolidated (header toggle only, settings removed)
+- ✅ Color preview system upgraded (3-swatch vs 2-swatch for better clarity)
+- ✅ Hydration mismatch resolved (mounted state guard prevents SSR issues)
+- ✅ Dark mode theme variants functional (CSS rules for .dark[data-theme] combinations)
+
+### Post-Completion Refinements (7 November 2025)
+
+**Additional Commits:** `b64a803`, `5d68b91`, `ffc25c7`, `0686313`, `556f34b`  
+**Fixes Applied:** Bug fixes, CSS refinements, documentation improvements
+
+**Bug Fixes:**
+1. **Dark Mode Theme Selection Not Working (`5d68b91`, `ffc25c7`, `0686313`)**
+   - Issue: Theme color changes not applying in dark mode
+   - Root Cause 1: Hydration mismatch causing wrong palette display during SSR
+   - Fix 1: Added mounted state guard to prevent premature rendering
+   - Root Cause 2: Missing CSS rules for `.dark[data-theme='...']` combinations
+   - Fix 2: Added dark mode theme variant CSS rules with adjusted lightness values
+   - Result: Theme selection now fully functional in both light and dark modes
+
+2. **Theme Preview Color Mismatches (Review Fix)**
+   - Issue: Preview swatch colors didn't match actual CSS theme values
+   - Fix: Updated preview colors to exactly match globals.css:
+     - Vibrant Blue: `hsl(220, 100%, 56%)`
+     - Teal Accent: `hsl(173, 80%, 40%)`
+     - Warm Accent: `hsl(24, 95%, 53%)`
+   - Result: Accurate theme previews before selection
+
+**UI/UX Improvements:**
+1. **Dark Mode Toggle Consolidation (`b64a803`)**
+   - Removed duplicate toggle from settings page
+   - Kept header toggle only for consistency
+   - Simplified user experience (single control point)
+
+2. **3-Swatch Color Preview System (`38da3e4`)**
+   - Upgraded from 2-swatch to 3-swatch preview
+   - Shows: background + primary + destructive colors
+   - Better representation of theme's full color palette
+
+**Testing Improvements:**
+1. **E2E Test Robustness (Review Fixes)**
+   - Removed unnecessary `page.waitForTimeout()` calls (10+ instances)
+   - Replaced arbitrary timeouts with deterministic waits:
+     - Assertions auto-wait for expected state (Playwright default)
+     - API calls use `page.waitForResponse()` for proper synchronization
+   - Fixed color swatch assertion: expect 12 swatches (3 × 4 themes) not 8
+   - Result: More reliable, faster, maintainable tests
+
+**Documentation:**
+1. **Component Theme Preview Showcase (`721fbb8`, `38da3e4`, `556f34b`)**
+   - Renamed: modal-theme-preview → component-theme-preview
+   - Comprehensive README with:
+     - Complete component inventory (buttons, forms, tables, cards, modals)
+     - Theme system documentation (light/dark presets)
+     - Accessibility features guide
+     - 3-color swatch system explanation
+   - Result: Valuable stakeholder demo and validation tool
+
+2. **Code Documentation Improvements (Review Fix)**
+   - Clarified button.tsx Flowbite color override comment
+   - Explained CSS cascade architecture (base + variants)
+   - Documented hydration fix rationale
+
+**Files Changed (Post-Completion):**
+- `web/app/settings/theme-settings.tsx` (hydration fix, color corrections)
+- `web/app/globals.css` (dark mode variant CSS rules)
+- `web/e2e/settings.spec.ts` (removed timeouts, fixed assertions)
+- `web/components/ui-flowbite/button.tsx` (comment clarification)
+- `docs/component-theme-preview/*` (renamed folder, comprehensive docs)
+
+**Quality Metrics (Final):**
+- TypeScript: 0 errors
+- ESLint: 0 new warnings (270 pre-existing unchanged)
+- Prettier: All files formatted ✓
+- Build: Successful (Web: 26 routes, Settings: 151 kB)
+- E2E Tests: More robust (removed 10+ brittle timeouts)
+
+**Phase 3 Final Status: ✅ Completed**
+- All planned features implemented
+- Critical bugs fixed (dark mode theme selection)
+- Code quality improvements applied
+- Documentation comprehensive
+- Ready for Phase 4 (Theme Application)
 - ✅ Component choice documented (Checkbox vs Switch)
 - ✅ Sprint protocol compliance (Accomplishments section added)
 - ✅ Type safety enforced (theme IDs + DTO validation)

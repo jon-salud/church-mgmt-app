@@ -58,10 +58,10 @@ test.describe('Theme Preferences', () => {
     });
 
     await test.step('Verify theme preview cards have color swatches', async () => {
-      // Each theme card should have 2 color preview boxes
+      // Each theme card should have 3 color preview boxes (background, primary, destructive)
       const colorSwatches = page.locator('[style*="backgroundColor"]');
       const count = await colorSwatches.count();
-      expect(count).toBeGreaterThanOrEqual(8); // 4 themes × 2 swatches each
+      expect(count).toBeGreaterThanOrEqual(12); // 4 themes × 3 swatches each
     });
   });
 
@@ -78,9 +78,6 @@ test.describe('Theme Preferences', () => {
       // Find and click the Vibrant Blue theme card
       const vibrantBlueCard = page.getByRole('button', { name: /select vibrant blue theme/i });
       await vibrantBlueCard.click();
-
-      // Wait for attribute change
-      await page.waitForTimeout(100);
 
       // Verify data-theme attribute updated on html element
       const htmlElement = page.locator('html');
@@ -110,7 +107,6 @@ test.describe('Theme Preferences', () => {
           name: new RegExp(`select ${theme.name} theme`, 'i'),
         });
         await themeCard.click();
-        await page.waitForTimeout(100);
 
         // Verify data-theme attribute
         const htmlElement = page.locator('html');
@@ -128,7 +124,6 @@ test.describe('Theme Preferences', () => {
 
       if (!isChecked) {
         await darkModeCheckbox.click();
-        await page.waitForTimeout(100);
       }
 
       // Verify dark class is present
@@ -137,7 +132,6 @@ test.describe('Theme Preferences', () => {
 
     await test.step('Disable dark mode', async () => {
       await darkModeCheckbox.click();
-      await page.waitForTimeout(100);
 
       // Verify dark class is removed
       const classValue = await htmlElement.getAttribute('class');
@@ -148,8 +142,14 @@ test.describe('Theme Preferences', () => {
   test('theme preference persists after page reload', async ({ page }) => {
     await test.step('Select Teal Accent theme', async () => {
       const tealCard = page.getByRole('button', { name: /select teal accent theme/i });
+
+      // Wait for API response
+      const responsePromise = page.waitForResponse(
+        response => response.url().includes('/settings/theme') && response.status() === 200
+      );
+
       await tealCard.click();
-      await page.waitForTimeout(500); // Wait for API call
+      await responsePromise;
     });
 
     await test.step('Reload page and verify theme persists', async () => {
@@ -173,8 +173,13 @@ test.describe('Theme Preferences', () => {
     await test.step('Enable dark mode', async () => {
       const isChecked = await darkModeCheckbox.isChecked();
       if (!isChecked) {
+        // Wait for API response
+        const responsePromise = page.waitForResponse(
+          response => response.url().includes('/settings/theme') && response.status() === 200
+        );
+
         await darkModeCheckbox.click();
-        await page.waitForTimeout(500); // Wait for API call
+        await responsePromise;
       }
     });
 
@@ -193,10 +198,8 @@ test.describe('Theme Preferences', () => {
 
   test('theme changes apply to navigation and buttons', async ({ page }) => {
     await test.step('Select Warm Accent theme and verify button colors change', async () => {
-      // Get initial button color (if any primary buttons exist)
       const warmCard = page.getByRole('button', { name: /select warm accent theme/i });
       await warmCard.click();
-      await page.waitForTimeout(100);
 
       // Verify HTML has correct data-theme
       const htmlElement = page.locator('html');
@@ -262,7 +265,6 @@ test.describe('Theme Preferences', () => {
 
       // Press Enter to select the focused theme
       await page.keyboard.press('Enter');
-      await page.waitForTimeout(100);
 
       // Verify a theme was selected (data-theme attribute changed)
       const htmlElement = page.locator('html');
@@ -276,7 +278,6 @@ test.describe('Theme Preferences', () => {
     await test.step('Select Vibrant Blue theme', async () => {
       const vibrantCard = page.getByRole('button', { name: /select vibrant blue theme/i });
       await vibrantCard.click();
-      await page.waitForTimeout(100);
     });
 
     await test.step('Enable dark mode', async () => {
@@ -284,7 +285,6 @@ test.describe('Theme Preferences', () => {
       const isChecked = await darkModeCheckbox.isChecked();
       if (!isChecked) {
         await darkModeCheckbox.click();
-        await page.waitForTimeout(100);
       }
     });
 

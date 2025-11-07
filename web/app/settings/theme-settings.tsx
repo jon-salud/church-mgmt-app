@@ -45,7 +45,7 @@ const lightThemes: ThemeOption[] = [
     description: 'Bright and energetic',
     colors: {
       background: 'hsl(210, 20%, 98%)' /* Light blue-gray background */,
-      primary: 'hsl(215, 60%, 45%)' /* Bright blue */,
+      primary: 'hsl(220, 100%, 56%)' /* Bright blue - matches CSS */,
       destructive: 'hsl(0, 72%, 45%)' /* Bright red */,
     },
   },
@@ -55,7 +55,7 @@ const lightThemes: ThemeOption[] = [
     description: 'Calm and professional',
     colors: {
       background: 'hsl(210, 20%, 98%)' /* Light blue-gray background */,
-      primary: 'hsl(180, 62%, 34%)' /* Deep teal */,
+      primary: 'hsl(173, 80%, 40%)' /* Deep teal - matches CSS */,
       destructive: 'hsl(359, 62%, 45%)' /* Warm red */,
     },
   },
@@ -65,7 +65,7 @@ const lightThemes: ThemeOption[] = [
     description: 'Friendly and inviting',
     colors: {
       background: 'hsl(210, 20%, 98%)' /* Light blue-gray background */,
-      primary: 'hsl(28, 65%, 40%)' /* Warm orange-brown */,
+      primary: 'hsl(24, 95%, 53%)' /* Warm orange - matches CSS */,
       destructive: 'hsl(4, 78%, 48%)' /* Warm red */,
     },
   },

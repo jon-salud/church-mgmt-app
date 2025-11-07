@@ -35,7 +35,7 @@ export function Button({ variant = 'default', size = 'default', className = '', 
   // Map design system variants to Flowbite's color system
   const colorMap: Record<ButtonVariant, FlowbiteButtonProps['color']> = {
     default: 'gray',
-    primary: 'blue', // Will be overridden by custom styles
+    primary: 'blue', // Base color (overridden by primaryStyles via !important for theme support)
     outline: 'light',
     secondary: 'light',
     ghost: 'light',
