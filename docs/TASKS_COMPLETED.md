@@ -8,6 +8,32 @@ This file contains the complete history of shipped features, sprints, and migrat
 
 ### Shipped Features & Sprints
 
+### User Preferences Enhancement Sprint (November 2025)
+- **Branch:** `feature/user-preferences-enhancement-main-sprint`
+- **Sprint Plan:** `docs/sprints/user-preferences-enhancement-PLAN.md`
+- **Status:** In Progress (Phase 1 of 3)
+- **Scope:** User preferences enhancement with settings dropdown menu, font size adjustment system, and settings modal
+- **Timeline:** 10-14 hours total (1.5-2 days)
+
+**Completed Phases:**
+
+- **Phase 1: User Settings Dropdown Menu (3-4h)** ✅ Completed
+  - Branch: `feature/user-preferences-enhancement-phase1-user-settings-dropdown-menu`
+  - Plan: `docs/sprints/user-preferences-enhancement-phase1-PLAN.md`
+  - Summary: Created UserMenu component with dropdown functionality replacing static username display. Extracted header to AppLayoutClient for interactivity. Added logout action and accessibility features. Includes unit and E2E tests.
+  - Accomplishments:
+    - UserMenu component: Clickable dropdown with user info, settings link, and logout option
+    - AppLayoutClient: Client wrapper for header interactivity (dropdown, future modal state)
+    - AppLayout: Modified to use client component pattern, passes user data server-side
+    - Accessibility: ARIA labels, keyboard navigation, screen reader support
+    - Testing: Unit tests for UserMenu component, E2E tests for dropdown functionality
+    - Code quality: TypeScript strict mode, ESLint compliant, Prettier formatted
+    - Build verification: All tests passing, no regressions, production build successful
+  - Files Created: `web/components/user-menu.tsx`, `web/app/app-layout-client.tsx`, `web/components/__tests__/user-menu.test.tsx`, `web/e2e/user-menu.spec.ts`
+  - Files Modified: `web/app/app-layout.tsx`
+  - Commits: `d646eb8` (Phase 1 implementation)
+  - Merged: To sprint branch on 7 November 2025
+
 #### User Theme Preferences Sprint (November 2025)
 - **Branch:** `feature/user-theme-preferences-main-sprint`
 - **Sprint Plan:** `docs/sprints/user-theme-preferences-PLAN.md`

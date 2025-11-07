@@ -12,24 +12,31 @@ This file tracks **current and immediately upcoming work**. For historical conte
 
 ## 🔄 In Progress
 
-### Sprint: User Theme Preferences
+### Sprint: User Preferences Enhancement
 
-**Branch:** `feature/user-theme-preferences-main-sprint`  
-**Timeline:** 14.5-19.5 hours (2-3 days)  
-**Status:** Phase 1 - Database & API Foundation  
-**Sprint Plan:** `docs/sprints/user-theme-preferences-PLAN.md`
+**Sprint Name:** user-preferences-enhancement  
+**Timeline:** 10-14 hours (1.5-2 days)  
+**Sprint Plan:** `docs/sprints/user-preferences-enhancement-PLAN.md`  
+**Implementation Plan:** `docs/sprints/user-preferences-enhancement-IMPLEMENTATION-PLAN.md`  
+**Status:** Starting Sprint Execution
 
 **Sprint Goals:**
-- Implement user theme preference system (4 presets + dark mode toggle)
-- Complete settings UI with visual previews and navigation integration
-- Comprehensive E2E testing and documentation
+- Add settings dropdown menu to header for easy preference access
+- Implement font size adjustment system (4 sizes: 14px, 16px, 18px, 20px)
+- Create settings modal with instant preview and explicit save pattern
+- Build on existing theme system with backward compatibility
 
 **Phases:**
-- ✅ **Phase 1: Database Schema & API Foundation (2.5-3.5h)** - Completed (moved to TASKS_COMPLETED.md)
-- ✅ **Phase 2: CSS Theme System (2-3h)** - Completed (moved to TASKS_COMPLETED.md)
-- ✅ **Phase 3: Settings UI (4-5h)** - Completed (moved to TASKS_COMPLETED.md)
-- ✅ **Phase 4: Theme Application Verification (1-2h)** - Completed (moved to TASKS_COMPLETED.md) - Commit: fecb67d
-- ✅ **Phase 5: Documentation & Integration Testing (3-4h)** - Completed (moved to TASKS_COMPLETED.md) - Commit: 8c9ba62
+- ✅ **Phase 1: User Settings Dropdown Menu (3-4h)** - Add dropdown to header with Settings link (COMPLETED: d646eb8)
+- 🔄 **Phase 2: Font Size Preference System (6-8h)** - Database, API, frontend font size system
+- **Phase 3: Settings Modal & Integration (2-3h)** - Modal with draft state and preview
+
+**Success Criteria:**
+- Settings discoverable within 30 seconds on all pages
+- Instant preview with explicit save/cancel pattern
+- Font sizes work at all breakpoints (375px+)
+- Full E2E test coverage
+- Backward compatible with existing theme system
 
 ---
 
