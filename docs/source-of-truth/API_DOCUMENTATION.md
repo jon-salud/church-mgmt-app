@@ -127,6 +127,65 @@ between a `User` (the login identity) and a `Profile` (the church-specific membe
 
 ---
 
+#### GET /users/me/theme
+
+- **Description:** Retrieves the current user's theme preferences (theme preset and dark mode setting).
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "themePreference": "original" | "vibrant-blue" | "teal-accent" | "warm-accent",
+      "themeDarkMode": true | false | null
+    }
+    ```
+
+- **Field Descriptions:**
+  - `themePreference`: The user's selected color theme preset. Defaults to `"original"` if not set.
+  - `themeDarkMode`: The user's dark mode preference. `true` for dark mode, `false` for light mode, `null` to defer to system preference (browser/OS setting).
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+
+---
+
+#### PATCH /users/me/theme
+
+- **Description:** Updates the current user's theme preferences. Both fields are optional; you can update one or both.
+- **Request Body:**
+
+  ```json
+  {
+    "themePreference": "original" | "vibrant-blue" | "teal-accent" | "warm-accent" (optional),
+    "themeDarkMode": true | false | null (optional)
+  }
+  ```
+
+- **Validation Rules:**
+  - `themePreference`: Must be one of the four valid theme preset values if provided.
+  - `themeDarkMode`: Must be a boolean (`true`/`false`) or `null` if provided.
+  - At least one field must be present in the request body.
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "themePreference": "vibrant-blue",
+      "themeDarkMode": true
+    }
+    ```
+
+- **Error Responses:**
+  - **Code:** `400 Bad Request` - If the request body is invalid (e.g., invalid theme value, empty body).
+    - Example error messages:
+      - `"Invalid theme preference. Must be one of: original, vibrant-blue, teal-accent, warm-accent"`
+      - `"Invalid dark mode value. Must be true, false, or null"`
+      - `"Request body must contain at least one field to update"`
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+
+---
+
 ### Groups
 
 _(Note: The following endpoints are planned based on the Functional Requirements but are not yet

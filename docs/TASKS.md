@@ -29,7 +29,7 @@ This file tracks **current and immediately upcoming work**. For historical conte
 - ✅ **Phase 2: CSS Theme System (2-3h)** - Completed (moved to TASKS_COMPLETED.md)
 - ✅ **Phase 3: Settings UI (4-5h)** - Completed (moved to TASKS_COMPLETED.md)
 - ✅ **Phase 4: Theme Application Verification (1-2h)** - Completed (moved to TASKS_COMPLETED.md) - Commit: fecb67d
-- 🎯 **Phase 5: Testing & Docs (3-4h)** - Ready to Start
+- ✅ **Phase 5: Documentation & Integration Testing (3-4h)** - Completed (moved to TASKS_COMPLETED.md) - Commit: 8c9ba62
 
 ---
 

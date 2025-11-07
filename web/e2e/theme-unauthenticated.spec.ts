@@ -2,6 +2,11 @@ import { test, expect } from '@playwright/test';
 import { LoginPage } from './page-objects/LoginPage';
 
 test.describe('Unauthenticated User Theme Handling', () => {
+  // Clear all cookies before each test to ensure truly unauthenticated state
+  test.beforeEach(async ({ context }) => {
+    await context.clearCookies();
+  });
+
   test('login page uses default theme for unauthenticated users', async ({ page }) => {
     // Set up console error monitoring BEFORE navigation
     const consoleErrors: string[] = [];
@@ -33,12 +38,11 @@ test.describe('Unauthenticated User Theme Handling', () => {
     await loginPage.login('demo-admin');
 
     await page.goto('http://localhost:3000/settings');
+    await page.waitForLoadState('networkidle');
 
-    // Wait for theme cards
-    await page.waitForSelector('button[aria-label*="Select"][aria-label*="theme"]', {
-      state: 'visible',
-      timeout: 10000,
-    });
+    // Wait for theme cards to be hydrated
+    const themeCard = page.locator('button[aria-label*="Select"][aria-label*="theme"]').first();
+    await themeCard.waitFor({ state: 'visible', timeout: 15000 });
 
     // Set Vibrant Blue theme
     const vibrantBlueCard = page.getByRole('button', { name: /select vibrant blue theme/i });
