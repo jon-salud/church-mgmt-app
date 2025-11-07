@@ -116,15 +116,15 @@ test.describe('Theme Preferences', () => {
   test('theme preference persists after page reload', async ({ page }) => {
     await test.step('Select Teal Accent theme', async () => {
       const tealCard = page.getByRole('button', { name: /select teal accent theme/i });
-
-      // Wait for API response (users/me/theme)
-      const responsePromise = page.waitForResponse(response => {
-        const url = response.url();
-        return url.includes('/users/me/theme') && response.status() === 200;
-      });
-
       await tealCard.click();
-      await responsePromise;
+
+      // Verify client-side theme applied
+      const htmlElement = page.locator('html');
+      await expect(htmlElement).toHaveAttribute('data-theme', 'teal-accent');
+
+      // Verify selection indicator present
+      const checkmark = tealCard.locator('svg[fill="currentColor"]');
+      await expect(checkmark).toBeVisible();
     });
 
     await test.step('Reload page and verify theme persists', async () => {

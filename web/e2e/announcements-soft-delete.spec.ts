@@ -8,6 +8,8 @@ test.describe('Announcements Soft Delete', () => {
     await loginPage.login();
   });
 
+  // FIXME: This test is failing - needs investigation. The restore functionality appears to have an issue.
+  // Error: waitForResponse timeout waiting for /announcements/{id}/undelete endpoint
   test('admin can archive and restore a single announcement', async ({ page }) => {
     const announcementsPage = new AnnouncementsPage(page);
 
@@ -158,6 +160,8 @@ test.describe('Announcements Soft Delete', () => {
     });
   });
 
+  // FIXME: This test is failing - needs investigation. The restore functionality appears to have an issue.
+  // Error: waitForResponse timeout waiting for /announcements/{id}/undelete endpoint
   test('archived announcements count is displayed correctly', async ({ page }) => {
     const announcementsPage = new AnnouncementsPage(page);
 
@@ -203,6 +207,8 @@ test.describe('Announcements Soft Delete', () => {
     });
   });
 
+  // FIXME: This test is failing - needs investigation. The restore functionality appears to have an issue.
+  // Error: waitForResponse timeout waiting for /announcements/{id}/undelete endpoint
   test('archived announcements cannot be edited or marked as read', async ({ page }) => {
     const announcementsPage = new AnnouncementsPage(page);
 
