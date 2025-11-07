@@ -1,16 +1,19 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { ThemeSwitcher } from '@/components/theme-switcher';
 import { MenuToggle } from './menu-toggle';
 import { UserMenu } from '@/components/user-menu';
-// Phase 2/3: Uncomment when SettingsModal is created
-// import { SettingsModal } from '@/components/settings-modal';
+import { SettingsModal } from '@/components/settings-modal';
 
 interface AppLayoutClientProps {
   displayName: string;
   email: string;
   primaryRole: string;
+  currentTheme: 'original' | 'vibrant-blue' | 'teal-accent' | 'warm-accent';
+  currentFontSize: '14px' | '16px' | '18px' | '20px';
+  currentThemeDarkMode: boolean;
   children: React.ReactNode;
 }
 
@@ -18,9 +21,12 @@ export function AppLayoutClient({
   displayName,
   email,
   primaryRole,
+  currentTheme,
+  currentFontSize,
+  currentThemeDarkMode,
   children,
 }: AppLayoutClientProps) {
-  // const [isSettingsOpen, setIsSettingsOpen] = useState(false); // Phase 3: Settings modal
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   return (
     <>
@@ -44,20 +50,19 @@ export function AppLayoutClient({
             <UserMenu
               displayName={displayName}
               email={email}
-              onSettingsClick={() => {}} // Phase 3: setIsSettingsOpen(true)
+              onSettingsClick={() => setIsSettingsOpen(true)}
             />
           </div>
         </div>
       </header>
       <div className="flex flex-1 flex-col md:flex-row">{children}</div>
-      {/* Phase 2/3: Uncomment when SettingsModal is created
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}
-        currentTheme="original"
-        currentFontSize="16px"
+        currentTheme={currentTheme}
+        currentFontSize={currentFontSize}
+        currentThemeDarkMode={currentThemeDarkMode}
       />
-      */}
     </>
   );
 }

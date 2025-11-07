@@ -3,6 +3,7 @@ import { SidebarNav } from '@/components/sidebar-nav';
 import { OnboardingModal } from '@/components/onboarding-modal';
 import { hasRole } from '../lib/utils';
 import { AppLayoutClient } from './app-layout-client';
+import { getUserPreferences } from './actions/preferences';
 import type { Role } from '../lib/types';
 import type { NavItem } from '../components/sidebar-nav';
 
@@ -69,6 +70,7 @@ function getFilteredNavItems(userRoles: Role[]) {
 export async function AppLayout({ children }: AppLayoutProps) {
   let me: any = null;
   let settings: Record<string, unknown> = {};
+  let preferences: any = { themePreference: 'original', fontSizePreference: '16px' };
 
   try {
     me = await api.currentUser();
@@ -85,6 +87,14 @@ export async function AppLayout({ children }: AppLayoutProps) {
       console.error('Failed to load settings in AppLayout:', error);
       settings = {};
     }
+  }
+
+  // Fetch user preferences for theme and font size
+  try {
+    preferences = await getUserPreferences();
+  } catch (error) {
+    console.error('Failed to load user preferences in AppLayout:', error);
+    // Keep defaults
   }
 
   // Get role-based navigation items
@@ -109,7 +119,14 @@ export async function AppLayout({ children }: AppLayoutProps) {
       <a id="skip-to-main-content" href="#main-content" className="skip-link">
         Skip to main content
       </a>
-      <AppLayoutClient displayName={displayName} email={email} primaryRole={primaryRole}>
+      <AppLayoutClient
+        displayName={displayName}
+        email={email}
+        primaryRole={primaryRole}
+        currentTheme={preferences.themePreference}
+        currentFontSize={preferences.fontSizePreference}
+        currentThemeDarkMode={preferences.themeDarkMode}
+      >
         <aside
           id="sidebar"
           className="border-b border-border bg-background px-4 py-4 md:w-64 md:border-b-0 md:border-r hidden md:block"

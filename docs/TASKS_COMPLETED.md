@@ -11,7 +11,7 @@ This file contains the complete history of shipped features, sprints, and migrat
 ### User Preferences Enhancement Sprint (November 2025)
 - **Branch:** `feature/user-preferences-enhancement-main-sprint`
 - **Sprint Plan:** `docs/sprints/user-preferences-enhancement-PLAN.md`
-- **Status:** In Progress (Phase 1 of 3)
+- **Status:** In Progress (Phase 2 of 3 completed, Phase 3 remaining)
 - **Scope:** User preferences enhancement with settings dropdown menu, font size adjustment system, and settings modal
 - **Timeline:** 10-14 hours total (1.5-2 days)
 
@@ -32,6 +32,28 @@ This file contains the complete history of shipped features, sprints, and migrat
   - Files Created: `web/components/user-menu.tsx`, `web/app/app-layout-client.tsx`, `web/components/__tests__/user-menu.test.tsx`, `web/e2e/user-menu.spec.ts`
   - Files Modified: `web/app/app-layout.tsx`
   - Commits: `d646eb8` (Phase 1 implementation)
+  - Merged: To sprint branch on 7 November 2025
+
+- **Phase 2: Font Size Preference System (6-8h)** ✅ Completed
+  - Branch: `feature/user-preferences-enhancement-phase2-font-size-preference-system`
+  - Plan: `docs/sprints/user-preferences-enhancement-phase2-font-size-preference-system-PLAN.md`
+  - Summary: Complete font size preference system with database persistence, API endpoints, CSS custom properties, and FontSizeSelector component. 4 preset sizes (14px, 16px, 18px, 20px) with instant preview and SSR application.
+  - Accomplishments:
+    - Database: Added nullable `fontSizePreference` TEXT column to User table with migration
+    - API: Extended existing theme endpoints (GET/PATCH /users/me/theme) with font size support
+    - Types: Created FontSizePreset enum and UserPreferences interface with validation
+    - DTOs: Added UpdatePreferencesDto and PreferencesResponseDto with enum validation
+    - Service: Implemented getUserPreferences() and updateUserPreferences() methods
+    - Mock Data: Updated interfaces and mock database service with font size preference handling
+    - Frontend: Created server actions for preferences management (renamed from theme.ts)
+    - SSR: Modified layout.tsx to fetch preferences server-side and apply font size via inline scripts
+    - CSS: Added --base-font-size custom property and html font-size rule for scalable typography
+    - Component: Created FontSizeSelector with 4 preset options, visual preview, and accessibility features
+    - Testing: API tests passing, build successful, no regressions introduced
+    - Code Quality: TypeScript strict mode, ESLint compliant, Prettier formatted
+  - Files Created: `api/src/modules/users/dto/preferences.dto.ts`, `api/src/modules/users/types/preferences.types.ts`, `api/prisma/migrations/20251107104447_add_font_size_preference_field/migration.sql`, `web/app/actions/preferences.ts`, `web/components/font-size-selector.tsx`, `docs/sprints/user-preferences-enhancement-phase2-font-size-preference-system-PLAN.md`
+  - Files Modified: `api/prisma/schema.prisma`, `api/src/domain/entities/User.ts`, `api/src/mock/mock-data.ts`, `api/src/mock/mock-database.service.ts`, `api/src/modules/users/users.controller.ts`, `api/src/modules/users/users.service.ts`, `web/app/globals.css`, `web/app/layout.tsx`, `web/components/theme-applier.tsx`, `web/app/settings/page.tsx`, `web/app/settings/theme-settings.tsx`
+  - Commits: `349fbe1` (Phase 2 implementation)
   - Merged: To sprint branch on 7 November 2025
 
 #### User Theme Preferences Sprint (November 2025)

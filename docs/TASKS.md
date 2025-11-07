@@ -28,8 +28,8 @@ This file tracks **current and immediately upcoming work**. For historical conte
 
 **Phases:**
 - ✅ **Phase 1: User Settings Dropdown Menu (3-4h)** - Add dropdown to header with Settings link (COMPLETED: d646eb8)
-- 🔄 **Phase 2: Font Size Preference System (6-8h)** - Database, API, frontend font size system
-- **Phase 3: Settings Modal & Integration (2-3h)** - Modal with draft state and preview
+- ✅ **Phase 2: Font Size Preference System (6-8h)** - Database, API, frontend font size system (COMPLETED: 349fbe1)
+- 🔄 **Phase 3: Settings Modal & Integration (2-3h)** - Modal with draft state and preview
 
 **Success Criteria:**
 - Settings discoverable within 30 seconds on all pages
@@ -48,4 +48,4 @@ This file tracks **current and immediately upcoming work**. For historical conte
 
 ---
 
-**Last Updated:** 6 November 2025
+**Last Updated:** 7 November 2025
