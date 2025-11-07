@@ -33,12 +33,11 @@ test.describe('Unauthenticated User Theme Handling', () => {
     await loginPage.login('demo-admin');
 
     await page.goto('http://localhost:3000/settings');
+    await page.waitForLoadState('networkidle');
 
-    // Wait for theme cards
-    await page.waitForSelector('button[aria-label*="Select"][aria-label*="theme"]', {
-      state: 'visible',
-      timeout: 10000,
-    });
+    // Wait for theme cards to be hydrated
+    const themeCard = page.locator('button[aria-label*="Select"][aria-label*="theme"]').first();
+    await themeCard.waitFor({ state: 'visible', timeout: 15000 });
 
     // Set Vibrant Blue theme
     const vibrantBlueCard = page.getByRole('button', { name: /select vibrant blue theme/i });

@@ -8,10 +8,12 @@ test.describe('Theme Application Across Pages', () => {
 
     // Reset to original theme to ensure test isolation
     await page.goto('http://localhost:3000/settings');
-    await page.waitForSelector('button[aria-label*="Select"][aria-label*="theme"]', {
-      state: 'visible',
-      timeout: 10000,
-    });
+    await page.waitForLoadState('networkidle');
+
+    // Wait for theme cards to be hydrated
+    const themeCard = page.locator('button[aria-label*="Select"][aria-label*="theme"]').first();
+    await themeCard.waitFor({ state: 'visible', timeout: 15000 });
+
     const originalCard = page.getByRole('button', { name: /select original theme/i });
     await originalCard.click();
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'original');
