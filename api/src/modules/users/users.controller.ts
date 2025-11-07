@@ -13,16 +13,19 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
+  ApiBody,
   ApiCreatedResponse,
   ApiOkResponse,
   ApiOperation,
   ApiQuery,
+  ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { AuthGuard } from '../auth/auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UpdateThemeDto, ThemeResponseDto } from './dto/theme.dto';
 import { arrayOfObjectsResponse, objectResponse } from '../../common/openapi/schemas';
 import { SuccessResponseDto } from '../../common/dto/success-response.dto';
 
@@ -103,6 +106,37 @@ export class UsersController {
   bulkImport(@Body() dto: { emails: string[] }, @Req() req: any) {
     this.ensureAdmin(req);
     return this.usersService.bulkImport(dto.emails, req.user.id);
+  }
+
+  @Get('me/theme')
+  @ApiOperation({ summary: 'Get current user theme preferences' })
+  @ApiResponse({
+    status: 200,
+    description: 'Theme preferences retrieved successfully',
+    type: ThemeResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async getMyTheme(@Req() req: any): Promise<ThemeResponseDto> {
+    const userId = req.user.id;
+    return this.usersService.getUserTheme(userId);
+  }
+
+  @Patch('me/theme')
+  @ApiOperation({ summary: 'Update current user theme preferences' })
+  @ApiBody({ type: UpdateThemeDto })
+  @ApiResponse({
+    status: 200,
+    description: 'Theme updated successfully',
+    type: ThemeResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Invalid theme data' })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  async updateMyTheme(
+    @Req() req: any,
+    @Body() updateThemeDto: UpdateThemeDto
+  ): Promise<ThemeResponseDto> {
+    const userId = req.user.id;
+    return this.usersService.updateUserTheme(userId, updateThemeDto);
   }
 
   private ensureAdmin(req: any) {

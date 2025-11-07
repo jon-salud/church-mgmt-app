@@ -10,10 +10,10 @@ type CheckinDashboardClientProps = {
 export function CheckinDashboardClient({ pending, checkedIn }: CheckinDashboardClientProps) {
   return (
     <section className="space-y-6">
-      <h1 className="text-3xl font-semibold">Child Check-In</h1>
+      <h1 className="text-3xl font-semibold text-primary">Child Check-In</h1>
       <div className="grid grid-cols-2 gap-8">
         <div>
-          <h2 className="text-xl font-semibold">Pending Confirmation</h2>
+          <h2 className="text-xl font-semibold text-primary">Pending Confirmation</h2>
           <ul className="mt-4 space-y-2">
             {pending.length > 0 ? (
               pending.map(checkin => (
@@ -30,7 +30,7 @@ export function CheckinDashboardClient({ pending, checkedIn }: CheckinDashboardC
                   <button
                     id={`confirm-checkin-button-${checkin.id}`}
                     type="button"
-                    className="rounded-md bg-sky-500 px-3 py-1 text-xs font-medium text-slate-950 transition hover:bg-sky-400"
+                    className="rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground transition hover:bg-primary/90"
                   >
                     Confirm
                   </button>
@@ -42,7 +42,7 @@ export function CheckinDashboardClient({ pending, checkedIn }: CheckinDashboardC
           </ul>
         </div>
         <div>
-          <h2 className="text-xl font-semibold">Currently Checked-In</h2>
+          <h2 className="text-xl font-semibold text-primary">Currently Checked-In</h2>
           <ul className="mt-4 space-y-2">
             {checkedIn.length > 0 ? (
               checkedIn.map(checkin => (
@@ -59,7 +59,7 @@ export function CheckinDashboardClient({ pending, checkedIn }: CheckinDashboardC
                   <button
                     id={`checkout-button-${checkin.id}`}
                     type="button"
-                    className="rounded-md border border-red-700 px-3 py-1 text-xs font-medium text-red-200 transition hover:bg-red-900/40"
+                    className="rounded-md border border-destructive px-3 py-1 text-xs font-medium text-destructive-foreground transition hover:bg-destructive/90"
                   >
                     Check-Out
                   </button>

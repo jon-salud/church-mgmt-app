@@ -52,6 +52,44 @@
     */
   }
 
+  /* ============================================
+     THEME PRESETS
+     User-selectable color schemes via data-theme attribute
+     ============================================ */
+
+  /* Original Theme - Default (no overrides needed) */
+  /* Uses the :root values defined above */
+
+  /* Vibrant Blue Theme - High saturation blue for energy and clarity */
+  [data-theme='vibrant-blue'] {
+    --primary: 220 100% 56%; /* Brighter, more saturated blue than original */
+    --primary-foreground: 0 0% 100%;
+    --accent: 200 100% 50%; /* Bright cyan-blue accent */
+    --accent-foreground: 0 0% 100%;
+    --ring: 220 100% 56%;
+  }
+
+  /* Teal Accent Theme - Calming teal for professional and modern feel */
+  [data-theme='teal-accent'] {
+    --primary: 173 80% 40%; /* Teal 600 */
+    --primary-foreground: 0 0% 100%;
+    --accent: 173 80% 40%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 173 80% 40%;
+  }
+
+  /* Warm Accent Theme - Warm orange for approachability and community */
+  [data-theme='warm-accent'] {
+    --primary: 24 95% 53%; /* Orange 500 */
+    --primary-foreground: 0 0% 100%;
+    --accent: 24 95% 53%;
+    --accent-foreground: 0 0% 100%;
+    --ring: 24 95% 53%;
+  }
+
+  /* ============================================
+     DARK MODE BASE THEME
+     ============================================ */
   .dark {
     /* Background - keep existing dark background */
     --background: 222.2 84% 4.9%;
@@ -79,6 +117,38 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+  }
+
+  /* ============================================
+     DARK MODE THEME VARIANTS
+     Theme color overrides for dark mode
+     ============================================ */
+
+  /* Dark Mode - Vibrant Blue Theme */
+  .dark[data-theme='vibrant-blue'] {
+    --primary: 215 70% 60%; /* Bright light blue for visibility on dark background */
+    --primary-foreground: 222.2 84% 4.9%;
+    --accent: 200 70% 55%; /* Bright cyan-blue accent */
+    --accent-foreground: 222.2 84% 4.9%;
+    --ring: 215 70% 60%;
+  }
+
+  /* Dark Mode - Teal Accent Theme */
+  .dark[data-theme='teal-accent'] {
+    --primary: 180 70% 45%; /* Bright teal for visibility */
+    --primary-foreground: 222.2 84% 4.9%;
+    --accent: 180 70% 45%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --ring: 180 70% 45%;
+  }
+
+  /* Dark Mode - Warm Accent Theme */
+  .dark[data-theme='warm-accent'] {
+    --primary: 28 80% 55%; /* Bright warm orange */
+    --primary-foreground: 222.2 84% 4.9%;
+    --accent: 28 80% 55%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --ring: 28 80% 55%;
   }
 }
 

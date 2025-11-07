@@ -14,6 +14,11 @@ model User {
   status       String    @default("active")
   createdAt    DateTime  @default(now())
   lastLoginAt  DateTime?
+  
+  // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
+  themePreference String?  @default("original")
+  themeDarkMode   Boolean? @default(false)
+  
   profile      Profile?
   oauth        OAuthAccount[]
   churches     ChurchUser[]

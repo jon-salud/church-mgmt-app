@@ -49,6 +49,9 @@ export interface UserProps {
   roles: readonly UserRole[];
   profile: Readonly<UserProfile>;
   deletedAt?: Date;
+  // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
+  themePreference?: string;
+  themeDarkMode?: boolean;
 }
 
 export class User {
@@ -61,6 +64,9 @@ export class User {
   readonly roles: readonly UserRole[];
   readonly profile: Readonly<UserProfile>;
   readonly deletedAt?: Date;
+  // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
+  readonly themePreference?: string;
+  readonly themeDarkMode?: boolean;
 
   private constructor(props: UserProps) {
     this.id = props.id;
@@ -72,6 +78,9 @@ export class User {
     this.roles = Object.freeze([...props.roles]); // Deep freeze the array
     this.profile = User.deepFreezeProfile(props.profile);
     this.deletedAt = props.deletedAt;
+    // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
+    this.themePreference = props.themePreference;
+    this.themeDarkMode = props.themeDarkMode;
   }
 
   private static deepFreezeProfile(profile: UserProfile): Readonly<UserProfile> {

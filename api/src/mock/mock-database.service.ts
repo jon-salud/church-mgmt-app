@@ -133,6 +133,9 @@ interface UserCreateInput {
   allergiesOrMedicalNotes?: string;
   parentalConsentOnFile?: boolean;
   pastoralNotes?: string;
+  // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
+  themePreference?: string;
+  themeDarkMode?: boolean;
 }
 
 interface UserUpdateInput {
@@ -166,6 +169,9 @@ interface UserUpdateInput {
   allergiesOrMedicalNotes?: string;
   parentalConsentOnFile?: boolean;
   pastoralNotes?: string;
+  // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
+  themePreference?: string;
+  themeDarkMode?: boolean;
 }
 
 interface UserDeleteInput {
@@ -965,6 +971,17 @@ export class MockDatabaseService {
     }
     const actorName = this.getUserName(input.actorUserId);
     const targetName = this.getUserName(user.id);
+    if (
+      typeof input.themePreference === 'string' &&
+      input.themePreference !== user.themePreference
+    ) {
+      track('themePreference', user.themePreference ?? null, input.themePreference);
+      user.themePreference = input.themePreference;
+    }
+    if (typeof input.themeDarkMode === 'boolean' && input.themeDarkMode !== user.themeDarkMode) {
+      track('themeDarkMode', user.themeDarkMode ?? null, input.themeDarkMode);
+      user.themeDarkMode = input.themeDarkMode;
+    }
     if (Object.keys(diff).length > 0) {
       this.createAuditLog({
         actorUserId: input.actorUserId,

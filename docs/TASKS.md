@@ -12,7 +12,24 @@ This file tracks **current and immediately upcoming work**. For historical conte
 
 ## 🔄 In Progress
 
-*(No active work - ready to create final Sprint PR)*
+### Sprint: User Theme Preferences
+
+**Branch:** `feature/user-theme-preferences-main-sprint`  
+**Timeline:** 14.5-19.5 hours (2-3 days)  
+**Status:** Phase 1 - Database & API Foundation  
+**Sprint Plan:** `docs/sprints/user-theme-preferences-PLAN.md`
+
+**Sprint Goals:**
+- Implement user theme preference system (4 presets + dark mode toggle)
+- Complete settings UI with visual previews and navigation integration
+- Comprehensive E2E testing and documentation
+
+**Phases:**
+- ✅ **Phase 1: Database Schema & API Foundation (2.5-3.5h)** - Completed (moved to TASKS_COMPLETED.md)
+- ✅ **Phase 2: CSS Theme System (2-3h)** - Completed (moved to TASKS_COMPLETED.md)
+- ✅ **Phase 3: Settings UI (4-5h)** - Completed (moved to TASKS_COMPLETED.md)
+- ✅ **Phase 4: Theme Application Verification (1-2h)** - Completed (moved to TASKS_COMPLETED.md) - Commit: fecb67d
+- ✅ **Phase 5: Documentation & Integration Testing (3-4h)** - Completed (moved to TASKS_COMPLETED.md) - Commit: 8c9ba62
 
 ---
 

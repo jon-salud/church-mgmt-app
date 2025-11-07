@@ -35,6 +35,79 @@ When you log in for the first time, you will be greeted by the main dashboard, w
 quick overview of key church activities. The main navigation menu on the left side of the screen is
 your primary tool for accessing all the features described in this manual.
 
+### 2.4. How to Customize Your Theme Preferences
+
+The Church Management System allows you to personalize your visual experience by selecting your preferred color theme and dark mode setting. Your theme preferences are saved to your account and will persist across all your devices and browser sessions.
+
+#### Accessing Theme Settings
+
+To customize your theme:
+
+1. Click your profile menu in the top-right corner of the page
+2. Select **Settings** from the dropdown menu
+3. You will see the **User Preferences** section at the top of the settings page
+4. Find the **Theme Preferences** card within this section
+
+#### Choosing a Theme Preset
+
+The system offers four carefully designed theme presets, each optimized for readability and accessibility:
+
+**Original (Default)**
+- A clean, professional design with emerald green accents
+- Balanced colors suitable for all-day use
+- Recommended for users who prefer subtle, understated styling
+
+**Vibrant Blue**
+- Bold blue accents with high visual impact
+- Energetic and modern appearance
+- Ideal for users who prefer stronger color contrast
+
+**Teal Accent**
+- Calming teal tones with a contemporary feel
+- Softer than Vibrant Blue while maintaining visual interest
+- Great for reducing eye strain during extended sessions
+
+**Warm Accent**
+- Orange and amber tones for a welcoming atmosphere
+- Friendly and approachable visual style
+- Perfect for users who prefer warmer color palettes
+
+To select a theme:
+
+1. View the theme preview cards displaying each color scheme
+2. Each card shows three color swatches representing the theme's color palette:
+   - **Background color** (left swatch)
+   - **Primary action color** (middle swatch)
+   - **Alert/destructive color** (right swatch)
+3. Click on any theme card to select it
+4. The theme will apply immediately across the entire application
+5. Your selection is automatically saved to your account
+
+#### Dark Mode
+
+Independent of your color theme choice, you can toggle between light and dark modes:
+
+- **Light Mode:** Traditional bright background with dark text (default)
+- **Dark Mode:** Dark background with light text, reducing eye strain in low-light environments
+
+The dark mode toggle is located in the top navigation bar (next to the search bar). Click the moon/sun icon to switch between modes. Your preference is saved automatically.
+
+**How Dark Mode Works with Themes:**
+- Each theme preset has been designed to work beautifully in both light and dark modes
+- The color swatches in the theme preview cards update in real-time to show how each theme looks in your current dark mode setting
+- You can freely switch between light and dark modes without losing your theme preference
+
+#### Theme Persistence
+
+Your theme preferences are stored in your user account and will:
+
+- Apply automatically whenever you log in
+- Sync across all devices where you access the system
+- Persist across browser sessions (even after closing your browser)
+- Remain active even if your device's system-level dark mode preference changes
+
+**Note for New Users:** If you haven't selected a theme yet, the system will use the "Original" theme with your device's system-level dark mode preference.
+
 ---
 
 ## 3. For Church Administrators

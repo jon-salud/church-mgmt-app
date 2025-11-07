@@ -95,7 +95,7 @@ export default async function AuditLogPage({
   return (
     <section className="space-y-8">
       <header>
-        <h1 className="text-3xl font-semibold tracking-tight">Audit Log</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-primary">Audit Log</h1>
         <p className="text-sm text-muted-foreground">
           Review recent administrative activity across members, groups, events, giving, and
           announcements.

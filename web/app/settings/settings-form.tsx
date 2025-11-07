@@ -147,7 +147,7 @@ export function SettingsForm({
     <div className="grid gap-6">
       <Card>
         <CardHeader>
-          <h2 className="text-2xl font-semibold leading-none tracking-tight">
+          <h2 className="text-2xl font-semibold leading-none tracking-tight text-primary">
             Member Profile Fields
           </h2>
           <p className="text-sm text-muted-foreground">
@@ -189,7 +189,7 @@ export function SettingsForm({
         <CardContent>
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-medium mb-4">Create New Request Type</h3>
+              <h3 className="text-lg font-medium mb-4 text-primary">Create New Request Type</h3>
               <div className="grid gap-4">
                 <div>
                   <Label htmlFor="new-request-type-name">Name</Label>
@@ -224,7 +224,7 @@ export function SettingsForm({
             </div>
 
             <div>
-              <h3 className="text-lg font-medium mb-4">Manage Existing Types</h3>
+              <h3 className="text-lg font-medium mb-4 text-primary">Manage Existing Types</h3>
               <div className="border rounded-md">
                 <DragDropContext onDragEnd={handleDragEnd}>
                   <Droppable droppableId="requestTypes">
