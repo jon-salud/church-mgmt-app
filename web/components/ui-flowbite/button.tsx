@@ -5,7 +5,7 @@ import { Button as FlowbiteButton } from 'flowbite-react';
 import type { ButtonProps as FlowbiteButtonProps } from 'flowbite-react';
 import { cn } from '@/lib/utils';
 
-type ButtonVariant = 'default' | 'outline' | 'secondary' | 'ghost' | 'destructive';
+type ButtonVariant = 'default' | 'primary' | 'outline' | 'secondary' | 'ghost' | 'destructive';
 type ButtonSize = 'sm' | 'default' | 'lg';
 
 interface Props extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'color' | 'size'> {
@@ -16,8 +16,9 @@ interface Props extends Omit<React.ButtonHTMLAttributes<HTMLButtonElement>, 'col
 /**
  * Enhanced Button component wrapping Flowbite React Button.
  *
- * Supports 5 semantic variants:
+ * Supports 6 semantic variants:
  * - `default`: Neutral primary action (gray)
+ * - `primary`: Theme-aware primary action (uses CSS variables)
  * - `outline`: Secondary outlined action (light + outline)
  * - `secondary`: Lighter secondary action (light)
  * - `ghost`: Transparent background, visible on hover (light + custom styles)
@@ -34,6 +35,7 @@ export function Button({ variant = 'default', size = 'default', className = '', 
   // Map design system variants to Flowbite's color system
   const colorMap: Record<ButtonVariant, FlowbiteButtonProps['color']> = {
     default: 'gray',
+    primary: 'blue', // Base color (overridden by primaryStyles via !important for theme support)
     outline: 'light',
     secondary: 'light',
     ghost: 'light',
@@ -47,6 +49,18 @@ export function Button({ variant = 'default', size = 'default', className = '', 
     lg: 'lg',
   };
 
+  // Primary variant uses CSS variables for theming
+  // NOTE: Using !important (via Tailwind's ! prefix) to override Flowbite's default styles.
+  // This is a known limitation requiring monitoring during Flowbite upgrades.
+  // Alternative considered: Extending Flowbite theme config, but would require
+  // maintaining separate theme configs and lose benefits of CSS custom properties.
+  // Trade-off: !important provides cleaner integration with our theme system at cost of
+  // potential brittleness. See docs/sprints/user-theme-preferences-phase3-PLAN.md
+  const primaryStyles =
+    variant === 'primary'
+      ? '!bg-primary !text-primary-foreground hover:!bg-primary/90 focus:!ring-primary'
+      : '';
+
   // Ghost variant requires transparent background + hover states
   const ghostStyles =
     variant === 'ghost' ? 'bg-transparent hover:bg-accent hover:text-accent-foreground' : '';
@@ -59,7 +73,7 @@ export function Button({ variant = 'default', size = 'default', className = '', 
       color={colorMap[variant]}
       size={sizeMap[size]}
       outline={outline}
-      className={cn(ghostStyles, className)}
+      className={cn(primaryStyles, ghostStyles, className)}
       {...(props as FlowbiteButtonProps)}
     />
   );

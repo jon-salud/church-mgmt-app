@@ -82,7 +82,7 @@ function LeaderDashboard({
                     {event.location || 'TBA'}
                   </p>
                   {event.volunteerRoles && event.volunteerRoles.length > 0 && (
-                    <p className="text-xs text-blue-600 mt-1">
+                    <p className="text-xs text-primary mt-1">
                       {event.volunteerRoles.filter(role => role.filled < role.needed).length}{' '}
                       volunteer roles open
                     </p>

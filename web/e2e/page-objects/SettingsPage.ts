@@ -29,6 +29,6 @@ export class SettingsPage extends BasePage {
       console.log(`Heading text: ${text}`);
     }
 
-    await expect(this.page.getByRole('heading', { name: 'Settings' })).toBeVisible();
+    await expect(this.page.getByRole('heading', { name: 'Settings', exact: true })).toBeVisible();
   }
 }

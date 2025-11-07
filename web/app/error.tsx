@@ -30,13 +30,13 @@ export default function Error({
         <div className="mt-6 space-x-4">
           <button
             onClick={() => reset()}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90"
           >
             Try again
           </button>
           <button
             onClick={() => router.push('/dashboard')}
-            className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+            className="px-4 py-2 bg-muted text-muted-foreground rounded hover:bg-muted/80"
           >
             Go to Dashboard
           </button>

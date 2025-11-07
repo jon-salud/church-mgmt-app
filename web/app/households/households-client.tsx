@@ -190,7 +190,7 @@ export function HouseholdsClient({
     <section className="space-y-6">
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-semibold">Households</h1>
+          <h1 className="text-3xl font-semibold text-primary">Households</h1>
           <p className="text-sm text-muted-foreground">
             Manage household groups and their members.
           </p>
@@ -391,10 +391,9 @@ export function HouseholdsClient({
             </Button>
             <Button
               id="confirm-archive-household-button"
-              variant="default"
+              variant="destructive"
               onClick={handleArchive}
               disabled={isProcessing || isLoadingDependents}
-              className="bg-red-600 hover:bg-red-700 text-white"
             >
               <Archive className="mr-2 h-4 w-4" />
               {isProcessing ? 'Archiving...' : 'Archive Household'}

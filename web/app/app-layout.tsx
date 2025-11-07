@@ -119,7 +119,7 @@ export async function AppLayout({ children }: AppLayoutProps) {
               <Link
                 id="dashboard-link"
                 href="/dashboard"
-                className="text-xl font-semibold tracking-tight"
+                className="text-xl font-semibold tracking-tight text-foreground hover:text-primary"
               >
                 Auckland Community Church
               </Link>

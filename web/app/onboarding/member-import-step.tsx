@@ -128,7 +128,7 @@ export function MemberImportStep({ settings: _settings, onUpdate }: MemberImport
             {selectedFile ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-center gap-3">
-                  <FileText className="w-8 h-8 text-green-600" />
+                  <FileText className="w-8 h-8 text-primary" />
                   <div className="text-left">
                     <p className="font-medium">{(selectedFile as any).name}</p>
                     <p className="text-sm text-muted-foreground">
@@ -162,16 +162,16 @@ export function MemberImportStep({ settings: _settings, onUpdate }: MemberImport
           </div>
 
           {/* CSV Format Help */}
-          <Card className="bg-blue-50 border-blue-200">
-            <CardContent className="p-4">
-              <h4 className="font-medium text-blue-900 mb-2">CSV Format Requirements</h4>
-              <p className="text-sm text-blue-800 mb-3">
+          <Card className="bg-muted/50 border-muted">
+            <CardContent className="pt-4">
+              <h4 className="font-medium text-foreground mb-2">CSV Format Requirements</h4>
+              <p className="text-sm text-muted-foreground mb-3">
                 Your CSV file should include these columns (name is required, others optional):
               </p>
-              <div className="text-sm font-mono bg-white p-2 rounded border text-blue-900">
+              <div className="text-sm font-mono bg-card p-2 rounded border text-foreground">
                 name,email,phone,address,city,state,zip,birth_date
               </div>
-              <p className="text-xs text-blue-700 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 Example: John Doe,john@example.com,555-0123,123 Main St,Anytown,CA,12345,1980-01-01
               </p>
             </CardContent>
@@ -197,31 +197,33 @@ export function MemberImportStep({ settings: _settings, onUpdate }: MemberImport
           {importResult && (
             <Card
               className={
-                importResult.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'
+                importResult.success
+                  ? 'border-primary/20 bg-primary/10'
+                  : 'border-destructive/20 bg-destructive/10'
               }
             >
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
                   {importResult.success ? (
-                    <CheckCircle className="w-5 h-5 text-green-600 mt-0.5" />
+                    <CheckCircle className="w-5 h-5 text-primary mt-0.5" />
                   ) : (
-                    <AlertCircle className="w-5 h-5 text-red-600 mt-0.5" />
+                    <AlertCircle className="w-5 h-5 text-destructive mt-0.5" />
                   )}
                   <div className="flex-1">
                     <h4
-                      className={`font-medium ${importResult.success ? 'text-green-900' : 'text-red-900'}`}
+                      className={`font-medium ${importResult.success ? 'text-primary' : 'text-destructive'}`}
                     >
                       {importResult.success ? 'Import Successful' : 'Import Failed'}
                     </h4>
                     <p
-                      className={`text-sm ${importResult.success ? 'text-green-800' : 'text-red-800'}`}
+                      className={`text-sm ${importResult.success ? 'text-primary/90' : 'text-destructive/90'}`}
                     >
                       {importResult.success
                         ? `Successfully imported ${importResult.count} member${importResult.count !== 1 ? 's' : ''}`
                         : `Failed to import members. ${importResult.errors?.join(', ')}`}
                     </p>
                     {importResult.errors && importResult.errors.length > 0 && (
-                      <ul className="text-sm text-red-700 mt-2 list-disc list-inside">
+                      <ul className="text-sm text-destructive/80 mt-2 list-disc list-inside">
                         {importResult.errors.map((error, index) => (
                           <li key={index}>{error}</li>
                         ))}

@@ -65,7 +65,7 @@ export function RolesClient({ roles, me }: RolesClientProps) {
     <section className="space-y-6">
       <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
         <div className="space-y-1">
-          <h1 className="text-3xl font-semibold">Roles & Permissions</h1>
+          <h1 className="text-3xl font-semibold text-primary">Roles & Permissions</h1>
           <p className="text-sm text-muted-foreground">
             Configure role templates and granular permissions. The Admin role is system protected.
           </p>
@@ -154,7 +154,7 @@ export function RolesClient({ roles, me }: RolesClientProps) {
                       <button
                         type="button"
                         onClick={() => handleRecoverRole(role.id)}
-                        className="rounded-md bg-green-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-green-700"
+                        className="rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground transition hover:bg-primary/90"
                       >
                         Recover
                       </button>

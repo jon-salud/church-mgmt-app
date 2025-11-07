@@ -84,3 +84,50 @@ export async function getUserTheme(): Promise<ThemePreferences> {
     return THEME_DEFAULTS;
   }
 }
+
+/**
+ * DTO for updating user theme preferences
+ */
+export interface UpdateThemeDto {
+  themePreference: 'original' | 'vibrant-blue' | 'teal-accent' | 'warm-accent';
+  themeDarkMode: boolean;
+}
+
+/**
+ * Updates the current user's theme preferences via the API.
+ * This is a server action that runs on the server-side only.
+ *
+ * Uses the standard apiFetch helper for consistency with other API calls.
+ * Throws error if unauthenticated (client should handle gracefully).
+ *
+ * @param dto - Theme preferences to update
+ * @throws Error if authentication required or API request fails
+ *
+ * @example
+ * ```tsx
+ * try {
+ *   await updateUserTheme({
+ *     themePreference: 'vibrant-blue',
+ *     themeDarkMode: true
+ *   });
+ *   console.log('Theme saved!');
+ * } catch (error) {
+ *   console.error('Failed to save theme:', error);
+ * }
+ * ```
+ */
+export async function updateUserTheme(dto: UpdateThemeDto): Promise<void> {
+  try {
+    // Use standard apiFetch helper (handles auth, base URL, errors)
+    await apiFetch('/users/me/theme', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(dto),
+    });
+  } catch (error) {
+    console.error('Failed to update theme:', error);
+    throw error; // Re-throw for client to handle
+  }
+}

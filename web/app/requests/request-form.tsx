@@ -131,7 +131,7 @@ export function RequestForm({ initialRequestTypes, churchId: _churchId }: Reques
         </CardContent>
         <CardFooter className="flex-col items-start gap-4">
           {submitSuccess && (
-            <div className="w-full rounded-md bg-green-50 p-3 text-sm text-green-800 dark:bg-green-900/20 dark:text-green-400">
+            <div className="w-full rounded-md bg-primary/10 p-3 text-sm text-primary dark:bg-primary/20 dark:text-primary">
               ✓ Request submitted successfully! Redirecting...
             </div>
           )}

@@ -25,14 +25,12 @@ This file tracks **current and immediately upcoming work**. For historical conte
 - Comprehensive E2E testing and documentation
 
 **Phases:**
-- ✅ **Phase 1: Database Schema & API Foundation (2.5-3.5h)** - Completed
-  - Branch: `feature/user-theme-preferences-phase1-database-api`
-  - Plan: `docs/sprints/user-theme-preferences-phase1-PLAN.md`
-  - Merged to sprint branch
-- 🔄 **Phase 2: CSS Theme System (2-3h)** - In Progress
-  - Branch: `feature/user-theme-preferences-phase2-css-themes`
-  - Plan: `docs/sprints/user-theme-preferences-phase2-PLAN.md`
-- ⏳ **Phase 3: Settings UI (4-5h)** - Not Started
+- ✅ **Phase 1: Database Schema & API Foundation (2.5-3.5h)** - Completed (moved to TASKS_COMPLETED.md)
+- ✅ **Phase 2: CSS Theme System (2-3h)** - Completed (moved to TASKS_COMPLETED.md)
+- ✅ **Phase 3: Settings UI (4-5h)** - Completed
+  - Branch: `feature/user-theme-preferences-phase3-settings-ui`
+  - Commits: `9b9d112`, `11ec5c8`, `f5a8008`, `721fbb8`, `38da3e4`, `b64a803`, `5d68b91`, `ffc25c7`, `0686313`, `556f34b`
+  - Summary: Theme selection UI with 4 presets + dark mode toggle, E2E tests, CSS fixes, component showcase
 - ⏳ **Phase 4: Theme Application (2.5-3.5h)** - Not Started
 - ⏳ **Phase 5: Testing & Docs (3-4h)** - Not Started
 
