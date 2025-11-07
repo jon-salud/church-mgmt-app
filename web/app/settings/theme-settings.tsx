@@ -180,16 +180,27 @@ function ThemePreviewCard({ theme, isSelected, onSelect }: ThemePreviewCardProps
 export function ThemeSettings({ initialTheme }: ThemeSettingsProps) {
   const [selectedTheme, setSelectedTheme] = useState<ThemePreset>(initialTheme.themePreference);
   const [isSaving, setIsSaving] = useState(false);
-  const { theme } = useTheme(); // Get current theme mode (light/dark) from header toggle
+  const [mounted, setMounted] = useState(false);
+  const { theme, resolvedTheme } = useTheme(); // Get current theme mode (light/dark) from header toggle
 
   // Apply the initial theme from server on component mount
   // This ensures the theme is set even when navigating to settings page
   useEffect(() => {
+    setMounted(true);
     document.documentElement.setAttribute('data-theme', initialTheme.themePreference);
   }, [initialTheme.themePreference]);
 
   // Determine which palette set to show based on current light/dark mode
-  const isDarkMode = theme === 'dark';
+  // Use resolvedTheme as fallback when theme is 'system'
+  // Fall back to initialTheme.themeDarkMode for SSR/initial render
+  const currentTheme = mounted
+    ? theme === 'system'
+      ? resolvedTheme
+      : theme
+    : initialTheme.themeDarkMode
+      ? 'dark'
+      : 'light';
+  const isDarkMode = currentTheme === 'dark';
   const themes = isDarkMode ? darkThemes : lightThemes;
 
   const handleThemeChange = async (themeId: ThemePreset) => {
