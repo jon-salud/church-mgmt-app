@@ -28,8 +28,14 @@ This file tracks **current and immediately upcoming work**. For historical conte
 - ✅ **Phase 1: Database Schema & API Foundation (2.5-3.5h)** - Completed (moved to TASKS_COMPLETED.md)
 - ✅ **Phase 2: CSS Theme System (2-3h)** - Completed (moved to TASKS_COMPLETED.md)
 - ✅ **Phase 3: Settings UI (4-5h)** - Completed (moved to TASKS_COMPLETED.md)
-- ⏳ **Phase 4: Theme Application (2.5-3.5h)** - Not Started
-- ⏳ **Phase 5: Testing & Docs (3-4h)** - Not Started
+- 🎯 **Phase 4: Theme Application Verification (1-2h)** - Ready to Start
+  - **Status:** Phase infrastructure 90% complete from Phase 2
+  - **Scope:** Verification testing, edge cases, performance validation
+  - **Plan:** `docs/sprints/user-theme-preferences-phase4-PLAN.md`
+  - **What's Done:** Server-side theme fetch, FOUC prevention, client persistence, dark mode integration
+  - **What's Needed:** Cross-page E2E tests, unauthenticated user tests, performance tests, edge case validation
+  - **Time Reduced:** 2.5-3.5h → 1-2h (60% reduction due to Phase 2 implementation)
+- ⏳ **Phase 5: Testing & Docs (3-4h)** - Waiting for Phase 4
 
 ---
 
