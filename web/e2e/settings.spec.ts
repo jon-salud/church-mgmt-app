@@ -117,10 +117,11 @@ test.describe('Theme Preferences', () => {
     await test.step('Select Teal Accent theme', async () => {
       const tealCard = page.getByRole('button', { name: /select teal accent theme/i });
 
-      // Wait for API response
-      const responsePromise = page.waitForResponse(
-        response => response.url().includes('/settings/theme') && response.status() === 200
-      );
+      // Wait for API response (users/me/theme)
+      const responsePromise = page.waitForResponse(response => {
+        const url = response.url();
+        return url.includes('/users/me/theme') && response.status() === 200;
+      });
 
       await tealCard.click();
       await responsePromise;

@@ -201,7 +201,7 @@ export function EventsClient({ events, members, groups, me }: EventsClientProps)
                   {event.deletedAt && isAdmin && (
                     <button
                       onClick={() => handleRecoverEvent(event.id)}
-                      className="rounded-md bg-emerald-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-700"
+                      className="rounded-md bg-primary px-3 py-1 text-xs font-medium text-primary-foreground transition hover:bg-primary/90"
                     >
                       Recover
                     </button>

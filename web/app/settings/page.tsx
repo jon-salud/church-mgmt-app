@@ -29,13 +29,13 @@ export default async function SettingsPage() {
 
       {/* User Preferences Section */}
       <div className="mb-8">
-        <h2 className="text-xl font-semibold mb-4 text-primary">User Preferences</h2>
+        <h2 className="text-xl font-semibold mb-4 text-foreground">User Preferences</h2>
         <ThemeSettings initialTheme={userTheme} />
       </div>
 
       {/* Church Settings Section */}
       <div className="grid gap-6">
-        <h2 className="text-xl font-semibold text-primary">Church Settings</h2>
+        <h2 className="text-xl font-semibold text-foreground">Church Settings</h2>
         <SettingsForm
           initialRequestTypes={requestTypes}
           initialSettings={settings}
