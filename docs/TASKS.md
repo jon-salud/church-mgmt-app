@@ -27,8 +27,8 @@ This file tracks **current and immediately upcoming work**. For historical conte
 - Build on existing theme system with backward compatibility
 
 **Phases:**
-- 🔄 **Phase 1: User Settings Dropdown Menu (3-4h)** - Add dropdown to header with Settings link
-- **Phase 2: Font Size Preference System (6-8h)** - Database, API, frontend font size system
+- ✅ **Phase 1: User Settings Dropdown Menu (3-4h)** - Add dropdown to header with Settings link (COMPLETED: d646eb8)
+- 🔄 **Phase 2: Font Size Preference System (6-8h)** - Database, API, frontend font size system
 - **Phase 3: Settings Modal & Integration (2-3h)** - Modal with draft state and preview
 
 **Success Criteria:**
