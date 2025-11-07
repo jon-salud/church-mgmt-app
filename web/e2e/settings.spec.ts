@@ -59,19 +59,15 @@ test.describe('Theme Preferences', () => {
 
     await test.step('Verify theme preview cards have color swatches', async () => {
       // Each theme card should have 3 color preview boxes (background, primary, destructive)
-      const colorSwatches = page.locator('[style*="backgroundColor"]');
+      // Swatches have aria-labels ending with "color"
+      const colorSwatches = page.locator('[aria-label$=" color"]');
       const count = await colorSwatches.count();
       expect(count).toBeGreaterThanOrEqual(12); // 4 themes × 3 swatches each
     });
   });
 
-  test('displays dark mode toggle', async ({ page }) => {
-    await test.step('Verify dark mode checkbox exists', async () => {
-      await expect(page.getByRole('checkbox', { name: /dark mode/i })).toBeVisible();
-      await expect(page.getByText('Dark Mode')).toBeVisible();
-      await expect(page.getByText('Switch between light and dark appearance')).toBeVisible();
-    });
-  });
+  // Note: Dark mode toggle was moved to header only (not in settings page)
+  // Dark mode functionality is tested through header interaction
 
   test('switches theme and updates data-theme attribute', async ({ page }) => {
     await test.step('Select Vibrant Blue theme', async () => {
@@ -115,29 +111,7 @@ test.describe('Theme Preferences', () => {
     }
   });
 
-  test('toggles dark mode and updates class', async ({ page }) => {
-    const darkModeCheckbox = page.getByRole('checkbox', { name: /dark mode/i });
-    const htmlElement = page.locator('html');
-
-    await test.step('Enable dark mode', async () => {
-      const isChecked = await darkModeCheckbox.isChecked();
-
-      if (!isChecked) {
-        await darkModeCheckbox.click();
-      }
-
-      // Verify dark class is present
-      await expect(htmlElement).toHaveClass(/dark/);
-    });
-
-    await test.step('Disable dark mode', async () => {
-      await darkModeCheckbox.click();
-
-      // Verify dark class is removed
-      const classValue = await htmlElement.getAttribute('class');
-      expect(classValue).not.toContain('dark');
-    });
-  });
+  // Dark mode toggle test removed - toggle only exists in header, not settings page
 
   test('theme preference persists after page reload', async ({ page }) => {
     await test.step('Select Teal Accent theme', async () => {
@@ -167,34 +141,7 @@ test.describe('Theme Preferences', () => {
     });
   });
 
-  test('dark mode persists after page reload', async ({ page }) => {
-    const darkModeCheckbox = page.getByRole('checkbox', { name: /dark mode/i });
-
-    await test.step('Enable dark mode', async () => {
-      const isChecked = await darkModeCheckbox.isChecked();
-      if (!isChecked) {
-        // Wait for API response
-        const responsePromise = page.waitForResponse(
-          response => response.url().includes('/settings/theme') && response.status() === 200
-        );
-
-        await darkModeCheckbox.click();
-        await responsePromise;
-      }
-    });
-
-    await test.step('Reload page and verify dark mode persists', async () => {
-      await page.reload();
-      await page.waitForLoadState('networkidle');
-
-      const htmlElement = page.locator('html');
-      await expect(htmlElement).toHaveClass(/dark/);
-
-      // Verify checkbox still checked
-      const reloadedCheckbox = page.getByRole('checkbox', { name: /dark mode/i });
-      await expect(reloadedCheckbox).toBeChecked();
-    });
-  });
+  // Dark mode persistence test removed - toggle only exists in header
 
   test('theme changes apply to navigation and buttons', async ({ page }) => {
     await test.step('Select Warm Accent theme and verify button colors change', async () => {
@@ -274,39 +221,8 @@ test.describe('Theme Preferences', () => {
     });
   });
 
-  test('combination: theme + dark mode work together', async ({ page }) => {
-    await test.step('Select Vibrant Blue theme', async () => {
-      const vibrantCard = page.getByRole('button', { name: /select vibrant blue theme/i });
-      await vibrantCard.click();
-    });
-
-    await test.step('Enable dark mode', async () => {
-      const darkModeCheckbox = page.getByRole('checkbox', { name: /dark mode/i });
-      const isChecked = await darkModeCheckbox.isChecked();
-      if (!isChecked) {
-        await darkModeCheckbox.click();
-      }
-    });
-
-    await test.step('Verify both theme and dark mode applied', async () => {
-      const htmlElement = page.locator('html');
-
-      // Check data-theme attribute
-      await expect(htmlElement).toHaveAttribute('data-theme', 'vibrant-blue');
-
-      // Check dark class
-      await expect(htmlElement).toHaveClass(/dark/);
-    });
-
-    await test.step('Verify CSS variables applied correctly', async () => {
-      const computedPrimary = await page.evaluate(() => {
-        return window.getComputedStyle(document.documentElement).getPropertyValue('--primary');
-      });
-
-      // Vibrant Blue: hsl(220, 100%, 56%)
-      expect(computedPrimary.trim()).toBe('220 100% 56%');
-    });
-  });
+  // Combination test with dark mode removed - dark mode toggle only in header
+  // Theme selection still works independently and applies to both light and dark modes
 
   test('accessibility: ARIA labels and roles', async ({ page }) => {
     await test.step('Verify theme cards have proper ARIA labels', async () => {
@@ -316,17 +232,7 @@ test.describe('Theme Preferences', () => {
       await expect(page.getByRole('button', { name: /select warm accent theme/i })).toBeVisible();
     });
 
-    await test.step('Verify dark mode checkbox has label', async () => {
-      const darkModeCheckbox = page.getByRole('checkbox', { name: /dark mode/i });
-      await expect(darkModeCheckbox).toBeVisible();
-
-      // Verify checkbox has proper labeling
-      const labelFor = await page.evaluate(() => {
-        const label = document.querySelector('label[for="dark-mode"]');
-        return !!label;
-      });
-      expect(labelFor).toBe(true);
-    });
+    // Dark mode checkbox test removed - toggle only in header, not settings page
   });
 
   test('user preferences section is separate from church settings', async ({ page }) => {
