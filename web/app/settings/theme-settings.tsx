@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui-flowbite/card';
 import { Label } from '@/components/ui-flowbite/label';
 import { Checkbox } from '@/components/ui-flowbite/checkbox';
@@ -128,6 +128,13 @@ export function ThemeSettings({ initialTheme }: ThemeSettingsProps) {
   const [darkMode, setDarkMode] = useState(initialTheme.themeDarkMode);
   const [isSaving, setIsSaving] = useState(false);
   const { setTheme } = useTheme();
+
+  // Apply the initial theme from server on component mount
+  // This ensures the theme is set even when navigating to settings page
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', initialTheme.themePreference);
+    setTheme(initialTheme.themeDarkMode ? 'dark' : 'light');
+  }, [initialTheme.themePreference, initialTheme.themeDarkMode, setTheme]);
 
   const handleThemeChange = async (themeId: ThemePreset) => {
     setSelectedTheme(themeId);

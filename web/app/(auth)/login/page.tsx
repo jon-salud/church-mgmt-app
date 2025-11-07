@@ -65,7 +65,7 @@ export default function LoginPage() {
               Welcome aboard! Your account has been created.
             </p>
           )}
-          {error && <p className="text-xs text-red-400">Sign-in failed: {error}</p>}
+          {error && <p className="text-xs text-destructive">Sign-in failed: {error}</p>}
         </header>
 
         <div className="space-y-3">

@@ -2,6 +2,7 @@ import { Metadata, Viewport } from 'next';
 import './globals.css';
 import { ServiceWorkerRegister } from '../components/service-worker-register';
 import { ThemeProvider } from '../components/theme-provider';
+import { ThemeApplier } from '../components/theme-applier';
 import { AppLayout } from './app-layout';
 import { getUserTheme } from './actions/theme';
 
@@ -51,6 +52,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           defaultTheme={theme.themeDarkMode ? 'dark' : 'light'}
           enableSystem={false}
         >
+          <ThemeApplier themePreference={theme.themePreference} />
           <AppLayout>{children}</AppLayout>
           <ServiceWorkerRegister />
         </ThemeProvider>

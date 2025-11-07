@@ -168,7 +168,7 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
                     {member.deletedAt && (
                       <button
                         onClick={() => handleRecoverMember(member.id)}
-                        className="rounded-md bg-green-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-green-700"
+                        className="rounded-md bg-emerald-600 px-3 py-1 text-xs font-medium text-white transition hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-700"
                       >
                         Recover
                       </button>

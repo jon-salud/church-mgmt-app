@@ -21,7 +21,7 @@ function NavSection({ title, items }: NavSectionProps) {
 
   return (
     <div className="space-y-1">
-      <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+      <h3 className="px-3 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
         {title}
       </h3>
       {items.map(item => {
@@ -36,13 +36,13 @@ function NavSection({ title, items }: NavSectionProps) {
             className={cn(
               'group flex items-center rounded-md px-3 py-2 text-sm font-medium transition',
               isActive
-                ? 'bg-slate-200 text-slate-900 dark:bg-slate-800 dark:text-slate-50'
-                : 'text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800/60'
+                ? 'bg-primary/10 text-primary font-semibold'
+                : 'text-foreground hover:bg-muted hover:text-primary'
             )}
           >
             <Icon
               name={item.icon}
-              className="mr-3 h-5 w-5 text-slate-500 transition group-hover:text-slate-600 dark:text-slate-400 dark:group-hover:text-slate-300"
+              className="mr-3 h-5 w-5 text-muted-foreground transition group-hover:text-primary"
             />
             <span>{item.label}</span>
           </Link>

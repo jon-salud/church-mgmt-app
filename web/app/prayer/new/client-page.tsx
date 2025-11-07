@@ -58,7 +58,7 @@ export function NewPrayerRequestClientPage() {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Submit a Prayer Request</h1>
       {error && (
-        <div className="mb-4 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
+        <div className="mb-4 p-2 bg-destructive/10 border border-destructive/40 text-destructive rounded">
           {error}
         </div>
       )}

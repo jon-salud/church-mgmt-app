@@ -110,12 +110,12 @@ export function PastoralCareClientPage({
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Pastoral Care & Requests</h1>
+        <h1 className="text-2xl font-bold text-primary">Pastoral Care & Requests</h1>
         <div className="flex gap-2">
           <a
             id="new-request-link"
             href="/requests"
-            className="inline-flex items-center justify-center rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:opacity-90"
+            className="inline-flex items-center justify-center rounded-md bg-muted px-4 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted/80"
           >
             New Request
           </a>

@@ -188,7 +188,7 @@ export function DocumentsClient({ documents: initialDocuments, roles, me }: Docu
                     </button>
                     <button
                       onClick={() => handleDelete(doc.id)}
-                      className="text-gray-500 hover:text-red-700"
+                      className="text-muted-foreground hover:text-destructive"
                       data-testid={`delete-document-${doc.id}`}
                       aria-label="Delete document"
                     >

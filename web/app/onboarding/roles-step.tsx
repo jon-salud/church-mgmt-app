@@ -171,7 +171,7 @@ export function RolesStep({ settings, onUpdate }: RolesStepProps) {
                       <Button
                         onClick={() => removeCustomRole(index)}
                         variant="outline"
-                        className="text-red-600 hover:text-red-700"
+                        className="text-destructive hover:text-destructive/90"
                       >
                         Remove
                       </Button>
