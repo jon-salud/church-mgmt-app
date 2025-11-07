@@ -162,16 +162,16 @@ export function MemberImportStep({ settings: _settings, onUpdate }: MemberImport
           </div>
 
           {/* CSV Format Help */}
-          <Card className="bg-blue-50 border-blue-200">
-            <CardContent className="p-4">
-              <h4 className="font-medium text-blue-900 mb-2">CSV Format Requirements</h4>
-              <p className="text-sm text-blue-800 mb-3">
+          <Card className="bg-muted/50 border-muted">
+            <CardContent className="pt-4">
+              <h4 className="font-medium text-foreground mb-2">CSV Format Requirements</h4>
+              <p className="text-sm text-muted-foreground mb-3">
                 Your CSV file should include these columns (name is required, others optional):
               </p>
-              <div className="text-sm font-mono bg-white p-2 rounded border text-blue-900">
+              <div className="text-sm font-mono bg-card p-2 rounded border text-foreground">
                 name,email,phone,address,city,state,zip,birth_date
               </div>
-              <p className="text-xs text-blue-700 mt-2">
+              <p className="text-xs text-muted-foreground mt-2">
                 Example: John Doe,john@example.com,555-0123,123 Main St,Anytown,CA,12345,1980-01-01
               </p>
             </CardContent>

@@ -170,7 +170,7 @@ export function DocumentsClient({ documents: initialDocuments, roles, me }: Docu
             >
               <div className="flex items-start justify-between mb-2">
                 <div className="flex items-center">
-                  <FileIcon className="h-8 w-8 text-blue-500 mr-2" />
+                  <FileIcon className="h-8 w-8 text-primary mr-2" />
                   <div>
                     <h3 className="heading-2">{doc.title}</h3>
                     <p className="text-sm text-gray-500">{doc.fileName}</p>

@@ -41,8 +41,8 @@ const themes: ThemeOption[] = [
     name: 'Vibrant Blue',
     description: 'Bright and energetic',
     colors: {
-      primary: 'hsl(217, 91%, 60%)',
-      accent: 'hsl(217, 91%, 60%)',
+      primary: 'hsl(220, 100%, 56%)',
+      accent: 'hsl(200, 100%, 50%)',
     },
   },
   {
