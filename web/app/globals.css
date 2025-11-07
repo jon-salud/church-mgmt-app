@@ -87,6 +87,9 @@
     --ring: 24 95% 53%;
   }
 
+  /* ============================================
+     DARK MODE BASE THEME
+     ============================================ */
   .dark {
     /* Background - keep existing dark background */
     --background: 222.2 84% 4.9%;
@@ -114,6 +117,38 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+  }
+
+  /* ============================================
+     DARK MODE THEME VARIANTS
+     Theme color overrides for dark mode
+     ============================================ */
+
+  /* Dark Mode - Vibrant Blue Theme */
+  .dark[data-theme='vibrant-blue'] {
+    --primary: 215 70% 60%; /* Bright light blue for visibility on dark background */
+    --primary-foreground: 222.2 84% 4.9%;
+    --accent: 200 70% 55%; /* Bright cyan-blue accent */
+    --accent-foreground: 222.2 84% 4.9%;
+    --ring: 215 70% 60%;
+  }
+
+  /* Dark Mode - Teal Accent Theme */
+  .dark[data-theme='teal-accent'] {
+    --primary: 180 70% 45%; /* Bright teal for visibility */
+    --primary-foreground: 222.2 84% 4.9%;
+    --accent: 180 70% 45%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --ring: 180 70% 45%;
+  }
+
+  /* Dark Mode - Warm Accent Theme */
+  .dark[data-theme='warm-accent'] {
+    --primary: 28 80% 55%; /* Bright warm orange */
+    --primary-foreground: 222.2 84% 4.9%;
+    --accent: 28 80% 55%;
+    --accent-foreground: 222.2 84% 4.9%;
+    --ring: 28 80% 55%;
   }
 }
 
