@@ -203,6 +203,23 @@ export function ThemeSettings({ initialTheme }: ThemeSettingsProps) {
   const isDarkMode = currentTheme === 'dark';
   const themes = isDarkMode ? darkThemes : lightThemes;
 
+  // Don't render theme cards until mounted to avoid hydration mismatch
+  // This prevents showing wrong colors during SSR
+  if (!mounted) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Theme Preferences</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="rounded-md bg-muted/50 p-3 border border-border">
+            <p className="text-sm text-muted-foreground">Loading theme preferences...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   const handleThemeChange = async (themeId: ThemePreset) => {
     setSelectedTheme(themeId);
 
