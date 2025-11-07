@@ -86,10 +86,10 @@ This file contains the complete history of shipped features, sprints, and migrat
   - Plan: `docs/sprints/user-theme-preferences-phase4-PLAN.md`
   - Summary: Created comprehensive E2E test suite verifying theme application infrastructure across entire application. Infrastructure audit revealed Phase 2 implementation was 90% complete—Phase 4 focused solely on verification testing with NO production code changes required.
   - Accomplishments:
-    - Created `theme-application.spec.ts` (114 lines): Cross-page consistency (7+ pages), navigation persistence, detail page testing, change propagation
-    - Created `theme-unauthenticated.spec.ts` (68 lines): Default theme for unauthenticated users, login flow authentication lifecycle, redirect scenarios
-    - Created `theme-performance.spec.ts` (96 lines): Theme switching speed <200ms, FOUC prevention validation, rapid switching edge cases, layout shift prevention
-    - Total: 11 comprehensive E2E tests covering 278 lines of test code
+    - Created `theme-application.spec.ts` (122 lines): Cross-page consistency (7+ pages), navigation persistence, detail page testing, change propagation
+    - Created `theme-unauthenticated.spec.ts` (78 lines): Default theme for unauthenticated users, login flow authentication lifecycle, redirect scenarios
+    - Created `theme-performance.spec.ts` (125 lines): Theme switching speed <200ms, FOUC prevention validation, rapid switching edge cases, layout shift prevention
+    - Total: 11 comprehensive E2E tests covering 325 lines of test code
     - Infrastructure validation: Server-side theme fetching ✅, FOUC prevention ✅, client persistence ✅, dark mode integration ✅
     - Test metrics: 7+ pages covered (Dashboard, Events, Members, Groups, Announcements, Giving, Documents), 4 performance assertions, 3 authentication scenarios, 3 persistence tests
     - TypeScript compliance: Zero errors with `tsc --noEmit`

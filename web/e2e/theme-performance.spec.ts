@@ -50,6 +50,14 @@ test.describe('Theme Performance', () => {
   });
 
   test('rapid theme switching handles gracefully', async ({ page }) => {
+    // Set up console error monitoring BEFORE theme switching
+    const consoleErrors: string[] = [];
+    page.on('console', msg => {
+      if (msg.type() === 'error') {
+        consoleErrors.push(msg.text());
+      }
+    });
+
     await page.goto('http://localhost:3000/settings');
 
     // Wait for theme cards
@@ -76,14 +84,6 @@ test.describe('Theme Performance', () => {
 
     // Final theme should be applied (last one wins)
     await expect(page.locator('html')).toHaveAttribute('data-theme', 'original');
-
-    // Verify no errors in console
-    const consoleErrors: string[] = [];
-    page.on('console', msg => {
-      if (msg.type() === 'error') {
-        consoleErrors.push(msg.text());
-      }
-    });
 
     // Wait to catch any async errors
     await page.waitForTimeout(500);

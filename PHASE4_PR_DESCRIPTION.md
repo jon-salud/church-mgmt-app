@@ -13,9 +13,9 @@ Phase 4 implements comprehensive E2E test suite to verify theme application infr
 
 ## What Changed
 
-### Test Files Created (3 files, 278 lines)
+### Test Files Created (3 files, 325 lines)
 
-#### 1. `web/e2e/theme-application.spec.ts` (114 lines)
+#### 1. `web/e2e/theme-application.spec.ts` (122 lines)
 **Purpose:** Cross-page theme consistency and persistence verification
 
 **4 Tests:**
@@ -26,7 +26,7 @@ Phase 4 implements comprehensive E2E test suite to verify theme application infr
 
 **Coverage:** Dashboard, Events, Members, Groups, Announcements, Giving, Documents + member detail pages
 
-#### 2. `web/e2e/theme-unauthenticated.spec.ts` (68 lines)
+#### 2. `web/e2e/theme-unauthenticated.spec.ts` (78 lines)
 **Purpose:** Authentication flow and default theme handling
 
 **3 Tests:**
@@ -36,7 +36,7 @@ Phase 4 implements comprehensive E2E test suite to verify theme application infr
 
 **Edge Cases:** Logout/login flow, redirect scenarios, console error monitoring
 
-#### 3. `web/e2e/theme-performance.spec.ts` (96 lines)
+#### 3. `web/e2e/theme-performance.spec.ts` (125 lines)
 **Purpose:** Performance validation and edge case testing
 
 **4 Tests:**
@@ -74,7 +74,7 @@ This audit confirmed Phase 4 only needed verification tests, not new code:
 | **Test Files** | 3 |
 | **Test Suites** | 3 |
 | **Test Cases** | 11 |
-| **Lines of Code** | 278 |
+| **Lines of Code** | 325 |
 | **Pages Covered** | 7+ (Dashboard, Events, Members, Groups, Announcements, Giving, Documents) |
 | **Performance Assertions** | 4 (switching speed, FOUC, rapid clicks, layout shift) |
 | **Authentication Scenarios** | 3 (login, logout, redirect) |
@@ -161,9 +161,9 @@ pnpm -C web test:e2e theme-application.spec.ts theme-unauthenticated.spec.ts the
 
 | File | Lines | Type | Status |
 |------|-------|------|--------|
-| `web/e2e/theme-application.spec.ts` | 114 | Test | ✅ Created |
-| `web/e2e/theme-unauthenticated.spec.ts` | 68 | Test | ✅ Created |
-| `web/e2e/theme-performance.spec.ts` | 96 | Test | ✅ Created |
+| `web/e2e/theme-application.spec.ts` | 122 | Test | ✅ Created |
+| `web/e2e/theme-unauthenticated.spec.ts` | 78 | Test | ✅ Created |
+| `web/e2e/theme-performance.spec.ts` | 125 | Test | ✅ Created |
 | `docs/sprints/user-theme-preferences-phase4-PLAN.md` | 350+ | Docs | ✅ Accomplishments Added |
 | `docs/TASKS.md` | 9 | Tracking | ✅ Updated |
 | `docs/TASKS_COMPLETED.md` | 27 | Tracking | ✅ Updated |
@@ -174,7 +174,7 @@ pnpm -C web test:e2e theme-application.spec.ts theme-unauthenticated.spec.ts the
 ## Commits
 
 1. **`fecb67d`** - `feat(phase4): Add comprehensive theme verification E2E tests`
-   - Created 3 test files (278 lines)
+   - Created 3 test files (325 lines)
    - 11 comprehensive E2E tests
    - TypeScript compliant, Prettier formatted
    - Infrastructure audit results documented

@@ -567,7 +567,7 @@ Created comprehensive E2E test suite to verify theme application infrastructure 
 
 ### Test Files Created
 
-#### 1. `theme-application.spec.ts` (114 lines)
+#### 1. `theme-application.spec.ts` (122 lines)
 **Purpose:** Cross-page theme consistency and persistence verification
 
 **Tests Implemented:**
@@ -599,7 +599,7 @@ Created comprehensive E2E test suite to verify theme application infrastructure 
 - Tests 7+ page types covering entire application surface area
 - 10-second timeout for hydration (prevents race conditions)
 
-#### 2. `theme-unauthenticated.spec.ts` (68 lines)
+#### 2. `theme-unauthenticated.spec.ts` (78 lines)
 **Purpose:** Authentication flow and default theme handling
 
 **Tests Implemented:**
@@ -628,7 +628,7 @@ Created comprehensive E2E test suite to verify theme application infrastructure 
 - URL waiting with `page.waitForURL('**/login**')` for redirect verification
 - Tests boundary between authenticated and unauthenticated states
 
-#### 3. `theme-performance.spec.ts` (96 lines)
+#### 3. `theme-performance.spec.ts` (125 lines)
 **Purpose:** Performance validation and edge case testing
 
 **Tests Implemented:**
@@ -672,7 +672,7 @@ Created comprehensive E2E test suite to verify theme application infrastructure 
 | **Total Test Files** | 3 |
 | **Total Test Suites** | 3 |
 | **Total Test Cases** | 11 |
-| **Lines of Code** | 278 |
+| **Lines of Code** | 325 |
 | **Pages Covered** | 7+ (Dashboard, Events, Members, Groups, Announcements, Giving, Documents) |
 | **Performance Assertions** | 4 (switching speed, FOUC, rapid clicks, layout shift) |
 | **Authentication Scenarios** | 3 (login, logout, redirect) |
@@ -751,10 +751,10 @@ pnpm -C web test:e2e theme-application.spec.ts theme-unauthenticated.spec.ts the
 
 | File | Lines | Status |
 |------|-------|--------|
-| `web/e2e/theme-application.spec.ts` | 114 | ✅ Created |
-| `web/e2e/theme-unauthenticated.spec.ts` | 68 | ✅ Created |
-| `web/e2e/theme-performance.spec.ts` | 96 | ✅ Created |
-| **Total** | **278** | **3 files** |
+| `web/e2e/theme-application.spec.ts` | 122 | ✅ Created |
+| `web/e2e/theme-unauthenticated.spec.ts` | 78 | ✅ Created |
+| `web/e2e/theme-performance.spec.ts` | 125 | ✅ Created |
+| **Total** | **325** | **3 files** |
 
 ### Git Commits
 

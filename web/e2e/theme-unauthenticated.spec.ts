@@ -3,14 +3,7 @@ import { LoginPage } from './page-objects/LoginPage';
 
 test.describe('Unauthenticated User Theme Handling', () => {
   test('login page uses default theme for unauthenticated users', async ({ page }) => {
-    // Navigate to login page without authentication
-    await page.goto('http://localhost:3000/login');
-
-    // Verify default theme is applied (original)
-    const theme = await page.locator('html').getAttribute('data-theme');
-    expect(theme).toBe('original');
-
-    // Verify no console errors
+    // Set up console error monitoring BEFORE navigation
     const consoleErrors: string[] = [];
     page.on('console', msg => {
       if (msg.type() === 'error') {
@@ -18,10 +11,15 @@ test.describe('Unauthenticated User Theme Handling', () => {
       }
     });
 
-    // Wait a moment to catch any errors
-    await page.waitForTimeout(1000);
+    // Navigate to login page without authentication
+    await page.goto('http://localhost:3000/login');
 
-    // Filter out known unrelated errors (if any)
+    // Verify default theme is applied (original)
+    const theme = await page.locator('html').getAttribute('data-theme');
+    expect(theme).toBe('original');
+
+    // Wait a moment to catch any errors
+    await page.waitForTimeout(1000); // Filter out known unrelated errors (if any)
     const themeRelatedErrors = consoleErrors.filter(
       err => err.includes('theme') || err.includes('getUserTheme')
     );
