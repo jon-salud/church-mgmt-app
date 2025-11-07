@@ -62,11 +62,11 @@
 
   /* Vibrant Blue Theme - High saturation blue for energy and clarity */
   [data-theme='vibrant-blue'] {
-    --primary: 217 91% 60%; /* Blue 500 */
+    --primary: 220 100% 56%; /* Brighter, more saturated blue than original */
     --primary-foreground: 0 0% 100%;
-    --accent: 217 91% 60%;
+    --accent: 200 100% 50%; /* Bright cyan-blue accent */
     --accent-foreground: 0 0% 100%;
-    --ring: 217 91% 60%;
+    --ring: 220 100% 56%;
   }
 
   /* Teal Accent Theme - Calming teal for professional and modern feel */
