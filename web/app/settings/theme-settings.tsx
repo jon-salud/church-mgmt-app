@@ -21,8 +21,9 @@ interface ThemeOption {
   name: string;
   description: string;
   colors: {
+    background: string;
     primary: string;
-    accent: string;
+    destructive: string;
   };
 }
 
@@ -32,8 +33,9 @@ const themes: ThemeOption[] = [
     name: 'Original',
     description: 'Classic blue-gray theme',
     colors: {
-      primary: 'hsl(222, 47%, 11%)' /* Dark slate - primary foreground */,
-      accent: 'hsl(210, 40%, 96%)' /* Light gray-blue - accent */,
+      background: 'hsl(210, 20%, 98%)' /* Light blue-gray background */,
+      primary: 'hsl(222, 47%, 11%)' /* Dark slate primary */,
+      destructive: 'hsl(0, 84%, 40%)' /* Medium red */,
     },
   },
   {
@@ -41,8 +43,9 @@ const themes: ThemeOption[] = [
     name: 'Vibrant Blue',
     description: 'Bright and energetic',
     colors: {
-      primary: 'hsl(220, 100%, 56%)',
-      accent: 'hsl(200, 100%, 50%)',
+      background: 'hsl(210, 20%, 98%)' /* Light blue-gray background */,
+      primary: 'hsl(215, 60%, 45%)' /* Bright blue */,
+      destructive: 'hsl(0, 72%, 45%)' /* Bright red */,
     },
   },
   {
@@ -50,8 +53,9 @@ const themes: ThemeOption[] = [
     name: 'Teal Accent',
     description: 'Calm and professional',
     colors: {
-      primary: 'hsl(173, 80%, 40%)' /* Teal 600 */,
-      accent: 'hsl(173, 60%, 65%)' /* Lighter teal */,
+      background: 'hsl(210, 20%, 98%)' /* Light blue-gray background */,
+      primary: 'hsl(180, 62%, 34%)' /* Deep teal */,
+      destructive: 'hsl(359, 62%, 45%)' /* Warm red */,
     },
   },
   {
@@ -59,8 +63,9 @@ const themes: ThemeOption[] = [
     name: 'Warm Accent',
     description: 'Friendly and inviting',
     colors: {
-      primary: 'hsl(24, 95%, 53%)' /* Orange 500 */,
-      accent: 'hsl(45, 90%, 60%)' /* Warm yellow-orange */,
+      background: 'hsl(210, 20%, 98%)' /* Light blue-gray background */,
+      primary: 'hsl(28, 65%, 40%)' /* Warm orange-brown */,
+      destructive: 'hsl(4, 78%, 48%)' /* Warm red */,
     },
   },
 ];
@@ -100,8 +105,13 @@ function ThemePreviewCard({ theme, isSelected, onSelect }: ThemePreviewCardProps
         </div>
       )}
 
-      {/* Color Preview Swatches */}
+      {/* Color Preview Swatches - 3-color system: background, primary, destructive */}
       <div className="flex gap-2 mb-3">
+        <div
+          className="h-10 w-10 rounded-md border border-border"
+          style={{ backgroundColor: theme.colors.background }}
+          aria-label={`${theme.name} background color`}
+        />
         <div
           className="h-10 w-10 rounded-md border border-border"
           style={{ backgroundColor: theme.colors.primary }}
@@ -109,8 +119,8 @@ function ThemePreviewCard({ theme, isSelected, onSelect }: ThemePreviewCardProps
         />
         <div
           className="h-10 w-10 rounded-md border border-border"
-          style={{ backgroundColor: theme.colors.accent }}
-          aria-label={`${theme.name} accent color`}
+          style={{ backgroundColor: theme.colors.destructive }}
+          aria-label={`${theme.name} destructive color`}
         />
       </div>
 
