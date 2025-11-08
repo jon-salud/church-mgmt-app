@@ -43,13 +43,13 @@ docs/
 │   ├── SETUP.md (Developer setup and installation)
 │   └── DEMO.md (Demo data and testing scenarios)
 │
-├── 🛠️ DEVELOPER GUIDES (guides/)
-│   ├── README.md (Index of all developer resources)
+├── 🛠️ DEVELOPER GUIDES (root)
 │   ├── CODING_STANDARDS.md (Code style, patterns, and best practices)
 │   ├── DESIGN_SYSTEM.md (UI components, design tokens, visual language)
 │   ├── TECH_STACK.md (Complete technology choices and dependencies)
 │   ├── FLOWBITE_MIGRATION.md (Migration guide from Radix UI to Flowbite)
-│   └── NAVIGATION.md (Application routing and page structure)
+│   ├── NAVIGATION.md (Application routing and page structure)
+│   └── guides/README.md (Index of all developer resources)
 │
 ├── 📚 SOURCE-OF-TRUTH (source-of-truth/)
 │   ├── README.md (Authoritative documentation overview)
@@ -68,8 +68,7 @@ docs/
 │   ├── OBSERVABILITY_METRICS_REFERENCE.md (Metrics catalog and definitions)
 │   ├── OBSERVABILITY_PERFORMANCE.md (Performance optimization guide)
 │   ├── OBSERVABILITY_PRODUCTION_SETUP.md (Production deployment guide)
-│   ├── SPAN_TRACING_GUIDE.md (Distributed tracing patterns)
-│   └── README.md (Quick start for observability)
+│   └── SPAN_TRACING_GUIDE.md (Distributed tracing patterns)
 │
 ├── 📋 SPRINT ARCHIVE (sprints/)
 │   ├── README.md (Index of all completed and current sprints)
@@ -100,24 +99,24 @@ docs/
 4. Reference [source-of-truth/personas/](./source-of-truth/personas/) for user context
 
 #### **💻 Backend Engineer**
-1. Read [guides/TECH_STACK.md](./guides/TECH_STACK.md) for dependencies
+1. Read [TECH_STACK.md](./TECH_STACK.md) for dependencies
 2. Review [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) for system design
-3. Study [guides/CODING_STANDARDS.md](./guides/CODING_STANDARDS.md) for code patterns
+3. Study [CODING_STANDARDS.md](./CODING_STANDARDS.md) for code patterns
 4. Check [source-of-truth/DATABASE_SCHEMA.md](./source-of-truth/DATABASE_SCHEMA.md) for data model
 5. Reference [source-of-truth/API_DOCUMENTATION.md](./source-of-truth/API_DOCUMENTATION.md) for endpoints
 6. Follow [SETUP.md](./SETUP.md) to get your environment running
 
 #### **🎨 Frontend Engineer**
-1. Read [guides/TECH_STACK.md](./guides/TECH_STACK.md) for frontend stack
-2. Study [guides/DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) for UI components and tokens
-3. Follow [guides/CODING_STANDARDS.md](./guides/CODING_STANDARDS.md) for TypeScript and React patterns
+1. Read [TECH_STACK.md](./TECH_STACK.md) for frontend stack
+2. Study [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) for UI components and tokens
+3. Follow [CODING_STANDARDS.md](./CODING_STANDARDS.md) for TypeScript and React patterns
 4. Check [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) Section 2.3 for UI architecture
 5. View [component-theme-preview/index.html](./component-theme-preview/index.html) for visual reference
 6. Reference [SETUP.md](./SETUP.md) to set up development environment
 
 #### **🎯 Designer / Design Systems**
-1. Review [guides/DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) for complete design language
-2. Check [guides/FLOWBITE_MIGRATION.md](./guides/FLOWBITE_MIGRATION.md) for component library
+1. Review [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) for complete design language
+2. Check [FLOWBITE_MIGRATION.md](./FLOWBITE_MIGRATION.md) for component library
 3. View [component-theme-preview/index.html](./component-theme-preview/index.html) for visual audit
 4. Reference [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) Section 2.3 for technical constraints
 
@@ -127,7 +126,7 @@ docs/
 3. Reference [source-of-truth/personas/](./source-of-truth/personas/) to understand your role
 
 #### **🔍 DevOps / Infrastructure**
-1. Read [guides/TECH_STACK.md](./guides/TECH_STACK.md) for stack overview
+1. Read [TECH_STACK.md](./TECH_STACK.md) for stack overview
 2. Review [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) for deployment architecture
 3. Study [observability/README.md](./observability/README.md) for monitoring and observability
 4. Check [observability/OBSERVABILITY_PRODUCTION_SETUP.md](./observability/OBSERVABILITY_PRODUCTION_SETUP.md) for deployment
@@ -142,19 +141,19 @@ docs/
 - **Business Context:** [source-of-truth/BUSINESS_REQUIREMENTS.md](./source-of-truth/BUSINESS_REQUIREMENTS.md) (15 min read)
 
 ### **Building Features**
-- **Code Patterns:** [guides/CODING_STANDARDS.md](./guides/CODING_STANDARDS.md) (mandatory read)
+- **Code Patterns:** [CODING_STANDARDS.md](./CODING_STANDARDS.md) (mandatory read)
 - **System Design:** [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) (reference)
 - **Data Model:** [source-of-truth/DATABASE_SCHEMA.md](./source-of-truth/DATABASE_SCHEMA.md) (reference)
 - **API Specs:** [source-of-truth/API_DOCUMENTATION.md](./source-of-truth/API_DOCUMENTATION.md) (reference)
 
 ### **UI/Component Development**
-- **Design System:** [guides/DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) (authoritative)
+- **Design System:** [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) (authoritative)
 - **Components:** [component-theme-preview/index.html](./component-theme-preview/index.html) (visual reference)
-- **Styling Guide:** [guides/CODING_STANDARDS.md](./guides/CODING_STANDARDS.md) Section 5.6 (reference)
+- **Styling Guide:** [CODING_STANDARDS.md](./CODING_STANDARDS.md) Section 5.6 (reference)
 
 ### **Getting Started**
 - **Setup:** [SETUP.md](./SETUP.md) (step-by-step guide)
-- **Tech Stack:** [guides/TECH_STACK.md](./guides/TECH_STACK.md) (understanding dependencies)
+- **Tech Stack:** [TECH_STACK.md](./TECH_STACK.md) (understanding dependencies)
 - **Demo:** [DEMO.md](./DEMO.md) (testing the app)
 
 ### **Project Planning**
@@ -195,7 +194,7 @@ Documentation is updated during sprint work. Timestamp on this file reflects las
 
 - **General Questions:** Check this README first
 - **Setup Issues:** See [SETUP.md](./SETUP.md)
-- **Code Standards:** See [guides/CODING_STANDARDS.md](./guides/CODING_STANDARDS.md)
+- **Code Standards:** See [CODING_STANDARDS.md](./CODING_STANDARDS.md)
 - **System Design:** See [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md)
 - **Current Work:** See [TASKS.md](./TASKS.md)
 

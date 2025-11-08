@@ -9,7 +9,7 @@ Comprehensive guides for developers, designers, and technical leads working on t
 
 ## 📖 Available Guides
 
-### 1. **[CODING_STANDARDS.md](./CODING_STANDARDS.md)** (510 lines)
+### 1. **[CODING_STANDARDS.md](../CODING_STANDARDS.md)** (510 lines)
 Complete coding standards and best practices for the project.
 
 **Covers:**
@@ -30,7 +30,7 @@ Complete coding standards and best practices for the project.
 
 ---
 
-### 2. **[DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md)** (1,223 lines)
+### 2. **[DESIGN_SYSTEM.md](../DESIGN_SYSTEM.md)** (1,223 lines)
 Complete design system documentation with design tokens, components, and patterns.
 
 **Covers:**
@@ -53,7 +53,7 @@ Complete design system documentation with design tokens, components, and pattern
 
 ---
 
-### 3. **[TECH_STACK.md](./TECH_STACK.md)** (410 lines)
+### 3. **[TECH_STACK.md](../TECH_STACK.md)** (410 lines)
 Complete technology stack documentation with all dependencies, versions, and justifications.
 
 **Covers:**
@@ -73,7 +73,7 @@ Complete technology stack documentation with all dependencies, versions, and jus
 
 ---
 
-### 4. **[FLOWBITE_MIGRATION.md](./FLOWBITE_MIGRATION.md)**
+### 4. **[FLOWBITE_MIGRATION.md](../FLOWBITE_MIGRATION.md)**
 Migration guide for transitioning from Radix UI to Flowbite React components.
 
 **Covers:**
@@ -90,7 +90,7 @@ Migration guide for transitioning from Radix UI to Flowbite React components.
 
 ---
 
-### 5. **[NAVIGATION.md](./NAVIGATION.md)**
+### 5. **[NAVIGATION.md](../NAVIGATION.md)**
 Application routing and page structure reference.
 
 **Covers:**
@@ -112,26 +112,26 @@ Application routing and page structure reference.
 ### **By Role**
 
 #### **Backend Engineer**
-1. Read: [CODING_STANDARDS.md](./CODING_STANDARDS.md) (Sections 4-5)
-2. Read: [TECH_STACK.md](./TECH_STACK.md) (Sections 2-4)
+1. Read: [CODING_STANDARDS.md](../CODING_STANDARDS.md) (Sections 4-5)
+2. Read: [TECH_STACK.md](../TECH_STACK.md) (Sections 2-4)
 3. Reference: [../source-of-truth/ARCHITECTURE.md](../source-of-truth/ARCHITECTURE.md)
 4. Reference: [../source-of-truth/DATABASE_SCHEMA.md](../source-of-truth/DATABASE_SCHEMA.md)
 
 #### **Frontend Engineer**
-1. Read: [CODING_STANDARDS.md](./CODING_STANDARDS.md) (Sections 3, 5)
-2. Read: [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) (all sections)
-3. Read: [TECH_STACK.md](./TECH_STACK.md) (Frontend stack section)
-4. Reference: [NAVIGATION.md](./NAVIGATION.md)
-5. Reference: [FLOWBITE_MIGRATION.md](./FLOWBITE_MIGRATION.md)
+1. Read: [CODING_STANDARDS.md](../CODING_STANDARDS.md) (Sections 3, 5)
+2. Read: [DESIGN_SYSTEM.md](../DESIGN_SYSTEM.md) (all sections)
+3. Read: [TECH_STACK.md](../TECH_STACK.md) (Frontend stack section)
+4. Reference: [NAVIGATION.md](../NAVIGATION.md)
+5. Reference: [FLOWBITE_MIGRATION.md](../FLOWBITE_MIGRATION.md)
 
 #### **Designer / Design System Lead**
-1. Read: [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) (all sections)
-2. Reference: [CODING_STANDARDS.md](./CODING_STANDARDS.md) (Section 5.6 - UI Component Guidelines)
+1. Read: [DESIGN_SYSTEM.md](../DESIGN_SYSTEM.md) (all sections)
+2. Reference: [CODING_STANDARDS.md](../CODING_STANDARDS.md) (Section 5.6 - UI Component Guidelines)
 3. Check: `web/app/globals.css` for authoritative design tokens
 
 #### **Architect / Tech Lead**
-1. Read: [TECH_STACK.md](./TECH_STACK.md)
-2. Read: [CODING_STANDARDS.md](./CODING_STANDARDS.md)
+1. Read: [TECH_STACK.md](../TECH_STACK.md)
+2. Read: [CODING_STANDARDS.md](../CODING_STANDARDS.md)
 3. Reference: [../source-of-truth/ARCHITECTURE.md](../source-of-truth/ARCHITECTURE.md)
 
 ---
@@ -139,18 +139,18 @@ Application routing and page structure reference.
 ## 📋 Standards Checklist
 
 ### **Before Writing Code**
-- [ ] Read [CODING_STANDARDS.md](./CODING_STANDARDS.md)
+- [ ] Read [CODING_STANDARDS.md](../CODING_STANDARDS.md)
 - [ ] Review [../source-of-truth/ARCHITECTURE.md](../source-of-truth/ARCHITECTURE.md) for the feature area
-- [ ] Check [TECH_STACK.md](./TECH_STACK.md) for relevant dependencies
+- [ ] Check [TECH_STACK.md](../TECH_STACK.md) for relevant dependencies
 
 ### **UI Components**
-- [ ] Reference [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) for design tokens
-- [ ] Use Flowbite components (see [FLOWBITE_MIGRATION.md](./FLOWBITE_MIGRATION.md))
-- [ ] Check [NAVIGATION.md](./NAVIGATION.md) for routing patterns
+- [ ] Reference [DESIGN_SYSTEM.md](../DESIGN_SYSTEM.md) for design tokens
+- [ ] Use Flowbite components (see [FLOWBITE_MIGRATION.md](../FLOWBITE_MIGRATION.md))
+- [ ] Check [NAVIGATION.md](../NAVIGATION.md) for routing patterns
 - [ ] Verify accessibility (WCAG 2.1 AA)
 
 ### **Testing**
-- [ ] Follow testing patterns in [CODING_STANDARDS.md](./CODING_STANDARDS.md) Section 6
+- [ ] Follow testing patterns in [CODING_STANDARDS.md](../CODING_STANDARDS.md) Section 6
 - [ ] Achieve 80%+ code coverage for new services
 - [ ] Add E2E tests for user-facing features
 
@@ -178,9 +178,9 @@ These guides should be updated when:
 
 ## 📞 Questions or Issues?
 
-- **Code style question:** See [CODING_STANDARDS.md](./CODING_STANDARDS.md)
-- **Component design question:** See [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md)
-- **Technology choice question:** See [TECH_STACK.md](./TECH_STACK.md)
+- **Code style question:** See [CODING_STANDARDS.md](../CODING_STANDARDS.md)
+- **Component design question:** See [DESIGN_SYSTEM.md](../DESIGN_SYSTEM.md)
+- **Technology choice question:** See [TECH_STACK.md](../TECH_STACK.md)
 - **Architecture question:** See [../source-of-truth/ARCHITECTURE.md](../source-of-truth/ARCHITECTURE.md)
 
 ---

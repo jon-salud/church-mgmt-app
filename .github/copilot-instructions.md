@@ -295,12 +295,13 @@ docs/
 ├── TASKS_FUTURE.md (3+ months out)
 ├── PRD.md (product overview)
 ├── USER_MANUAL.md (user guide)
+├── CODING_STANDARDS.md (code patterns)
+├── DESIGN_SYSTEM.md (design tokens)
+├── TECH_STACK.md (technology stack)
+├── FLOWBITE_MIGRATION.md (UI migration)
+├── NAVIGATION.md (routing structure)
 ├── guides/
-│   ├── README.md (index)
-│   ├── CODING_STANDARDS.md
-│   ├── DESIGN_SYSTEM.md
-│   ├── TECH_STACK.md
-│   └── ... (other developer guides)
+│   └── README.md (index of developer resources)
 ├── source-of-truth/
 │   ├── README.md (index)
 │   ├── ARCHITECTURE.md
