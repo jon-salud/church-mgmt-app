@@ -203,7 +203,7 @@ These requirements define expected user experience patterns and interactive beha
 
 - **FR-UX-025:** All pages shall use consistent layout patterns: PageHeader component for page titles and actions.
 - **FR-UX-026:** Similar actions shall use consistent button variants across the application (e.g., all delete actions use destructive variant).
-- **FR-UX-027:** Spacing, typography, and color usage shall follow the design system guidelines in `docs/DESIGN_SYSTEM.md`.
+- **FR-UX-027:** Spacing, typography, and color usage shall follow the design system guidelines in `docs/guides/DESIGN_SYSTEM.md`.
 - **FR-UX-028:** Iconography shall be consistent across the application using the Lucide React icon library exclusively.
 - **FR-UX-029:** Empty states shall provide clear messaging and actionable next steps (e.g., "No events yet. Create your first event.").
 

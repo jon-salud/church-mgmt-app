@@ -101,7 +101,7 @@ This provides instant visual feedback on:
 ## Design System Integration
 
 This preview is built using the same design tokens as the main app:
-- Defined in `docs/DESIGN_SYSTEM.md`
+- Defined in `docs/guides/DESIGN_SYSTEM.md`
 - Implemented in `web/app/globals.css`
 - Used throughout `web/components/**`
 

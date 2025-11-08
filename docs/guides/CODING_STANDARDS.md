@@ -162,7 +162,7 @@ about for all developers.
 
 ### 5.6. UI Component Guidelines
 
-See [`docs/DESIGN_SYSTEM.md`](DESIGN_SYSTEM.md) for the comprehensive design system reference. This section provides practical rules for consistent UI implementation.
+See [`docs/guides/DESIGN_SYSTEM.md`](./DESIGN_SYSTEM.md) for the comprehensive design system reference. This section provides practical rules for consistent UI implementation.
 
 #### 5.6.1. Design Token Usage
 

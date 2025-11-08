@@ -161,12 +161,12 @@ Current maturity level: **Level 3** (Documented Design System)
 - ⏳ Future Level 4: Automated token generation, Storybook, visual regression testing
 
 **References:**
-- Design System Documentation: `docs/DESIGN_SYSTEM.md`
-- Coding Standards: `docs/CODING_STANDARDS.md` (Section 5.6)
+- Design System Documentation: `docs/guides/DESIGN_SYSTEM.md`
+- Coding Standards: `docs/guides/CODING_STANDARDS.md` (Section 5.6)
 - Component Library: `web/components/ui-flowbite/`
 - Design Tokens: `web/app/globals.css`
 - Tailwind Configuration: `web/tailwind.config.ts`
-- Flowbite Migration: `docs/FLOWBITE_MIGRATION.md`
+- Flowbite Migration: `docs/guides/FLOWBITE_MIGRATION.md`
 
 ### 2.4. Justification for Separation
 
