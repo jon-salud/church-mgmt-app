@@ -1,3 +1,4 @@
+````markdown
 # Mini-Sprint Plan: User Preferences Enhancement
 
 **Sprint Name:** user-preferences-enhancement  
@@ -758,7 +759,7 @@ These features will use the same Settings Modal foundation:
 - [ ] No organization-level settings mixed in
 - [ ] No admin settings mixed in
 - [ ] No future phases (notifications, language, accessibility overrides, display density, data control) included
-- [ ] Refer to `docs/sprints/user-preferences-enhancement-PRODUCT-OWNER-REVIEW.md` for scope boundaries
+- [ ] Refer to `docs/sprints/user-preferences-enhancement-PRODUCT-OWNER-REVIEW.md` for full context and future-phase roadmap.
 
 ### Mobile & Responsive Review
 - [ ] Dropdown tap targets are 44px+ (minimum accessibility standard)
@@ -931,7 +932,7 @@ This section documents how **all 9 Product Owner review points** have been addre
 
 ## 📞 Sign-Off
 
-**Sprint Created By:** Principal Designer  
+**Sprint Created By:** Principal Designer
 **PO Feedback Integrated:** ✅ All 9 points addressed (see section above)  
 **Status:** ✅ Ready for Team Review
 
@@ -952,3 +953,5 @@ This section documents how **all 9 Product Owner review points** have been addre
 ---
 
 **Last Updated:** 7 November 2025
+
+````

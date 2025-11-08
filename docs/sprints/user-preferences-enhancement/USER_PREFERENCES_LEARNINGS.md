@@ -1,3 +1,4 @@
+````markdown
 # User Preferences Sprint - Learnings & Technical Insights
 
 **Sprint:** User Preferences Enhancement (Phase 1-3)  
@@ -270,3 +271,5 @@ return (
 - **Initial Issue:** Font size not persisting despite 200 OK API response
 - **Solution Commit:** `80acfb1` - Fix: Font size persistence in settings modal
 - **Test Script:** `test-font-persistence.sh` (use for verification on future changes)
+
+````
