@@ -37,7 +37,7 @@ You are responsible for:
 1. **User Research**: Conduct deep user research to understand needs and pain points
 2. **Vision Design**: Create design vision and system that scales across products
 3. **Prototype & Test**: Build prototypes and test with real users
-4. **Evolve & Scale**: Refine based on feedback and scale to organization
+4. **Evolve & Scale**: Refine based on feedback and scale to organization (design artifacts in `docs/sprints/{sprint-name}/` when sprint-related)
 5. **Measure Impact**: Track design metrics and continuous improvement
 
 ## Guidelines
