@@ -49,7 +49,7 @@ docs/
 │   ├── TECH_STACK.md (Complete technology choices and dependencies)
 │   ├── FLOWBITE_MIGRATION.md (Migration guide from Radix UI to Flowbite)
 │   ├── NAVIGATION.md (Application routing and page structure)
-│   └── guides/README.md (Index of all developer resources)
+│   └── README.md (Index of all developer resources)
 │
 ├── 📚 SOURCE-OF-TRUTH (source-of-truth/)
 │   ├── README.md (Authoritative documentation overview)
@@ -99,7 +99,7 @@ docs/
 4. Reference [source-of-truth/personas/](./source-of-truth/personas/) for user context
 
 #### **💻 Backend Engineer**
-1. Read [TECH_STACK.md](./TECH_STACK.md) for dependencies
+1. Read [guides/TECH_STACK.md](./guides/TECH_STACK.md) for dependencies
 2. Review [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) for system design
 3. Study [guides/CODING_STANDARDS.md](./guides/CODING_STANDARDS.md) for code patterns
 4. Check [source-of-truth/DATABASE_SCHEMA.md](./source-of-truth/DATABASE_SCHEMA.md) for data model
@@ -129,7 +129,7 @@ docs/
 3. Reference [source-of-truth/personas/](./source-of-truth/personas/) to understand your role
 
 #### **🔍 DevOps / Infrastructure**
-1. Read [TECH_STACK.md](./TECH_STACK.md) for stack overview
+1. Read [guides/TECH_STACK.md](./guides/TECH_STACK.md) for stack overview
 2. Review [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) for deployment architecture
 3. Study [observability/README.md](./observability/README.md) for monitoring and observability
 4. Check [observability/OBSERVABILITY_PRODUCTION_SETUP.md](./observability/OBSERVABILITY_PRODUCTION_SETUP.md) for deployment
@@ -183,8 +183,8 @@ docs/
 
 ### **Maintenance**
 - **Architecture decisions:** Update `source-of-truth/ARCHITECTURE.md` and ADRs
-- **Code patterns:** Update `CODING_STANDARDS.md`
-- **Design tokens:** Update `DESIGN_SYSTEM.md` and `source-of-truth/ARCHITECTURE.md` Section 2.3
+- **Code patterns:** Update `guides/CODING_STANDARDS.md`
+- **Design tokens:** Update `guides/DESIGN_SYSTEM.md` and `source-of-truth/ARCHITECTURE.md` Section 2.3
 - **Database schema:** Update `source-of-truth/DATABASE_SCHEMA.md` when Prisma schema changes
 - **API changes:** Update `source-of-truth/API_DOCUMENTATION.md` and `API_REFERENCE.md`
 - **Current work:** Update TASKS.md weekly; move completed items to TASKS_COMPLETED.md
@@ -198,7 +198,7 @@ Documentation is updated during sprint work. Timestamp on this file reflects las
 
 - **General Questions:** Check this README first
 - **Setup Issues:** See [SETUP.md](./SETUP.md)
-- **Code Standards:** See [CODING_STANDARDS.md](./CODING_STANDARDS.md)
+- **Code Standards:** See [guides/CODING_STANDARDS.md](./guides/CODING_STANDARDS.md)
 - **System Design:** See [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md)
 - **Current Work:** See [TASKS.md](./TASKS.md)
 

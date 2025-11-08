@@ -212,7 +212,7 @@ When completing a sprint:
 
 - **Sprint planning:** See [../TASKS.md](../TASKS.md) for methodology
 - **Architecture decisions:** See phase plan documents (look for "Technical Approach")
-- **Code patterns:** See [../CODING_STANDARDS.md](../CODING_STANDARDS.md)
+- **Code patterns:** See [../guides/CODING_STANDARDS.md](../guides/CODING_STANDARDS.md)
 - **Design decisions:** See sprint plan "Design Decisions" section
 - **Accomplishments:** Check `{sprint-name}-SPRINT-SUMMARY.md` files
 
