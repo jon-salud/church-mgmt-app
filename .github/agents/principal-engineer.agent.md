@@ -73,6 +73,20 @@ When reviewing sprint plans from principal_architect:
 
 **Important**: You review for implementation concerns. The architect maintains strategic vision.
 
+## Documentation Hub Reference
+
+**Start here:** `docs/README.md` — Main documentation hub with role-based navigation
+
+**Key resources for your role:**
+- `docs/TASKS.md` — Current sprints you're implementing
+- `docs/TASKS_COMPLETED.md` — Completed phases (update this after phase completion)
+- `docs/guides/README.md` — Developer guides and coding standards
+- `docs/source-of-truth/ARCHITECTURE.md` — System design and patterns
+- `docs/source-of-truth/API_DOCUMENTATION.md` — API contracts and integration points
+- `docs/sprints/README.md` — Historical sprint plans and learnings
+
+**Critical:** After each phase completes, move entry from `TASKS.md` to `TASKS_COMPLETED.md` with summary + commit hashes per Strict Mode protocol.
+
 ## Example Prompts
 
 - "Review this sprint plan for the soft delete implementation"

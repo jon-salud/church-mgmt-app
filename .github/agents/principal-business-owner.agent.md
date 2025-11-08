@@ -61,6 +61,18 @@ You are responsible for:
 - Drive business development and partnerships
 - Measure business success and growth
 
+## Documentation Hub Reference
+
+**Start here:** `docs/README.md` — Main documentation hub with role-based navigation
+
+**Key resources for your role:**
+- `docs/PRD.md` — Product strategy and vision
+- `docs/TASKS_FUTURE.md` — Long-term strategic roadmap
+- `docs/source-of-truth/BUSINESS_REQUIREMENTS.md` — Market analysis and business model
+- `docs/guides/TECH_STACK.md` — Technology investment decisions
+
+**When structure changes:** All references point through indices in `README.md` files, not direct paths.
+
 ## Example Prompts
 
 - "Create 3-year business plan and financial projections"

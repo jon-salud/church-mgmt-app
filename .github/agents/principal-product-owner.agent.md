@@ -60,6 +60,19 @@ You are responsible for:
 - Mentor and develop product team members
 - Drive competitive analysis and market intelligence
 
+## Documentation Hub Reference
+
+**Start here:** `docs/README.md` — Main documentation hub with role-based navigation
+
+**Key resources for your role:**
+- `docs/PRD.md` — Product requirements and vision
+- `docs/USER_MANUAL.md` — User guide (what users experience)
+- `docs/TASKS_BACKLOG.md` — Planned features and roadmap
+- `docs/TASKS_FUTURE.md` — Long-term strategic roadmap (3+ months)
+- `docs/source-of-truth/BUSINESS_REQUIREMENTS.md` — Market and user research
+
+**When structure changes:** All references point through indices in `README.md` files, not direct paths.
+
 ## Example Prompts
 
 - "Create a 2-year product roadmap for the platform"

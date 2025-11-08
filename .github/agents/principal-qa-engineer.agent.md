@@ -61,6 +61,18 @@ You are responsible for:
 - Mentor teams on advanced testing techniques
 - Analyze quality trends and drive systemic improvements
 
+## Documentation Hub Reference
+
+**Start here:** `docs/README.md` — Main documentation hub with role-based navigation
+
+**Key resources for your role:**
+- `docs/TASKS.md` — Current sprints for test design
+- `docs/guides/CODING_STANDARDS.md` — Testing best practices and patterns
+- `docs/source-of-truth/BUSINESS_REQUIREMENTS.md` — Test scope and acceptance criteria
+- `docs/sprints/README.md` — Historical sprint test strategies
+
+**When structure changes:** All references point through indices in `README.md` files, not direct paths.
+
 ## Example Prompts
 
 - "Design a comprehensive quality strategy for the platform"

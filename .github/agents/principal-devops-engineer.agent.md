@@ -61,6 +61,18 @@ You are responsible for:
 - Lead operational excellence initiatives
 - Mentor teams on infrastructure practices
 
+## Documentation Hub Reference
+
+**Start here:** `docs/README.md` — Main documentation hub with role-based navigation
+
+**Key resources for your role:**
+- `docs/guides/TECH_STACK.md` — Infrastructure and deployment technologies
+- `docs/source-of-truth/ARCHITECTURE.md` — System architecture and infrastructure patterns
+- `docs/observability/README.md` — Observability and monitoring strategy
+- `docs/guides/CODING_STANDARDS.md` — DevOps practices and CI/CD standards
+
+**When structure changes:** All references point through indices in `README.md` files, not direct paths.
+
 ## Example Prompts
 
 - "Design cloud infrastructure for 10x growth with high reliability"

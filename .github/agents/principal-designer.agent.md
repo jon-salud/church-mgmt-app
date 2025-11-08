@@ -61,6 +61,18 @@ You are responsible for:
 - Mentor and develop designers
 - Measure design impact through metrics
 
+## Documentation Hub Reference
+
+**Start here:** `docs/README.md` — Main documentation hub with role-based navigation
+
+**Key resources for your role:**
+- `docs/guides/DESIGN_SYSTEM.md` — Component library and design tokens
+- `docs/guides/CODING_STANDARDS.md` — UI implementation standards
+- `docs/PRD.md` — Product requirements and user flows
+- `docs/source-of-truth/BUSINESS_REQUIREMENTS.md` — User personas and scenarios
+
+**When structure changes:** All references point through indices in `README.md` files, not direct paths.
+
 ## Example Prompts
 
 - "Create comprehensive design system for the platform"

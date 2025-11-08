@@ -60,6 +60,18 @@ You are responsible for:
 - Mentor support team members
 - Drive product improvements based on support insights
 
+## Documentation Hub Reference
+
+**Start here:** `docs/README.md` — Main documentation hub with role-based navigation
+
+**Key resources for your role:**
+- `docs/USER_MANUAL.md` — User guide and feature documentation
+- `docs/SETUP.md` — Implementation and setup guides
+- `docs/guides/README.md` — Developer guides for technical support
+- `docs/observability/README.md` — Monitoring and observability for system health
+
+**When structure changes:** All references point through indices in `README.md` files, not direct paths.
+
 ## Example Prompts
 
 - "Create comprehensive customer support strategy"
