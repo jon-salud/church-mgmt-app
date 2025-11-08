@@ -21,9 +21,15 @@ See `/.github/copilot-instructions.md` for complete Sprint & Phase Protocol.
 
 ---
 
-## 🔄 Current Status: No Active Sprints
+## 🔄 Current Status: Members Hub MVP Sprint Active
 
-**Status:** All recent sprints have been completed and moved to [TASKS_COMPLETED.md](./TASKS_COMPLETED.md).
+**Status:** Building Members Hub on `DATA_MODE=mock` with PostgreSQL-compatible code
+
+**Strategy:** Mock-first development with deferred PostgreSQL migration
+- Development on mock mode (no database blocker)
+- Code written PostgreSQL-compatible from day 1
+- PostgreSQL installation post-MVP (~10-15 hours)
+- Tests require zero changes (DataStore abstraction)
 
 The following sprints were recently completed:
 - ✅ **User Preferences Enhancement Sprint** (November 2025) - 3 phases completed
@@ -45,9 +51,57 @@ See [TASKS_COMPLETED.md](./TASKS_COMPLETED.md) for full details on these sprints
 
 ## 🔄 In Progress
 
+### Members Hub MVP Sprint
+**Branch:** `feature/members-hub-mvp-main-sprint`  
+**Duration:** 10-14 days  
+**Sprint Plan:** `docs/sprints/members-hub-mvp/members-hub-mvp-PLAN.md`  
+**Strategy:** Mock-first development with PostgreSQL compatibility
+
+**Goal:** Create modern, performant member management interface with professional UX patterns
+
+**Phases:**
+1. 🔄 **Phase 0: UX Primitives & Foundation** - In Progress
+   - Drawer component with Flowbite integration
+   - Responsive hooks and layout utilities
+   - State management patterns
+   - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase0-PLAN.md`
+
+2. ⏳ **Phase 1: Discoverability & Speed** - Queued
+   - Search, filters, sort, pagination
+   - Keyboard navigation
+   - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase1-PLAN.md`
+
+3. ⏳ **Phase 2: Actionability** - Queued
+   - Member detail drawer
+   - Edit modal
+   - Bulk actions
+   - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase2-PLAN.md`
+
+4. ⏳ **Phase 3: Personalization** - Queued
+   - Column picker
+   - Saved views
+   - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase3-PLAN.md`
+
+5. ⏳ **Phase 4: Data Portability** - Queued
+   - CSV import/export
+   - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase4-PLAN.md`
+
+**PostgreSQL Compatibility Checklist:**
+- ✅ Use DataStore interface (not direct Prisma calls)
+- ✅ Avoid SQLite-specific syntax in any raw queries
+- ✅ Design for concurrent writes (avoid race conditions)
+- ✅ Use proper indexing strategies (GIN for full-text search)
+- ✅ Test with reasonable data volumes (100-1000 records)
+
+**Reference Material:**
+- PostgreSQL migration plan: `docs/sprints/postgresql-migration-REFERENCE/`
+- Migration deferred to post-MVP (10-15 hours when ready)
+
+---
+
 *(When a sprint is active, it will be listed here with current phase status)*
 
-**Currently:** No active sprints. Next planned sprint is in TASKS_BACKLOG.md.
+**Currently:** Members Hub MVP Sprint - Phase 0 starting
 
 ---
 

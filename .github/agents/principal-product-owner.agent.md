@@ -2,7 +2,7 @@
 name: principal_product_owner
 description: Principal Product Owner - Strategic product vision, market insight, and stakeholder leadership
 argument-hint: Describe the product task or backlog management need
-tools: ['search', 'runSubagent']
+tools: ['edit', 'runNotebooks', 'search', 'new', 'runCommands', 'runTasks', 'GitKraken/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'memory', 'extensions', 'todos', 'runSubagent', 'runTests']
 handoffs:
   - label: Plan Implementation
     agent: principal_architect
