@@ -1,172 +1,193 @@
-# Observability Infrastructure Documentation
+# Observability Documentation
 
-This folder contains comprehensive documentation for the observability infrastructure implemented in Sprint 6B.4-6B.5, including metrics collection, span tracing, and monitoring setup guides.
+Comprehensive observability guides for monitoring, tracing, metrics, and operational insights for the Church Management Platform.
 
-## 📚 Documentation Guide
+**Version:** 1.0.0  
+**Last Updated:** 8 November 2025
 
-### Getting Started
+---
 
-**New to observability?** Start here:
-1. Read [OBSERVABILITY_ARCHITECTURE.md](./OBSERVABILITY_ARCHITECTURE.md) for an overview of the system
-2. Check [SPAN_TRACING_GUIDE.md](./SPAN_TRACING_GUIDE.md) for usage patterns
+## 📖 Observability Guides
 
-### For Developers
+### 1. **[OBSERVABILITY_ARCHITECTURE.md](./OBSERVABILITY_ARCHITECTURE.md)**
+**Purpose:** Complete observability system design and architecture.
 
-- **[OBSERVABILITY_INTEGRATION_EXAMPLES.md](./OBSERVABILITY_INTEGRATION_EXAMPLES.md)** - How to add observability to your services
-  - Quick start (3 steps)
-  - Audit Module reference implementation
-  - Before/after code examples
-  - Testing patterns
-  - Integration checklist
+**Covers:**
+- OpenTelemetry SDK integration
+- OTLP (OpenTelemetry Protocol) exporters
+- Trace sampling strategies
+- Metrics collection design
+- Log aggregation architecture
+- Dashboard architecture (Prometheus, Grafana)
+- Alert rules and notification strategies
+- Multi-environment considerations (dev, staging, production)
 
-### For Operations & DevOps
+**For:** DevOps engineers, SREs, architects  
+**Time to read:** 30-40 minutes
 
-- **[OBSERVABILITY_PRODUCTION_SETUP.md](./OBSERVABILITY_PRODUCTION_SETUP.md)** - Production deployment guide
-  - Metrics endpoints and health checks
-  - Prometheus integration with PromQL queries
-  - Datadog and CloudWatch setup
-  - Alert configuration and routing
-  - Grafana dashboards
-  - Troubleshooting and maintenance
+---
 
-### For Architects & Performance Engineers
+### 2. **[OBSERVABILITY_INTEGRATION_EXAMPLES.md](./OBSERVABILITY_INTEGRATION_EXAMPLES.md)**
+**Purpose:** Code examples for integrating observability into your application.
 
-- **[OBSERVABILITY_PERFORMANCE.md](./OBSERVABILITY_PERFORMANCE.md)** - Performance characteristics
-  - Per-operation overhead (0.07-0.15ms)
-  - Scalability analysis
-  - Memory management and optimization
-  - Load testing results
-  - Capacity planning
-  - Environment-specific tuning
+**Covers:**
+- Distributed tracing with span context propagation
+- Adding custom spans and attributes to traces
+- Custom metrics instrumentation
+- Structured logging with correlation IDs
+- Error tracking and stack trace capture
+- Performance monitoring patterns
+- Custom instrumentation for business metrics
 
-### Reference Materials
+**For:** Backend engineers, full-stack engineers  
+**Time to read:** 20-30 minutes
 
-- **[OBSERVABILITY_ARCHITECTURE.md](./OBSERVABILITY_ARCHITECTURE.md)** - System design and principles
-  - Design principles
-  - Architecture components
-  - Integration patterns
-  - Metrics interpretation
-  - Best practices
+---
 
-- **[OBSERVABILITY_METRICS_REFERENCE.md](./OBSERVABILITY_METRICS_REFERENCE.md)** - Complete metrics catalog
-  - Event Store metrics
-  - Circuit Breaker metrics
-  - CQRS metrics
-  - Alert thresholds
-  - PromQL query examples
+### 3. **[OBSERVABILITY_METRICS_REFERENCE.md](./OBSERVABILITY_METRICS_REFERENCE.md)**
+**Purpose:** Catalog and reference for all metrics collected by the system.
 
-- **[SPAN_TRACING_GUIDE.md](./SPAN_TRACING_GUIDE.md)** - Span tracing API reference
-  - Basic usage (startSpan/endSpan)
-  - Complete lifecycle examples
-  - Advanced patterns
-  - Naming conventions
-  - Error handling
-  - Logging integration
-  - Testing techniques
+**Covers:**
+- Metric definitions and units
+- Application metrics (request rates, latencies, errors)
+- Business metrics (transactions, user activity)
+- Infrastructure metrics (CPU, memory, disk)
+- Custom metrics per module
+- Alert thresholds for each metric
+- Dashboard visualizations
 
-## 🚀 Quick Start
+**For:** DevOps engineers, SREs, product managers  
+**Time to read:** 15-20 minutes (reference)
 
-### Add Observability to a Service
+---
 
-```typescript
-// 1. Import ObservabilityModule
-@Module({
-  imports: [ObservabilityModule],
-  providers: [MyService],
-})
-export class MyModule {}
+### 4. **[OBSERVABILITY_PERFORMANCE.md](./OBSERVABILITY_PERFORMANCE.md)**
+**Purpose:** Performance optimization guide using observability data.
 
-// 2. Inject ObservabilityService
-@Injectable()
-export class MyService {
-  constructor(private readonly observability: ObservabilityService) {}
+**Covers:**
+- Using traces to identify bottlenecks
+- Metrics interpretation for performance analysis
+- Profiling and flame graphs
+- Database query optimization using traces
+- Memory leak detection
+- Cache effectiveness analysis
+- Load testing with observability
+- Performance regression detection
 
-  // 3. Wrap operations with spans
-  async getItem(id: string): Promise<Item> {
-    const spanId = this.observability.startSpan('mymodule.getItem', { id });
-    try {
-      const item = await this.repository.findById(id);
-      const { durationMs } = this.observability.endSpan(spanId, 'success');
-      this.observability.recordCQRSQuery('getItem', durationMs, 1);
-      return item;
-    } catch (error) {
-      const { durationMs } = this.observability.endSpan(spanId, 'error', error.message);
-      this.observability.recordCQRSQuery('getItem', durationMs, 0);
-      throw error;
-    }
-  }
-}
-```
+**For:** Backend engineers, platform engineers, performance specialists  
+**Time to read:** 25-35 minutes
 
-See [OBSERVABILITY_INTEGRATION_EXAMPLES.md](./OBSERVABILITY_INTEGRATION_EXAMPLES.md) for more details.
+---
 
-### Monitor in Production
+### 5. **[OBSERVABILITY_PRODUCTION_SETUP.md](./OBSERVABILITY_PRODUCTION_SETUP.md)**
+**Purpose:** Step-by-step guide for deploying observability in production.
 
-```bash
-# 1. Scrape metrics endpoint
-curl http://localhost:3001/api/v1/observability/metrics
+**Covers:**
+- Infrastructure setup (collectors, backends)
+- Kubernetes observability configuration
+- Database setup for long-term storage
+- Dashboard provisioning (Grafana, custom dashboards)
+- Alert setup and escalation policies
+- On-call rotations and incident response
+- Cost optimization for high-volume metrics
+- Backup and disaster recovery
+- Security and compliance considerations
 
-# 2. Configure Prometheus
-# Add to prometheus.yml:
-# - job_name: 'church-api'
-#   metrics_path: '/api/v1/observability/metrics'
-#   static_configs:
-#     - targets: ['localhost:3001']
+**For:** DevOps engineers, SREs, architects  
+**Time to read:** 40-50 minutes
 
-# 3. Query in Prometheus
-# avg(event_store_append_duration_ms) over (5m)
-# rate(event_store_append_errors_total[5m])
-```
+---
 
-See [OBSERVABILITY_PRODUCTION_SETUP.md](./OBSERVABILITY_PRODUCTION_SETUP.md) for complete setup guide.
+### 6. **[SPAN_TRACING_GUIDE.md](./SPAN_TRACING_GUIDE.md)**
+**Purpose:** Distributed tracing best practices and span tracing patterns.
 
-## 📊 Key Metrics
+**Covers:**
+- Span lifecycle and context propagation
+- Creating meaningful spans with attributes
+- Span naming conventions
+- Correlation ID patterns
+- Cross-service tracing
+- Trace sampling strategies
+- Common instrumentation patterns
+- Troubleshooting traces
+- Span exporter configuration
 
-| Metric | Category | Purpose |
-|--------|----------|---------|
-| `event_store_append_duration_ms` | Event Store | Track append operation latency |
-| `event_store_query_duration_ms` | Event Store | Track query operation latency |
-| `circuit_breaker_state` | Circuit Breaker | Monitor circuit breaker health (0=closed, 1=open, 2=half-open) |
-| `cqrs_command_duration_ms` | CQRS | Track command execution time |
-| `cqrs_query_duration_ms` | CQRS | Track query execution time |
+**For:** Backend engineers, debugging complex issues  
+**Time to read:** 20-25 minutes
 
-See [OBSERVABILITY_METRICS_REFERENCE.md](./OBSERVABILITY_METRICS_REFERENCE.md) for complete reference.
+---
 
-## 🎯 By Role
+## 🎯 Quick Start Guide
 
-### Developer
-1. Read [OBSERVABILITY_ARCHITECTURE.md](./OBSERVABILITY_ARCHITECTURE.md) - understand the system
-2. Follow [OBSERVABILITY_INTEGRATION_EXAMPLES.md](./OBSERVABILITY_INTEGRATION_EXAMPLES.md) - integrate observability
-3. Review [SPAN_TRACING_GUIDE.md](./SPAN_TRACING_GUIDE.md) - naming conventions and best practices
-4. Check [OBSERVABILITY_PERFORMANCE.md](./OBSERVABILITY_PERFORMANCE.md) - understand overhead
+### **I Want to...**
 
-### DevOps Engineer
-1. Read [OBSERVABILITY_PRODUCTION_SETUP.md](./OBSERVABILITY_PRODUCTION_SETUP.md) - complete guide for setup
-2. Reference [OBSERVABILITY_METRICS_REFERENCE.md](./OBSERVABILITY_METRICS_REFERENCE.md) - all available metrics
-3. Review [OBSERVABILITY_PERFORMANCE.md](./OBSERVABILITY_PERFORMANCE.md) - capacity planning
+#### **Understand Observability Strategy**
+1. Read [OBSERVABILITY_ARCHITECTURE.md](./OBSERVABILITY_ARCHITECTURE.md)
+2. Skim [OBSERVABILITY_METRICS_REFERENCE.md](./OBSERVABILITY_METRICS_REFERENCE.md)
 
-### Architect/Performance Engineer
-1. Study [OBSERVABILITY_ARCHITECTURE.md](./OBSERVABILITY_ARCHITECTURE.md) - design principles
-2. Review [OBSERVABILITY_PERFORMANCE.md](./OBSERVABILITY_PERFORMANCE.md) - overhead analysis and optimization
+#### **Add Observability to My Code**
+1. Read [OBSERVABILITY_INTEGRATION_EXAMPLES.md](./OBSERVABILITY_INTEGRATION_EXAMPLES.md)
+2. Reference [SPAN_TRACING_GUIDE.md](./SPAN_TRACING_GUIDE.md) for tracing patterns
+3. Check code examples in the guide
 
-## 📈 Performance Summary
+#### **Debug a Performance Issue**
+1. Read [OBSERVABILITY_PERFORMANCE.md](./OBSERVABILITY_PERFORMANCE.md)
+2. Check [OBSERVABILITY_METRICS_REFERENCE.md](./OBSERVABILITY_METRICS_REFERENCE.md) for relevant metrics
+3. Use [SPAN_TRACING_GUIDE.md](./SPAN_TRACING_GUIDE.md) to trace the issue
 
-- **Per-Operation Overhead**: 0.07-0.15ms (negligible for most use cases)
-- **CPU Impact**: <0.5% at 10,000 req/sec
-- **Memory Growth**: ~1.2KB per tracked operation
-- **Sampling**: Can reduce overhead by 90% while maintaining statistical accuracy
+#### **Set Up Production Observability**
+1. Read [OBSERVABILITY_ARCHITECTURE.md](./OBSERVABILITY_ARCHITECTURE.md)
+2. Follow [OBSERVABILITY_PRODUCTION_SETUP.md](./OBSERVABILITY_PRODUCTION_SETUP.md)
+3. Reference [OBSERVABILITY_METRICS_REFERENCE.md](./OBSERVABILITY_METRICS_REFERENCE.md) for metrics
 
-See [OBSERVABILITY_PERFORMANCE.md](./OBSERVABILITY_PERFORMANCE.md) for detailed analysis.
+---
 
-## 🔗 Related Documentation
+## 🏗️ Implementation Checklist
 
-- [CODING_STANDARDS.md](../CODING_STANDARDS.md) - Dependency injection patterns
-- [REFACTORING_CHECKLIST.md](../REFACTORING_CHECKLIST.md) - Sprint 6B progress
-- [TASKS.md](../TASKS.md) - Project tasks and status
+### **For All New Services**
+- [ ] Add OpenTelemetry instrumentation
+- [ ] Create spans for major operations
+- [ ] Add correlation IDs to logs
+- [ ] Expose relevant metrics
+- [ ] Configure error tracking
+- [ ] Test in staging environment
+- [ ] Review with SRE team
+- [ ] Deploy to production
+
+---
+
+## 📊 Monitoring Your Services
+
+### **Essential Metrics Per Service**
+1. Request rate (requests/second)
+2. Request latency (p50, p95, p99)
+3. Error rate (errors/total requests)
+4. Dependencies (database connections, cache hits)
+5. Business metrics (domain-specific KPIs)
+
+---
+
+## 🔄 Maintaining Observability
+
+### **Regular Tasks**
+- **Daily:** Review critical alerts and incidents
+- **Weekly:** Analyze metric trends and anomalies
+- **Monthly:** Review alert thresholds and adjust
+- **Quarterly:** Assess observability coverage and gaps
+- **Annually:** Audit retention policies and costs
+
+---
 
 ## 📞 Questions?
 
-Refer to the troubleshooting sections in:
-- [OBSERVABILITY_INTEGRATION_EXAMPLES.md](./OBSERVABILITY_INTEGRATION_EXAMPLES.md#integration-checklist) - Integration issues
-- [OBSERVABILITY_PRODUCTION_SETUP.md](./OBSERVABILITY_PRODUCTION_SETUP.md#6-troubleshooting) - Operational issues
-- [OBSERVABILITY_PERFORMANCE.md](./OBSERVABILITY_PERFORMANCE.md#8-troubleshooting-performance-issues) - Performance issues
+- **Architecture questions:** See [OBSERVABILITY_ARCHITECTURE.md](./OBSERVABILITY_ARCHITECTURE.md)
+- **How to instrument code:** See [OBSERVABILITY_INTEGRATION_EXAMPLES.md](./OBSERVABILITY_INTEGRATION_EXAMPLES.md)
+- **Metric definitions:** See [OBSERVABILITY_METRICS_REFERENCE.md](./OBSERVABILITY_METRICS_REFERENCE.md)
+- **Performance debugging:** See [OBSERVABILITY_PERFORMANCE.md](./OBSERVABILITY_PERFORMANCE.md)
+- **Production setup:** See [OBSERVABILITY_PRODUCTION_SETUP.md](./OBSERVABILITY_PRODUCTION_SETUP.md)
+- **Tracing patterns:** See [SPAN_TRACING_GUIDE.md](./SPAN_TRACING_GUIDE.md)
+
+---
+
+**Navigation:**
+[← Back to Docs](../README.md) | [Back to Root](..)
