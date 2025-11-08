@@ -69,7 +69,7 @@ You are responsible for:
 - `docs/PRD.md` — Product strategy and vision
 - `docs/TASKS_FUTURE.md` — Long-term strategic roadmap
 - `docs/source-of-truth/BUSINESS_REQUIREMENTS.md` — Market analysis and business model
-- `docs/TECH_STACK.md` — Technology investment decisions
+- `docs/guides/TECH_STACK.md` — Technology investment decisions
 
 **When structure changes:** All references point through indices in `README.md` files, not direct paths.
 

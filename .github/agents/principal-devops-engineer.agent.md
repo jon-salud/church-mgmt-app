@@ -66,10 +66,10 @@ You are responsible for:
 **Start here:** `docs/README.md` — Main documentation hub with role-based navigation
 
 **Key resources for your role:**
-- `docs/TECH_STACK.md` — Infrastructure and deployment technologies
+- `docs/guides/TECH_STACK.md` — Infrastructure and deployment technologies
 - `docs/source-of-truth/ARCHITECTURE.md` — System architecture and infrastructure patterns
 - `docs/observability/README.md` — Observability and monitoring strategy
-- `docs/CODING_STANDARDS.md` — DevOps practices and CI/CD standards
+- `docs/guides/CODING_STANDARDS.md` — DevOps practices and CI/CD standards
 
 **When structure changes:** All references point through indices in `README.md` files, not direct paths.
 

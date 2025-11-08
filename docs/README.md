@@ -43,7 +43,7 @@ docs/
 │   ├── SETUP.md (Developer setup and installation)
 │   └── DEMO.md (Demo data and testing scenarios)
 │
-├── 🛠️ DEVELOPER GUIDES (root)
+├── 🛠️ DEVELOPER GUIDES (guides/)
 │   ├── CODING_STANDARDS.md (Code style, patterns, and best practices)
 │   ├── DESIGN_SYSTEM.md (UI components, design tokens, visual language)
 │   ├── TECH_STACK.md (Complete technology choices and dependencies)
@@ -101,24 +101,24 @@ docs/
 #### **💻 Backend Engineer**
 1. Read [TECH_STACK.md](./TECH_STACK.md) for dependencies
 2. Review [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) for system design
-3. Study [CODING_STANDARDS.md](./CODING_STANDARDS.md) for code patterns
+3. Study [guides/CODING_STANDARDS.md](./guides/CODING_STANDARDS.md) for code patterns
 4. Check [source-of-truth/DATABASE_SCHEMA.md](./source-of-truth/DATABASE_SCHEMA.md) for data model
 5. Reference [source-of-truth/API_DOCUMENTATION.md](./source-of-truth/API_DOCUMENTATION.md) for endpoints
 6. Follow [SETUP.md](./SETUP.md) to get your environment running
 7. Check [guides/README.md](./guides/README.md) for developer guides index
 
 #### **🎨 Frontend Engineer**
-1. Read [TECH_STACK.md](./TECH_STACK.md) for frontend stack
-2. Study [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) for UI components and tokens
-3. Follow [CODING_STANDARDS.md](./CODING_STANDARDS.md) for TypeScript and React patterns
+1. Read [guides/TECH_STACK.md](./guides/TECH_STACK.md) for frontend stack
+2. Study [guides/DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) for UI components and tokens
+3. Follow [guides/CODING_STANDARDS.md](./guides/CODING_STANDARDS.md) for TypeScript and React patterns
 4. Check [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) Section 2.3 for UI architecture
 5. View [component-theme-preview/index.html](./component-theme-preview/index.html) for visual reference
 6. Reference [SETUP.md](./SETUP.md) to set up development environment
 7. Check [guides/README.md](./guides/README.md) for frontend-specific guides
 
 #### **🎯 Designer / Design Systems**
-1. Review [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) for complete design language
-2. Check [FLOWBITE_MIGRATION.md](./FLOWBITE_MIGRATION.md) for component library
+1. Review [guides/DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) for complete design language
+2. Check [guides/FLOWBITE_MIGRATION.md](./guides/FLOWBITE_MIGRATION.md) for component library
 3. View [component-theme-preview/index.html](./component-theme-preview/index.html) for visual audit
 4. Reference [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) Section 2.3 for technical constraints
 5. Check [guides/README.md](./guides/README.md) for design system resources
@@ -145,19 +145,19 @@ docs/
 - **Business Context:** [source-of-truth/BUSINESS_REQUIREMENTS.md](./source-of-truth/BUSINESS_REQUIREMENTS.md) (15 min read)
 
 ### **Building Features**
-- **Code Patterns:** [CODING_STANDARDS.md](./CODING_STANDARDS.md) (mandatory read)
+- **Code Patterns:** [guides/CODING_STANDARDS.md](./guides/CODING_STANDARDS.md) (mandatory read)
 - **System Design:** [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) (reference)
 - **Data Model:** [source-of-truth/DATABASE_SCHEMA.md](./source-of-truth/DATABASE_SCHEMA.md) (reference)
 - **API Specs:** [source-of-truth/API_DOCUMENTATION.md](./source-of-truth/API_DOCUMENTATION.md) (reference)
 
 ### **UI/Component Development**
-- **Design System:** [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) (authoritative)
+- **Design System:** [guides/DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) (authoritative)
 - **Components:** [component-theme-preview/index.html](./component-theme-preview/index.html) (visual reference)
-- **Styling Guide:** [CODING_STANDARDS.md](./CODING_STANDARDS.md) Section 5.6 (reference)
+- **Styling Guide:** [guides/CODING_STANDARDS.md](./guides/CODING_STANDARDS.md) Section 5.6 (reference)
 
 ### **Getting Started**
 - **Setup:** [SETUP.md](./SETUP.md) (step-by-step guide)
-- **Tech Stack:** [TECH_STACK.md](./TECH_STACK.md) (understanding dependencies)
+- **Tech Stack:** [guides/TECH_STACK.md](./guides/TECH_STACK.md) (understanding dependencies)
 - **Demo:** [DEMO.md](./DEMO.md) (testing the app)
 
 ### **Project Planning**

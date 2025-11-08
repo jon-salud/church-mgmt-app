@@ -67,7 +67,7 @@ You are responsible for:
 
 **Key resources for your role:**
 - `docs/TASKS.md` — Current sprints for test design
-- `docs/CODING_STANDARDS.md` — Testing best practices and patterns
+- `docs/guides/CODING_STANDARDS.md` — Testing best practices and patterns
 - `docs/source-of-truth/BUSINESS_REQUIREMENTS.md` — Test scope and acceptance criteria
 - `docs/sprints/README.md` — Historical sprint test strategies
 

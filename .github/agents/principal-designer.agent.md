@@ -66,8 +66,8 @@ You are responsible for:
 **Start here:** `docs/README.md` — Main documentation hub with role-based navigation
 
 **Key resources for your role:**
-- `docs/DESIGN_SYSTEM.md` — Component library and design tokens
-- `docs/CODING_STANDARDS.md` — UI implementation standards
+- `docs/guides/DESIGN_SYSTEM.md` — Component library and design tokens
+- `docs/guides/CODING_STANDARDS.md` — UI implementation standards
 - `docs/PRD.md` — Product requirements and user flows
 - `docs/source-of-truth/BUSINESS_REQUIREMENTS.md` — User personas and scenarios
 

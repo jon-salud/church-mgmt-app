@@ -301,7 +301,12 @@ docs/
 ├── FLOWBITE_MIGRATION.md (UI migration)
 ├── NAVIGATION.md (routing structure)
 ├── guides/
-│   └── README.md (index of developer resources)
+│   ├── README.md (index of developer resources)
+│   ├── CODING_STANDARDS.md
+│   ├── DESIGN_SYSTEM.md
+│   ├── TECH_STACK.md
+│   ├── FLOWBITE_MIGRATION.md
+│   └── NAVIGATION.md
 ├── source-of-truth/
 │   ├── README.md (index)
 │   ├── ARCHITECTURE.md
