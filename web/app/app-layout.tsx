@@ -1,13 +1,11 @@
-import Link from 'next/link';
 import { api } from '../lib/api.server';
-import { ThemeSwitcher } from '@/components/theme-switcher';
 import { SidebarNav } from '@/components/sidebar-nav';
-import { logoutAction } from './actions';
-import { NavItem } from '../components/sidebar-nav';
 import { OnboardingModal } from '@/components/onboarding-modal';
-import { MenuToggle } from './menu-toggle';
 import { hasRole } from '../lib/utils';
+import { AppLayoutClient } from './app-layout-client';
+import { getUserPreferences } from './actions/preferences';
 import type { Role } from '../lib/types';
+import type { NavItem } from '../components/sidebar-nav';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -72,6 +70,7 @@ function getFilteredNavItems(userRoles: Role[]) {
 export async function AppLayout({ children }: AppLayoutProps) {
   let me: any = null;
   let settings: Record<string, unknown> = {};
+  let preferences: any = { themePreference: 'original', fontSizePreference: '16px' };
 
   try {
     me = await api.currentUser();
@@ -90,6 +89,14 @@ export async function AppLayout({ children }: AppLayoutProps) {
     }
   }
 
+  // Fetch user preferences for theme and font size
+  try {
+    preferences = await getUserPreferences();
+  } catch (error) {
+    console.error('Failed to load user preferences in AppLayout:', error);
+    // Keep defaults
+  }
+
   // Get role-based navigation items
   const {
     memberNavItems: filteredMemberNavItems,
@@ -100,6 +107,7 @@ export async function AppLayout({ children }: AppLayoutProps) {
   const displayName = me?.user?.profile
     ? `${me.user.profile.firstName} ${me.user.profile.lastName ?? ''}`.trim()
     : me?.user?.primaryEmail || 'Guest';
+  const email = me?.user?.primaryEmail || '';
   const roles = me?.user?.roles ?? [];
   const isAdmin = roles.some((entry: any) => entry?.slug === 'admin');
   const primaryRole = roles[0]?.role ?? (isAdmin ? 'Admin' : 'Member');
@@ -111,36 +119,14 @@ export async function AppLayout({ children }: AppLayoutProps) {
       <a id="skip-to-main-content" href="#main-content" className="skip-link">
         Skip to main content
       </a>
-      <header className="border-b border-border bg-background/80 backdrop-blur">
-        <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-          <div className="flex items-center gap-4">
-            <MenuToggle />
-            <div>
-              <Link
-                id="dashboard-link"
-                href="/dashboard"
-                className="text-xl font-semibold tracking-tight text-foreground hover:text-primary"
-              >
-                Auckland Community Church
-              </Link>
-              <p className="text-xs text-muted-foreground">Role: {primaryRole}</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 text-sm text-foreground">
-            <ThemeSwitcher />
-            <span className="hidden md:inline">{displayName}</span>
-            <form action={logoutAction}>
-              <button
-                id="logout-button"
-                className="rounded-md border border-border px-3 py-1 text-xs uppercase tracking-wide text-foreground transition hover:bg-muted"
-              >
-                Logout
-              </button>
-            </form>
-          </div>
-        </div>
-      </header>
-      <div className="flex flex-1 flex-col md:flex-row">
+      <AppLayoutClient
+        displayName={displayName}
+        email={email}
+        primaryRole={primaryRole}
+        currentTheme={preferences.themePreference}
+        currentFontSize={preferences.fontSizePreference}
+        currentThemeDarkMode={preferences.themeDarkMode}
+      >
         <aside
           id="sidebar"
           className="border-b border-border bg-background px-4 py-4 md:w-64 md:border-b-0 md:border-r hidden md:block"
@@ -158,7 +144,7 @@ export async function AppLayout({ children }: AppLayoutProps) {
             {children}
           </div>
         </main>
-      </div>
+      </AppLayoutClient>
       <footer className="border-t border-border bg-background/80 px-6 py-4 text-center text-xs text-muted-foreground">
         Demo data only • Install via browser menu for offline-ready dashboard snapshot.
       </footer>

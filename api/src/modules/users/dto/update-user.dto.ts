@@ -181,4 +181,22 @@ export class UpdateUserDto {
   @IsString()
   @MaxLength(1000)
   pastoralNotes?: string;
+
+  // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
+  @ApiPropertyOptional({ maxLength: 50 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  themePreference?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  themeDarkMode?: boolean;
+
+  @ApiPropertyOptional({ maxLength: 50 })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  fontSizePreference?: string;
 }

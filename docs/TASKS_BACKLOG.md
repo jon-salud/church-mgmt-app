@@ -6,6 +6,35 @@ This file contains planned features and technical debt items for the upcoming 1-
 
 ## Phase 1: Complete Core Initial Release Features
 
+### User Preferences Enhancement Sprint
+
+**Sprint Name:** user-preferences-enhancement  
+**Timeline:** 10-14 hours (1.5-2 days)  
+**Sprint Plan:** `docs/sprints/user-preferences-enhancement-PLAN.md`  
+**Implementation Plan:** `docs/sprints/user-preferences-enhancement-IMPLEMENTATION-PLAN.md`
+
+**Sprint Goals:**
+- Add settings dropdown menu to header for easy preference access
+- Implement font size adjustment system (4 sizes: 14px, 16px, 18px, 20px)
+- Create settings modal with instant preview and explicit save pattern
+- Build on existing theme system with backward compatibility
+
+**Phases:**
+- **Phase 1: User Settings Dropdown Menu (3-4h)** - Add dropdown to header with Settings link
+- **Phase 2: Font Size Preference System (6-8h)** - Database, API, frontend font size system
+- **Phase 3: Settings Modal & Integration (2-3h)** - Modal with draft state and preview
+
+**Success Criteria:**
+- Settings discoverable within 30 seconds on all pages
+- Instant preview with explicit save/cancel pattern
+- Font sizes work at all breakpoints (375px+)
+- Full E2E test coverage
+- Backward compatible with existing theme system
+
+**Status:** Ready for sprint execution
+
+---
+
 ### Public Prayer Request Form (`/prayer/new` - Behavior TBD)
 
 - **Context:** The `/prayer/new` page exists as a standalone public-facing prayer request form, intended to be accessible without authentication for public prayer submissions

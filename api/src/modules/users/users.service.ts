@@ -7,7 +7,12 @@ import { User } from '../../domain/entities/User';
 import { UserId } from '../../domain/value-objects/UserId';
 import { Email } from '../../domain/value-objects/Email';
 import { randomUUID } from 'node:crypto';
-import { ThemePreset, isValidThemePreset } from './types/theme.types';
+import {
+  ThemePreset,
+  FontSizePreset,
+  isValidThemePreset,
+  isValidFontSizePreset,
+} from './types/theme.types';
 
 @Injectable()
 export class UsersService {
@@ -113,6 +118,7 @@ export class UsersService {
     return {
       themePreference: (user.themePreference as ThemePreset) || ThemePreset.ORIGINAL,
       themeDarkMode: user.themeDarkMode ?? false,
+      fontSizePreference: (user.fontSizePreference as FontSizePreset) || FontSizePreset.DEFAULT,
     };
   }
 
@@ -128,6 +134,14 @@ export class UsersService {
       throw new BadRequestException('Invalid theme preset');
     }
 
+    // Validate font size preset if provided
+    if (
+      updateThemeDto.fontSizePreference &&
+      !isValidFontSizePreset(updateThemeDto.fontSizePreference)
+    ) {
+      throw new BadRequestException('Invalid font size preset');
+    }
+
     const id = UserId.create(userId);
     const actorId = id; // User updating their own theme
 
@@ -138,6 +152,9 @@ export class UsersService {
     if (updateThemeDto.themeDarkMode !== undefined) {
       updateData.themeDarkMode = updateThemeDto.themeDarkMode;
     }
+    if (updateThemeDto.fontSizePreference !== undefined) {
+      updateData.fontSizePreference = updateThemeDto.fontSizePreference;
+    }
 
     const updatedUser = await this.repo.updateUser(id, updateData);
     if (!updatedUser) {
@@ -147,6 +164,8 @@ export class UsersService {
     return {
       themePreference: (updatedUser.themePreference as ThemePreset) || ThemePreset.ORIGINAL,
       themeDarkMode: updatedUser.themeDarkMode ?? false,
+      fontSizePreference:
+        (updatedUser.fontSizePreference as FontSizePreset) || FontSizePreset.DEFAULT,
     };
   }
 
