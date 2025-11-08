@@ -12,7 +12,14 @@ You are in **STRICT MODE**. Do not write or modify code until all **Compliance G
 1) **User's current explicit request**
 2) **This document** (Strict Mode)
 3) **Codebase** (actual files on disk)
-4) Project docs (e.g., `TASKS.md` for current work, `TASKS_BACKLOG.md`, `TASKS_COMPLETED.md`, `TASKS_FUTURE.md`, `PRD.md`)
+4) **Project Documentation Hub** → START HERE: `docs/README.md`
+   - Current work: `docs/TASKS.md`
+   - Planned work: `docs/TASKS_BACKLOG.md`
+   - Completed work: `docs/TASKS_COMPLETED.md`
+   - Long-term roadmap: `docs/TASKS_FUTURE.md`
+   - Architecture & design: `docs/source-of-truth/ARCHITECTURE.md`
+   - Business requirements: `docs/source-of-truth/BUSINESS_REQUIREMENTS.md`
+   - Sprint plans: `docs/sprints/README.md`
 
 **Non‑negotiables (MUST):**
 - Never commit directly to `main`.
@@ -20,6 +27,7 @@ You are in **STRICT MODE**. Do not write or modify code until all **Compliance G
 - Always follow **Sprint & Phase Protocol** and pass **Compliance Gates**.
 - Prevent regressions: search usages before changes; keep tests green.
 - **Formatting:** Use only the commands `pnpm format` and `pnpm format:check`. Do **not** call Prettier directly.
+- **Documentation:** Always refer to `docs/README.md` and its indices for current documentation structure.
 
 ---
 
@@ -91,11 +99,14 @@ You MUST follow this protocol for all sprint‑based work.
 You MUST pass each gate in order. If any check fails, **STOP** and ask the user.
 
 ### Gate A — Readiness & Understanding
-- **VERIFY:** If starting a new sprint, entire sprint MUST be moved from `TASKS_BACKLOG.md` or `TASKS_FUTURE.md` to `TASKS.md` "🔄 In Progress" section.
-- Read `TASKS.md` for current work, `TASKS_BACKLOG.md` for upcoming features, and relevant `docs/source-of-truth/*`.
-- Check `TASKS_COMPLETED.md` for historical context if needed.
+- **VERIFY:** If starting a new sprint, entire sprint MUST be moved from `docs/TASKS_BACKLOG.md` or `docs/TASKS_FUTURE.md` to `docs/TASKS.md` "🔄 In Progress" section.
+- Read `docs/TASKS.md` for current work, `docs/TASKS_BACKLOG.md` for upcoming features, and relevant `docs/source-of-truth/*`.
+- Check `docs/TASKS_COMPLETED.md` for historical context if needed.
+- Reference `docs/sprints/README.md` for sprint archive and technical patterns.
 - Ask clarifying questions until **zero ambiguity**.
 - Produce **Readiness Receipt JSON** (see §3) and wait for explicit approval.
+
+**Documentation Hub:** Start at `docs/README.md` if unsure where to find something.
 
 ### Gate B — Sprint/Phase Setup
 - Sprint branch exists and is correctly named.
@@ -182,12 +193,31 @@ Before changes, identify dependencies and risks:
 
 ## 6) End‑to‑End Workflow
 
-1) **Understand** → read `TASKS.md` (current work), `TASKS_BACKLOG.md` (upcoming), `TASKS_COMPLETED.md` (history as needed), `docs/source-of-truth/*`; ask questions.  
+**IMPORTANT:** All documentation references below point to indices in `docs/` that survive structural reorganization.
+
+1) **Understand** → Start at `docs/README.md` (main hub)
+   - Read `docs/TASKS.md` (current work)
+   - Read `docs/TASKS_BACKLOG.md` (upcoming, next 1-3 months)
+   - Check `docs/TASKS_COMPLETED.md` (history as needed)
+   - Reference `docs/source-of-truth/` for authoritative specs
+   - Check sprint archive at `docs/sprints/README.md` for technical context
+   - Ask clarifying questions until **zero ambiguity**.
+   
 2) **Plan** → produce step‑by‑step plan + **Readiness Receipt JSON**; wait for approval.  
+
 3) **TDD** → write tests first; see them fail (red).  
+
 4) **Execute** → minimal implementation to pass tests (green); refactor safely; verify; format.  
-5) **Docs** → **`@principal_engineer` MUST** move completed phase from `TASKS.md` to `TASKS_COMPLETED.md` with summary + commit hashes; update `docs/source-of-truth/*`, `PRD.md`, `USER_MANUAL.md` if impacted; append `## Accomplishments` to phase plan.  
+
+5) **Docs** → 
+   - **`@principal_engineer` MUST** move completed phase from `docs/TASKS.md` to `docs/TASKS_COMPLETED.md` with summary + commit hashes
+   - Update `docs/source-of-truth/*` if impacted
+   - Update `docs/PRD.md`, `docs/USER_MANUAL.md` if impacted
+   - Append `## Accomplishments` to phase plan in `docs/sprints/{sprint-name}/`
+   
 6) **Submit** → Create Phase PR → sprint branch; Create Sprint PR → `main` when all phases complete (both PRs require review before merge).
+
+**All paths are relative to project root.** Structure maintained at `docs/README.md`.
 
 ---
 
@@ -235,3 +265,64 @@ docs/
 - [ ] **Not moving all remaining sprint items to TASKS_COMPLETED.md before final sprint PR**
 - [ ] Opening phase PR directly to `main`
 - [ ] Auto-merging PRs without review
+
+---
+
+## 10) Documentation Structure Reference
+
+**When documentation structure changes, this section describes how to find things.**
+
+### Primary Entry Points
+- **`docs/README.md`** - Main documentation hub (START HERE)
+- **`docs/TASKS.md`** - Current sprints in active development
+- **`docs/TASKS_BACKLOG.md`** - Planned work (next 1-3 months)
+- **`docs/TASKS_COMPLETED.md`** - Historical record of completed work
+- **`docs/TASKS_FUTURE.md`** - Long-term roadmap (3+ months)
+
+### Indices by Category
+- **`docs/guides/README.md`** - Developer guides (CODING_STANDARDS, DESIGN_SYSTEM, TECH_STACK)
+- **`docs/source-of-truth/README.md`** - Authoritative documentation (ARCHITECTURE, API_DOCUMENTATION, DATABASE_SCHEMA)
+- **`docs/sprints/README.md`** - Sprint archive and current sprint index
+- **`docs/observability/README.md`** - Observability guides and implementation
+
+### Folder Structure
+```
+docs/
+├── README.md (MAIN ENTRY POINT)
+├── TASKS.md (current work)
+├── TASKS_COMPLETED.md (history)
+├── TASKS_BACKLOG.md (next 1-3 months)
+├── TASKS_FUTURE.md (3+ months out)
+├── PRD.md (product overview)
+├── USER_MANUAL.md (user guide)
+├── guides/
+│   ├── README.md (index)
+│   ├── CODING_STANDARDS.md
+│   ├── DESIGN_SYSTEM.md
+│   ├── TECH_STACK.md
+│   └── ... (other developer guides)
+├── source-of-truth/
+│   ├── README.md (index)
+│   ├── ARCHITECTURE.md
+│   ├── DATABASE_SCHEMA.md
+│   ├── API_DOCUMENTATION.md
+│   └── ... (other authoritative docs)
+├── sprints/
+│   ├── README.md (index)
+│   └── {sprint-name}/ (per sprint)
+└── observability/
+    ├── README.md (index)
+    └── ... (observability docs)
+```
+
+### Why This Matters
+1. **Resilience**: Indices reference docs by purpose, not just location
+2. **Maintainability**: When structure changes, update indices but don't break links
+3. **Discoverability**: Multiple entry points based on role and need
+4. **Automation-Ready**: Machine-readable folder structure with consistent naming
+
+### Before Moving/Renaming Docs
+- Always update the relevant `README.md` index file
+- Update cross-references in related documents
+- Update this section if folder structure changes fundamentally
+- Never move docs without updating indices
