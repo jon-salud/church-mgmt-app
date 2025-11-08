@@ -33,7 +33,8 @@ export function Drawer({
   title,
 }: DrawerProps) {
   const drawerRef = useRef<HTMLDivElement>(null);
-  const titleId = useRef(`drawer-title-${Math.random().toString(36).substr(2, 9)}`);
+  // Use substring instead of deprecated substr
+  const titleId = useRef(`drawer-title-${Math.random().toString(36).substring(2, 11)}`);
 
   // Body scroll lock
   useEffect(() => {

@@ -44,7 +44,8 @@ export const useToastStore = create<ToastStore>((set, get) => ({
   timers: new Map(),
 
   add: (toast, options) => {
-    const id = `toast-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    // Use substring instead of deprecated substr
+    const id = `toast-${Date.now()}-${Math.random().toString(36).substring(2, 11)}`;
     const maxToasts = options?.maxToasts ?? DEFAULT_MAX_TOASTS;
     const duration = options?.duration ?? DEFAULT_DURATION;
 
