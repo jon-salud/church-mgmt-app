@@ -6,8 +6,20 @@ import { test, expect } from '@playwright/test';
 test.describe('Members Hub Discoverability', () => {
   test.use({
     storageState: {
-      cookies: [{ name: 'demo_token', value: 'demo-admin', domain: 'localhost', path: '/' }],
-    } as any,
+      cookies: [
+        {
+          name: 'demo_token',
+          value: 'demo-admin',
+          domain: 'localhost',
+          path: '/',
+          expires: Date.now() + 1000 * 60 * 60,
+          httpOnly: false,
+          secure: false,
+          sameSite: 'Lax',
+        },
+      ],
+      origins: [],
+    },
   });
 
   test('loads members hub and performs search + sort', async ({ page }) => {

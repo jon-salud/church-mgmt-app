@@ -64,7 +64,7 @@ export class MembersService {
     if (query.groupsCountMin !== undefined) {
       filtered = filtered.filter((user: any) => {
         const groupsCount = user.groups?.length || 0;
-        return groupsCount >= query.groupsCountMin!;
+        return groupsCount >= (query.groupsCountMin ?? 0);
       });
     }
 

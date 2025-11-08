@@ -15,7 +15,11 @@ export async function GET(request: NextRequest) {
     // Get auth token from cookies
     const sessionToken = request.cookies.get('session_token')?.value;
     const demoToken = request.cookies.get('demo_token')?.value;
-    const token = sessionToken || demoToken || 'demo-admin';
+    const token =
+      sessionToken || demoToken || (process.env.NODE_ENV === 'development' ? 'demo-admin' : null);
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     const response = await fetch(url, {
       method: 'GET',

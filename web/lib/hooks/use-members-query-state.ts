@@ -76,7 +76,8 @@ export function useMembersQueryState() {
         }
       });
 
-      router.push(`?${params.toString()}`);
+      // Use router.replace for filter updates to avoid cluttering browser history
+      router.replace(`?${params.toString()}`);
     },
     [searchParams, router]
   );

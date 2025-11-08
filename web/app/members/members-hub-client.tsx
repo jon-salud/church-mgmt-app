@@ -281,7 +281,7 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
                     className="px-3 py-2 text-left cursor-pointer"
                     onClick={() => handleSortChange('phone')}
                   >
-                    Phone
+                    Phone {sortIndicator('phone')}
                   </th>
                   <th
                     className="px-3 py-2 text-left cursor-pointer"
@@ -289,7 +289,10 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
                   >
                     Status {sortIndicator('status')}
                   </th>
-                  <th className="px-3 py-2 text-left">Roles</th>
+                  {/* Roles column is not sortable. If future sorting is planned, add a click handler and update ARIA attributes. */}
+                  <th className="px-3 py-2 text-left" role="columnheader">
+                    Roles
+                  </th>
                   <th
                     className="px-3 py-2 text-center cursor-pointer"
                     onClick={() => handleSortChange('groupsCount')}

@@ -4,7 +4,14 @@ import { MembersHubClient } from '../members-hub-client';
 
 // Mock hooks
 jest.mock('../../../lib/hooks/use-toast', () => ({
-  useToast: () => ({ pushToast: jest.fn() }),
+  useToast: () => ({
+    success: jest.fn(),
+    error: jest.fn(),
+    info: jest.fn(),
+    warning: jest.fn(),
+    dismiss: jest.fn(),
+    toasts: [],
+  }),
 }));
 
 jest.mock('../../../lib/hooks/use-drawer', () => ({
