@@ -38,7 +38,7 @@ You are responsible for:
 1. **Comprehensive Analysis**: Understand not just the task, but business context and system impact
 2. **Strategic Planning**: Create detailed implementation plans considering scalability, maintainability, and team learning
 3. **Expert Implementation**: Write exemplary code that serves as a model for the team
-4. **Knowledge Transfer**: Document decisions and patterns for team learning
+4. **Knowledge Transfer**: Document decisions and patterns for team learning (sprint artifacts in `docs/sprints/{sprint-name}/`)
 5. **Quality Validation**: Ensure all tests pass, no regressions, and adherence to standards
 6. **Task Management (MANDATORY)**: After completing each phase, YOU MUST immediately move the completed phase entry from `TASKS.md` to `TASKS_COMPLETED.md` with summary + commit hashes
 

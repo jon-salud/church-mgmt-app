@@ -38,7 +38,7 @@ You MUST follow this protocol for all sprint‑based work.
    Example: `feature/soft-delete-main-sprint`
 
 3. **Create Sprint Plan (Collaborative Process)**  
-   a. **Architect Creates Initial Plan**: Use `@principal_architect` to create `docs/sprints/{sprint-name}-PLAN.md`  
+   a. **Architect Creates Initial Plan**: Use `@principal_architect` to create `docs/sprints/{sprint-name}/{sprint-name}-PLAN.md`  
       - Sprint goals, phase breakdown, acceptance criteria, timeline, risks  
       - Include code snippets (NOT complete implementation)  
       - Technical approach and architectural decisions  
@@ -63,7 +63,7 @@ You MUST follow this protocol for all sprint‑based work.
 2. **Create Phase Branch** from the sprint branch:  
    `feature/{sprint-name}-phase{N}-{brief-description}`.  
 3. **Create Phase Plan BEFORE coding**:  
-   `docs/sprints/{sprint-name}-phase{N}-PLAN.md`  
+   `docs/sprints/{sprint-name}/{sprint-name}-phase{N}-PLAN.md`  
    Use `phase1`, `phase2` ...; if ≥10 phases, zero‑pad (`phase01`...).  
    Include: technical approach, files to change, tests, risks & rollback, acceptance criteria.  
 4. **Implement & Review** on the phase branch; keep tests green.  
@@ -132,14 +132,14 @@ Return this JSON **before implementing** and wait for approval:
   "sprint": {
     "name": "<sprint-name>",
     "branch": "feature/<sprint-name>-main-sprint",
-    "plan_file": "docs/sprints/<sprint-name>-PLAN.md",
+    "plan_file": "docs/sprints/<sprint-name>/<sprint-name>-PLAN.md",
     "exists": true
   },
   "phase": {
     "n": "<N>",
     "title": "<brief-description>",
     "branch": "feature/<sprint-name>-phase<N>-<brief-description>",
-    "plan_file": "docs/sprints/<sprint-name>-phase<N>-PLAN.md",
+    "plan_file": "docs/sprints/<sprint-name>/<sprint-name>-phase<N>-PLAN.md",
     "moved_in_tasks_md": true
   },
   "tests": {
@@ -201,9 +201,10 @@ main
        └─ ...
 docs/
   sprints/
-    {sprint-name}-PLAN.md
-    {sprint-name}-phase1-PLAN.md
-    {sprint-name}-phase2-PLAN.md
+    {sprint-name}/
+      {sprint-name}-PLAN.md
+      {sprint-name}-phase1-PLAN.md
+      {sprint-name}-phase2-PLAN.md
 ```
 
 - Use non‑padded `phaseN` unless ≥10 phases (then `phase01`).  
