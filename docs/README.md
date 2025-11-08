@@ -105,6 +105,7 @@ docs/
 4. Check [source-of-truth/DATABASE_SCHEMA.md](./source-of-truth/DATABASE_SCHEMA.md) for data model
 5. Reference [source-of-truth/API_DOCUMENTATION.md](./source-of-truth/API_DOCUMENTATION.md) for endpoints
 6. Follow [SETUP.md](./SETUP.md) to get your environment running
+7. Check [guides/README.md](./guides/README.md) for developer guides index
 
 #### **🎨 Frontend Engineer**
 1. Read [TECH_STACK.md](./TECH_STACK.md) for frontend stack
@@ -113,12 +114,14 @@ docs/
 4. Check [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) Section 2.3 for UI architecture
 5. View [component-theme-preview/index.html](./component-theme-preview/index.html) for visual reference
 6. Reference [SETUP.md](./SETUP.md) to set up development environment
+7. Check [guides/README.md](./guides/README.md) for frontend-specific guides
 
 #### **🎯 Designer / Design Systems**
 1. Review [DESIGN_SYSTEM.md](./DESIGN_SYSTEM.md) for complete design language
 2. Check [FLOWBITE_MIGRATION.md](./FLOWBITE_MIGRATION.md) for component library
 3. View [component-theme-preview/index.html](./component-theme-preview/index.html) for visual audit
 4. Reference [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) Section 2.3 for technical constraints
+5. Check [guides/README.md](./guides/README.md) for design system resources
 
 #### **👤 End User / Church Administrator**
 1. Start with [USER_MANUAL.md](./USER_MANUAL.md) - step-by-step user guide
@@ -130,6 +133,7 @@ docs/
 2. Review [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) for deployment architecture
 3. Study [observability/README.md](./observability/README.md) for monitoring and observability
 4. Check [observability/OBSERVABILITY_PRODUCTION_SETUP.md](./observability/OBSERVABILITY_PRODUCTION_SETUP.md) for deployment
+5. Reference [SETUP.md](./SETUP.md) for local infrastructure setup
 
 ---
 
@@ -179,8 +183,8 @@ docs/
 
 ### **Maintenance**
 - **Architecture decisions:** Update `source-of-truth/ARCHITECTURE.md` and ADRs
-- **Code patterns:** Update `guides/CODING_STANDARDS.md`
-- **Design tokens:** Update `guides/DESIGN_SYSTEM.md` and `source-of-truth/ARCHITECTURE.md` Section 2.3
+- **Code patterns:** Update `CODING_STANDARDS.md`
+- **Design tokens:** Update `DESIGN_SYSTEM.md` and `source-of-truth/ARCHITECTURE.md` Section 2.3
 - **Database schema:** Update `source-of-truth/DATABASE_SCHEMA.md` when Prisma schema changes
 - **API changes:** Update `source-of-truth/API_DOCUMENTATION.md` and `API_REFERENCE.md`
 - **Current work:** Update TASKS.md weekly; move completed items to TASKS_COMPLETED.md
