@@ -133,7 +133,7 @@
   - Created 13 API-compatible wrapper components
   - 100% feature parity maintained
   - Improved bundle sizes: Onboarding -6.9%, Settings -1.7%
-  - See `docs/FLOWBITE_MIGRATION.md` for complete details
+  - See `docs/guides/FLOWBITE_MIGRATION.md` for complete details
 
 #### Build Tools
 - **@nestjs/cli** v10.4.5 - NestJS CLI

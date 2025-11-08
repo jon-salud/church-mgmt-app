@@ -46,8 +46,8 @@ This design system defines the visual language for the Church Management App. It
 
 - **Design Tokens:** `web/app/globals.css` (authoritative source)
 - **Components:** `web/components/ui-flowbite/` (20+ components)
-- **Standards:** `docs/CODING_STANDARDS.md` (usage guidelines)
-- **Migration:** `docs/FLOWBITE_MIGRATION.md` (Radix UI → Flowbite)
+- **Standards:** `docs/guides/CODING_STANDARDS.md` (usage guidelines)
+- **Migration:** `docs/guides/FLOWBITE_MIGRATION.md` (Radix UI → Flowbite)
 
 ---
 
@@ -1146,8 +1146,8 @@ After adopting the design system:
 
 ### Documentation
 
-- **Coding Standards:** `docs/CODING_STANDARDS.md`
-- **Flowbite Migration:** `docs/FLOWBITE_MIGRATION.md`
+- **Coding Standards:** `docs/guides/CODING_STANDARDS.md`
+- **Flowbite Migration:** `docs/guides/FLOWBITE_MIGRATION.md`
 - **Architecture:** `docs/source-of-truth/ARCHITECTURE.md`
 - **Component Source:** `web/components/ui-flowbite/`
 
@@ -1202,8 +1202,8 @@ After adopting the design system:
 
 **Update Process:**
 1. Update `web/app/globals.css` (authoritative source)
-2. Update this documentation (`docs/DESIGN_SYSTEM.md`)
-3. Update `docs/CODING_STANDARDS.md` (if guidelines change)
+2. Update this documentation (`docs/guides/DESIGN_SYSTEM.md`)
+3. Update `docs/guides/CODING_STANDARDS.md` (if guidelines change)
 4. Test changes in light + dark modes
 5. Run E2E tests to catch regressions
 6. Document changes in Changelog section
