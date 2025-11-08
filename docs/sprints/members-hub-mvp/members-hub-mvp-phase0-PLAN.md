@@ -1075,4 +1075,34 @@ Phase 0 is complete when:
 
 ## Accomplishments
 
-*(This section will be updated upon phase completion)*
+### Summary
+
+Phase 0 delivered the foundational UX primitives and hooks with tests, lint/format compliance, and successful builds. A PR has been opened from the phase branch to the sprint branch.
+
+### Highlights
+- Drawer component with focus trap, ESC/backdrop close, body scroll lock
+- Toast system (store-backed) with auto-dismiss, queue limit, accessible `aria-live`
+- Hooks: `useUrlState`, `useDrawer`, `useMediaQuery`, `useConfirm`, `useToast`
+- Jest-DOM matcher setup and TypeScript types integration for web tests
+- ESLint web env updated for DOM globals; Prettier format pass
+- API tests verified (391 passing); web builds successfully
+
+### Testing & Quality
+- Lint: warnings only, 0 errors
+- Format: `pnpm format:check` passed
+- Builds: `pnpm -r build` succeeded (api + web)
+- API tests: `pnpm -C api test` — 391 tests passing
+
+### Commits & PR
+- Commit: `aaff825` - chore(phase0): format after jest-dom + lint env updates
+- PR: Members Hub MVP Phase 0 → sprint branch `feature/members-hub-mvp-main-sprint` (PR #209)
+
+### Files (key additions)
+- `web/components/ui-flowbite/drawer.tsx`
+- `web/components/ui-flowbite/toast.tsx`, `web/components/ui-flowbite/toaster.tsx`
+- `web/lib/hooks/use-url-state.ts`, `use-drawer.ts`, `use-media-query.ts`, `use-toast.ts`, `use-confirm.ts`
+- Tests under `web/components/ui-flowbite/__tests__/` and `web/lib/hooks/__tests__/`
+- Config: `eslint.config.js`, `web/test/setup-tests.d.ts`, `web/tsconfig.json`, `web/package.json`
+
+### Notes
+- Remaining planned items (FormModal, skeletons, empty states, API service) are intentionally deferred to subsequent phases per sprint scope adjustment; Phase 0 focuses on primitives required to unblock Phase 1.
