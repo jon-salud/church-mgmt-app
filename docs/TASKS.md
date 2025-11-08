@@ -65,10 +65,12 @@ See [TASKS_COMPLETED.md](./TASKS_COMPLETED.md) for full details on these sprints
    - Delivered: Drawer, Toast system, hooks (`useUrlState`, `useDrawer`, `useMediaQuery`, `useConfirm`, `useToast`), Jest-DOM setup, ESLint env updates
    - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase0-PLAN.md`
 
-2. ⏳ **Phase 1: Discoverability & Speed** - Queued
-   - Search, filters, sort, pagination
-   - Keyboard navigation
+2. ✅ **Phase 1: Discoverability & Speed**
+   - Status: Completed — PR pending (to be opened) on branch `feature/members-hub-mvp-phase1-discoverability-speed`
+   - Delivered: Search (debounced), filters (status, role, lastAttendance, hasEmail, hasPhone, groupsCountMin), sorting (name, email, status, groupsCount, lastAttendance), pagination (page/limit), URL-driven state, backend service/controller/module, unit + component + hook + E2E tests.
    - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase1-PLAN.md`
+   - Commits: (will be listed post-PR)  
+   - Notes: Drawer detail deferred to Phase 2; performance optimization deferred.
 
 3. ⏳ **Phase 2: Actionability** - Queued
    - Member detail drawer
