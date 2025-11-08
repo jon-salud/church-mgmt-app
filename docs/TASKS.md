@@ -65,7 +65,7 @@ See [TASKS_COMPLETED.md](./TASKS_COMPLETED.md) for full details on these sprints
    - Delivered: Drawer, Toast system, hooks (`useUrlState`, `useDrawer`, `useMediaQuery`, `useConfirm`, `useToast`), Jest-DOM setup, ESLint env updates
    - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase0-PLAN.md`
 
-2. ⏳ **Phase 1: Discoverability & Speed** - Queued
+2. 🚧 **Phase 1: Discoverability & Speed** - In Progress
    - Search, filters, sort, pagination
    - Keyboard navigation
    - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase1-PLAN.md`
