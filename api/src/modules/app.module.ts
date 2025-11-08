@@ -20,6 +20,7 @@ import { PrayerModule } from './prayer/prayer.module';
 import { RequestsModule } from './requests/requests.module';
 import { InvitationsModule } from './invitations/invitations.module';
 import { DocumentsModule } from './documents/documents.module';
+import { MembersModule } from './members/members.module';
 // TenantModule is intentionally not imported statically to avoid require-time
 // evaluation of its decorators (which can reference runtime-only guards).
 // It will be conditionally required when not running under test to keep the
@@ -49,6 +50,7 @@ import { OpenTelemetryModule } from './opentelemetry/opentelemetry.module';
     RequestsModule,
     InvitationsModule,
     DocumentsModule,
+    MembersModule,
     // When running tests or in development, skip TenantModule due to decorator resolution issues
     // TenantModule is primarily for multi-tenant provisioning (not used in E2E tests)
     // Re-enable once decorator-time guard resolution is properly handled
