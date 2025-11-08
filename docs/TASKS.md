@@ -60,10 +60,9 @@ See [TASKS_COMPLETED.md](./TASKS_COMPLETED.md) for full details on these sprints
 **Goal:** Create modern, performant member management interface with professional UX patterns
 
 **Phases:**
-1. 🔄 **Phase 0: UX Primitives & Foundation** - In Progress
-   - Drawer component with Flowbite integration
-   - Responsive hooks and layout utilities
-   - State management patterns
+1. ✅ **Phase 0: UX Primitives & Foundation**
+   - Status: Completed — PR #209, commit `aaff825`
+   - Delivered: Drawer, Toast system, hooks (`useUrlState`, `useDrawer`, `useMediaQuery`, `useConfirm`, `useToast`), Jest-DOM setup, ESLint env updates
    - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase0-PLAN.md`
 
 2. ⏳ **Phase 1: Discoverability & Speed** - Queued
@@ -101,7 +100,7 @@ See [TASKS_COMPLETED.md](./TASKS_COMPLETED.md) for full details on these sprints
 
 *(When a sprint is active, it will be listed here with current phase status)*
 
-**Currently:** Members Hub MVP Sprint - Phase 0 starting
+**Currently:** Members Hub MVP Sprint - Phase 1 starting
 
 ---
 

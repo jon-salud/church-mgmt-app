@@ -39,12 +39,12 @@ This implementation plan translates the Members Hub MVP Product & UX Specificati
 
 ### 🔴 Pre-Sprint Blockers (Resolve Before Starting)
 
-0. **🚨 CRITICAL: Database is SQLite, NOT PostgreSQL**
-   - Project uses SQLite (`provider = "sqlite"` in schema.prisma)
-   - All SQL examples in this plan have been corrected to SQLite syntax
-   - **NO PostgreSQL features:** No GIN indexes, no full-text search (use FTS5), different syntax
-   - Performance characteristics differ: SQLite is simpler but has different optimization strategies
-   - **ACTION:** Confirmed - all implementations use SQLite-compatible approaches
+0. **✅ RESOLVED: Database Strategy - PostgreSQL-Ready Development**
+   - Project currently uses `DATA_MODE=mock` for development (in-memory)
+   - Schema defined in `schema.prisma` with `provider = "sqlite"` (not actively used)
+   - All code will be written PostgreSQL-compatible from day 1 via DataStore abstraction
+   - PostgreSQL migration deferred to post-MVP (~10-15 hours)
+   - **ACTION:** Use DataStore interface for all database operations (no direct Prisma calls)
 
 1. **Database Schema Mismatch:**
    - Current schema uses `Profile` model (userId as PK), plan assumes `User` model
@@ -351,39 +351,35 @@ async getMemberSummary(userId: string, churchId: string) {
 
 💡 **TIP:** Add indexes incrementally. Start with most critical, measure performance, add more if needed.
 
-Critical indexes for performance:
+💡 **STRATEGY:** Mock mode development doesn't use indexes. Document PostgreSQL indexes for post-MVP migration.
+
+Critical indexes for PostgreSQL (post-migration):
 
 ```sql
--- ⚠️ IMPORTANT: SQLite syntax differs from PostgreSQL
--- The plan shows PostgreSQL syntax. Here's SQLite-compatible version:
-
--- Search indexes (SQLite doesn't support GIN, use regular index)
-CREATE INDEX idx_profile_first_name ON Profile(firstName COLLATE NOCASE);
-CREATE INDEX idx_profile_last_name ON Profile(lastName COLLATE NOCASE);
-CREATE INDEX idx_user_email ON User(primaryEmail COLLATE NOCASE);
-CREATE INDEX idx_profile_phone ON Profile(phone) WHERE phone IS NOT NULL;
-
--- 💡 TIP: For full-text search in SQLite, consider FTS5 virtual table
--- CREATE VIRTUAL TABLE profile_fts USING fts5(userId, firstName, lastName, email);
+-- PostgreSQL full-text search indexes
+CREATE INDEX idx_profile_first_name_gin ON "Profile" USING GIN (to_tsvector('english', "firstName"));
+CREATE INDEX idx_profile_last_name_gin ON "Profile" USING GIN (to_tsvector('english', "lastName"));
+CREATE INDEX idx_user_email_gin ON "User" USING GIN (to_tsvector('english', "primaryEmail"));
+CREATE INDEX idx_profile_phone ON "Profile"(phone) WHERE phone IS NOT NULL;
 
 -- Filter indexes
-CREATE INDEX idx_church_user_status ON ChurchUser(churchId, role) WHERE role IS NOT NULL;
+CREATE INDEX idx_church_user_status ON "ChurchUser"("churchId", role) WHERE role IS NOT NULL;
 -- Note: Current schema doesn't have 'campus' or 'status' on User
 -- You'll need to add these fields first
 
 -- Soft delete (add deletedAt field first!)
--- CREATE INDEX idx_users_deleted ON User(deletedAt) WHERE deletedAt IS NOT NULL;
+-- CREATE INDEX idx_users_deleted ON "User"("deletedAt") WHERE "deletedAt" IS NOT NULL;
 
--- Foreign keys (SQLite auto-creates some, but explicit indexes help)
-CREATE INDEX idx_group_members_user ON GroupMember(userId);
-CREATE INDEX idx_attendance_user ON Attendance(userId, eventId);
+-- Foreign keys (PostgreSQL auto-creates for FK constraints)
+CREATE INDEX idx_group_members_user ON "GroupMember"("userId");
+CREATE INDEX idx_attendance_user ON "Attendance"("userId", "eventId");
 ```
 
-📋 **CHECKLIST: Before creating indexes**
-- [ ] Verify column exists in schema
-- [ ] Check existing indexes: `PRAGMA index_list('Profile');`
-- [ ] Test query performance with EXPLAIN QUERY PLAN
-- [ ] Measure before/after with realistic data (1000+ members)
+📋 **CHECKLIST: During mock development**
+- [ ] All queries use DataStore interface (not direct Prisma)
+- [ ] No database-specific syntax in code
+- [ ] Document expected indexes for PostgreSQL migration
+- [ ] Test with reasonable data volumes (100-1000 records in mock)
 
 🔴 **BLOCKER:** Current schema missing fields referenced in plan:
 - User.status (exists as User.status='active' but different from member status)
@@ -404,10 +400,10 @@ model ChurchUser {
 }
 ```
 
-⚠️ **RISK:** Full-text search performance
-- SQLite's LIKE '%search%' is slow on 10k+ rows
-- Consider FTS5 virtual table for search
-- Or limit search to exact/prefix matches initially
+💡 **SEARCH STRATEGY:**
+- **Mock Mode (Development):** Simple in-memory filtering (fast enough for <1000 records)
+- **PostgreSQL (Production):** GIN indexes with tsvector for full-text search
+- No need to optimize for SQLite - mock mode is temporary
 
 **Implementation Sequence:**
 1. Add missing schema fields (migration)

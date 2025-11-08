@@ -8,6 +8,28 @@ This file contains the complete history of shipped features, sprints, and migrat
 
 ### Shipped Features & Sprints
 
+### Members Hub MVP Sprint (November 2025)
+- **Branch:** `feature/members-hub-mvp-main-sprint`
+- **Sprint Plan:** `docs/sprints/members-hub-mvp/members-hub-mvp-PLAN.md`
+- **Status:** In Progress (Phase 0 completed)
+- **Scope:** Modern, performant Members Hub with mock-first approach and PostgreSQL-compatible code
+
+**Completed Phases:**
+
+- **Phase 0: UX Primitives & Foundation (2-3d)** ✅ Completed
+  - Branch: `feature/members-hub-mvp-phase0-ux-primitives`
+  - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase0-PLAN.md`
+  - Summary: Delivered core UI primitives (Drawer, Toast) and hooks (`useUrlState`, `useDrawer`, `useMediaQuery`, `useConfirm`, `useToast`) with tests and environment setup for jest-dom and ESLint browser globals. Builds and API tests passing.
+  - Accomplishments:
+    - Drawer: focus trap, ESC/backdrop close, body scroll lock, portal-friendly
+    - Toast: store-backed notifications, auto-dismiss, queue limit, `aria-live`
+    - Hooks: URL state sync, drawer control, media queries, confirm, toast helpers
+    - Testing/Config: jest-dom matcher types, ESLint DOM globals, Prettier format pass
+    - Verification: `pnpm -r build` passed; `pnpm -C api test` 391 tests passing
+  - Commits: `aaff825` (phase formatting + env updates)
+  - PR: https://github.com/jon-salud/church-mgmt-app/pull/209
+  - Merged: To sprint branch pending review
+
 ### User Preferences Enhancement Sprint (November 2025)
 - **Branch:** `feature/user-preferences-enhancement-main-sprint`
 - **Sprint Plan:** `docs/sprints/user-preferences-enhancement-PLAN.md`

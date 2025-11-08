@@ -148,6 +148,7 @@ Architecture considerations:
 - Event naming convention for instrumentation **[OBS][ARCH]**
 - URL pattern for deep-linked drawer: `/members?memberId=<id>` **[ARCH][UX-SYNC]**
 - Client-side cache for member summaries (stale-while-revalidate) **[PERF][ARCH][REG]**
+- DataStore abstraction for PostgreSQL compatibility (mock mode during development) **[ARCH][REG]**
 
 Acceptance criteria:
 - Primitives pass accessibility audit (focus trap, ARIA roles, ESC close, reduced motion) **[REG]**
@@ -166,7 +167,7 @@ Acceptance criteria:
 - **Results:** Highlights matched term in yellow, sorts by relevance (exact match → partial → contains)
 - **Performance:** ≤500ms after debounce, shows loading spinner in search icon
 - **Empty State:** "No members found. Try a different search or adjust filters."
- - **Architecture Notes:** Server query must support combined search across indexed columns (firstName, lastName, email, phone) **[ARCH][PERF][REG]**; consider composite/GIN index for text search scaling **[DB][PERF]**.
+ - **Architecture Notes:** Server query must support combined search across indexed columns (firstName, lastName, email, phone) **[ARCH][PERF][REG]**; use PostgreSQL GIN index with tsvector for text search scaling **[DB][PERF]**. Mock mode uses simple LIKE queries during development **[ARCH]**.
 
 #### Filter Panel (Priority 1)
 - **Default Filters Visible:**
@@ -182,7 +183,7 @@ Acceptance criteria:
   - URL updates to preserve filter state (shareable/bookmarkable)
   - [Clear All] removes all filters except Campus (preserves user's default campus if set)
 - **Visual Feedback:** Filtered state shows "🔍 Filtered (5 active)" label above table
- - **Architecture Notes:** Normalize filter parameters in API (e.g., `status=member,visitor`) with validation and safe defaults **[ARCH][REG]**; cache filter metadata per `churchId` **[PERF][ARCH]**.
+ - **Architecture Notes:** Normalize filter parameters in API (e.g., `status=member,visitor`) with validation and safe defaults **[ARCH][REG]**; cache filter metadata per `churchId` **[PERF][ARCH]**. Use DataStore abstraction for PostgreSQL compatibility **[ARCH]**.
 
 #### Saved Views (Priority 2)
 - **Location:** Toolbar dropdown, left of Column Picker
@@ -216,7 +217,7 @@ Acceptance criteria:
 - **Sortable Columns:** Name, Status, Last Attendance, Created Date
 - **Fixed Width:** Checkbox (48px), Actions (48px)
 - **Responsive:** Email/Phone hidden on <768px, Name expands full-width
- - **Architecture Notes:** Default sort by lastAttendance; ensure derived value exists (aggregation or materialized field) **[ARCH][DB][PERF][REG]**.
+ - **Architecture Notes:** Default sort by lastAttendance; calculate via service layer during mock development, optimize with PostgreSQL materialized view or computed column post-migration **[ARCH][DB][PERF][REG]**.
 
 #### Row Actions (⋮ Menu)
 - **Primary Actions:**
