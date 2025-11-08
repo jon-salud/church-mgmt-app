@@ -44,12 +44,12 @@ docs/
 │   └── DEMO.md (Demo data and testing scenarios)
 │
 ├── 🛠️ DEVELOPER GUIDES (guides/)
-│   ├── README.md (Index of all developer resources)
 │   ├── CODING_STANDARDS.md (Code style, patterns, and best practices)
 │   ├── DESIGN_SYSTEM.md (UI components, design tokens, visual language)
 │   ├── TECH_STACK.md (Complete technology choices and dependencies)
 │   ├── FLOWBITE_MIGRATION.md (Migration guide from Radix UI to Flowbite)
-│   └── NAVIGATION.md (Application routing and page structure)
+│   ├── NAVIGATION.md (Application routing and page structure)
+│   └── README.md (Index of all developer resources)
 │
 ├── 📚 SOURCE-OF-TRUTH (source-of-truth/)
 │   ├── README.md (Authoritative documentation overview)
@@ -68,8 +68,7 @@ docs/
 │   ├── OBSERVABILITY_METRICS_REFERENCE.md (Metrics catalog and definitions)
 │   ├── OBSERVABILITY_PERFORMANCE.md (Performance optimization guide)
 │   ├── OBSERVABILITY_PRODUCTION_SETUP.md (Production deployment guide)
-│   ├── SPAN_TRACING_GUIDE.md (Distributed tracing patterns)
-│   └── README.md (Quick start for observability)
+│   └── SPAN_TRACING_GUIDE.md (Distributed tracing patterns)
 │
 ├── 📋 SPRINT ARCHIVE (sprints/)
 │   ├── README.md (Index of all completed and current sprints)
@@ -106,6 +105,7 @@ docs/
 4. Check [source-of-truth/DATABASE_SCHEMA.md](./source-of-truth/DATABASE_SCHEMA.md) for data model
 5. Reference [source-of-truth/API_DOCUMENTATION.md](./source-of-truth/API_DOCUMENTATION.md) for endpoints
 6. Follow [SETUP.md](./SETUP.md) to get your environment running
+7. Check [guides/README.md](./guides/README.md) for developer guides index
 
 #### **🎨 Frontend Engineer**
 1. Read [guides/TECH_STACK.md](./guides/TECH_STACK.md) for frontend stack
@@ -114,12 +114,14 @@ docs/
 4. Check [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) Section 2.3 for UI architecture
 5. View [component-theme-preview/index.html](./component-theme-preview/index.html) for visual reference
 6. Reference [SETUP.md](./SETUP.md) to set up development environment
+7. Check [guides/README.md](./guides/README.md) for frontend-specific guides
 
 #### **🎯 Designer / Design Systems**
 1. Review [guides/DESIGN_SYSTEM.md](./guides/DESIGN_SYSTEM.md) for complete design language
 2. Check [guides/FLOWBITE_MIGRATION.md](./guides/FLOWBITE_MIGRATION.md) for component library
 3. View [component-theme-preview/index.html](./component-theme-preview/index.html) for visual audit
 4. Reference [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) Section 2.3 for technical constraints
+5. Check [guides/README.md](./guides/README.md) for design system resources
 
 #### **👤 End User / Church Administrator**
 1. Start with [USER_MANUAL.md](./USER_MANUAL.md) - step-by-step user guide
@@ -131,6 +133,7 @@ docs/
 2. Review [source-of-truth/ARCHITECTURE.md](./source-of-truth/ARCHITECTURE.md) for deployment architecture
 3. Study [observability/README.md](./observability/README.md) for monitoring and observability
 4. Check [observability/OBSERVABILITY_PRODUCTION_SETUP.md](./observability/OBSERVABILITY_PRODUCTION_SETUP.md) for deployment
+5. Reference [SETUP.md](./SETUP.md) for local infrastructure setup
 
 ---
 

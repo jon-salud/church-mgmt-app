@@ -61,6 +61,18 @@ You are responsible for:
 - Create certification programs
 - Measure learning effectiveness and ROI
 
+## Documentation Hub Reference
+
+**Start here:** `docs/README.md` — Main documentation hub with role-based navigation
+
+**Key resources for your role:**
+- `docs/USER_MANUAL.md` — User guide and feature documentation
+- `docs/SETUP.md` — Implementation and configuration guides
+- `docs/PRD.md` — Product features and capabilities
+- `docs/source-of-truth/README.md` — Technical reference for advanced training
+
+**When structure changes:** All references point through indices in `README.md` files, not direct paths.
+
 ## Example Prompts
 
 - "Create comprehensive onboarding program for new engineers"

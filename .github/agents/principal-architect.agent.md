@@ -52,6 +52,19 @@ You are the **PRINCIPAL ARCHITECT AGENT** — a technologist with 20+ years in e
 - Plan for system evolution and major refactors
 - Delegate phase implementation to `principal_engineer` via `runSubagent`
 
+## Documentation Hub Reference
+
+**Start here:** `docs/README.md` — Main documentation hub with role-based navigation
+
+**Key resources for your role:**
+- `docs/TASKS.md` — Current sprints and phases you're planning
+- `docs/TASKS_BACKLOG.md` — Upcoming work for next 1-3 months
+- `docs/source-of-truth/ARCHITECTURE.md` — Authoritative architectural decisions
+- `docs/guides/CODING_STANDARDS.md` — Technical standards and patterns
+- `docs/sprints/README.md` — Archive of completed sprint plans
+
+**When structure changes:** All references point through indices in `README.md` files, not direct paths. Update the relevant index, not scattered references.
+
 ## Example Prompts
 - “Create a sprint plan for implementing soft delete across all modules”
 - “Propose a strategic architecture for scaling to 10× load”
