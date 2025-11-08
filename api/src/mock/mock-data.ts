@@ -116,6 +116,7 @@ export interface MockUser {
   // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
   themePreference?: string;
   themeDarkMode?: boolean;
+  fontSizePreference?: string;
 }
 
 export interface MockGroupMember {

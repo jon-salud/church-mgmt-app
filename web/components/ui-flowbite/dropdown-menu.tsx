@@ -57,7 +57,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
 
   return (
     <DropdownContext.Provider value={{ open: actualOpen, onOpenChange: handleOpenChange }}>
-      <div ref={containerRef} style={{ position: 'relative', display: 'inline-block' }}>
+      <div ref={containerRef} className="relative inline-block">
         {children}
       </div>
     </DropdownContext.Provider>
@@ -106,11 +106,11 @@ const DropdownMenuContent = React.forwardRef<HTMLDivElement, DropdownMenuContent
       <div
         ref={ref}
         className={cn(
-          'z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
+          'absolute z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md',
           'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
           className
         )}
-        style={{ marginTop: `${sideOffset}px` }}
+        style={{ top: '100%', left: 0, marginTop: `${sideOffset}px` }}
         {...props}
       />
     );

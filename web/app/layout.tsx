@@ -5,7 +5,7 @@ import { ServiceWorkerRegister } from '../components/service-worker-register';
 import { ThemeProvider } from '../components/theme-provider';
 import { ThemeApplier } from '../components/theme-applier';
 import { AppLayout } from './app-layout';
-import { getUserTheme } from './actions/theme';
+import { getUserPreferences } from './actions/preferences';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,28 +26,34 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const demoToken = cookieStore.get('demo_token');
   const isAuthenticated = !!(sessionToken || demoToken);
 
-  // Fetch user theme preferences server-side (before hydration)
-  // Use default theme for unauthenticated users
-  const theme = isAuthenticated
-    ? await getUserTheme()
-    : { themePreference: 'original' as const, themeDarkMode: false };
+  // Fetch user preferences server-side (before hydration)
+  // Use defaults for unauthenticated users
+  const preferences = isAuthenticated
+    ? await getUserPreferences()
+    : {
+        themePreference: 'original' as const,
+        themeDarkMode: false,
+        fontSizePreference: '16px' as const,
+      };
 
   return (
-    <html lang="en" suppressHydrationWarning data-theme={theme.themePreference}>
+    <html lang="en" suppressHydrationWarning data-theme={preferences.themePreference}>
       <head>
         {/* Inline script to prevent FOUC (Flash of Unstyled Content) */}
-        {/* This applies the theme before React hydration */}
+        {/* This applies the theme and font size before React hydration */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
                 try {
-                  const theme = '${theme.themePreference}';
+                  const theme = '${preferences.themePreference}';
+                  const fontSize = '${preferences.fontSizePreference}';
                   document.documentElement.setAttribute('data-theme', theme);
+                  document.documentElement.style.setProperty('--base-font-size', fontSize);
                 } catch (e) {
                   // Log error for debugging (safe because it's in try-catch)
                   if (typeof console !== 'undefined') {
-                    console.warn('Failed to apply theme:', e);
+                    console.warn('Failed to apply theme/font size:', e);
                   }
                   // Defaults will apply
                 }
@@ -59,10 +65,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <body className="min-h-screen">
         <ThemeProvider
           attribute="class"
-          defaultTheme={theme.themeDarkMode ? 'dark' : 'light'}
+          defaultTheme={preferences.themeDarkMode ? 'dark' : 'light'}
           enableSystem={false}
         >
-          <ThemeApplier themePreference={theme.themePreference} />
+          <ThemeApplier themePreference={preferences.themePreference} />
           <AppLayout>{children}</AppLayout>
           <ServiceWorkerRegister />
         </ThemeProvider>

@@ -65,6 +65,12 @@ export function Button({ variant = 'default', size = 'default', className = '', 
   const ghostStyles =
     variant === 'ghost' ? 'bg-transparent hover:bg-accent hover:text-accent-foreground' : '';
 
+  // Outline variant needs explicit border and text styling
+  const outlineStyles =
+    variant === 'outline'
+      ? 'border-2 border-input bg-background text-foreground hover:bg-accent hover:text-accent-foreground'
+      : '';
+
   // Outline variant uses Flowbite's outline prop
   const outline = variant === 'outline';
 
@@ -73,7 +79,7 @@ export function Button({ variant = 'default', size = 'default', className = '', 
       color={colorMap[variant]}
       size={sizeMap[size]}
       outline={outline}
-      className={cn(primaryStyles, ghostStyles, className)}
+      className={cn(primaryStyles, ghostStyles, outlineStyles, className)}
       {...(props as FlowbiteButtonProps)}
     />
   );

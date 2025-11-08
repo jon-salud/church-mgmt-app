@@ -52,6 +52,7 @@ export interface UserProps {
   // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
   themePreference?: string;
   themeDarkMode?: boolean;
+  fontSizePreference?: string;
 }
 
 export class User {
@@ -67,6 +68,7 @@ export class User {
   // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
   readonly themePreference?: string;
   readonly themeDarkMode?: boolean;
+  readonly fontSizePreference?: string;
 
   private constructor(props: UserProps) {
     this.id = props.id;
@@ -81,6 +83,7 @@ export class User {
     // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
     this.themePreference = props.themePreference;
     this.themeDarkMode = props.themeDarkMode;
+    this.fontSizePreference = props.fontSizePreference;
   }
 
   private static deepFreezeProfile(profile: UserProfile): Readonly<UserProfile> {

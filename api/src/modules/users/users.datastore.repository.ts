@@ -89,6 +89,7 @@ export class UsersDataStoreRepository implements IUsersRepository {
       deletedAt: profile.deletedAt ? new Date(profile.deletedAt) : undefined,
       themePreference: profile.themePreference,
       themeDarkMode: profile.themeDarkMode,
+      fontSizePreference: profile.fontSizePreference,
     });
   };
 

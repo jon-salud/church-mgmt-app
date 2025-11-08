@@ -1,6 +1,6 @@
 import { IsEnum, IsBoolean, IsOptional } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { ThemePreset } from '../types/theme.types';
+import { ThemePreset, FontSizePreset } from '../types/theme.types';
 
 /**
  * DTO for updating user theme preferences
@@ -24,6 +24,16 @@ export class UpdateThemeDto {
   @IsOptional()
   @IsBoolean({ message: 'themeDarkMode must be a boolean' })
   themeDarkMode?: boolean;
+
+  @ApiProperty({
+    enum: FontSizePreset,
+    description: 'Font size preset',
+    example: '16px',
+    required: false,
+  })
+  @IsOptional()
+  @IsEnum(FontSizePreset, { message: 'Invalid font size preset' })
+  fontSizePreference?: FontSizePreset;
 }
 
 /**
@@ -42,4 +52,11 @@ export class ThemeResponseDto {
     example: false,
   })
   themeDarkMode!: boolean;
+
+  @ApiProperty({
+    enum: FontSizePreset,
+    description: 'Font size preset',
+    example: '16px',
+  })
+  fontSizePreference!: FontSizePreset;
 }

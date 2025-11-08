@@ -136,6 +136,7 @@ interface UserCreateInput {
   // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
   themePreference?: string;
   themeDarkMode?: boolean;
+  fontSizePreference?: string;
 }
 
 interface UserUpdateInput {
@@ -172,6 +173,7 @@ interface UserUpdateInput {
   // Theme Preferences (Phase 1 - User Theme Preferences Sprint)
   themePreference?: string;
   themeDarkMode?: boolean;
+  fontSizePreference?: string;
 }
 
 interface UserDeleteInput {
@@ -981,6 +983,13 @@ export class MockDatabaseService {
     if (typeof input.themeDarkMode === 'boolean' && input.themeDarkMode !== user.themeDarkMode) {
       track('themeDarkMode', user.themeDarkMode ?? null, input.themeDarkMode);
       user.themeDarkMode = input.themeDarkMode;
+    }
+    if (
+      typeof input.fontSizePreference === 'string' &&
+      input.fontSizePreference !== user.fontSizePreference
+    ) {
+      track('fontSizePreference', user.fontSizePreference ?? null, input.fontSizePreference);
+      user.fontSizePreference = input.fontSizePreference;
     }
     if (Object.keys(diff).length > 0) {
       this.createAuditLog({
