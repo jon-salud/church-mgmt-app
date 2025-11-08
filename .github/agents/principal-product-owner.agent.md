@@ -5,7 +5,7 @@ argument-hint: Describe the product task or backlog management need
 tools: ['search', 'runSubagent']
 handoffs:
   - label: Plan Implementation
-    agent: plan
+    agent: principal_architect
     prompt: Create implementation plan for this requirement
   - label: Design Solution
     agent: principal_architect

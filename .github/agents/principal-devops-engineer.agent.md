@@ -5,7 +5,7 @@ argument-hint: Describe the deployment or infrastructure task
 tools: ['search', 'changes']
 handoffs:
   - label: Plan Infrastructure
-    agent: plan
+    agent: principal_architect
     prompt: Create deployment and infrastructure plan
   - label: Consult Architecture
     agent: principal_architect

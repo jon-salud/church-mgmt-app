@@ -5,7 +5,7 @@ argument-hint: Describe the coding task or feature to implement
 tools: ['edit', 'runNotebooks', 'search', 'new', 'runCommands', 'runTasks', 'GitKraken/*', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'memory', 'extensions', 'todos', 'runTests']
 handoffs:
   - label: Review Plan
-    agent: plan
+    agent: principal_architect
     prompt: Create a detailed implementation plan
   - label: Create Tests
     agent: principal_qa_engineer

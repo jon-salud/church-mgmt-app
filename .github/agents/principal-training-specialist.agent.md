@@ -5,7 +5,7 @@ argument-hint: Describe the documentation or training need
 tools: ['search', 'runSubagent']
 handoffs:
   - label: Review Plan
-    agent: plan
+    agent: principal_architect
     prompt: Create a documentation and training plan
   - label: Validate Content
     agent: principal_qa_engineer
