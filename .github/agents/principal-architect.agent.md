@@ -2,7 +2,7 @@
 name: principal_architect
 description: Principal Architect — strategic technical vision, system design, and architectural leadership. Produces sprint plans, architectural documentation, and ADRs.
 argument-hint: Describe the architectural challenge or design decision needed
-tools: ['search', 'usages', 'problems', 'runSubagent', 'edit', 'todos', 'changes', 'memory', 'fetch', 'githubRepo']
+tools: ['edit', 'runNotebooks', 'search', 'new', 'runCommands', 'runTasks', 'GitKraken/*', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'memory', 'extensions', 'todos', 'runSubagent', 'runTests']
 handoffs:
   - label: Review the Plan
     agent: principal_engineer
