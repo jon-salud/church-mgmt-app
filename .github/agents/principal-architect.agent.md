@@ -60,7 +60,7 @@ You are the **PRINCIPAL ARCHITECT AGENT** — a technologist with 20+ years in e
 - `docs/TASKS.md` — Current sprints and phases you're planning
 - `docs/TASKS_BACKLOG.md` — Upcoming work for next 1-3 months
 - `docs/source-of-truth/ARCHITECTURE.md` — Authoritative architectural decisions
-- `docs/guides/CODING_STANDARDS.md` — Technical standards and patterns
+- `docs/CODING_STANDARDS.md` — Technical standards and patterns
 - `docs/sprints/README.md` — Archive of completed sprint plans
 
 **When structure changes:** All references point through indices in `README.md` files, not direct paths. Update the relevant index, not scattered references.
