@@ -51,10 +51,20 @@ export function FontSizeSelector({ value, onChange, previewOnly = false }: FontS
 
     setIsUpdating(true);
     try {
+      // Fetch current theme and dark mode from DOM to prevent overwriting user's theme preferences
+      const currentTheme =
+        (document.documentElement.getAttribute('data-theme') as
+          | 'original'
+          | 'vibrant-blue'
+          | 'teal-accent'
+          | 'warm-accent') || 'original';
+      const currentDarkModeAttr = document.documentElement.getAttribute('data-dark-mode');
+      const currentDarkMode = currentDarkModeAttr === 'true';
+
       // Update the preference via server action
       await updateUserPreferences({
-        themePreference: 'original', // This will be overridden by current theme
-        themeDarkMode: false, // This will be overridden by current dark mode setting
+        themePreference: currentTheme,
+        themeDarkMode: currentDarkMode,
         fontSizePreference: fontSize,
       });
     } catch (error) {
@@ -100,10 +110,13 @@ export function FontSizeSelector({ value, onChange, previewOnly = false }: FontS
             <div className="font-medium leading-tight">Aa</div>
             <div className="mt-1 text-xs opacity-75">{option.label}</div>
             {selectedSize === option.value && (
-              <div
-                className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-primary"
-                aria-hidden="true"
-              />
+              <>
+                <div
+                  className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-primary"
+                  aria-hidden="true"
+                />
+                <span className="sr-only">Selected</span>
+              </>
             )}
           </button>
         ))}

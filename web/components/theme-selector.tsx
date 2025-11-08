@@ -52,7 +52,7 @@ export function ThemeSelector({ value, onChange }: ThemeSelectorProps) {
             key={theme.value}
             onClick={() => onChange(theme.value)}
             className={cn(
-              'flex flex-col items-center justify-center rounded-lg border p-4 text-center transition-all',
+              'relative flex flex-col items-center justify-center rounded-lg border p-4 text-center transition-all',
               'hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
               'disabled:opacity-50 disabled:cursor-not-allowed',
               value === theme.value ? 'border-primary bg-primary/5' : 'border-border bg-card',
@@ -65,10 +65,13 @@ export function ThemeSelector({ value, onChange }: ThemeSelectorProps) {
             <div className="font-medium text-sm">{theme.label}</div>
             <div className="text-xs opacity-75">{theme.description}</div>
             {value === theme.value && (
-              <div
-                className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-primary"
-                aria-hidden="true"
-              />
+              <>
+                <div
+                  className="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-primary"
+                  aria-hidden="true"
+                />
+                <span className="sr-only">Selected</span>
+              </>
             )}
           </button>
         ))}
