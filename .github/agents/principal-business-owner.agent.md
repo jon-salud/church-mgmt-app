@@ -5,7 +5,7 @@ argument-hint: Describe the business task or strategic decision needed
 tools: ['search', 'runSubagent']
 handoffs:
   - label: Plan Implementation
-    agent: plan
+    agent: principal_architect
     prompt: Create strategic implementation plan for this business initiative
   - label: Product Strategy
     agent: principal_product_owner

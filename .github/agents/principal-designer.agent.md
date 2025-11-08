@@ -5,7 +5,7 @@ argument-hint: Describe the UI/UX design task or user experience concern
 tools: ['edit', 'runNotebooks', 'search', 'new', 'runCommands', 'runTasks', 'GitKraken/*', 'runSubagent', 'usages', 'vscodeAPI', 'problems', 'changes', 'testFailure', 'openSimpleBrowser', 'fetch', 'githubRepo', 'memory', 'extensions', 'todos', 'runTests']
 handoffs:
   - label: Plan Design
-    agent: plan
+    agent: principal_architect
     prompt: Create design and UX plan
   - label: Implement Design
     agent: principal_engineer
