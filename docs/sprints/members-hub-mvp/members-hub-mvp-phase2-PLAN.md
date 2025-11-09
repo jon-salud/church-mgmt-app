@@ -1202,12 +1202,33 @@ async bulkAction(dto: BulkActionDto, churchId: string) {
 - [ ] Add progress indicator for large batches
 
 ### Testing
-- [ ] Unit tests for filter logic
-- [ ] Component tests for drawer, modal, bulk actions
-- [ ] E2E test: Filter → view drawer → edit → save
-- [ ] E2E test: Bulk select → bulk action → verify
-- [ ] Accessibility audit (keyboard nav, screen readers)
-- [ ] Performance test: drawer load time, bulk action processing
+- [ ] Unit tests (filters & chips)
+  - Removing a single value from multi-value filters updates only that value (e.g., status: "member,visitor" → remove "member" ⇒ "visitor").
+  - Removing the last remaining value deletes the filter key (e.g., role: "leader" → remove ⇒ role undefined).
+  - `resetFilters()` clears all filter keys and resets `page` to 1 without touching unrelated query params.
+  - `activeFilterCount` counts values correctly (including comma-separated values and boolean flags stored as `'true'`).
+- [ ] Component tests (FilterDropdown & ActiveFilterChips)
+  - Badge displays active count; hidden when count is zero.
+  - Clear All clears all filters and closes popover.
+  - Chips render per individual value (not one chip per key); clicking chip X removes only that value.
+  - Keyboard: Trigger button is focusable; popover closes on `Esc`; actions operable via `Enter`/`Space`.
+- [ ] Component tests (EditMemberModal confirm)
+  - With dirty form, closing triggers non-blocking confirm dialog (via `useConfirm`).
+  - Confirming proceeds with close; cancel keeps modal open; verify focus returns to trigger.
+  - No `window.confirm()` usage; dialog has proper roles/aria and traps focus.
+- [ ] Component tests (MemberDrawer)
+  - Shows skeleton while loading; renders summary quickly; handles error with friendly message.
+  - Ensures required imports (e.g., Button) and safe error handling with unknown errors.
+- [ ] E2E tests
+  - Chips flow: Apply multi-select status, remove a single chip, verify remaining filter and results, Clear All resets state.
+  - Drawer→Edit flow: Open drawer, open edit modal, type changes, attempt close → confirm dialog appears; cancel keeps open; confirm discards changes.
+  - Bulk flow: Select all on page, perform batch operation, show progress and summary; no leaked error details in UI.
+- [ ] Accessibility audit
+  - Popover and dialog semantics: roles, labels, focus management, `Esc` to close.
+  - Chips/buttons are keyboard operable and have accessible names.
+- [ ] Performance tests
+  - Drawer P95 open <200ms on warm path; document progressive loading/caching where needed.
+  - Bulk actions avoid N+1; validate batch endpoints under 100+ members.
 
 ---
 
