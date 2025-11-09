@@ -140,6 +140,22 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui-flowbit
 import { Button } from '@/components/ui-flowbite/button';
 import { FilterIcon } from 'lucide-react';
 
+// Types used by filter UI
+interface FilterState {
+  status?: string;
+  role?: string;
+  lastAttendance?: string;
+  hasEmail?: string;
+  hasPhone?: string;
+  groupsCountMin?: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+  sort?: string;
+}
+
+interface RoleOption { id: string; name: string }
+
 interface FilterDropdownProps {
   filters: FilterState;
   roles: RoleOption[];
@@ -164,7 +180,7 @@ export function FilterDropdown({ filters, roles, onFilterChange, onClearAll }: F
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="md">
+        <Button variant="outline" size="default">
           <FilterIcon className="w-4 h-4 mr-2" />
           Filters
           {hasActiveFilters && (
@@ -439,7 +455,7 @@ const resetFilters = () => updateQuery({
 ```tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { Drawer, DrawerHeader, DrawerBody, DrawerFooter } from '@/components/ui-flowbite/drawer';
 import { fetchMemberById, MemberDetail } from '@/lib/api/members';
 import { useToast } from '@/lib/hooks/use-toast';
@@ -458,28 +474,27 @@ export function MemberDrawer({ memberId, onClose, onEdit }: MemberDrawerProps) {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
 
-  useEffect(() => {
+  const fetchMember = useCallback(async () => {
     if (!memberId) {
       setMember(null);
       return;
     }
+    setLoading(true);
+    try {
+      const data = await fetchMemberById(memberId);
+      setMember(data);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to load member';
+      toast.error(message);
+      onClose();
+    } finally {
+      setLoading(false);
+    }
+  }, [memberId, toast, onClose]);
 
-    const fetchMember = async () => {
-      setLoading(true);
-      try {
-        const data = await fetchMemberById(memberId);
-        setMember(data);
-      } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : 'Failed to load member';
-        toast.error(message);
-        onClose();
-      } finally {
-        setLoading(false);
-      }
-    };
-
+  useEffect(() => {
     fetchMember();
-  }, [memberId, onClose, toast]);
+  }, [fetchMember]);
 
   if (!memberId) return null;
 
@@ -739,8 +754,8 @@ async findById(memberId: string, churchId: string): Promise<MemberDetail> {
     phone: user.profile?.phone,
     address: user.profile?.address,
     status: churchUser.role,
-    roles: [churchUser.role], // TODO: Multi-role support
-    campus: null, // TODO: Add campus field
+    roles: [churchUser.role], // TODO(MEMBERS-123): Multi-role support (see TASKS_BACKLOG.md)
+    campus: null, // TODO(MEMBERS-124): Campus field integration (see TASKS_BACKLOG.md)
     birthday: user.profile?.birthday,
     groups: groups.map(g => ({
       id: g.group.id,
@@ -832,15 +847,15 @@ export function EditMemberModal({ member, onClose, onSuccess }: EditMemberModalP
     }
   };
 
-  const { confirm } = useConfirm();
+  const [confirm, confirmState] = useConfirm();
   const handleClose = async () => {
     if (isDirty) {
       const ok = await confirm({
         title: 'Discard changes?',
-        description: 'You have unsaved changes. This action cannot be undone.',
-        confirmLabel: 'Discard',
-        cancelLabel: 'Keep Editing',
-        tone: 'danger',
+        message: 'You have unsaved changes. This action cannot be undone.',
+        confirmText: 'Discard',
+        cancelText: 'Keep Editing',
+        variant: 'danger',
       });
       if (!ok) return;
     }
@@ -852,6 +867,8 @@ export function EditMemberModal({ member, onClose, onSuccess }: EditMemberModalP
   return (
     <Dialog open={!!member} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl">
+        {/* Render the confirm dialog state somewhere inside the tree */}
+        {/* <ConfirmDialog {...confirmState} /> */}
         <DialogHeader>
           <h2 className="text-xl font-bold">Edit Member</h2>
         </DialogHeader>
@@ -1170,16 +1187,16 @@ class BulkActionParamsDto {
 ```typescript
 async bulkAction(dto: BulkActionDto, churchId: string) {
   const { memberIds, operation, params } = dto;
-
-  // Prefer batch operations to avoid N+1 patterns
   let results: { memberId: string; status: 'success' | 'error'; error?: string }[] = [];
   try {
     switch (operation) {
       case 'addToGroup':
-        results = await this.addMembersToGroup(memberIds, params?.groupId, churchId);
+        if (!params?.addToGroup?.groupId) throw new BadRequestException('groupId required');
+        results = await this.addMembersToGroup(memberIds, params.addToGroup.groupId, churchId);
         break;
       case 'setStatus':
-        results = await this.updateMembersStatus(memberIds, params?.status, churchId);
+        if (!params?.setStatus?.status) throw new BadRequestException('status required');
+        results = await this.updateMembersStatus(memberIds, params.setStatus.status, churchId);
         break;
       case 'archive':
         results = await this.archiveMembers(memberIds, churchId);
@@ -1188,8 +1205,9 @@ async bulkAction(dto: BulkActionDto, churchId: string) {
         results = memberIds.map(memberId => ({ memberId, status: 'error', error: 'Unsupported operation' }));
     }
   } catch (e) {
-    // Sanitize error exposed to clients
-    results = memberIds.map(memberId => ({ memberId, status: 'error', error: 'Bulk action failed' }));
+    // Sanitize error exposed to clients, but log for debugging
+    this.logger.error('Bulk action failed', { error: e, operation, memberIds });
+    results = memberIds.map(memberId => ({ memberId, status: 'error', error: 'Operation failed. Please try again.' }));
   }
   const success = results.filter(r => r.status === 'success').length;
   const failed = results.length - success;
@@ -1274,6 +1292,9 @@ async bulkAction(dto: BulkActionDto, churchId: string) {
  - [ ] Conditional params validation: invalid mixed params rejected; missing required param for operation rejected.
  - [ ] CheckboxGroup/RadioGroup fallback: if design system primitives absent, native inputs still pass a11y tests.
  - [ ] MemberDetail type integrity: API returns shape matching interface (runtime shape test for critical fields).
+ - [ ] Confirm dialog tuple usage: `[confirm, confirmState]` pattern used and dialog rendered.
+ - [ ] Bulk logger: verify error path logs once per bulk action.
+ - [ ] FilterState compile-time coverage: added keys don't break typing.
 
 ---
 
@@ -1338,6 +1359,8 @@ async bulkAction(dto: BulkActionDto, churchId: string) {
 - Key learnings:
 - Performance metrics:
 - Known issues/deferred items:
+  - MEMBERS-123: Multi-role support (currently single role reflected in array)
+  - MEMBERS-124: Campus field integration (currently placeholder null)
 
 ---
 

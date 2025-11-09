@@ -149,3 +149,21 @@ This file contains planned features and technical debt items for the upcoming 1-
 
 **Last Updated:** 6 November 2025
 **Total Backlog Items:** ~15 features and technical debt items
+
+---
+
+## New Deferred Items (Members Hub Follow-ups)
+
+- **MEMBERS-123: Multi-role Member Support**
+  - Current: Single role captured from churchUser.role
+  - Goal: Support multiple roles per member with proper aggregation and display
+  - Impact: Enables richer permission modeling & reporting
+  - Phase: Post-MVP (after members hub stabilization)
+  - Links: Phase 2 plan TODO reference
+
+- **MEMBERS-124: Campus Field Integration**
+  - Current: Placeholder null value in member detail response
+  - Goal: Introduce campus association (multi-campus churches), include in filters & drawer
+  - Data: Requires schema update + DataStore extension
+  - Phase: Post-MVP, can bundle with custom profile fields sprint
+  - Links: Phase 2 plan TODO reference
