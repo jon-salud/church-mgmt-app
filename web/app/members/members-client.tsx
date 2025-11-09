@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { Modal } from '@/components/ui-flowbite/modal';
 import { createMemberAction } from '../actions';
 import { clientApi } from '../../lib/api.client';
+import { FilterDropdown } from '@/components/filters/filter-dropdown';
+import { ActiveFilterChips } from '@/components/filters/active-filter-chips';
+import { useMembersQueryState } from '@/lib/hooks/use-members-query-state';
 
 type RoleOption = {
   id: string;
@@ -25,6 +28,9 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
   const [archivedMembers, setArchivedMembers] = useState<any[]>([]);
   const defaultRoleId = roles.find(role => role.slug === 'member')?.id ?? roles[0]?.id ?? '';
   const isAdmin = me?.user?.roles?.some((role: any) => role.slug === 'admin') ?? false;
+
+  // Filter state from URL
+  const { filters, setFilters, removeFilter, clearFilters } = useMembersQueryState();
 
   const handleRecoverMember = async (memberId: string) => {
     try {
@@ -64,6 +70,23 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
   // Filter members based on archived status
   const displayedMembers = showArchived ? [...members, ...archivedMembers] : members;
 
+  // Apply filters to displayed members
+  const filteredMembers = displayedMembers.filter(member => {
+    // Role filter
+    if (filters.roles.length > 0) {
+      const memberRoleIds = member.roles?.map((role: any) => role.roleId) ?? [];
+      const hasMatchingRole = filters.roles.some(roleId => memberRoleIds.includes(roleId));
+      if (!hasMatchingRole) return false;
+    }
+
+    // Status filter
+    if (filters.status) {
+      if (member.status !== filters.status) return false;
+    }
+
+    return true;
+  });
+
   return (
     <section className="space-y-6">
       <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
@@ -74,6 +97,7 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
           </p>
         </div>
         <div className="flex flex-col gap-2 md:flex-row md:items-center">
+          <FilterDropdown roles={roles} currentFilters={filters} onApply={setFilters} />
           <form className="flex gap-2" action="">
             <label htmlFor="member-search" className="sr-only">
               Search members
@@ -115,6 +139,13 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
         </div>
       </header>
 
+      <ActiveFilterChips
+        filters={filters}
+        roles={roles}
+        onRemove={removeFilter}
+        onClearAll={clearFilters}
+      />
+
       <div className="overflow-x-auto rounded-lg border border-border bg-card shadow-md">
         <table className="min-w-full text-sm" aria-describedby="members-table-caption">
           <caption
@@ -145,7 +176,7 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {displayedMembers.map(member => (
+            {filteredMembers.map(member => (
               <tr key={member.id} className="transition hover:bg-muted/70">
                 <td className="px-4 py-3 font-medium">
                   <Link
