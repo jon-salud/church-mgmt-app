@@ -81,24 +81,35 @@ export function MembersClient({ members, roles, initialQuery, me, groups }: Memb
     setIsProcessing(true);
     try {
       const memberIds = Array.from(selectedIds);
+      let result;
 
-      // TODO: Add actual API calls when backend endpoint is ready
       if (action === 'addToGroup') {
-        // await clientApi.bulkAddMembersToGroup(memberIds, params.groupId);
-        toast.success(`Added ${memberIds.length} member(s) to group`);
+        result = await clientApi.bulkAddMembersToGroup(memberIds, _params.groupId);
       } else if (action === 'setStatus') {
-        // await clientApi.bulkSetMemberStatus(memberIds, params.status);
-        toast.success(`Updated status for ${memberIds.length} member(s)`);
+        result = await clientApi.bulkSetMemberStatus(memberIds, _params.status);
       } else if (action === 'delete') {
-        // await clientApi.bulkDeleteMembers(memberIds);
-        toast.success(`Deleted ${memberIds.length} member(s)`);
+        result = await clientApi.bulkDeleteMembers(memberIds);
       }
 
-      // Clear selection after successful action
+      if (result) {
+        if (result.failed > 0) {
+          toast.error(`Success: ${result.success}, Failed: ${result.failed}`);
+        } else {
+          const actionText =
+            action === 'addToGroup'
+              ? 'added to group'
+              : action === 'setStatus'
+                ? 'status updated'
+                : 'deleted';
+          toast.success(`${result.success} member(s) ${actionText}`);
+        }
+      }
+
+      // Clear selection after action
       setSelectedIds(new Set());
 
-      // Refresh the page to see changes (temporary until we have proper state management)
-      // window.location.reload();
+      // Refresh the page to see changes
+      window.location.reload();
     } catch (error) {
       console.error(`Failed to perform bulk ${action}:`, error);
       toast.error(`Failed to ${action}. Please try again.`);

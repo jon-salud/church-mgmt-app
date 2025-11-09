@@ -148,6 +148,48 @@ export const clientApi = {
       body: JSON.stringify({ emails }),
     });
   },
+  async bulkAddMembersToGroup(memberIds: string[], groupId: string) {
+    return apiFetch<{
+      success: number;
+      failed: number;
+      errors: Array<{ memberId: string; error: string }>;
+    }>('/users/bulk-action', {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'addToGroup',
+        memberIds,
+        params: { groupId },
+      }),
+    });
+  },
+  async bulkSetMemberStatus(memberIds: string[], status: string) {
+    return apiFetch<{
+      success: number;
+      failed: number;
+      errors: Array<{ memberId: string; error: string }>;
+    }>('/users/bulk-action', {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'setStatus',
+        memberIds,
+        params: { status },
+      }),
+    });
+  },
+  async bulkDeleteMembers(memberIds: string[]) {
+    return apiFetch<{
+      success: number;
+      failed: number;
+      errors: Array<{ memberId: string; error: string }>;
+    }>('/users/bulk-action', {
+      method: 'POST',
+      body: JSON.stringify({
+        action: 'delete',
+        memberIds,
+        params: {},
+      }),
+    });
+  },
   // Soft delete admin endpoints
   async hardDeleteUser(userId: string) {
     return apiFetch(`/users/${userId}/hard`, {

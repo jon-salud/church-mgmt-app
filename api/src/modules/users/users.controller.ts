@@ -26,6 +26,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateThemeDto, ThemeResponseDto } from './dto/theme.dto';
+import { BulkActionDto } from './dto/bulk-action.dto';
 import { arrayOfObjectsResponse, objectResponse } from '../../common/openapi/schemas';
 import { SuccessResponseDto } from '../../common/dto/success-response.dto';
 
@@ -106,6 +107,14 @@ export class UsersController {
   bulkImport(@Body() dto: { emails: string[] }, @Req() req: any) {
     this.ensureAdmin(req);
     return this.usersService.bulkImport(dto.emails, req.user.id);
+  }
+
+  @Post('bulk-action')
+  @ApiOperation({ summary: 'Perform bulk action on multiple members' })
+  @ApiCreatedResponse(objectResponse)
+  bulkAction(@Body() dto: BulkActionDto, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.usersService.bulkAction(dto, req.user.id);
   }
 
   @Get('me/theme')
