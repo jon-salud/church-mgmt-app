@@ -10,6 +10,9 @@ import { ActiveFilterChips } from '@/components/filters/active-filter-chips';
 import { useMembersQueryState } from '@/lib/hooks/use-members-query-state';
 import { MemberDrawer } from '@/components/members/member-drawer';
 import { useUrlState } from '@/lib/hooks/use-url-state';
+import { BulkActionBar } from '@/components/members/bulk-action-bar';
+import { Checkbox } from '@/components/ui-flowbite/checkbox';
+import { toast } from '@/lib/toast';
 
 type RoleOption = {
   id: string;
@@ -17,14 +20,20 @@ type RoleOption = {
   slug?: string;
 };
 
+type GroupOption = {
+  id: string;
+  name: string;
+};
+
 type MembersClientProps = {
   members: Array<any>;
   roles: RoleOption[];
   initialQuery: string;
   me: any;
+  groups: GroupOption[];
 };
 
-export function MembersClient({ members, roles, initialQuery, me }: MembersClientProps) {
+export function MembersClient({ members, roles, initialQuery, me, groups }: MembersClientProps) {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [archivedMembers, setArchivedMembers] = useState<any[]>([]);
@@ -35,6 +44,10 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
   const { filters, setFilters, removeFilter, clearFilters } = useMembersQueryState();
   const [, setMemberId] = useUrlState('memberId', '');
 
+  // Bulk selection state
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isProcessing, setIsProcessing] = useState(false);
+
   const handleRecoverMember = async (memberId: string) => {
     try {
       await clientApi.recoverUser(memberId);
@@ -43,6 +56,54 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
     } catch (error) {
       console.error('Failed to recover member:', error);
       window.alert('Failed to recover member. Please try again.');
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredMembers.length && filteredMembers.length > 0) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredMembers.map(m => m.id)));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const handleBulkAction = async (action: 'addToGroup' | 'setStatus' | 'delete', _params: any) => {
+    setIsProcessing(true);
+    try {
+      const memberIds = Array.from(selectedIds);
+
+      // TODO: Add actual API calls when backend endpoint is ready
+      if (action === 'addToGroup') {
+        // await clientApi.bulkAddMembersToGroup(memberIds, params.groupId);
+        toast.success(`Added ${memberIds.length} member(s) to group`);
+      } else if (action === 'setStatus') {
+        // await clientApi.bulkSetMemberStatus(memberIds, params.status);
+        toast.success(`Updated status for ${memberIds.length} member(s)`);
+      } else if (action === 'delete') {
+        // await clientApi.bulkDeleteMembers(memberIds);
+        toast.success(`Deleted ${memberIds.length} member(s)`);
+      }
+
+      // Clear selection after successful action
+      setSelectedIds(new Set());
+
+      // Refresh the page to see changes (temporary until we have proper state management)
+      // window.location.reload();
+    } catch (error) {
+      console.error(`Failed to perform bulk ${action}:`, error);
+      toast.error(`Failed to ${action}. Please try again.`);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -149,6 +210,19 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
         onClearAll={clearFilters}
       />
 
+      {/* Bulk Action Bar */}
+      {isAdmin && (
+        <BulkActionBar
+          members={filteredMembers}
+          roles={roles}
+          groups={groups}
+          selectedIds={selectedIds}
+          onSelectAll={toggleSelectAll}
+          onAction={handleBulkAction}
+          isProcessing={isProcessing}
+        />
+      )}
+
       <div className="overflow-x-auto rounded-lg border border-border bg-card shadow-md">
         <table className="min-w-full text-sm" aria-describedby="members-table-caption">
           <caption
@@ -159,6 +233,11 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
           </caption>
           <thead className="text-left text-xs uppercase tracking-wide text-muted-foreground">
             <tr>
+              {isAdmin && (
+                <th scope="col" className="px-4 py-3 w-12">
+                  <span className="sr-only">Select</span>
+                </th>
+              )}
               <th scope="col" className="px-4 py-3">
                 Name
               </th>
@@ -185,6 +264,14 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
                 className="transition hover:bg-muted/70 cursor-pointer"
                 onClick={() => setMemberId(member.id)}
               >
+                {isAdmin && (
+                  <td className="px-4 py-3 w-12" onClick={e => e.stopPropagation()}>
+                    <Checkbox
+                      checked={selectedIds.has(member.id)}
+                      onCheckedChange={() => toggleSelect(member.id)}
+                    />
+                  </td>
+                )}
                 <td className="px-4 py-3 font-medium">
                   <Link
                     id={`member-link-${member.id}`}

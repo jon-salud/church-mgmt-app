@@ -7,10 +7,13 @@ interface MembersPageProps {
 
 export default async function MembersPage({ searchParams }: MembersPageProps) {
   const query = searchParams?.q || '';
-  const [members, roles, me] = await Promise.all([
+  const [members, roles, me, groups] = await Promise.all([
     api.members(query),
     api.roles(),
     api.currentUser(),
+    api.groups(),
   ]);
-  return <MembersClient members={members} roles={roles} initialQuery={query} me={me} />;
+  return (
+    <MembersClient members={members} roles={roles} initialQuery={query} me={me} groups={groups} />
+  );
 }
