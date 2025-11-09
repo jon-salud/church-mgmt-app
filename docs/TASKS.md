@@ -66,13 +66,14 @@ See [TASKS_COMPLETED.md](./TASKS_COMPLETED.md) for full details on these sprints
    - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase0-PLAN.md`
 
 2. ✅ **Phase 1: Discoverability & Speed**
-   - Status: Completed — PR pending (to be opened) on branch `feature/members-hub-mvp-phase1-discoverability-speed`
+   - Status: Completed — PR #210 merged to `feature/members-hub-mvp-main-sprint`, commit `860c2a9`
    - Delivered: Search (debounced), filters (status, role, lastAttendance, hasEmail, hasPhone, groupsCountMin), sorting (name, email, status, groupsCount, lastAttendance), pagination (page/limit), URL-driven state, backend service/controller/module, unit + component + hook + E2E tests.
    - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase1-PLAN.md`
-   - Commits: (will be listed post-PR)  
+   - Commits: `860c2a9` (code hygiene, typing, sort indicators, Playwright storageState fix)
    - Notes: Drawer detail deferred to Phase 2; performance optimization deferred.
 
-3. ⏳ **Phase 2: Actionability** - Queued
+3. ⏳ **Phase 2: Actionability & Responsive Filters** - Queued
+   - **CRITICAL:** Responsive filter redesign (left sidebar → filter chips + dropdown)
    - Member detail drawer
    - Edit modal
    - Bulk actions

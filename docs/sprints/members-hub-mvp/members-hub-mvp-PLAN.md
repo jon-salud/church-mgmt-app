@@ -118,11 +118,16 @@ Transform the basic member table into a modern, performant hub for church admini
 
 ---
 
-### Phase 2: Actionability (3-4 days)
-**Branch:** `feature/members-hub-mvp-phase2-actionability`  
-**Goal:** Member detail drawer, edit modal, bulk actions
+### Phase 2: Actionability & Responsive Filters (4-5 days)
+**Branch:** `feature/members-hub-mvp-phase2-actionability-responsive`  
+**Goal:** Fix responsive filter UX + enable member detail/edit/bulk actions
 
 **Deliverables:**
+- **PRIORITY 1:** Responsive filter redesign
+  - Replace fixed left sidebar with filter chips + dropdown pattern
+  - Active filters show as removable chips above table
+  - Filters collapse into popover/dropdown on all screen sizes
+  - Mobile-first approach (works ≥375px)
 - Member detail drawer with lazy-loaded tabs
 - Edit member modal with validation
 - Bulk selection (checkbox + keyboard)
@@ -130,6 +135,11 @@ Transform the basic member table into a modern, performant hub for church admini
 - Action confirmation modals
 
 **Acceptance Criteria:**
+- ✅ **Responsive Filters:**
+  - Filters render as chips + dropdown (no fixed sidebar)
+  - Active filters removable via chip X button
+  - Layout works on mobile (375px+), tablet (768px+), desktop (1024px+)
+  - Filter state persists in URL
 - ✅ Drawer loads summary in <200ms
 - ✅ Related data loads progressively
 - ✅ Bulk actions work on 100+ selected
