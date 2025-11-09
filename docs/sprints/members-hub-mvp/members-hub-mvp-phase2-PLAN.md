@@ -135,6 +135,7 @@ All Screen Sizes:
 ```tsx
 'use client';
 
+import { useState, useMemo } from 'react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui-flowbite/popover';
 import { Button } from '@/components/ui-flowbite/button';
 import { FilterIcon } from 'lucide-react';
@@ -148,6 +149,17 @@ interface FilterDropdownProps {
 
 export function FilterDropdown({ filters, roles, onFilterChange, onClearAll }: FilterDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const activeFilterCount = useMemo(() => {
+    const keys: (keyof FilterState)[] = ['status', 'role', 'lastAttendance', 'hasEmail', 'hasPhone', 'groupsCountMin'];
+    return keys.reduce((acc, key) => {
+      const v = filters[key];
+      if (!v) return acc;
+      if (v === 'true') return acc + 1;
+      if (typeof v === 'string' && v.includes(',')) return acc + v.split(',').filter(Boolean).length;
+      return acc + 1;
+    }, 0);
+  }, [filters]);
+  const hasActiveFilters = activeFilterCount > 0;
 
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
@@ -196,6 +208,8 @@ export function FilterDropdown({ filters, roles, onFilterChange, onClearAll }: F
               onChange={(value) => onFilterChange({ lastAttendance: value })}
             />
           </FilterSection>
+
+          {/* NOTE: CheckboxGroup and RadioGroup are assumed to exist in the design system. */}
 
           {/* Contact Info Section */}
           <FilterSection title="Contact Info">
@@ -267,11 +281,11 @@ import { Badge } from '@/components/ui-flowbite/badge';
 
 interface ActiveFilterChipsProps {
   filters: FilterState;
-  onRemove: (key: keyof FilterState) => void;
+  onRemoveValue: (key: keyof FilterState, value?: string) => void;
   onClearAll: () => void;
 }
 
-export function ActiveFilterChips({ filters, onRemove, onClearAll }: ActiveFilterChipsProps) {
+export function ActiveFilterChips({ filters, onRemoveValue, onClearAll }: ActiveFilterChipsProps) {
   const activeFilters = getActiveFilters(filters);
 
   if (activeFilters.length === 0) return null;
@@ -281,13 +295,13 @@ export function ActiveFilterChips({ filters, onRemove, onClearAll }: ActiveFilte
       <span className="text-sm text-gray-600 dark:text-gray-400">Active filters:</span>
       {activeFilters.map((filter) => (
         <Badge
-          key={filter.key}
+          key={filter.id}
           variant="secondary"
           className="flex items-center gap-1 pr-1"
         >
           <span className="text-sm">{filter.label}</span>
           <button
-            onClick={() => onRemove(filter.key as keyof FilterState)}
+            onClick={() => onRemoveValue(filter.key as keyof FilterState, filter.value)}
             className="ml-1 p-0.5 hover:bg-gray-200 dark:hover:bg-gray-700 rounded"
             aria-label={`Remove ${filter.label} filter`}
           >
@@ -306,41 +320,20 @@ export function ActiveFilterChips({ filters, onRemove, onClearAll }: ActiveFilte
 }
 
 function getActiveFilters(filters: FilterState) {
-  const active = [];
-  
+  const active: { id: string; key: keyof FilterState; label: string; value?: string }[] = [];
   if (filters.status) {
-    const statuses = filters.status.split(',');
-    statuses.forEach(s => active.push({ key: 'status', label: `Status: ${s}` }));
+    filters.status.split(',').filter(Boolean).forEach(s => active.push({ id: `status:${s}`, key: 'status', value: s, label: `Status: ${s}` }));
   }
-  
   if (filters.role) {
-    const roles = filters.role.split(',');
-    roles.forEach(r => active.push({ key: 'role', label: `Role: ${r}` }));
+    filters.role.split(',').filter(Boolean).forEach(r => active.push({ id: `role:${r}`, key: 'role', value: r, label: `Role: ${r}` }));
   }
-  
   if (filters.lastAttendance) {
-    const labels = {
-      '30d': 'Last 30 days',
-      '60d': '31-60 days',
-      '90d': '61-90 days',
-      '90+': '90+ days',
-      'never': 'Never attended',
-    };
-    active.push({ key: 'lastAttendance', label: labels[filters.lastAttendance] || filters.lastAttendance });
+    const labels: Record<string, string> = { '30d': 'Last 30 days', '60d': '31-60 days', '90d': '61-90 days', '90+': '90+ days', 'never': 'Never attended' };
+    active.push({ id: `lastAttendance:${filters.lastAttendance}`, key: 'lastAttendance', value: filters.lastAttendance, label: labels[filters.lastAttendance] || filters.lastAttendance });
   }
-  
-  if (filters.hasEmail === 'true') {
-    active.push({ key: 'hasEmail', label: 'Has Email' });
-  }
-  
-  if (filters.hasPhone === 'true') {
-    active.push({ key: 'hasPhone', label: 'Has Phone' });
-  }
-  
-  if (filters.groupsCountMin) {
-    active.push({ key: 'groupsCountMin', label: `Groups ≥ ${filters.groupsCountMin}` });
-  }
-  
+  if (filters.hasEmail === 'true') active.push({ id: 'hasEmail', key: 'hasEmail', label: 'Has Email' });
+  if (filters.hasPhone === 'true') active.push({ id: 'hasPhone', key: 'hasPhone', label: 'Has Phone' });
+  if (filters.groupsCountMin) active.push({ id: 'groupsCountMin', key: 'groupsCountMin', value: filters.groupsCountMin, label: `Groups ≥ ${filters.groupsCountMin}` });
   return active;
 }
 ```
@@ -395,7 +388,18 @@ return (
     {/* Active Filter Chips */}
     <ActiveFilterChips
       filters={queryState}
-      onRemove={(key) => updateQuery({ [key]: undefined, page: 1 })}
+      onRemoveValue={(key, value) => {
+        if (!value) {
+          return updateQuery({ [key]: undefined, page: 1 });
+        }
+        const current = queryState[key];
+        if (typeof current === 'string' && current.includes(',')) {
+          const remaining = current.split(',').filter(v => v !== value);
+          updateQuery({ [key]: remaining.length ? remaining.join(',') : undefined, page: 1 });
+        } else {
+          updateQuery({ [key]: undefined, page: 1 });
+        }
+      }}
       onClearAll={resetFilters}
     />
 
@@ -403,6 +407,20 @@ return (
     {/* ... existing table code ... */}
   </div>
 );
+```
+Add above snippet prerequisites:
+```tsx
+// Helpers
+const activeSort = queryState.sort || 'name:asc';
+const resetFilters = () => updateQuery({
+  status: undefined,
+  role: undefined,
+  lastAttendance: undefined,
+  hasEmail: undefined,
+  hasPhone: undefined,
+  groupsCountMin: undefined,
+  page: 1,
+});
 ```
 
 ---
@@ -647,6 +665,21 @@ async getMember(
   return this.membersService.findById(id, churchId);
 }
 ```
+Improved with explicit user authorization check:
+```typescript
+@Get(':id')
+@UseGuards(AuthGuard)
+async getMember(
+  @Param('id') id: string,
+  @GetChurchId() churchId: string,
+  @CurrentUser() user: User,
+) {
+  if (!this.authService.canAccessChurch(user, churchId)) {
+    throw new ForbiddenException('You do not have access to this church.');
+  }
+  return this.membersService.findById(id, churchId);
+}
+```
 
 **File:** `api/src/modules/members/members.service.ts`
 
@@ -698,7 +731,7 @@ async findById(memberId: string, churchId: string): Promise<MemberDetail> {
     notes: notes.map(n => ({
       id: n.id,
       content: n.content,
-      authorName: n.author?.profile?.firstName + ' ' + n.author?.profile?.lastName,
+      authorName: `${n.author?.profile?.firstName ?? ''} ${n.author?.profile?.lastName ?? ''}`.trim() || 'Unknown',
       createdAt: n.createdAt,
     })),
     createdAt: user.createdAt,
@@ -721,6 +754,7 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogBody, DialogFooter } from '@/components/ui-flowbite/dialog';
 import { Button } from '@/components/ui-flowbite/button';
 import { useToast } from '@/lib/hooks/use-toast';
+import { useConfirm } from '@/lib/hooks/use-confirm';
 import { updateMember, MemberDetail } from '@/lib/api/members';
 
 interface EditMemberModalProps {
@@ -772,10 +806,17 @@ export function EditMemberModal({ member, onClose, onSuccess }: EditMemberModalP
     }
   };
 
-  const handleClose = () => {
+  const { confirm } = useConfirm();
+  const handleClose = async () => {
     if (isDirty) {
-      const confirmed = window.confirm('You have unsaved changes. Are you sure you want to close?');
-      if (!confirmed) return;
+      const ok = await confirm({
+        title: 'Discard changes?',
+        description: 'You have unsaved changes. This action cannot be undone.',
+        confirmLabel: 'Discard',
+        cancelLabel: 'Keep Editing',
+        tone: 'danger',
+      });
+      if (!ok) return;
     }
     onClose();
   };
@@ -1047,7 +1088,8 @@ async bulkAction(
 export class BulkActionDto {
   @IsArray()
   @IsString({ each: true })
-  @MaxLength(500, { each: true })
+  @ArrayMinSize(1)
+  @ArrayMaxSize(500) // Prevent excessively large batches
   memberIds: string[];
 
   @IsEnum(['email', 'addToGroup', 'setStatus', 'archive', 'export'])
@@ -1058,6 +1100,31 @@ export class BulkActionDto {
   params?: Record<string, any>;
 }
 ```
+Improved validated params structure:
+```typescript
+export class BulkActionDto {
+  @IsArray()
+  @IsString({ each: true })
+  @ArrayMinSize(1)
+  @ArrayMaxSize(500)
+  memberIds!: string[];
+
+  @IsEnum(['email','addToGroup','setStatus','archive','export'])
+  operation!: 'email' | 'addToGroup' | 'setStatus' | 'archive' | 'export';
+
+  @ValidateNested()
+  @IsOptional()
+  @Type(() => BulkActionParamsDto)
+  params?: BulkActionParamsDto;
+}
+
+class AddToGroupParamsDto { @IsString() groupId!: string; }
+class SetStatusParamsDto { @IsString() status!: string; }
+class BulkActionParamsDto {
+  @ValidateNested() @IsOptional() @Type(() => AddToGroupParamsDto) addToGroup?: AddToGroupParamsDto;
+  @ValidateNested() @IsOptional() @Type(() => SetStatusParamsDto) setStatus?: SetStatusParamsDto;
+}
+```
 
 **File:** `api/src/modules/members/members.service.ts`
 
@@ -1065,34 +1132,28 @@ export class BulkActionDto {
 async bulkAction(dto: BulkActionDto, churchId: string) {
   const { memberIds, operation, params } = dto;
 
-  const results = [];
-
-  for (const memberId of memberIds) {
-    try {
-      switch (operation) {
-        case 'addToGroup':
-          await this.addMemberToGroup(memberId, params.groupId, churchId);
-          results.push({ memberId, status: 'success' });
-          break;
-        case 'setStatus':
-          await this.updateMemberStatus(memberId, params.status, churchId);
-          results.push({ memberId, status: 'success' });
-          break;
-        case 'archive':
-          await this.archiveMember(memberId, churchId);
-          results.push({ memberId, status: 'success' });
-          break;
-        default:
-          results.push({ memberId, status: 'error', error: 'Unsupported operation' });
-      }
-    } catch (error) {
-      results.push({ memberId, status: 'error', error: error.message });
+  // Prefer batch operations to avoid N+1 patterns
+  let results: { memberId: string; status: 'success' | 'error'; error?: string }[] = [];
+  try {
+    switch (operation) {
+      case 'addToGroup':
+        results = await this.addMembersToGroup(memberIds, params?.groupId, churchId);
+        break;
+      case 'setStatus':
+        results = await this.updateMembersStatus(memberIds, params?.status, churchId);
+        break;
+      case 'archive':
+        results = await this.archiveMembers(memberIds, churchId);
+        break;
+      default:
+        results = memberIds.map(memberId => ({ memberId, status: 'error', error: 'Unsupported operation' }));
     }
+  } catch (e) {
+    // Sanitize error exposed to clients
+    results = memberIds.map(memberId => ({ memberId, status: 'error', error: 'Bulk action failed' }));
   }
-
   const success = results.filter(r => r.status === 'success').length;
-  const failed = results.filter(r => r.status === 'error').length;
-
+  const failed = results.length - success;
   return { success, failed, results };
 }
 ```
