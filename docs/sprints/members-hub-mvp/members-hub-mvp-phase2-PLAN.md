@@ -209,7 +209,13 @@ export function FilterDropdown({ filters, roles, onFilterChange, onClearAll }: F
             />
           </FilterSection>
 
-          {/* NOTE: CheckboxGroup and RadioGroup are assumed to exist in the design system. */}
+            {/* NOTE: CheckboxGroup and RadioGroup are assumed to exist in the design system. */}
+            {/* IMPLEMENTATION NOTE:
+              - If CheckboxGroup and RadioGroup exist, import them from their actual design system path.
+              - If they do NOT exist yet, use native inputs (<input type="checkbox"/>, <input type="radio"/>) or create minimal versions locally.
+              - Update this plan with concrete import paths once confirmed to prevent ambiguity.
+              - Add tests for keyboard navigation and ARIA compliance whether using primitives or custom components.
+            */}
 
           {/* Contact Info Section */}
           <FilterSection title="Contact Info">
@@ -438,6 +444,7 @@ import { Drawer, DrawerHeader, DrawerBody, DrawerFooter } from '@/components/ui-
 import { fetchMemberById, MemberDetail } from '@/lib/api/members';
 import { useToast } from '@/lib/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui-flowbite/button';
 import { Mail, Phone, MapPin, Calendar, Users } from 'lucide-react';
 
 interface MemberDrawerProps {
@@ -462,8 +469,9 @@ export function MemberDrawer({ memberId, onClose, onEdit }: MemberDrawerProps) {
       try {
         const data = await fetchMemberById(memberId);
         setMember(data);
-      } catch (err: any) {
-        toast.error(err?.message || 'Failed to load member');
+      } catch (err: unknown) {
+        const message = err instanceof Error ? err.message : 'Failed to load member';
+        toast.error(message);
         onClose();
       } finally {
         setLoading(false);
@@ -476,7 +484,8 @@ export function MemberDrawer({ memberId, onClose, onEdit }: MemberDrawerProps) {
   if (!memberId) return null;
 
   return (
-    <Drawer open={!!memberId} onClose={onClose} side="right" width="480px">
+    {/* Responsive width ensures drawer never overflows small screens */}
+    <Drawer open={!!memberId} onClose={onClose} side="right" width="min(480px, 90vw)">
       <DrawerHeader>
         {loading ? (
           <Skeleton className="h-8 w-48" />
@@ -667,6 +676,21 @@ async getMember(
 ```
 Improved with explicit user authorization check:
 ```typescript
+import { Controller, Get, UseGuards, Param, ForbiddenException } from '@nestjs/common';
+import { AuthGuard } from '@/common/guards/auth.guard';
+import { CurrentUser } from '@/common/decorators/current-user.decorator';
+import { GetChurchId } from '@/common/decorators/get-church-id.decorator';
+import { User } from '@/types';
+import { MembersService } from './members.service';
+import { AuthService } from '../auth/auth.service';
+
+@Controller('members')
+export class MembersController {
+  constructor(
+    private readonly membersService: MembersService,
+    private readonly authService: AuthService,
+  ) {}
+
 @Get(':id')
 @UseGuards(AuthGuard)
 async getMember(
@@ -678,6 +702,7 @@ async getMember(
     throw new ForbiddenException('You do not have access to this church.');
   }
   return this.membersService.findById(id, churchId);
+}
 }
 ```
 
@@ -799,8 +824,9 @@ export function EditMemberModal({ member, onClose, onSuccess }: EditMemberModalP
       toast.success('Member updated successfully');
       onSuccess();
       onClose();
-    } catch (err: any) {
-      toast.error(err?.message || 'Failed to update member');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Failed to update member';
+      toast.error(message);
     } finally {
       setLoading(false);
     }
@@ -1077,7 +1103,10 @@ export function BulkActionBar({
 async bulkAction(
   @Body() dto: BulkActionDto,
   @GetChurchId() churchId: string,
+  @CurrentUser() user: User,
 ) {
+  // Verify user authorization for bulk operations across provided member IDs
+  await this.authService.verifyBulkMemberAccess(user, churchId, dto.memberIds, dto.operation);
   return this.membersService.bulkAction(dto, churchId);
 }
 ```
@@ -1100,8 +1129,11 @@ export class BulkActionDto {
   params?: Record<string, any>;
 }
 ```
-Improved validated params structure:
+Improved validated params structure (with required imports & nested validation):
 ```typescript
+import { IsArray, IsString, ArrayMinSize, ArrayMaxSize, IsEnum, ValidateNested, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
+
 export class BulkActionDto {
   @IsArray()
   @IsString({ each: true })
@@ -1124,6 +1156,13 @@ class BulkActionParamsDto {
   @ValidateNested() @IsOptional() @Type(() => AddToGroupParamsDto) addToGroup?: AddToGroupParamsDto;
   @ValidateNested() @IsOptional() @Type(() => SetStatusParamsDto) setStatus?: SetStatusParamsDto;
 }
+
+// CONDITIONAL VALIDATION NOTE:
+// Only the nested params object relevant to the chosen operation should be present.
+// Implementation suggestion:
+// - Add a custom validator or service-layer guard to ensure that when operation === 'addToGroup', params.addToGroup is defined
+//   and params.setStatus is undefined, etc. This prevents ambiguous payloads.
+// - Tests should cover: valid addToGroup, valid setStatus, invalid mixed params (both defined), and missing required nested params.
 ```
 
 **File:** `api/src/modules/members/members.service.ts`
@@ -1229,6 +1268,12 @@ async bulkAction(dto: BulkActionDto, churchId: string) {
 - [ ] Performance tests
   - Drawer P95 open <200ms on warm path; document progressive loading/caching where needed.
   - Bulk actions avoid N+1; validate batch endpoints under 100+ members.
+ - [ ] Responsive drawer width does not overflow at 375px (visual + bounding rect assertion).
+ - [ ] Unknown error handling: simulate thrown non-Error (e.g., throw 'fail') and assert fallback message.
+ - [ ] Bulk authorization: unauthorized user attempting bulk action receives 403; verify no partial mutations.
+ - [ ] Conditional params validation: invalid mixed params rejected; missing required param for operation rejected.
+ - [ ] CheckboxGroup/RadioGroup fallback: if design system primitives absent, native inputs still pass a11y tests.
+ - [ ] MemberDetail type integrity: API returns shape matching interface (runtime shape test for critical fields).
 
 ---
 
