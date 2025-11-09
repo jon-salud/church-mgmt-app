@@ -8,6 +8,8 @@ import { clientApi } from '../../lib/api.client';
 import { FilterDropdown } from '@/components/filters/filter-dropdown';
 import { ActiveFilterChips } from '@/components/filters/active-filter-chips';
 import { useMembersQueryState } from '@/lib/hooks/use-members-query-state';
+import { MemberDrawer } from '@/components/members/member-drawer';
+import { useUrlState } from '@/lib/hooks/use-url-state';
 
 type RoleOption = {
   id: string;
@@ -31,6 +33,7 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
 
   // Filter state from URL
   const { filters, setFilters, removeFilter, clearFilters } = useMembersQueryState();
+  const [, setMemberId] = useUrlState('memberId', '');
 
   const handleRecoverMember = async (memberId: string) => {
     try {
@@ -177,12 +180,17 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
           </thead>
           <tbody className="divide-y divide-border">
             {filteredMembers.map(member => (
-              <tr key={member.id} className="transition hover:bg-muted/70">
+              <tr
+                key={member.id}
+                className="transition hover:bg-muted/70 cursor-pointer"
+                onClick={() => setMemberId(member.id)}
+              >
                 <td className="px-4 py-3 font-medium">
                   <Link
                     id={`member-link-${member.id}`}
                     href={`/members/${member.id}`}
                     className="hover:underline"
+                    onClick={e => e.stopPropagation()}
                   >
                     {member.profile?.firstName} {member.profile?.lastName}
                   </Link>
@@ -328,6 +336,8 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
           </div>
         </form>
       </Modal>
+
+      <MemberDrawer />
     </section>
   );
 }
