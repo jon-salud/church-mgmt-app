@@ -14,8 +14,6 @@ export default async function middleware(request: NextRequest) {
   const sessionToken = request.cookies.get('session_token')?.value;
   const demoToken = request.cookies.get('demo_token')?.value;
 
-  // Production: avoid verbose debug logging in middleware
-
   // If has regular session token, allow access
   if (sessionToken) {
     return NextResponse.next();

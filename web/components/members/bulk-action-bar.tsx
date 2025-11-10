@@ -196,7 +196,7 @@ export function BulkActionBar({
         message={confirmState.message}
         confirmText={confirmState.confirmText}
         cancelText={confirmState.cancelText}
-        variant={confirmState.variant === 'info' ? 'default' : confirmState.variant}
+        variant={confirmState.variant === 'info' ? 'default' : confirmState.variant || 'default'}
       />
     </>
   );

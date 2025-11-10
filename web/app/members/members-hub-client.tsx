@@ -16,12 +16,15 @@ interface RoleOption {
 interface MembersHubClientProps {
   roles: RoleOption[];
   me: any;
+  // groups: Array<{ id: string; name: string }>;
 }
 
 export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
   const { queryState, updateQuery, resetFilters, hasActiveFilters } = useMembersQueryState();
   const debouncedSearch = useDebounce(queryState.search, 300);
   const [members, setMembers] = useState<MemberSummary[]>([]);
+  // ...existing code...
+  // If MembersClient is used, pass groups prop as needed
   const [pagination, setPagination] = useState<MemberListResponse['pagination'] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
