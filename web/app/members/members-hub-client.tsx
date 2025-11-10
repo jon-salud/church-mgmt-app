@@ -88,7 +88,8 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
     } finally {
       setLoading(false);
     }
-  }, [queryState, debouncedSearch, toast]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [queryState, debouncedSearch]); // toast is stable, no need to include it
 
   useEffect(() => {
     fetchData();
