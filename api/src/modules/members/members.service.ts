@@ -20,9 +20,10 @@ export class MembersService {
     if (query.search) {
       const searchLower = query.search.toLowerCase();
       filtered = filtered.filter((user: any) => {
-        const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+        const fullName =
+          `${user.profile?.firstName || ''} ${user.profile?.lastName || ''}`.toLowerCase();
         const email = user.primaryEmail?.toLowerCase() || '';
-        const phone = user.phone?.toLowerCase() || '';
+        const phone = user.profile?.phone?.toLowerCase() || '';
         return (
           fullName.includes(searchLower) ||
           email.includes(searchLower) ||
@@ -57,7 +58,9 @@ export class MembersService {
     }
 
     if (query.hasPhone !== undefined) {
-      filtered = filtered.filter((user: any) => (query.hasPhone ? !!user.phone : !user.phone));
+      filtered = filtered.filter((user: any) =>
+        query.hasPhone ? !!user.profile?.phone : !user.profile?.phone
+      );
     }
 
     // Groups count filter
@@ -81,9 +84,8 @@ export class MembersService {
       const daysAgo = buckets[query.lastAttendance];
 
       filtered = filtered.filter((user: any) => {
-        // Get user's last attendance date from their attendance records
-        // For now, we'll use a placeholder - this will be enhanced when we have attendance data
-        const lastAttendanceDate = user.lastAttendance || null;
+        // Get user's last attendance date from their profile
+        const lastAttendanceDate = user.profile?.lastAttendance || null;
 
         if (query.lastAttendance === 'never') {
           return !lastAttendanceDate;
@@ -110,8 +112,8 @@ export class MembersService {
 
         switch (field) {
           case 'name':
-            aVal = `${a.firstName} ${a.lastName}`.toLowerCase();
-            bVal = `${b.firstName} ${b.lastName}`.toLowerCase();
+            aVal = `${a.profile?.firstName || ''} ${a.profile?.lastName || ''}`.toLowerCase();
+            bVal = `${b.profile?.firstName || ''} ${b.profile?.lastName || ''}`.toLowerCase();
             break;
           case 'email':
             aVal = a.primaryEmail?.toLowerCase() || '';
@@ -122,8 +124,8 @@ export class MembersService {
             bVal = b.status?.toLowerCase() || 'active';
             break;
           case 'lastAttendance':
-            aVal = a.lastAttendance ? new Date(a.lastAttendance).getTime() : 0;
-            bVal = b.lastAttendance ? new Date(b.lastAttendance).getTime() : 0;
+            aVal = a.profile?.lastAttendance ? new Date(a.profile.lastAttendance).getTime() : 0;
+            bVal = b.profile?.lastAttendance ? new Date(b.profile.lastAttendance).getTime() : 0;
             break;
           case 'groupsCount':
             aVal = a.groups?.length || 0;
@@ -170,13 +172,13 @@ export class MembersService {
 
       return {
         id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        firstName: user.profile?.firstName || '',
+        lastName: user.profile?.lastName || '',
         email: user.primaryEmail || null,
-        phone: user.phone || null,
+        phone: user.profile?.phone || null,
         status: user.status || 'active',
-        roles: user.roles?.map((r: any) => r.name) || [],
-        lastAttendance: user.lastAttendance || null,
+        roles: user.roles?.map((r: any) => r.role) || [],
+        lastAttendance: user.profile?.lastAttendance || null,
         groupsCount,
         groups: user.groups?.map((g: any) => ({ id: g.id, name: g.name })) || [],
         badges,
