@@ -106,15 +106,18 @@ export function FilterDropdown({
 
       {/* Min Groups */}
       <div>
-        <label className="block text-xs font-medium mb-2">Min Groups</label>
-        <input
-          type="number"
-          min={0}
+        <label className="block text-xs font-medium mb-2">Group Involvement</label>
+        <select
           value={filters.groupsCountMin || ''}
           onChange={e => onFilterChange({ groupsCountMin: e.target.value || undefined })}
           className="w-full rounded border border-border bg-background px-2 py-1.5 text-sm"
-          placeholder="0"
-        />
+        >
+          <option value="">Any</option>
+          <option value="1">At least 1 group</option>
+          <option value="2">At least 2 groups</option>
+          <option value="3">At least 3 groups</option>
+          <option value="5">At least 5 groups</option>
+        </select>
       </div>
 
       {/* Contact Info */}
