@@ -210,7 +210,7 @@ export class MembersService {
     if (query.status) filters.status = query.status.split(',');
     if (query.role) filters.role = query.role.split(',');
     if (query.lastAttendance) filters.lastAttendance = query.lastAttendance;
-    if (query.groupsCountMin !== undefined) filters.groupsCountMin = query.groupsCountMin;
+    if (query.groupId) filters.groupId = query.groupId;
     if (query.hasEmail !== undefined) filters.hasEmail = query.hasEmail;
     if (query.hasPhone !== undefined) filters.hasPhone = query.hasPhone;
 
