@@ -58,8 +58,7 @@ function buildQueryString(params: MemberListParams): string {
   if (params.status) searchParams.set('status', params.status);
   if (params.role) searchParams.set('role', params.role);
   if (params.lastAttendance) searchParams.set('lastAttendance', params.lastAttendance);
-  if (params.groupsCountMin !== undefined)
-    searchParams.set('groupsCountMin', String(params.groupsCountMin));
+  if (params.groupId) searchParams.set('groupId', params.groupId);
   if (params.hasEmail !== undefined) searchParams.set('hasEmail', String(params.hasEmail));
   if (params.hasPhone !== undefined) searchParams.set('hasPhone', String(params.hasPhone));
 
