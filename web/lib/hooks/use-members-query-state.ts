@@ -12,12 +12,18 @@ export interface MembersQueryState {
   limit: number;
   sort: string;
   search: string;
-  status: string;
-  role: string;
+  status: string; // single status value
+  role: string; // comma-separated role ids for compatibility ("" if none)
   lastAttendance: string;
-  groupsCountMin: string;
+  groupId: string;
   hasEmail: string;
   hasPhone: string;
+}
+
+// Legacy filter state expected by existing components (multi-role + status)
+export interface LegacyFilterState {
+  roles: string[];
+  status: string;
 }
 
 const DEFAULT_QUERY_STATE: MembersQueryState = {
@@ -28,7 +34,7 @@ const DEFAULT_QUERY_STATE: MembersQueryState = {
   status: '',
   role: '',
   lastAttendance: '',
-  groupsCountMin: '',
+  groupId: '',
   hasEmail: '',
   hasPhone: '',
 };
@@ -51,7 +57,7 @@ export function useMembersQueryState() {
       status: searchParams.get('status') || DEFAULT_QUERY_STATE.status,
       role: searchParams.get('role') || DEFAULT_QUERY_STATE.role,
       lastAttendance: searchParams.get('lastAttendance') || DEFAULT_QUERY_STATE.lastAttendance,
-      groupsCountMin: searchParams.get('groupsCountMin') || DEFAULT_QUERY_STATE.groupsCountMin,
+      groupId: searchParams.get('groupId') || DEFAULT_QUERY_STATE.groupId,
       hasEmail: searchParams.get('hasEmail') || DEFAULT_QUERY_STATE.hasEmail,
       hasPhone: searchParams.get('hasPhone') || DEFAULT_QUERY_STATE.hasPhone,
     };
@@ -97,16 +103,55 @@ export function useMembersQueryState() {
       queryState.status !== '' ||
       queryState.role !== '' ||
       queryState.lastAttendance !== '' ||
-      queryState.groupsCountMin !== '' ||
+      queryState.groupId !== '' ||
       queryState.hasEmail !== '' ||
       queryState.hasPhone !== ''
     );
   }, [queryState]);
+
+  // Compatibility: expose legacy filter shape (roles[], status)
+  const filters: LegacyFilterState = useMemo(() => {
+    return {
+      roles: queryState.role ? queryState.role.split(',').filter(Boolean) : [],
+      status: queryState.status,
+    };
+  }, [queryState.role, queryState.status]);
+
+  const setFilters = useCallback(
+    (next: LegacyFilterState) => {
+      updateQuery({ role: next.roles.join(','), status: next.status });
+    },
+    [updateQuery]
+  );
+
+  const removeFilter = useCallback(
+    (filterType: 'role' | 'status', value?: string) => {
+      if (filterType === 'status') {
+        updateQuery({ status: '' });
+        return;
+      }
+      if (filterType === 'role') {
+        const current = filters.roles;
+        const remaining = value ? current.filter(r => r !== value) : current;
+        updateQuery({ role: remaining.join(',') });
+      }
+    },
+    [filters.roles, updateQuery]
+  );
+
+  const clearFilters = useCallback(() => {
+    updateQuery({ role: '', status: '' });
+  }, [updateQuery]);
 
   return {
     queryState,
     updateQuery,
     resetFilters,
     hasActiveFilters,
+    // Legacy API (Phase 2 components still consuming this)
+    filters,
+    setFilters,
+    removeFilter,
+    clearFilters,
   };
 }

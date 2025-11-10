@@ -51,12 +51,10 @@ export class MemberListQueryDto {
   @IsIn(['7d', '30d', '60d', '90d', 'never'])
   lastAttendance?: string;
 
-  @ApiPropertyOptional({ description: 'Minimum number of groups' })
+  @ApiPropertyOptional({ description: 'Filter by group ID' })
   @IsOptional()
-  @Type(() => Number)
-  @IsInt()
-  @Min(0)
-  groupsCountMin?: number;
+  @IsString()
+  groupId?: string;
 
   @ApiPropertyOptional({ description: 'Filter members with email', type: Boolean })
   @IsOptional()
@@ -77,4 +75,11 @@ export class MemberListQueryDto {
   })
   @IsBoolean()
   hasPhone?: boolean;
+
+  @ApiPropertyOptional({ description: 'Minimum number of groups', minimum: 0 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  groupsCountMin?: number;
 }

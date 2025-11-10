@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -26,6 +27,7 @@ import { AuthGuard } from '../auth/auth.guard';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateThemeDto, ThemeResponseDto } from './dto/theme.dto';
+import { BulkActionDto } from './dto/bulk-action.dto';
 import { arrayOfObjectsResponse, objectResponse } from '../../common/openapi/schemas';
 import { SuccessResponseDto } from '../../common/dto/success-response.dto';
 
@@ -34,13 +36,15 @@ import { SuccessResponseDto } from '../../common/dto/success-response.dto';
 @ApiBearerAuth()
 @Controller('users')
 export class UsersController {
+  private readonly logger = new Logger(UsersController.name);
+
   constructor(private usersService: UsersService) {}
 
   @Get()
   @ApiOperation({ summary: 'List users' })
   @ApiQuery({ name: 'q', required: false, description: 'Optional search query' })
   @ApiOkResponse(arrayOfObjectsResponse)
-  list(@Query('q') q?: string) {
+  async list(@Query('q') q?: string) {
     return this.usersService.list(q);
   }
 
@@ -106,6 +110,14 @@ export class UsersController {
   bulkImport(@Body() dto: { emails: string[] }, @Req() req: any) {
     this.ensureAdmin(req);
     return this.usersService.bulkImport(dto.emails, req.user.id);
+  }
+
+  @Post('bulk-action')
+  @ApiOperation({ summary: 'Perform bulk action on multiple members' })
+  @ApiCreatedResponse(objectResponse)
+  async bulkAction(@Body() dto: BulkActionDto, @Req() req: any) {
+    this.ensureAdmin(req);
+    return this.usersService.bulkAction(dto, req.user.id);
   }
 
   @Get('me/theme')

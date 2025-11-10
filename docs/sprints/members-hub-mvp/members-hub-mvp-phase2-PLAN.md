@@ -1,9 +1,9 @@
-# Members Hub MVP - Phase 2: Actionability & Responsive Filters
+# Members Hub MVP – Phase 2 PLAN (Actionability & Responsive Filters)
 
 **Phase:** 2 of 5  
 **Branch:** `feature/members-hub-mvp-phase2-actionability-responsive`  
 **Date Created:** 9 November 2025  
-**Status:** Planning  
+**Status:** In Progress / Partially Completed  
 **Sprint Branch:** `feature/members-hub-mvp-main-sprint`
 
 ---
@@ -129,7 +129,7 @@ All Screen Sizes:
 </div>
 ```
 
-#### 1.2 Create Filter Dropdown Component
+#### 1.2 Create Filter Dropdown Component (Planned)
 **New File:** `web/components/filters/filter-dropdown.tsx`
 
 ```tsx
@@ -292,7 +292,7 @@ function FilterSection({ title, children }: { title: string; children: React.Rea
 }
 ```
 
-#### 1.3 Create Active Filter Chips Component
+#### 1.3 Create Active Filter Chips Component (Planned)
 **New File:** `web/components/filters/active-filter-chips.tsx`
 
 ```tsx
@@ -360,7 +360,7 @@ function getActiveFilters(filters: FilterState) {
 }
 ```
 
-#### 1.4 Update Main Client Component
+#### 1.4 Update Main Client Component (Planned)
 **File:** `web/app/members/members-hub-client.tsx`
 
 ```tsx
@@ -447,9 +447,9 @@ const resetFilters = () => updateQuery({
 
 ---
 
-### Part 2: Member Detail Drawer
+### Part 2: Member Detail Drawer (Planned)
 
-#### 2.1 Create Member Drawer Component
+#### 2.1 Create Member Drawer Component (Planned)
 **New File:** `web/components/members/member-drawer.tsx`
 
 ```tsx
@@ -675,7 +675,7 @@ function formatDate(date?: string | null) {
 }
 ```
 
-#### 2.2 Backend: Member Detail Endpoint
+#### 2.2 Backend: Member Detail Endpoint (Planned)
 **File:** `api/src/modules/members/members.controller.ts`
 
 Add endpoint:
@@ -782,9 +782,9 @@ async findById(memberId: string, churchId: string): Promise<MemberDetail> {
 
 ---
 
-### Part 3: Edit Member Modal
+### Part 3: Edit Member Modal (Planned)
 
-#### 3.1 Create Edit Member Modal Component
+#### 3.1 Create Edit Member Modal Component (Planned)
 **New File:** `web/components/members/edit-member-modal.tsx`
 
 ```tsx
@@ -1000,7 +1000,7 @@ export function EditMemberModal({ member, onClose, onSuccess }: EditMemberModalP
 
 ### Part 4: Bulk Actions
 
-#### 4.1 Update Table with Bulk Selection
+#### 4.1 Update Table with Bulk Selection (Implemented – selection logic differs; see Status Column & BulkActionBar)
 **File:** `web/app/members/members-hub-client.tsx`
 
 Add state:
@@ -1046,7 +1046,7 @@ Update table rows:
 </td>
 ```
 
-#### 4.2 Create Bulk Action Bar
+#### 4.2 Create Bulk Action Bar (Implemented – eager param capture race fix)
 **New File:** `web/components/members/bulk-action-bar.tsx`
 
 ```tsx
@@ -1111,7 +1111,7 @@ export function BulkActionBar({
 }
 ```
 
-#### 4.3 Backend: Bulk Actions Endpoint
+#### 4.3 Backend: Bulk Actions Endpoint (Implemented in Users module for now; consolidation to Members module deferred)
 **File:** `api/src/modules/members/members.controller.ts`
 
 ```typescript
@@ -1217,16 +1217,16 @@ async bulkAction(dto: BulkActionDto, churchId: string) {
 
 ---
 
-## 📋 Implementation Checklist
+## 📋 Implementation Checklist (Updated)
 
 ### Part 1: Responsive Filters (Days 1-2)
-- [ ] Remove fixed sidebar layout from `members-hub-client.tsx`
-- [ ] Create `FilterDropdown` component with popover
-- [ ] Create `ActiveFilterChips` component
-- [ ] Update main client to use new filter components
-- [ ] Test responsive behavior (375px, 768px, 1024px, 1440px)
-- [ ] Verify filter state persists in URL
-- [ ] Add keyboard navigation (Tab, Enter, Esc)
+- [ ] Remove fixed sidebar layout from `members-hub-client.tsx` (IN PROGRESS – current sidebar remains)
+- [ ] Create `FilterDropdown` component with popover (PLANNED)
+- [ ] Create `ActiveFilterChips` component (PLANNED)
+- [ ] Update main client to use new filter components (PLANNED)
+- [ ] Test responsive behavior (375px, 768px, 1024px, 1440px) (PLANNED)
+- [ ] Verify filter state persists in URL (BASE HOOK PRESENT)
+- [ ] Add keyboard navigation (Tab, Enter, Esc) (PLANNED)
 
 ### Part 2: Member Drawer (Day 2-3)
 - [ ] Create `member-drawer.tsx` component
@@ -1247,18 +1247,19 @@ async bulkAction(dto: BulkActionDto, churchId: string) {
 - [ ] Test error handling and rollback
 
 ### Part 4: Bulk Actions (Day 4-5)
-- [ ] Add bulk selection state to table
-- [ ] Create `bulk-action-bar.tsx` component
-- [ ] Implement bulk email action (frontend)
-- [ ] Implement bulk add to group action (frontend)
-- [ ] Implement bulk export action (frontend)
-- [ ] Implement bulk archive action (frontend)
-- [ ] Backend: Add `POST /api/members/bulk` endpoint
-- [ ] Backend: Implement batch processing with transactions
-- [ ] Test with 100+ selected members
-- [ ] Add progress indicator for large batches
+- [x] Add bulk selection state / eager param handling (DONE – in existing bulk action bar)
+- [x] Create `bulk-action-bar.tsx` component (DONE)
+- [ ] Implement bulk email action (frontend) (DEFERRED)
+- [x] Implement bulk add to group action (DONE)
+- [x] Implement bulk set status action (DONE)
+- [ ] Implement bulk export action (frontend) (DEFERRED)
+- [ ] Implement bulk archive action (frontend) (DEFERRED)
+- [ ] Backend: Migrate bulk endpoint under Members module (DEFERRED – currently under Users)
+- [ ] Backend: Batch processing improvements & progress indicator (DEFERRED)
+- [x] Test with representative sample (manual 10–20 members) (DONE)
+- [ ] Load test 100+ members (PLANNED)
 
-### Testing
+### Testing (Expanded)
 - [ ] Unit tests (filters & chips)
   - Removing a single value from multi-value filters updates only that value (e.g., status: "member,visitor" → remove "member" ⇒ "visitor").
   - Removing the last remaining value deletes the filter key (e.g., role: "leader" → remove ⇒ role undefined).
@@ -1298,7 +1299,7 @@ async bulkAction(dto: BulkActionDto, churchId: string) {
 
 ---
 
-## ⚠️ Risks & Mitigation
+## ⚠️ Risks & Mitigation (Updated)
 
 | Risk | Impact | Mitigation |
 |------|--------|------------|
@@ -1311,7 +1312,19 @@ async bulkAction(dto: BulkActionDto, churchId: string) {
 
 ---
 
-## 🎯 Acceptance Criteria
+## 🎯 Acceptance Criteria (Phase Split)
+
+### Completed Subset (Bulk Actions & Status Visibility)
+- Bulk actions (addToGroup, setStatus, delete) work and reflect immediately after refresh.
+- Status column present and updates reliably.
+- Repository/service enriched responses with `groups` & `status` preserved.
+- 408 tests passing; build & format checks clean.
+
+### Remaining (Responsive Filters, Drawer, Edit Modal, Extended Bulk Features)
+- Responsive filter redesign (chips + dropdown) functional across breakpoints.
+- Member detail drawer with performant data loading (<200ms P95 open on cached path).
+- Edit modal with validation + dirty-state warning.
+- Additional bulk actions (email/export/archive) implemented with progress UI.
 
 - ✅ **Responsive Filters:**
   - Filters render as chips + dropdown (no fixed sidebar)
@@ -1351,16 +1364,40 @@ async bulkAction(dto: BulkActionDto, churchId: string) {
 
 ---
 
-## Accomplishments
+## Accomplishments (Bulk Actions & Stability Segment)
 
-*(To be filled in after phase completion)*
+**Date:** 10 November 2025  
+**Commits:** `a153b88`, `a06f17b`, `a430d2a`
 
-- Commit hashes:
-- Key learnings:
-- Performance metrics:
-- Known issues/deferred items:
-  - MEMBERS-123: Multi-role support (currently single role reflected in array)
-  - MEMBERS-124: Campus field integration (currently placeholder null)
+### What Was Accomplished
+1. Implemented bulk action endpoint & UI (add group, set status, delete).
+2. Fixed ValidationPipe nested param stripping by relaxing DTO (`params` opaque).
+3. Resolved React race condition in bulk parameter capture (eager finalParams pattern).
+4. Enriched repository → domain mapping to include `groups` & `status` without breaking consumers.
+5. Added Status column + Select All functionality; responsive layout improvements (initial pass; full redesign pending).
+6. All integration tests (408) passing; build stable; ESLint warnings unchanged (tech debt backlog).
+7. Documented plan & moved phase status in `TASKS.md` and `TASKS_COMPLETED.md` per Strict Mode.
+
+### Technical Highlights
+- Graceful response extension strategy avoids hard contract breakage.
+- DTO relaxation minimizes accidental data loss under whitelist mode.
+- Eager param capture pattern documented for future bulk UI patterns.
+
+### Deferred / Remaining Work
+- Responsive filter chip & dropdown system.
+- Member detail drawer and edit modal.
+- Email/export/archive bulk operations with progress batching.
+- Performance/load test for large selection (100+ members).
+- Consolidate bulk endpoint under Members module.
+- Multi-role support (MEMBERS-123) & campus field integration (MEMBERS-124).
+
+### Next Steps
+Transition remaining scope to sub-phase or Phase 3 if re-sequencing improves velocity; update backlog entries accordingly.
+
+---
+
+## Post-Phase Extraction Roadmap (Preserved)
+*(Retained from planning document for upcoming extraction after full feature delivery)*
 
 ---
 

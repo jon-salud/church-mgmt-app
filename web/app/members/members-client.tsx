@@ -5,6 +5,14 @@ import Link from 'next/link';
 import { Modal } from '@/components/ui-flowbite/modal';
 import { createMemberAction } from '../actions';
 import { clientApi } from '../../lib/api.client';
+import { FilterDropdown } from '@/components/filters/filter-dropdown';
+import { ActiveFilterChips } from '@/components/filters/active-filter-chips';
+import { useMembersQueryState } from '@/lib/hooks/use-members-query-state';
+import { MemberDrawer } from '@/components/members/member-drawer';
+import { useUrlState } from '@/lib/hooks/use-url-state';
+import { BulkActionBar } from '@/components/members/bulk-action-bar';
+import { Checkbox } from '@/components/ui-flowbite/checkbox';
+import { toast } from '@/lib/toast';
 
 type RoleOption = {
   id: string;
@@ -12,19 +20,34 @@ type RoleOption = {
   slug?: string;
 };
 
+type GroupOption = {
+  id: string;
+  name: string;
+};
+
 type MembersClientProps = {
   members: Array<any>;
   roles: RoleOption[];
   initialQuery: string;
   me: any;
+  groups: GroupOption[];
 };
 
-export function MembersClient({ members, roles, initialQuery, me }: MembersClientProps) {
+export function MembersClient({ members, roles, initialQuery, me, groups }: MembersClientProps) {
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [archivedMembers, setArchivedMembers] = useState<any[]>([]);
+  const [membersState, setMembersState] = useState<any[]>(members);
   const defaultRoleId = roles.find(role => role.slug === 'member')?.id ?? roles[0]?.id ?? '';
   const isAdmin = me?.user?.roles?.some((role: any) => role.slug === 'admin') ?? false;
+
+  // Filter state from URL
+  const { filters, setFilters, removeFilter, clearFilters } = useMembersQueryState();
+  const [, setMemberId] = useUrlState('memberId', '');
+
+  // Bulk selection state
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleRecoverMember = async (memberId: string) => {
     try {
@@ -34,6 +57,85 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
     } catch (error) {
       console.error('Failed to recover member:', error);
       window.alert('Failed to recover member. Please try again.');
+    }
+  };
+
+  const toggleSelectAll = () => {
+    if (selectedIds.size === filteredMembers.length && filteredMembers.length > 0) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(filteredMembers.map(m => m.id)));
+    }
+  };
+
+  const toggleSelect = (id: string) => {
+    const newSelected = new Set(selectedIds);
+    if (newSelected.has(id)) {
+      newSelected.delete(id);
+    } else {
+      newSelected.add(id);
+    }
+    setSelectedIds(newSelected);
+  };
+
+  const handleBulkAction = async (action: 'addToGroup' | 'setStatus' | 'delete', params: any) => {
+    setIsProcessing(true);
+    try {
+      const memberIds = Array.from(selectedIds);
+      let result;
+
+      if (action === 'addToGroup') {
+        result = await clientApi.bulkAddMembersToGroup(memberIds, params.groupId);
+      } else if (action === 'setStatus') {
+        result = await clientApi.bulkSetMemberStatus(memberIds, params.status);
+      } else if (action === 'delete') {
+        result = await clientApi.bulkDeleteMembers(memberIds);
+      }
+
+      if (result) {
+        if (result.failed > 0) {
+          toast.error(`Success: ${result.success}, Failed: ${result.failed}`);
+        } else {
+          const actionText =
+            action === 'addToGroup'
+              ? 'added to group'
+              : action === 'setStatus'
+                ? 'status updated'
+                : 'deleted';
+          toast.success(`${result.success} member(s) ${actionText}`);
+        }
+      }
+
+      // Apply optimistic UI updates based on action
+      if (action === 'delete') {
+        setMembersState(prev => prev.filter(m => !memberIds.includes(m.id)));
+      } else if (action === 'setStatus') {
+        setMembersState(prev =>
+          prev.map(m => (memberIds.includes(m.id) ? { ...m, status: params.status } : m))
+        );
+      } else if (action === 'addToGroup') {
+        const group = groups.find(g => g.id === params.groupId);
+        if (group) {
+          setMembersState(prev =>
+            prev.map(m => {
+              if (!memberIds.includes(m.id)) return m;
+              const existing = Array.isArray(m.groups) ? m.groups : [];
+              const hasGroup = existing.some((g: any) => g.id === group.id);
+              return hasGroup
+                ? m
+                : { ...m, groups: [...existing, { id: group.id, name: group.name }] };
+            })
+          );
+        }
+      }
+
+      // Clear selection after action
+      setSelectedIds(new Set());
+    } catch (error) {
+      console.error(`Failed to perform bulk ${action}:`, error);
+      toast.error(`Failed to ${action}. Please try again.`);
+    } finally {
+      setIsProcessing(false);
     }
   };
 
@@ -62,7 +164,24 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
   }, [showArchived, isAdmin, archivedMembers.length]);
 
   // Filter members based on archived status
-  const displayedMembers = showArchived ? [...members, ...archivedMembers] : members;
+  const displayedMembers = showArchived ? [...membersState, ...archivedMembers] : membersState;
+
+  // Apply filters to displayed members
+  const filteredMembers = displayedMembers.filter(member => {
+    // Role filter
+    if (filters.roles.length > 0) {
+      const memberRoleIds = member.roles?.map((role: any) => role.roleId) ?? [];
+      const hasMatchingRole = filters.roles.some(roleId => memberRoleIds.includes(roleId));
+      if (!hasMatchingRole) return false;
+    }
+
+    // Status filter
+    if (filters.status) {
+      if (member.status !== filters.status) return false;
+    }
+
+    return true;
+  });
 
   return (
     <section className="space-y-6">
@@ -74,6 +193,7 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
           </p>
         </div>
         <div className="flex flex-col gap-2 md:flex-row md:items-center">
+          <FilterDropdown roles={roles} currentFilters={filters} onApply={setFilters} />
           <form className="flex gap-2" action="">
             <label htmlFor="member-search" className="sr-only">
               Search members
@@ -115,6 +235,25 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
         </div>
       </header>
 
+      <ActiveFilterChips
+        filters={filters}
+        roles={roles}
+        onRemove={removeFilter}
+        onClearAll={clearFilters}
+      />
+
+      {/* Bulk Action Bar */}
+      {isAdmin && (
+        <BulkActionBar
+          members={filteredMembers}
+          groups={groups}
+          selectedIds={selectedIds}
+          onSelectAll={toggleSelectAll}
+          onAction={handleBulkAction}
+          isProcessing={isProcessing}
+        />
+      )}
+
       <div className="overflow-x-auto rounded-lg border border-border bg-card shadow-md">
         <table className="min-w-full text-sm" aria-describedby="members-table-caption">
           <caption
@@ -125,6 +264,17 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
           </caption>
           <thead className="text-left text-xs uppercase tracking-wide text-muted-foreground">
             <tr>
+              {isAdmin && (
+                <th scope="col" className="px-4 py-3 w-12">
+                  <Checkbox
+                    checked={
+                      selectedIds.size === filteredMembers.length && filteredMembers.length > 0
+                    }
+                    onCheckedChange={toggleSelectAll}
+                    aria-label="Select all members"
+                  />
+                </th>
+              )}
               <th scope="col" className="px-4 py-3">
                 Name
               </th>
@@ -137,6 +287,9 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
               <th scope="col" className="px-4 py-3">
                 Groups
               </th>
+              <th scope="col" className="px-4 py-3">
+                Status
+              </th>
               {showArchived && (
                 <th scope="col" className="px-4 py-3">
                   Actions
@@ -145,13 +298,26 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {displayedMembers.map(member => (
-              <tr key={member.id} className="transition hover:bg-muted/70">
+            {filteredMembers.map(member => (
+              <tr
+                key={member.id}
+                className="transition hover:bg-muted/70 cursor-pointer"
+                onClick={() => setMemberId(member.id)}
+              >
+                {isAdmin && (
+                  <td className="px-4 py-3 w-12" onClick={e => e.stopPropagation()}>
+                    <Checkbox
+                      checked={selectedIds.has(member.id)}
+                      onCheckedChange={() => toggleSelect(member.id)}
+                    />
+                  </td>
+                )}
                 <td className="px-4 py-3 font-medium">
                   <Link
                     id={`member-link-${member.id}`}
                     href={`/members/${member.id}`}
                     className="hover:underline"
+                    onClick={e => e.stopPropagation()}
                   >
                     {member.profile?.firstName} {member.profile?.lastName}
                   </Link>
@@ -162,6 +328,9 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
                   {member.groups?.map((g: any) => g.name).join(', ') || '—'}
+                </td>
+                <td className="px-4 py-3 text-muted-foreground capitalize">
+                  {member.status || '—'}
                 </td>
                 {showArchived && (
                   <td className="px-4 py-3">
@@ -297,6 +466,8 @@ export function MembersClient({ members, roles, initialQuery, me }: MembersClien
           </div>
         </form>
       </Modal>
+
+      <MemberDrawer />
     </section>
   );
 }

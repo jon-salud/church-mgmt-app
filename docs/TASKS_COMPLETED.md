@@ -29,6 +29,28 @@ This file contains the complete history of shipped features, sprints, and migrat
   - Commits: `aaff825` (phase formatting + env updates)
   - PR: https://github.com/jon-salud/church-mgmt-app/pull/209
   - Merged: To sprint branch pending review
+- **Phase 2: Actionability & Responsive Design (3-4d)** ✅ Completed
+  - Branch: `feature/members-hub-mvp-phase2-actionability-responsive`
+  - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase2-PLAN.md`
+  - Summary: Implemented bulk member operations (add to group, set status, delete) with responsive design improvements. Fixed critical ValidationPipe param stripping, React state race conditions, and missing data enrichment in API responses. All 408 tests passing with ESLint clean.
+  - Accomplishments:
+    - Bulk Actions: Multi-select with add to group, set status, and bulk delete functionality
+    - UI Components: BulkActionBar component with confirmation dialogs and error handling
+    - Select All: Checkbox to select/deselect all members on current page
+    - Status Column: Added status display to member list table
+    - Responsive Design: Mobile/tablet layout improvements
+    - Bug Fixes: ValidationPipe stripping nested params (removed @ValidateNested), React setState race condition (eager finalParams), missing groups/status in responses (repository-level enrichment)
+    - Backend: Mock GroupsService provider for tests, debug logging, safe field access
+    - TypeScript: Explicit type annotations to fix compilation errors
+    - Code Quality: Fixed empty catch block, removed unused eslint-disable directives
+    - Testing: 408/408 integration tests passing, builds successful
+    - Manual Verification: User confirmed "perfect! groups and statuses are now working!"
+  - Files Modified: `api/src/modules/users/dto/bulk-action.dto.ts`, `api/src/modules/users/users.controller.ts`, `api/src/modules/users/users.service.ts`, `api/src/modules/users/users.datastore.repository.ts`, `api/test/integration/users.service.spec.ts`, `web/components/members/bulk-action-bar.tsx`, `web/app/members/members-client.tsx`
+  - Files Created: `docs/sprints/members-hub-mvp/members-hub-mvp-phase2-PLAN.md`, `PHASE2_MEMBERS_HUB_PR_DESCRIPTION.md`
+  - Commits: `a153b88` (bulk action fixes), `a06f17b` (PR description)
+  - PR: https://github.com/jon-salud/church-mgmt-app/pull/213
+  - Merged: To sprint branch pending review
+
 
 - **Phase 1: Discoverability & Speed (3-4d)** ✅ Completed
   - Branch: `feature/members-hub-mvp-phase1-discoverability-speed`

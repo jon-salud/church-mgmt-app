@@ -9,7 +9,7 @@ export interface DrawerProps {
   onClose: () => void;
   children: ReactNode;
   position?: 'left' | 'right';
-  width?: 'sm' | 'md' | 'lg' | 'xl';
+  width?: 'sm' | 'md' | 'lg' | 'xl' | string;
   closeOnBackdrop?: boolean;
   closeOnEscape?: boolean;
   title?: string;
@@ -109,6 +109,11 @@ export function Drawer({
 
   if (!isOpen) return null;
 
+  // Determine width class or custom width
+  const widthValue =
+    width in widthClasses ? widthClasses[width as keyof typeof widthClasses] : undefined;
+  const customWidthStyle = !(width in widthClasses) ? { width } : undefined;
+
   const drawerContent = (
     <div
       className="fixed inset-0 z-50 flex items-stretch"
@@ -124,11 +129,12 @@ export function Drawer({
         role="dialog"
         aria-modal="true"
         aria-labelledby={title ? titleId.current : undefined}
+        style={customWidthStyle}
         className={cn(
           'fixed top-0 h-full bg-white dark:bg-gray-800 shadow-xl',
           'transform transition-transform duration-300 ease-in-out',
           'flex flex-col',
-          widthClasses[width],
+          widthValue,
           position === 'right' ? 'right-0' : 'left-0',
           isOpen ? 'translate-x-0' : position === 'right' ? 'translate-x-full' : '-translate-x-full'
         )}

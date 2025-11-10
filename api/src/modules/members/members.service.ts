@@ -20,9 +20,10 @@ export class MembersService {
     if (query.search) {
       const searchLower = query.search.toLowerCase();
       filtered = filtered.filter((user: any) => {
-        const fullName = `${user.firstName} ${user.lastName}`.toLowerCase();
+        const fullName =
+          `${user.profile?.firstName || ''} ${user.profile?.lastName || ''}`.toLowerCase();
         const email = user.primaryEmail?.toLowerCase() || '';
-        const phone = user.phone?.toLowerCase() || '';
+        const phone = user.profile?.phone?.toLowerCase() || '';
         return (
           fullName.includes(searchLower) ||
           email.includes(searchLower) ||
@@ -44,7 +45,7 @@ export class MembersService {
     if (query.role) {
       const roleNames = query.role.split(',').map(r => r.trim().toLowerCase());
       filtered = filtered.filter((user: any) => {
-        const userRoles = user.roles?.map((r: any) => r.name.toLowerCase()) || [];
+        const userRoles = user.roles?.map((r: any) => r.role?.toLowerCase() || '') || [];
         return roleNames.some(roleName => userRoles.includes(roleName));
       });
     }
@@ -57,14 +58,24 @@ export class MembersService {
     }
 
     if (query.hasPhone !== undefined) {
-      filtered = filtered.filter((user: any) => (query.hasPhone ? !!user.phone : !user.phone));
+      filtered = filtered.filter((user: any) =>
+        query.hasPhone ? !!user.profile?.phone : !user.profile?.phone
+      );
     }
 
-    // Groups count filter
+    // Group filter
+    if (query.groupId) {
+      filtered = filtered.filter((user: any) => {
+        const userGroupIds = user.groups?.map((g: any) => g.id) || [];
+        return userGroupIds.includes(query.groupId);
+      });
+    }
+
+    // Groups count minimum filter
     if (query.groupsCountMin !== undefined) {
       filtered = filtered.filter((user: any) => {
         const groupsCount = user.groups?.length || 0;
-        return groupsCount >= (query.groupsCountMin ?? 0);
+        return groupsCount >= query.groupsCountMin!;
       });
     }
 
@@ -81,9 +92,8 @@ export class MembersService {
       const daysAgo = buckets[query.lastAttendance];
 
       filtered = filtered.filter((user: any) => {
-        // Get user's last attendance date from their attendance records
-        // For now, we'll use a placeholder - this will be enhanced when we have attendance data
-        const lastAttendanceDate = user.lastAttendance || null;
+        // Get user's last attendance date from their profile
+        const lastAttendanceDate = user.profile?.lastAttendance || null;
 
         if (query.lastAttendance === 'never') {
           return !lastAttendanceDate;
@@ -110,8 +120,8 @@ export class MembersService {
 
         switch (field) {
           case 'name':
-            aVal = `${a.firstName} ${a.lastName}`.toLowerCase();
-            bVal = `${b.firstName} ${b.lastName}`.toLowerCase();
+            aVal = `${a.profile?.firstName || ''} ${a.profile?.lastName || ''}`.toLowerCase();
+            bVal = `${b.profile?.firstName || ''} ${b.profile?.lastName || ''}`.toLowerCase();
             break;
           case 'email':
             aVal = a.primaryEmail?.toLowerCase() || '';
@@ -122,8 +132,8 @@ export class MembersService {
             bVal = b.status?.toLowerCase() || 'active';
             break;
           case 'lastAttendance':
-            aVal = a.lastAttendance ? new Date(a.lastAttendance).getTime() : 0;
-            bVal = b.lastAttendance ? new Date(b.lastAttendance).getTime() : 0;
+            aVal = a.profile?.lastAttendance ? new Date(a.profile.lastAttendance).getTime() : 0;
+            bVal = b.profile?.lastAttendance ? new Date(b.profile.lastAttendance).getTime() : 0;
             break;
           case 'groupsCount':
             aVal = a.groups?.length || 0;
@@ -170,14 +180,15 @@ export class MembersService {
 
       return {
         id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
+        firstName: user.profile?.firstName || '',
+        lastName: user.profile?.lastName || '',
         email: user.primaryEmail || null,
-        phone: user.phone || null,
+        phone: user.profile?.phone || null,
         status: user.status || 'active',
-        roles: user.roles?.map((r: any) => r.name) || [],
-        lastAttendance: user.lastAttendance || null,
+        roles: user.roles?.map((r: any) => r.role) || [],
+        lastAttendance: user.profile?.lastAttendance || null,
         groupsCount,
+        groups: user.groups?.map((g: any) => ({ id: g.id, name: g.name })) || [],
         badges,
         createdAt: user.createdAt || new Date().toISOString(),
       };
@@ -207,9 +218,10 @@ export class MembersService {
     if (query.status) filters.status = query.status.split(',');
     if (query.role) filters.role = query.role.split(',');
     if (query.lastAttendance) filters.lastAttendance = query.lastAttendance;
-    if (query.groupsCountMin !== undefined) filters.groupsCountMin = query.groupsCountMin;
+    if (query.groupId) filters.groupId = query.groupId;
     if (query.hasEmail !== undefined) filters.hasEmail = query.hasEmail;
     if (query.hasPhone !== undefined) filters.hasPhone = query.hasPhone;
+    if (query.groupsCountMin !== undefined) filters.groupsCountMin = query.groupsCountMin;
 
     return filters;
   }

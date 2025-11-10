@@ -102,6 +102,7 @@ export interface MockProfile {
   allergiesOrMedicalNotes?: string;
   parentalConsentOnFile?: boolean;
   pastoralNotes?: string;
+  lastAttendance?: string;
 }
 
 export interface MockUser {
@@ -476,6 +477,7 @@ export const mockUsers: MockUser[] = [
       baptismDate: makeDate(-1000),
       maritalStatus: 'Married',
       occupation: 'Church Administrator',
+      lastAttendance: makeDate(-7),
     },
   },
   {
@@ -501,6 +503,7 @@ export const mockUsers: MockUser[] = [
       backgroundCheckStatus: 'Approved',
       backgroundCheckDate: makeDate(-300),
       onboardingComplete: true,
+      lastAttendance: makeDate(-14),
     },
   },
   {
@@ -522,6 +525,7 @@ export const mockUsers: MockUser[] = [
       joinDate: makeDate(-50),
       baptismDate: makeDate(-50),
       maritalStatus: 'Single',
+      lastAttendance: makeDate(-3),
     },
   },
   {
@@ -539,6 +543,7 @@ export const mockUsers: MockUser[] = [
       householdRole: 'Head',
       notes: 'Sound desk volunteer',
       membershipStatus: 'Attender',
+      lastAttendance: makeDate(-45),
     },
   },
   {
@@ -558,6 +563,7 @@ export const mockUsers: MockUser[] = [
       joinMethod: 'Restoration',
       joinDate: makeDate(-15),
       backgroundCheckStatus: 'Pending',
+      lastAttendance: makeDate(-21),
     },
   },
   {

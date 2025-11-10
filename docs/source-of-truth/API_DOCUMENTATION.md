@@ -186,6 +186,76 @@ between a `User` (the login identity) and a `Profile` (the church-specific membe
 
 ---
 
+#### GET /members
+
+- **Description:** Retrieves a paginated list of church members with advanced filtering, searching, and sorting capabilities.
+- **Query Parameters:**
+  - `page` (number, optional, default: 1): Page number for pagination (minimum: 1).
+  - `limit` (number, optional, default: 25): Items per page (minimum: 1, maximum: 100).
+  - `sort` (string, optional): Sort field and direction (e.g., `"name:asc"`, `"lastAttendance:desc"`).
+    - Available fields: `name`, `email`, `status`, `lastAttendance`, `groupsCount`, `createdAt`
+  - `search` (string, optional): Search query for name, email, or phone.
+  - `status` (string, optional): Filter by status (comma-separated: `member,visitor,inactive`).
+  - `role` (string, optional): Filter by role name (comma-separated, case-insensitive).
+  - `lastAttendance` (string, optional): Filter by last attendance bucket. Allowed values: `7d`, `30d`, `60d`, `90d`, `never`.
+  - `groupId` (string, optional): Filter members by group ID (UUID).
+  - `hasEmail` (boolean, optional): Filter members with email (`true`) or without email (`false`).
+  - `hasPhone` (boolean, optional): Filter members with phone (`true`) or without phone (`false`).
+  - `groupsCountMin` (number, optional): Filter members by minimum number of groups (e.g., `groupsCountMin=2` returns only members in 2 or more groups).
+
+- **Success Response:**
+  - **Code:** `200 OK`
+  - **Content:**
+
+    ```json
+    {
+      "data": [
+        {
+          "id": "user-uuid-1",
+          "firstName": "John",
+          "lastName": "Doe",
+          "email": "john@example.com",
+          "phone": "123-456-7890",
+          "status": "active",
+          "roles": ["member", "leader"],
+          "lastAttendance": "2025-11-08T10:00:00Z",
+          "groupsCount": 2,
+          "groups": [
+            { "id": "group-1", "name": "Small Group" },
+            { "id": "group-2", "name": "Worship Team" }
+          ],
+          "badges": ["Leader", "Active Member"],
+          "createdAt": "2024-01-01T00:00:00Z"
+        }
+      ],
+      "pagination": {
+        "page": 1,
+        "limit": 25,
+        "total": 150,
+        "pages": 6
+      },
+      "meta": {
+        "queryTime": 42,
+        "filters": {
+          "role": ["leader"],
+          "groupsCountMin": 2
+        }
+      }
+    }
+    ```
+
+- **Filter Behavior:**
+  - Multiple filters are combined with AND logic (all must match).
+  - Comma-separated values in `status` and `role` use OR logic (any can match).
+  - `lastAttendance: "never"` returns members with no attendance record.
+  - `groupsCountMin` filters to members with groups count >= the specified value.
+
+- **Error Responses:**
+  - **Code:** `401 Unauthorized` - If the user is not authenticated.
+  - **Code:** `403 Forbidden` - If churchId is not provided in the user context.
+
+---
+
 ### Groups
 
 _(Note: The following endpoints are planned based on the Functional Requirements but are not yet
@@ -1584,6 +1654,6 @@ This section covers endpoints related to managing church events and volunteer co
 
 ---
 
-**Document Version:** 2.1.0  
-**Last Updated:** 5 November 2025  
+**Document Version:** 2.2.0  
+**Last Updated:** 10 November 2025  
 **Status:** Complete

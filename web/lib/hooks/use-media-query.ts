@@ -16,7 +16,13 @@ import { useEffect, useState } from 'react';
  * ```
  */
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(false);
+  const [matches, setMatches] = useState(() => {
+    // Initialize with actual value on client, false on server
+    if (typeof window !== 'undefined') {
+      return window.matchMedia(query).matches;
+    }
+    return false;
+  });
 
   useEffect(() => {
     // Check if window is defined (client-side only)
@@ -25,9 +31,6 @@ export function useMediaQuery(query: string): boolean {
     }
 
     const mediaQuery = window.matchMedia(query);
-
-    // Set initial value
-    setMatches(mediaQuery.matches);
 
     // Create listener
     const handler = (event: MediaQueryList | MediaQueryListEvent) => {

@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// Mark this route as dynamic to allow searchParams
+export const dynamic = 'force-dynamic';
+
 const API_BASE =
   process.env.API_BASE_URL ||
   process.env.NEXT_PUBLIC_API_BASE_URL ||

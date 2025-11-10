@@ -3,6 +3,7 @@ import { IUsersRepository, USER_REPOSITORY } from './users.repository.interface'
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UpdateThemeDto } from './dto/theme.dto';
+import { BulkActionDto, BulkActionType, BulkActionResult } from './dto/bulk-action.dto';
 import { User } from '../../domain/entities/User';
 import { UserId } from '../../domain/value-objects/UserId';
 import { Email } from '../../domain/value-objects/Email';
@@ -13,14 +14,24 @@ import {
   isValidThemePreset,
   isValidFontSizePreset,
 } from './types/theme.types';
+import { GroupsService } from '../groups/groups.service';
 
 @Injectable()
 export class UsersService {
-  constructor(@Inject(USER_REPOSITORY) private readonly repo: IUsersRepository) {}
+  constructor(
+    @Inject(USER_REPOSITORY) private readonly repo: IUsersRepository,
+    @Inject(GroupsService) private readonly groupsService: GroupsService
+  ) {}
 
   async list(q?: string) {
     const users = await this.repo.listUsers(q);
-    return users.map(user => this.toUserResponse(user));
+    return users.map(user => {
+      const base = this.toUserResponse(user);
+      if ((user as unknown as { groups?: unknown[] }).groups) {
+        return { ...base, groups: (user as unknown as { groups: unknown[] }).groups };
+      }
+      return base;
+    });
   }
 
   async get(id: string) {
@@ -100,6 +111,63 @@ export class UsersService {
 
     // Use the invitations service to send bulk invitations
     return this.repo.bulkCreateInvitations(user.churchId, emails, undefined, actorId, 'member');
+  }
+
+  async bulkAction(dto: BulkActionDto, actorUserId: string): Promise<BulkActionResult> {
+    const result: BulkActionResult = {
+      success: 0,
+      failed: 0,
+      errors: [],
+    };
+
+    for (const memberId of dto.memberIds) {
+      try {
+        switch (dto.action) {
+          case BulkActionType.ADD_TO_GROUP: {
+            if (!dto.params || !('groupId' in dto.params)) {
+              throw new Error('groupId is required for addToGroup action');
+            }
+            await this.groupsService.addMember(
+              dto.params.groupId,
+              { userId: memberId, role: 'Member' },
+              actorUserId
+            );
+            break;
+          }
+          case BulkActionType.SET_STATUS: {
+            if (!dto.params || !('status' in dto.params)) {
+              throw new Error('status is required for setStatus action');
+            }
+            const userId = UserId.create(memberId);
+            const actorId = UserId.create(actorUserId);
+            const status = dto.params.status as 'active' | 'invited';
+            await this.repo.updateUser(userId, {
+              status,
+              actorUserId: actorId,
+            });
+            break;
+          }
+          case BulkActionType.DELETE: {
+            const deleteUserId = UserId.create(memberId);
+            const deleteActorId = UserId.create(actorUserId);
+            await this.repo.deleteUser(deleteUserId, { actorUserId: deleteActorId });
+            break;
+          }
+          default:
+            throw new Error(`Unknown action: ${dto.action}`);
+        }
+
+        result.success++;
+      } catch (error) {
+        result.failed++;
+        result.errors.push({
+          memberId,
+          error: error instanceof Error ? error.message : 'Unknown error',
+        });
+      }
+    }
+
+    return result;
   }
 
   /**

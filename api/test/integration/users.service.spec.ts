@@ -10,6 +10,7 @@ import { Email } from '../../src/domain/value-objects/Email';
 import { ChurchId } from '../../src/domain/value-objects/ChurchId';
 import { TestDatabase } from '../support';
 import { DomainMappers } from '../support/utils/domain-mappers';
+import { GroupsService } from '../../src/modules/groups/groups.service';
 
 describe('UsersService (Integration)', () => {
   let service: UsersService;
@@ -105,6 +106,12 @@ describe('UsersService (Integration)', () => {
         {
           provide: USER_REPOSITORY,
           useValue: usersRepository,
+        },
+        {
+          provide: GroupsService,
+          useValue: {
+            addMember: async () => ({ success: true }),
+          },
         },
       ],
     }).compile();

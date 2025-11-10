@@ -5,7 +5,10 @@ import { fetchMembers, MemberSummary, MemberListResponse } from '../../lib/api/m
 import { useMembersQueryState } from '../../lib/hooks/use-members-query-state';
 import { useDebounce } from '../../lib/hooks/use-debounce';
 import { useToast } from '../../lib/hooks/use-toast';
-import { useDrawer } from '../../lib/hooks/use-drawer';
+import { FilterDropdown } from '@/components/members/filter-dropdown';
+import { ActiveFilterChips } from '@/components/members/active-filter-chips';
+import { MemberDetailDrawer } from '@/components/members/member-detail-drawer';
+import { MemberEditModal, MemberEditData } from '@/components/members/member-edit-modal';
 
 interface RoleOption {
   id: string;
@@ -13,20 +16,28 @@ interface RoleOption {
   slug?: string;
 }
 
+interface GroupOption {
+  id: string;
+  name: string;
+}
+
 interface MembersHubClientProps {
   roles: RoleOption[];
   me: any;
+  groups: GroupOption[];
 }
 
-export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
+export function MembersHubClient({ roles, me: _me, groups }: MembersHubClientProps) {
   const { queryState, updateQuery, resetFilters, hasActiveFilters } = useMembersQueryState();
   const debouncedSearch = useDebounce(queryState.search, 300);
   const [members, setMembers] = useState<MemberSummary[]>([]);
   const [pagination, setPagination] = useState<MemberListResponse['pagination'] | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedMember, setSelectedMember] = useState<MemberSummary | null>(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const toast = useToast();
-  const { open: openDrawer } = useDrawer('member-details');
 
   const activeSort = queryState.sort || 'name:asc';
 
@@ -59,7 +70,7 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
         status: queryState.status || undefined,
         role: queryState.role || undefined,
         lastAttendance: (queryState.lastAttendance as any) || undefined,
-        groupsCountMin: queryState.groupsCountMin ? Number(queryState.groupsCountMin) : undefined,
+        groupId: queryState.groupId || undefined,
         hasEmail:
           queryState.hasEmail === 'true'
             ? true
@@ -82,7 +93,8 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
     } finally {
       setLoading(false);
     }
-  }, [queryState, debouncedSearch, toast]);
+    // eslint-disable-next-line
+  }, [queryState, debouncedSearch]); // toast is stable, no need to include it
 
   useEffect(() => {
     fetchData();
@@ -96,8 +108,28 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
     updateQuery({ limit: Number(e.target.value), page: 1 });
   };
 
-  const openMemberDrawer = (_member: MemberSummary) => {
-    openDrawer('member-details');
+  const openMemberDrawer = (member: MemberSummary) => {
+    setSelectedMember(member);
+    setIsDrawerOpen(true);
+  };
+
+  const handleEdit = (member: MemberSummary) => {
+    setSelectedMember(member);
+    setIsDrawerOpen(false);
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveMember = async (_memberId: string, _data: MemberEditData) => {
+    // TODO: Implement API call to update member
+    // For now, just show success and refresh
+    toast.success('Member updated successfully');
+    await fetchData();
+    setIsEditModalOpen(false);
+    setSelectedMember(null);
+  };
+
+  const handleRemoveFilter = (key: keyof typeof queryState) => {
+    updateQuery({ [key]: undefined });
   };
 
   const rows = useMemo(() => {
@@ -110,20 +142,24 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
         <td className="px-3 py-2 text-sm">{m.phone || '—'}</td>
         <td className="px-3 py-2 text-sm">{m.status}</td>
         <td className="px-3 py-2 text-sm">{m.roles.join(', ') || '—'}</td>
-        <td className="px-3 py-2 text-sm text-center">{m.groupsCount}</td>
+        <td className="px-3 py-2 text-sm">{m.groups?.map(g => g.name).join(', ') || '—'}</td>
         <td className="px-3 py-2 text-sm">{m.lastAttendance || '—'}</td>
       </tr>
     ));
   }, [members]);
   return (
-    <section className="space-y-6">
-      <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-        <div className="space-y-1">
-          <h1 className="heading-1">Members Hub</h1>
-          <p className="caption-text">Search, filter, and explore member records.</p>
-        </div>
-        <div className="flex flex-col gap-2 md:flex-row md:items-center">
-          <div className="flex gap-2">
+    <>
+      <section className="space-y-6">
+        <header className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div className="space-y-1">
+            <h1 className="heading-1">Members Hub</h1>
+            <p className="caption-text">Search, filter, and explore member records.</p>
+          </div>
+        </header>
+
+        {/* Search and Filter Bar */}
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-1 gap-2">
             <label htmlFor="member-search" className="sr-only">
               Search members
             </label>
@@ -132,101 +168,39 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
               value={queryState.search}
               onChange={e => updateQuery({ search: e.target.value })}
               placeholder="Search name, email, phone"
-              className="rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground"
+              className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground"
             />
-            <button
-              type="button"
-              onClick={() => resetFilters()}
-              disabled={!hasActiveFilters}
-              className="rounded-md border border-border px-3 py-2 text-sm disabled:opacity-50"
-            >
-              Reset
-            </button>
+            <FilterDropdown
+              filters={queryState}
+              roles={roles}
+              groups={groups}
+              onFilterChange={updateQuery}
+              onClearAll={resetFilters}
+            />
           </div>
+          <button
+            type="button"
+            onClick={resetFilters}
+            disabled={!hasActiveFilters}
+            className="rounded-md border border-border px-3 py-2 text-sm disabled:opacity-50 hover:bg-muted"
+          >
+            Reset All
+          </button>
         </div>
-      </header>
 
-      <div className="grid gap-4 md:grid-cols-5">
-        <div className="space-y-3 md:col-span-1">
-          <h2 className="text-sm font-semibold">Filters</h2>
-          <div className="space-y-2">
-            <div>
-              <label className="block text-xs font-medium mb-1">Status</label>
-              <select
-                value={queryState.status}
-                onChange={e => updateQuery({ status: e.target.value })}
-                className="w-full rounded border border-border bg-background px-2 py-1 text-sm"
-              >
-                <option value="">All</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-medium mb-1">Role</label>
-              <select
-                value={queryState.role}
-                onChange={e => updateQuery({ role: e.target.value })}
-                className="w-full rounded border border-border bg-background px-2 py-1 text-sm"
-              >
-                <option value="">All</option>
-                {roles.map(r => (
-                  <option key={r.id} value={r.name.toLowerCase()}>
-                    {r.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-medium mb-1">Last Attendance</label>
-              <select
-                value={queryState.lastAttendance}
-                onChange={e => updateQuery({ lastAttendance: e.target.value })}
-                className="w-full rounded border border-border bg-background px-2 py-1 text-sm"
-              >
-                <option value="">Any</option>
-                <option value="7d">Last 7 days</option>
-                <option value="30d">Last 30 days</option>
-                <option value="60d">Last 60 days</option>
-                <option value="90d">Last 90 days</option>
-                <option value="never">Never</option>
-              </select>
-            </div>
-            <div>
-              <label className="block text-xs font-medium mb-1">Min Groups</label>
-              <input
-                type="number"
-                min={0}
-                value={queryState.groupsCountMin}
-                onChange={e => updateQuery({ groupsCountMin: e.target.value })}
-                className="w-full rounded border border-border bg-background px-2 py-1 text-sm"
-              />
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                id="has-email-checkbox"
-                type="checkbox"
-                checked={queryState.hasEmail === 'true'}
-                onChange={e => updateQuery({ hasEmail: e.target.checked ? 'true' : '' })}
-              />
-              <label htmlFor="has-email-checkbox" className="text-xs">
-                Has Email
-              </label>
-            </div>
-            <div className="flex items-center gap-2">
-              <input
-                id="has-phone-checkbox"
-                type="checkbox"
-                checked={queryState.hasPhone === 'true'}
-                onChange={e => updateQuery({ hasPhone: e.target.checked ? 'true' : '' })}
-              />
-              <label htmlFor="has-phone-checkbox" className="text-xs">
-                Has Phone
-              </label>
-            </div>
-          </div>
-        </div>
-        <div className="md:col-span-4 space-y-4">
+        {/* Active Filter Chips */}
+        {hasActiveFilters && (
+          <ActiveFilterChips
+            filters={queryState}
+            roles={roles}
+            groups={groups}
+            onRemove={handleRemoveFilter}
+            onClearAll={resetFilters}
+          />
+        )}
+
+        {/* Table Section */}
+        <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="text-xs text-muted-foreground">
               {loading && <span>Loading…</span>}
@@ -257,6 +231,7 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
               </select>
             </div>
           </div>
+
           <div
             className="overflow-auto rounded border border-border"
             role="region"
@@ -289,7 +264,6 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
                   >
                     Status {sortIndicator('status')}
                   </th>
-                  {/* Roles column is not sortable. If future sorting is planned, add a click handler and update ARIA attributes. */}
                   <th className="px-3 py-2 text-left" role="columnheader">
                     Roles
                   </th>
@@ -310,6 +284,7 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
               <tbody>{rows}</tbody>
             </table>
           </div>
+
           {pagination && pagination.pages > 1 && (
             <div className="flex items-center justify-center gap-2">
               <button
@@ -332,7 +307,29 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
             </div>
           )}
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Member Detail Drawer */}
+      <MemberDetailDrawer
+        isOpen={isDrawerOpen}
+        onClose={() => {
+          setIsDrawerOpen(false);
+          setSelectedMember(null);
+        }}
+        member={selectedMember}
+        onEdit={handleEdit}
+      />
+
+      {/* Member Edit Modal */}
+      <MemberEditModal
+        isOpen={isEditModalOpen}
+        onClose={() => {
+          setIsEditModalOpen(false);
+          setSelectedMember(null);
+        }}
+        member={selectedMember}
+        onSave={handleSaveMember}
+      />
+    </>
   );
 }

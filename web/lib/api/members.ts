@@ -13,6 +13,7 @@ export interface MemberSummary {
   roles: string[];
   lastAttendance: string | null;
   groupsCount: number;
+  groups: Array<{ id: string; name: string }>;
   badges: string[];
   createdAt: string;
 }
@@ -25,7 +26,7 @@ export interface MemberListParams {
   status?: string;
   role?: string;
   lastAttendance?: '7d' | '30d' | '60d' | '90d' | 'never';
-  groupsCountMin?: number;
+  groupId?: string;
   hasEmail?: boolean;
   hasPhone?: boolean;
 }
@@ -57,8 +58,7 @@ function buildQueryString(params: MemberListParams): string {
   if (params.status) searchParams.set('status', params.status);
   if (params.role) searchParams.set('role', params.role);
   if (params.lastAttendance) searchParams.set('lastAttendance', params.lastAttendance);
-  if (params.groupsCountMin !== undefined)
-    searchParams.set('groupsCountMin', String(params.groupsCountMin));
+  if (params.groupId) searchParams.set('groupId', params.groupId);
   if (params.hasEmail !== undefined) searchParams.set('hasEmail', String(params.hasEmail));
   if (params.hasPhone !== undefined) searchParams.set('hasPhone', String(params.hasPhone));
 
