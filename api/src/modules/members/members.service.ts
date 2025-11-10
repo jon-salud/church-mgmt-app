@@ -178,6 +178,7 @@ export class MembersService {
         roles: user.roles?.map((r: any) => r.name) || [],
         lastAttendance: user.lastAttendance || null,
         groupsCount,
+        groups: user.groups?.map((g: any) => ({ id: g.id, name: g.name })) || [],
         badges,
         createdAt: user.createdAt || new Date().toISOString(),
       };

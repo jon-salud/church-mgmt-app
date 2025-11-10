@@ -3,9 +3,12 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 
+// Type alias for native DOM Element
+type DOMElement = Element;
+
 interface PortalProps {
   children: ReactNode;
-  container?: Element | null;
+  container?: DOMElement | null;
 }
 
 /**

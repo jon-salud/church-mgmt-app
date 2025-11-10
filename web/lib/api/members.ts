@@ -13,6 +13,7 @@ export interface MemberSummary {
   roles: string[];
   lastAttendance: string | null;
   groupsCount: number;
+  groups: Array<{ id: string; name: string }>;
   badges: string[];
   createdAt: string;
 }

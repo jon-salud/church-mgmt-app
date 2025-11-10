@@ -40,6 +40,13 @@ export class MembersController {
               roles: { type: 'array', items: { type: 'string' } },
               lastAttendance: { type: 'string', nullable: true },
               groupsCount: { type: 'number' },
+              groups: {
+                type: 'array',
+                items: {
+                  type: 'object',
+                  properties: { id: { type: 'string' }, name: { type: 'string' } },
+                },
+              },
               badges: { type: 'array', items: { type: 'string' } },
               createdAt: { type: 'string' },
             },

@@ -88,7 +88,7 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
     } finally {
       setLoading(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line
   }, [queryState, debouncedSearch]); // toast is stable, no need to include it
 
   useEffect(() => {
@@ -137,7 +137,7 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
         <td className="px-3 py-2 text-sm">{m.phone || '—'}</td>
         <td className="px-3 py-2 text-sm">{m.status}</td>
         <td className="px-3 py-2 text-sm">{m.roles.join(', ') || '—'}</td>
-        <td className="px-3 py-2 text-sm text-center">{m.groupsCount}</td>
+        <td className="px-3 py-2 text-sm">{m.groups?.map(g => g.name).join(', ') || '—'}</td>
         <td className="px-3 py-2 text-sm">{m.lastAttendance || '—'}</td>
       </tr>
     ));
