@@ -52,6 +52,15 @@ This file contains the complete history of shipped features, sprints, and migrat
   - Merged: To sprint branch pending review
 
 
+- **Phase 1: Discoverability & Speed (3-4d)** ✅ Completed
+  - Branch: `feature/members-hub-mvp-phase1-discoverability-speed`
+  - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase1-PLAN.md`
+  - Summary: Implemented end-to-end member discoverability: debounced search, multi-criteria filters (status, role, lastAttendance presets, hasEmail/hasPhone, groupsCountMin), sorting (name, email, status, groupsCount, lastAttendance), pagination with URL-driven state, and complete backend list API. Added unit tests for service filters/sorting, component and hook tests, and an E2E test covering the discoverability flow. Next: Phase 2 Drawer details.
+  - Files: Backend DTO/types/service/controller/module wiring; Frontend API proxy, fetch helper, hooks, MembersHubClient table UI; tests across layers.
+  - Verification: `pnpm -r build` green; API/unit tests pass; Next.js build warning acceptable (dynamic search params usage).
+  - Commits: (to be filled after PR merge)
+  - PR: (to be created) → target `feature/members-hub-mvp-main-sprint`
+
 ### User Preferences Enhancement Sprint (November 2025)
 - **Branch:** `feature/user-preferences-enhancement-main-sprint`
 - **Sprint Plan:** `docs/sprints/user-preferences-enhancement-PLAN.md`
