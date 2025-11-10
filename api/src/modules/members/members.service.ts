@@ -45,7 +45,7 @@ export class MembersService {
     if (query.role) {
       const roleNames = query.role.split(',').map(r => r.trim().toLowerCase());
       filtered = filtered.filter((user: any) => {
-        const userRoles = user.roles?.map((r: any) => r.name.toLowerCase()) || [];
+        const userRoles = user.roles?.map((r: any) => r.role?.toLowerCase() || '') || [];
         return roleNames.some(roleName => userRoles.includes(roleName));
       });
     }
