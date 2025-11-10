@@ -8,7 +8,7 @@ interface FilterState {
   lastAttendance?: string;
   hasEmail?: string;
   hasPhone?: string;
-  groupsCountMin?: string;
+  groupId?: string;
 }
 
 interface RoleOption {
@@ -16,9 +16,15 @@ interface RoleOption {
   name: string;
 }
 
+interface GroupOption {
+  id: string;
+  name: string;
+}
+
 interface ActiveFilterChipsProps {
   filters: FilterState;
   roles: RoleOption[];
+  groups: GroupOption[];
   onRemove: (key: keyof FilterState) => void;
   onClearAll: () => void;
 }
@@ -26,6 +32,7 @@ interface ActiveFilterChipsProps {
 export function ActiveFilterChips({
   filters,
   roles,
+  groups,
   onRemove,
   onClearAll,
 }: ActiveFilterChipsProps) {
@@ -54,8 +61,9 @@ export function ActiveFilterChips({
     });
   }
 
-  if (filters.groupsCountMin) {
-    chips.push({ key: 'groupsCountMin', label: `Min Groups: ${filters.groupsCountMin}` });
+  if (filters.groupId) {
+    const group = groups.find(g => g.id === filters.groupId);
+    chips.push({ key: 'groupId', label: `Group: ${group?.name || filters.groupId}` });
   }
 
   if (filters.hasEmail === 'true') {

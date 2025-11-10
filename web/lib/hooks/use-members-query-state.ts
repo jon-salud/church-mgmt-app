@@ -15,7 +15,7 @@ export interface MembersQueryState {
   status: string; // single status value
   role: string; // comma-separated role ids for compatibility ("" if none)
   lastAttendance: string;
-  groupsCountMin: string;
+  groupId: string;
   hasEmail: string;
   hasPhone: string;
 }
@@ -34,7 +34,7 @@ const DEFAULT_QUERY_STATE: MembersQueryState = {
   status: '',
   role: '',
   lastAttendance: '',
-  groupsCountMin: '',
+  groupId: '',
   hasEmail: '',
   hasPhone: '',
 };
@@ -57,7 +57,7 @@ export function useMembersQueryState() {
       status: searchParams.get('status') || DEFAULT_QUERY_STATE.status,
       role: searchParams.get('role') || DEFAULT_QUERY_STATE.role,
       lastAttendance: searchParams.get('lastAttendance') || DEFAULT_QUERY_STATE.lastAttendance,
-      groupsCountMin: searchParams.get('groupsCountMin') || DEFAULT_QUERY_STATE.groupsCountMin,
+      groupId: searchParams.get('groupId') || DEFAULT_QUERY_STATE.groupId,
       hasEmail: searchParams.get('hasEmail') || DEFAULT_QUERY_STATE.hasEmail,
       hasPhone: searchParams.get('hasPhone') || DEFAULT_QUERY_STATE.hasPhone,
     };
@@ -103,7 +103,7 @@ export function useMembersQueryState() {
       queryState.status !== '' ||
       queryState.role !== '' ||
       queryState.lastAttendance !== '' ||
-      queryState.groupsCountMin !== '' ||
+      queryState.groupId !== '' ||
       queryState.hasEmail !== '' ||
       queryState.hasPhone !== ''
     );

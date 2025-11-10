@@ -16,13 +16,18 @@ interface RoleOption {
   slug?: string;
 }
 
+interface GroupOption {
+  id: string;
+  name: string;
+}
+
 interface MembersHubClientProps {
   roles: RoleOption[];
   me: any;
-  // groups: Array<{ id: string; name: string }>;
+  groups: GroupOption[];
 }
 
-export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
+export function MembersHubClient({ roles, me: _me, groups }: MembersHubClientProps) {
   const { queryState, updateQuery, resetFilters, hasActiveFilters } = useMembersQueryState();
   const debouncedSearch = useDebounce(queryState.search, 300);
   const [members, setMembers] = useState<MemberSummary[]>([]);
@@ -65,7 +70,7 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
         status: queryState.status || undefined,
         role: queryState.role || undefined,
         lastAttendance: (queryState.lastAttendance as any) || undefined,
-        groupsCountMin: queryState.groupsCountMin ? Number(queryState.groupsCountMin) : undefined,
+        groupId: queryState.groupId || undefined,
         hasEmail:
           queryState.hasEmail === 'true'
             ? true
@@ -168,6 +173,7 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
             <FilterDropdown
               filters={queryState}
               roles={roles}
+              groups={groups}
               onFilterChange={updateQuery}
               onClearAll={resetFilters}
             />
@@ -187,6 +193,7 @@ export function MembersHubClient({ roles, me: _me }: MembersHubClientProps) {
           <ActiveFilterChips
             filters={queryState}
             roles={roles}
+            groups={groups}
             onRemove={handleRemoveFilter}
             onClearAll={resetFilters}
           />

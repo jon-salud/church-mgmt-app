@@ -17,7 +17,7 @@ interface FilterState {
   lastAttendance?: string;
   hasEmail?: string;
   hasPhone?: string;
-  groupsCountMin?: string;
+  groupId?: string;
 }
 
 interface RoleOption {
@@ -25,9 +25,15 @@ interface RoleOption {
   name: string;
 }
 
+interface GroupOption {
+  id: string;
+  name: string;
+}
+
 interface FilterDropdownProps {
   filters: FilterState;
   roles: RoleOption[];
+  groups: GroupOption[];
   onFilterChange: (filters: Partial<FilterState>) => void;
   onClearAll: () => void;
 }
@@ -35,6 +41,7 @@ interface FilterDropdownProps {
 export function FilterDropdown({
   filters,
   roles,
+  groups,
   onFilterChange,
   onClearAll,
 }: FilterDropdownProps) {
@@ -47,7 +54,7 @@ export function FilterDropdown({
     if (filters.lastAttendance) count++;
     if (filters.hasEmail === 'true') count++;
     if (filters.hasPhone === 'true') count++;
-    if (filters.groupsCountMin) count++;
+    if (filters.groupId) count++;
     return count;
   }, [filters]);
 
@@ -104,19 +111,20 @@ export function FilterDropdown({
         </select>
       </div>
 
-      {/* Min Groups */}
+      {/* Groups */}
       <div>
-        <label className="block text-xs font-medium mb-2">Group Involvement</label>
+        <label className="block text-xs font-medium mb-2">Groups</label>
         <select
-          value={filters.groupsCountMin || ''}
-          onChange={e => onFilterChange({ groupsCountMin: e.target.value || undefined })}
+          value={filters.groupId || ''}
+          onChange={e => onFilterChange({ groupId: e.target.value || undefined })}
           className="w-full rounded border border-border bg-background px-2 py-1.5 text-sm"
         >
-          <option value="">Any</option>
-          <option value="1">At least 1 group</option>
-          <option value="2">At least 2 groups</option>
-          <option value="3">At least 3 groups</option>
-          <option value="5">At least 5 groups</option>
+          <option value="">All</option>
+          {groups.map(g => (
+            <option key={g.id} value={g.id}>
+              {g.name}
+            </option>
+          ))}
         </select>
       </div>
 

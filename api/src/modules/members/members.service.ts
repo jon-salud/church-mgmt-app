@@ -63,11 +63,11 @@ export class MembersService {
       );
     }
 
-    // Groups count filter
-    if (query.groupsCountMin !== undefined) {
+    // Group filter
+    if (query.groupId) {
       filtered = filtered.filter((user: any) => {
-        const groupsCount = user.groups?.length || 0;
-        return groupsCount >= (query.groupsCountMin ?? 0);
+        const userGroupIds = user.groups?.map((g: any) => g.id) || [];
+        return userGroupIds.includes(query.groupId);
       });
     }
 

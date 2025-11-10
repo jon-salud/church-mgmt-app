@@ -26,7 +26,7 @@ export interface MemberListParams {
   status?: string;
   role?: string;
   lastAttendance?: '7d' | '30d' | '60d' | '90d' | 'never';
-  groupsCountMin?: number;
+  groupId?: string;
   hasEmail?: boolean;
   hasPhone?: boolean;
 }

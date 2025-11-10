@@ -8,6 +8,10 @@ import { MembersHubClient } from './members-hub-client';
  * filters, sorting, pagination via URL-synchronised state.
  */
 export default async function MembersPage() {
-  const [roles, me] = await Promise.all([api.roles(), api.currentUser()]);
-  return <MembersHubClient roles={roles} me={me} />;
+  const [roles, me, groups] = await Promise.all([
+    api.roles(),
+    api.currentUser(),
+    api.groups(),
+  ]);
+  return <MembersHubClient roles={roles} me={me} groups={groups} />;
 }
