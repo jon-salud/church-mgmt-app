@@ -70,10 +70,11 @@ See [TASKS_COMPLETED.md](./TASKS_COMPLETED.md) for full details on these sprints
    - Keyboard navigation
    - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase1-PLAN.md`
 
-3. 🔄 **Phase 2: Actionability** - In Progress
-   - Member detail drawer
-   - Edit modal
-   - Bulk actions
+3. ✅ **Phase 2: Actionability & Responsive Design** - Completed
+   - Status: Completed — PR #213, commits `a153b88`, `a06f17b`
+   - Delivered: Bulk actions (add to group, set status, delete), Select All functionality, Status column, responsive design improvements
+   - Fixed: ValidationPipe param stripping, React state race conditions, missing groups/status in API responses
+   - Tests: 408/408 passing, builds successful, ESLint clean (282 warnings pre-existing)
    - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase2-PLAN.md`
 
 4. ⏳ **Phase 3: Personalization** - Queued
