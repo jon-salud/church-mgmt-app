@@ -10,7 +10,7 @@
  * - Transaction handling for consistency
  */
 
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 
 describe('MembersService - Bulk Actions', () => {
   it('should process Add to Group bulk action', async () => {

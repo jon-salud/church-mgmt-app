@@ -37,6 +37,7 @@ export function MembersClient({ members, roles, initialQuery, me, groups }: Memb
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [showArchived, setShowArchived] = useState(false);
   const [archivedMembers, setArchivedMembers] = useState<any[]>([]);
+  const [membersState, setMembersState] = useState<any[]>(members);
   const defaultRoleId = roles.find(role => role.slug === 'member')?.id ?? roles[0]?.id ?? '';
   const isAdmin = me?.user?.roles?.some((role: any) => role.slug === 'admin') ?? false;
 
@@ -105,16 +106,35 @@ export function MembersClient({ members, roles, initialQuery, me, groups }: Memb
         }
       }
 
+      // Apply optimistic UI updates based on action
+      if (action === 'delete') {
+        setMembersState(prev => prev.filter(m => !memberIds.includes(m.id)));
+      } else if (action === 'setStatus') {
+        setMembersState(prev =>
+          prev.map(m => (memberIds.includes(m.id) ? { ...m, status: params.status } : m))
+        );
+      } else if (action === 'addToGroup') {
+        const group = groups.find(g => g.id === params.groupId);
+        if (group) {
+          setMembersState(prev =>
+            prev.map(m => {
+              if (!memberIds.includes(m.id)) return m;
+              const existing = Array.isArray(m.groups) ? m.groups : [];
+              const hasGroup = existing.some((g: any) => g.id === group.id);
+              return hasGroup
+                ? m
+                : { ...m, groups: [...existing, { id: group.id, name: group.name }] };
+            })
+          );
+        }
+      }
+
       // Clear selection after action
       setSelectedIds(new Set());
-
-      // Refresh the page to see changes
-      setTimeout(() => {
-        window.location.reload();
-      }, 500);
     } catch (error) {
       console.error(`Failed to perform bulk ${action}:`, error);
       toast.error(`Failed to ${action}. Please try again.`);
+    } finally {
       setIsProcessing(false);
     }
   };
@@ -144,7 +164,7 @@ export function MembersClient({ members, roles, initialQuery, me, groups }: Memb
   }, [showArchived, isAdmin, archivedMembers.length]);
 
   // Filter members based on archived status
-  const displayedMembers = showArchived ? [...members, ...archivedMembers] : members;
+  const displayedMembers = showArchived ? [...membersState, ...archivedMembers] : membersState;
 
   // Apply filters to displayed members
   const filteredMembers = displayedMembers.filter(member => {
@@ -226,7 +246,6 @@ export function MembersClient({ members, roles, initialQuery, me, groups }: Memb
       {isAdmin && (
         <BulkActionBar
           members={filteredMembers}
-          roles={roles}
           groups={groups}
           selectedIds={selectedIds}
           onSelectAll={toggleSelectAll}

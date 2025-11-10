@@ -31,35 +31,38 @@ export function ActiveFilterChips({
 
   return (
     <div className="flex flex-wrap items-center gap-2" role="region" aria-label="Active filters">
-      {selectedRoles.map(role => (
-        <div
-          key={role!.id}
-          className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm"
-        >
-          <span>{role!.name}</span>
-          <button
-            type="button"
-            onClick={() => onRemove('role', role!.id)}
-            className="hover:bg-primary/20 rounded-full p-0.5"
-            aria-label={`Remove ${role!.name} filter`}
+      {selectedRoles.map(role => {
+        if (!role) return null;
+        return (
+          <div
+            key={role.id}
+            className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm"
           >
-            <svg
-              className="h-3 w-3"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
+            <span>{role.name}</span>
+            <button
+              type="button"
+              onClick={() => onRemove('role', role.id)}
+              className="hover:bg-primary/20 rounded-full p-0.5"
+              aria-label={`Remove ${role.name} filter`}
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-        </div>
-      ))}
+              <svg
+                className="h-3 w-3"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        );
+      })}
 
       {statusLabel && (
         <div className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-3 py-1 text-sm">

@@ -25,11 +25,10 @@ export class UsersService {
 
   async list(q?: string) {
     const users = await this.repo.listUsers(q);
-    return (users as any[]).map(user => {
-      const base = this.toUserResponse(user as any);
-      // Preserve repository-enriched fields (e.g., groups) if present
-      if ((user as any).groups) {
-        return { ...base, groups: (user as any).groups };
+    return users.map(user => {
+      const base = this.toUserResponse(user);
+      if ((user as unknown as { groups?: unknown[] }).groups) {
+        return { ...base, groups: (user as unknown as { groups: unknown[] }).groups };
       }
       return base;
     });

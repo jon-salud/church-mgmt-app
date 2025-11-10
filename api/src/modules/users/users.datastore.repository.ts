@@ -8,16 +8,33 @@ import { UserId } from '../../domain/value-objects/UserId';
 import { Email } from '../../domain/value-objects/Email';
 import { ChurchId } from '../../domain/value-objects/ChurchId';
 
+type DataStoreRole = { churchId: string; role?: string; roleId?: string };
+type DataStoreUserProfile = {
+  id: string;
+  primaryEmail: string;
+  roles: DataStoreRole[];
+  profile: any;
+  status?: string;
+  createdAt: string;
+  lastLoginAt?: string;
+  deletedAt?: string;
+  themePreference?: string;
+  themeDarkMode?: boolean;
+  fontSizePreference?: string;
+  groups?: unknown[];
+};
+
 @Injectable()
 export class UsersDataStoreRepository implements IUsersRepository {
   constructor(@Inject(DATA_STORE) private readonly db: DataStore) {}
 
   async listUsers(query?: string): Promise<User[]> {
     const users = await this.db.listUsers(query);
-    return users.map((profile: any) => {
+    return users.map((profile: DataStoreUserProfile) => {
       const u = this.mapToUser(profile);
       if (profile && profile.groups) {
-        (u as any).groups = profile.groups;
+        // Attach groups in a typed-safe way via intersection
+        return Object.assign(u as User & { groups?: unknown[] }, { groups: profile.groups });
       }
       return u;
     });
@@ -72,7 +89,7 @@ export class UsersDataStoreRepository implements IUsersRepository {
     return this.db.bulkCreateInvitations(churchId.value, emails, roleId, actorUserId.value, type);
   }
 
-  private mapToUser = (profile: any): User => {
+  private mapToUser = (profile: DataStoreUserProfile): User => {
     if (
       !profile.roles ||
       !Array.isArray(profile.roles) ||
@@ -83,14 +100,24 @@ export class UsersDataStoreRepository implements IUsersRepository {
         `Cannot determine churchId for user profile with id=${profile.id}. profile.roles: ${JSON.stringify(profile.roles)}`
       );
     }
+    const churchId = ChurchId.create(profile.roles[0].churchId);
+    const roles = (profile.roles || [])
+      .filter(r => !!r.roleId)
+      .map(r => ({ churchId: r.churchId, roleId: r.roleId! }));
+    const safeRoles =
+      roles.length > 0
+        ? roles
+        : (User.createDefaultRoles(churchId) as { churchId: string; roleId: string }[]);
+    const status: 'active' | 'invited' = profile.status === 'invited' ? 'invited' : 'active';
+
     return User.from({
       id: UserId.create(profile.id),
       primaryEmail: Email.create(profile.primaryEmail),
-      churchId: ChurchId.create(profile.roles[0].churchId),
-      status: profile.status || 'active',
+      churchId,
+      status,
       createdAt: new Date(profile.createdAt),
       lastLoginAt: profile.lastLoginAt ? new Date(profile.lastLoginAt) : undefined,
-      roles: profile.roles,
+      roles: safeRoles,
       profile: profile.profile,
       deletedAt: profile.deletedAt ? new Date(profile.deletedAt) : undefined,
       themePreference: profile.themePreference,

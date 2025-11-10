@@ -45,14 +45,7 @@ export class UsersController {
   @ApiQuery({ name: 'q', required: false, description: 'Optional search query' })
   @ApiOkResponse(arrayOfObjectsResponse)
   async list(@Query('q') q?: string) {
-    const result = await this.usersService.list(q);
-    try {
-      const sample = result[0] ? { id: result[0].id, status: result[0].status } : null;
-      this.logger.debug(`[Users List] count=${result.length} sample=${JSON.stringify(sample)}`);
-    } catch {
-      // Ignore logging errors
-    }
-    return result;
+    return this.usersService.list(q);
   }
 
   @Get(':id')
@@ -124,10 +117,7 @@ export class UsersController {
   @ApiCreatedResponse(objectResponse)
   async bulkAction(@Body() dto: BulkActionDto, @Req() req: any) {
     this.ensureAdmin(req);
-    this.logger.debug(`[Bulk Action] Received request: ${JSON.stringify(dto, null, 2)}`);
-    const result = await this.usersService.bulkAction(dto, req.user.id);
-    this.logger.debug(`[Bulk Action] Result: ${JSON.stringify(result, null, 2)}`);
-    return result;
+    return this.usersService.bulkAction(dto, req.user.id);
   }
 
   @Get('me/theme')

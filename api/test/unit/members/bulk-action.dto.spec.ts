@@ -10,7 +10,6 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import { validate } from 'class-validator';
 
 describe('BulkActionDto Validation', () => {
   it('should validate memberIds array', async () => {

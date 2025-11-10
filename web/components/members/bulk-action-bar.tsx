@@ -13,12 +13,6 @@ import { useConfirm } from '@/lib/hooks/use-confirm';
 import { ConfirmDialog } from '@/components/ui-flowbite/modal';
 import { ChevronDown } from 'lucide-react';
 
-type RoleOption = {
-  id: string;
-  name: string;
-  slug?: string;
-};
-
 type GroupOption = {
   id: string;
   name: string;
@@ -26,7 +20,6 @@ type GroupOption = {
 
 type BulkActionBarProps = {
   members: Array<{ id: string; profile: { firstName: string; lastName: string } }>;
-  roles: RoleOption[];
   groups: GroupOption[];
   selectedIds: Set<string>;
   onSelectAll: () => void;
@@ -36,7 +29,6 @@ type BulkActionBarProps = {
 
 export function BulkActionBar({
   members,
-  roles: _roles,
   groups,
   selectedIds,
   onSelectAll,
@@ -44,7 +36,6 @@ export function BulkActionBar({
   isProcessing,
 }: BulkActionBarProps) {
   const [confirm, confirmState] = useConfirm();
-  const [_actionType, setActionType] = useState<'addToGroup' | 'setStatus' | 'delete' | null>(null); // eslint-disable-line @typescript-eslint/no-unused-vars
   const [selectedGroupId, setSelectedGroupId] = useState<string>('');
   const [selectedStatus, setSelectedStatus] = useState<'active' | 'invited' | 'inactive'>('active');
 
@@ -67,8 +58,6 @@ export function BulkActionBar({
     action: 'addToGroup' | 'setStatus' | 'delete',
     actionParams?: { groupId?: string; status?: 'active' | 'invited' | 'inactive' }
   ) => {
-    setActionType(action);
-
     let title = '';
     let message = '';
     let confirmText = 'Confirm';
@@ -106,8 +95,6 @@ export function BulkActionBar({
     if (confirmed) {
       await onAction(action, finalParams);
     }
-
-    setActionType(null);
   };
 
   if (!hasSelection) {
