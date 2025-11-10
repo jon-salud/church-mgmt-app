@@ -25,15 +25,48 @@ test.describe('Members Hub Phase 2', () => {
     await page.waitForLoadState('networkidle');
   });
 
-  test('should filter members by role and status', async ({ page: _page }) => {
-    // TODO: Implement test
-    // 1. Open filter dropdown
-    // 2. Select role checkbox
-    // 3. Select status radio
-    // 4. Click Apply
-    // 5. Verify active filter chips appear
-    // 6. Verify member list updates (URL params)
-    expect(true).toBe(true);
+  test('should filter members by role and status', async ({ page }) => {
+    // Navigate to members hub
+    await page.goto('http://localhost:3000/members');
+    await page.waitForLoadState('networkidle');
+
+    // Verify headline present
+    await expect(page.getByRole('heading', { name: 'Members Hub' })).toBeVisible();
+
+    // Current UI uses fixed sidebar with selects in order: Status (0), Role (1)
+    const selects = page.locator('select');
+
+    // Set Status = active
+    await selects
+      .nth(0)
+      .selectOption({ value: 'active' })
+      .catch(() => {});
+
+    // Set Role = leader (common mock role); fall back to first role if not available
+    const roleSelect = selects.nth(1);
+    const hasLeader = await roleSelect.locator('option[value="leader"]').count();
+    if (hasLeader > 0) {
+      await roleSelect.selectOption({ value: 'leader' });
+    } else {
+      // Select first non-empty option
+      const firstOptionValue = await roleSelect
+        .locator('option:not([value=""])')
+        .first()
+        .getAttribute('value');
+      if (firstOptionValue) await roleSelect.selectOption({ value: firstOptionValue });
+    }
+
+    // Wait for network to settle after filters
+    await page.waitForLoadState('networkidle');
+
+    // URL should reflect applied filters
+    const url = page.url();
+    expect(url).toContain('status=');
+    expect(url).toContain('role=');
+
+    // Table should show at least one row
+    const rows = page.locator('table tbody tr');
+    await expect(rows.first()).toBeVisible();
   });
 
   test('should remove individual filter chip', async ({ page: _page }) => {

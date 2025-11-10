@@ -12,7 +12,8 @@ test.describe('Members Hub Discoverability', () => {
           value: 'demo-admin',
           domain: 'localhost',
           path: '/',
-          expires: Date.now() + 1000 * 60 * 60,
+          // Playwright expects expires as a unix timestamp in SECONDS, not ms
+          expires: Math.floor(Date.now() / 1000) + 60 * 60,
           httpOnly: false,
           secure: false,
           sameSite: 'Lax',
