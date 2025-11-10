@@ -1,5 +1,4 @@
-import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsUUID, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
+import { IsArray, IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export enum BulkActionType {
   ADD_TO_GROUP = 'addToGroup',
@@ -13,7 +12,7 @@ export enum MemberStatus {
 }
 
 class AddToGroupParams {
-  @IsUUID()
+  @IsString()
   @IsNotEmpty()
   groupId!: string;
 }
@@ -30,14 +29,14 @@ export class BulkActionDto {
   action!: BulkActionType;
 
   @IsArray()
-  @IsUUID('4', { each: true })
+  @IsString({ each: true })
   @IsNotEmpty()
   memberIds!: string[];
 
+  // Keep params as a plain object so ValidationPipe (whitelist) doesn't strip nested fields.
+  // We validate required keys dynamically based on `action` in the service.
   @IsOptional()
-  @ValidateNested()
-  @Type(() => Object)
-  params?: AddToGroupParams | SetStatusParams | Record<string, never>;
+  params?: AddToGroupParams | SetStatusParams | Record<string, any>;
 }
 
 export interface BulkActionResult {

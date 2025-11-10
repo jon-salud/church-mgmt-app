@@ -14,7 +14,13 @@ export class UsersDataStoreRepository implements IUsersRepository {
 
   async listUsers(query?: string): Promise<User[]> {
     const users = await this.db.listUsers(query);
-    return users.map(this.mapToUser);
+    return users.map((profile: any) => {
+      const u = this.mapToUser(profile);
+      if (profile && profile.groups) {
+        (u as any).groups = profile.groups;
+      }
+      return u;
+    });
   }
 
   async getUserProfile(id: UserId): Promise<User | null> {

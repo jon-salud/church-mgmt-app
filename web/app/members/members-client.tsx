@@ -77,16 +77,16 @@ export function MembersClient({ members, roles, initialQuery, me, groups }: Memb
     setSelectedIds(newSelected);
   };
 
-  const handleBulkAction = async (action: 'addToGroup' | 'setStatus' | 'delete', _params: any) => {
+  const handleBulkAction = async (action: 'addToGroup' | 'setStatus' | 'delete', params: any) => {
     setIsProcessing(true);
     try {
       const memberIds = Array.from(selectedIds);
       let result;
 
       if (action === 'addToGroup') {
-        result = await clientApi.bulkAddMembersToGroup(memberIds, _params.groupId);
+        result = await clientApi.bulkAddMembersToGroup(memberIds, params.groupId);
       } else if (action === 'setStatus') {
-        result = await clientApi.bulkSetMemberStatus(memberIds, _params.status);
+        result = await clientApi.bulkSetMemberStatus(memberIds, params.status);
       } else if (action === 'delete') {
         result = await clientApi.bulkDeleteMembers(memberIds);
       }
@@ -109,11 +109,12 @@ export function MembersClient({ members, roles, initialQuery, me, groups }: Memb
       setSelectedIds(new Set());
 
       // Refresh the page to see changes
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
     } catch (error) {
       console.error(`Failed to perform bulk ${action}:`, error);
       toast.error(`Failed to ${action}. Please try again.`);
-    } finally {
       setIsProcessing(false);
     }
   };
@@ -246,7 +247,13 @@ export function MembersClient({ members, roles, initialQuery, me, groups }: Memb
             <tr>
               {isAdmin && (
                 <th scope="col" className="px-4 py-3 w-12">
-                  <span className="sr-only">Select</span>
+                  <Checkbox
+                    checked={
+                      selectedIds.size === filteredMembers.length && filteredMembers.length > 0
+                    }
+                    onCheckedChange={toggleSelectAll}
+                    aria-label="Select all members"
+                  />
                 </th>
               )}
               <th scope="col" className="px-4 py-3">
@@ -260,6 +267,9 @@ export function MembersClient({ members, roles, initialQuery, me, groups }: Memb
               </th>
               <th scope="col" className="px-4 py-3">
                 Groups
+              </th>
+              <th scope="col" className="px-4 py-3">
+                Status
               </th>
               {showArchived && (
                 <th scope="col" className="px-4 py-3">
@@ -299,6 +309,9 @@ export function MembersClient({ members, roles, initialQuery, me, groups }: Memb
                 </td>
                 <td className="px-4 py-3 text-muted-foreground">
                   {member.groups?.map((g: any) => g.name).join(', ') || '—'}
+                </td>
+                <td className="px-4 py-3 text-muted-foreground capitalize">
+                  {member.status || '—'}
                 </td>
                 {showArchived && (
                   <td className="px-4 py-3">

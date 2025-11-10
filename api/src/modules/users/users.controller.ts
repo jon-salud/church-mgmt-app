@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Logger,
   Param,
   Patch,
   Post,
@@ -35,14 +36,23 @@ import { SuccessResponseDto } from '../../common/dto/success-response.dto';
 @ApiBearerAuth()
 @Controller('users')
 export class UsersController {
+  private readonly logger = new Logger(UsersController.name);
+
   constructor(private usersService: UsersService) {}
 
   @Get()
   @ApiOperation({ summary: 'List users' })
   @ApiQuery({ name: 'q', required: false, description: 'Optional search query' })
   @ApiOkResponse(arrayOfObjectsResponse)
-  list(@Query('q') q?: string) {
-    return this.usersService.list(q);
+  async list(@Query('q') q?: string) {
+    const result = await this.usersService.list(q);
+    try {
+      const sample = result[0] ? { id: result[0].id, status: result[0].status } : null;
+      this.logger.debug(`[Users List] count=${result.length} sample=${JSON.stringify(sample)}`);
+    } catch {
+      // Ignore logging errors
+    }
+    return result;
   }
 
   @Get(':id')
@@ -112,9 +122,12 @@ export class UsersController {
   @Post('bulk-action')
   @ApiOperation({ summary: 'Perform bulk action on multiple members' })
   @ApiCreatedResponse(objectResponse)
-  bulkAction(@Body() dto: BulkActionDto, @Req() req: any) {
+  async bulkAction(@Body() dto: BulkActionDto, @Req() req: any) {
     this.ensureAdmin(req);
-    return this.usersService.bulkAction(dto, req.user.id);
+    this.logger.debug(`[Bulk Action] Received request: ${JSON.stringify(dto, null, 2)}`);
+    const result = await this.usersService.bulkAction(dto, req.user.id);
+    this.logger.debug(`[Bulk Action] Result: ${JSON.stringify(result, null, 2)}`);
+    return result;
   }
 
   @Get('me/theme')

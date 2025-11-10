@@ -26,7 +26,7 @@ type GroupOption = {
 
 type BulkActionBarProps = {
   members: Array<{ id: string; profile: { firstName: string; lastName: string } }>;
-  roles: RoleOption[]; // eslint-disable-line @typescript-eslint/no-unused-vars
+  roles: RoleOption[];
   groups: GroupOption[];
   selectedIds: Set<string>;
   onSelectAll: () => void;
@@ -36,7 +36,7 @@ type BulkActionBarProps = {
 
 export function BulkActionBar({
   members,
-  roles: _roles, // eslint-disable-line @typescript-eslint/no-unused-vars
+  roles: _roles,
   groups,
   selectedIds,
   onSelectAll,
@@ -63,28 +63,37 @@ export function BulkActionBar({
     return names.join(', ');
   };
 
-  const handleBulkAction = async (action: 'addToGroup' | 'setStatus' | 'delete') => {
+  const handleBulkAction = async (
+    action: 'addToGroup' | 'setStatus' | 'delete',
+    actionParams?: { groupId?: string; status?: 'active' | 'invited' | 'inactive' }
+  ) => {
     setActionType(action);
 
     let title = '';
     let message = '';
     let confirmText = 'Confirm';
     let variant: 'info' | 'danger' | 'warning' = 'info';
+    // Compute params eagerly to avoid relying on async state updates
+    let finalParams: any = {};
 
     if (action === 'addToGroup') {
-      if (!selectedGroupId) {
+      const groupId = actionParams?.groupId || selectedGroupId;
+      if (!groupId) {
         return; // No group selected
       }
-      const group = groups.find(g => g.id === selectedGroupId);
+      const group = groups.find(g => g.id === groupId);
       title = 'Add Members to Group';
       message = `Add ${selectedIds.size} member(s) to "${group?.name}"?\n\n${getSelectedMemberNames()}`;
       confirmText = 'Add to Group';
       variant = 'info';
+      finalParams = { groupId };
     } else if (action === 'setStatus') {
+      const status = actionParams?.status || selectedStatus;
       title = 'Set Member Status';
-      message = `Set status to "${selectedStatus}" for ${selectedIds.size} member(s)?\n\n${getSelectedMemberNames()}`;
+      message = `Set status to "${status}" for ${selectedIds.size} member(s)?\n\n${getSelectedMemberNames()}`;
       confirmText = 'Set Status';
       variant = 'warning';
+      finalParams = { status };
     } else if (action === 'delete') {
       title = 'Delete Members';
       message = `Are you sure you want to delete ${selectedIds.size} member(s)? This action cannot be undone.\n\n${getSelectedMemberNames()}`;
@@ -95,14 +104,7 @@ export function BulkActionBar({
     const confirmed = await confirm({ title, message, confirmText, cancelText: 'Cancel', variant });
 
     if (confirmed) {
-      let params: any = {};
-      if (action === 'addToGroup') {
-        params = { groupId: selectedGroupId };
-      } else if (action === 'setStatus') {
-        params = { status: selectedStatus };
-      }
-
-      await onAction(action, params);
+      await onAction(action, finalParams);
     }
 
     setActionType(null);
@@ -142,7 +144,7 @@ export function BulkActionBar({
                     key={group.id}
                     onClick={() => {
                       setSelectedGroupId(group.id);
-                      handleBulkAction('addToGroup');
+                      handleBulkAction('addToGroup', { groupId: group.id });
                     }}
                   >
                     {group.name}
@@ -163,7 +165,7 @@ export function BulkActionBar({
               <DropdownMenuItem
                 onClick={() => {
                   setSelectedStatus('active');
-                  handleBulkAction('setStatus');
+                  handleBulkAction('setStatus', { status: 'active' });
                 }}
               >
                 Active
@@ -171,7 +173,7 @@ export function BulkActionBar({
               <DropdownMenuItem
                 onClick={() => {
                   setSelectedStatus('invited');
-                  handleBulkAction('setStatus');
+                  handleBulkAction('setStatus', { status: 'invited' });
                 }}
               >
                 Invited
@@ -179,7 +181,7 @@ export function BulkActionBar({
               <DropdownMenuItem
                 onClick={() => {
                   setSelectedStatus('inactive');
-                  handleBulkAction('setStatus');
+                  handleBulkAction('setStatus', { status: 'inactive' });
                 }}
               >
                 Inactive

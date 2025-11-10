@@ -70,7 +70,7 @@ See [TASKS_COMPLETED.md](./TASKS_COMPLETED.md) for full details on these sprints
    - Keyboard navigation
    - Plan: `docs/sprints/members-hub-mvp/members-hub-mvp-phase1-PLAN.md`
 
-3. ⏳ **Phase 2: Actionability** - Queued
+3. 🔄 **Phase 2: Actionability** - In Progress
    - Member detail drawer
    - Edit modal
    - Bulk actions
