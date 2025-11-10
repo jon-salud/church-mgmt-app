@@ -101,13 +101,17 @@ export class UsersDataStoreRepository implements IUsersRepository {
       );
     }
     const churchId = ChurchId.create(profile.roles[0].churchId);
-    const roles = (profile.roles || [])
+    const rolesWithNames = (profile.roles || [])
       .filter(r => !!r.roleId)
-      .map(r => ({ churchId: r.churchId, roleId: r.roleId! }));
-    const safeRoles =
-      roles.length > 0
-        ? roles
-        : (User.createDefaultRoles(churchId) as { churchId: string; roleId: string }[]);
+      .map(r => ({ churchId: r.churchId, roleId: r.roleId!, role: r.role }));
+    const safeRolesWithNames =
+      rolesWithNames.length > 0
+        ? rolesWithNames
+        : (User.createDefaultRoles(churchId).map(r => ({ ...r, role: 'Member' })) as {
+            churchId: string;
+            roleId: string;
+            role: string;
+          }[]);
     const status: 'active' | 'invited' = profile.status === 'invited' ? 'invited' : 'active';
 
     return User.from({
@@ -117,7 +121,8 @@ export class UsersDataStoreRepository implements IUsersRepository {
       status,
       createdAt: new Date(profile.createdAt),
       lastLoginAt: profile.lastLoginAt ? new Date(profile.lastLoginAt) : undefined,
-      roles: safeRoles,
+      // Preserve role name in API shape while satisfying domain typing
+      roles: safeRolesWithNames as unknown as { churchId: string; roleId: string }[],
       profile: profile.profile,
       deletedAt: profile.deletedAt ? new Date(profile.deletedAt) : undefined,
       themePreference: profile.themePreference,
