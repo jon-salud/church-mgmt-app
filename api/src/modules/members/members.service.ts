@@ -71,6 +71,14 @@ export class MembersService {
       });
     }
 
+    // Groups count minimum filter
+    if (query.groupsCountMin !== undefined) {
+      filtered = filtered.filter((user: any) => {
+        const groupsCount = user.groups?.length || 0;
+        return groupsCount >= query.groupsCountMin!;
+      });
+    }
+
     // Last attendance filter (bucket-based)
     if (query.lastAttendance) {
       const now = new Date();
@@ -213,6 +221,7 @@ export class MembersService {
     if (query.groupId) filters.groupId = query.groupId;
     if (query.hasEmail !== undefined) filters.hasEmail = query.hasEmail;
     if (query.hasPhone !== undefined) filters.hasPhone = query.hasPhone;
+    if (query.groupsCountMin !== undefined) filters.groupsCountMin = query.groupsCountMin;
 
     return filters;
   }

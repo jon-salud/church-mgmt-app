@@ -75,4 +75,11 @@ export class MemberListQueryDto {
   })
   @IsBoolean()
   hasPhone?: boolean;
+
+  @ApiPropertyOptional({ description: 'Minimum number of groups', minimum: 0 })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  groupsCountMin?: number;
 }
