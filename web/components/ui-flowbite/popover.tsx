@@ -16,9 +16,6 @@ import { type ReactNode, cloneElement, isValidElement, useCallback } from 'react
 import { Portal } from './portal';
 import { cn } from '@/lib/utils';
 
-// Type alias for native DOM MouseEvent
-type DOMMouseEvent = MouseEvent;
-
 interface PopoverProps {
   /** The trigger element that opens the popover */
   trigger: ReactNode;
@@ -81,7 +78,8 @@ export function Popover({
   const click = useClick(context);
 
   // Memoize the outsidePress handler to prevent infinite re-renders
-  const handleOutsidePress = useCallback((event: DOMMouseEvent) => {
+  // eslint-disable-next-line no-undef
+  const handleOutsidePress = useCallback((event: MouseEvent) => {
     const target = event.target as HTMLElement;
     // Allow select elements and their interactions
     if (target.tagName === 'SELECT') {
