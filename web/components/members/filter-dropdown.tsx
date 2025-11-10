@@ -73,18 +73,35 @@ export function FilterDropdown({
       {/* Role */}
       <div>
         <label className="block text-xs font-medium mb-2">Role</label>
-        <select
-          value={filters.role || ''}
-          onChange={e => onFilterChange({ role: e.target.value || undefined })}
-          className="w-full rounded border border-border bg-background px-2 py-1.5 text-sm"
-        >
-          <option value="">All</option>
-          {roles.map(r => (
-            <option key={r.id} value={r.name.toLowerCase()}>
-              {r.name}
-            </option>
-          ))}
-        </select>
+        <div className="space-y-2 max-h-32 overflow-y-auto rounded border border-border bg-background p-2">
+          {roles.length === 0 ? (
+            <div className="text-xs text-muted-foreground">No roles available</div>
+          ) : (
+            roles.map(r => {
+              const roleValue = r.name.toLowerCase();
+              const selectedRoles = filters.role?.split(',').map(v => v.trim()) || [];
+              const isChecked = selectedRoles.includes(roleValue);
+              
+              return (
+                <label key={r.id} className="flex items-center gap-2 hover:bg-accent/50 px-1 py-0.5 rounded cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={e => {
+                      const currentRoles = filters.role?.split(',').map(v => v.trim()).filter(Boolean) || [];
+                      const newRoles = e.target.checked
+                        ? [...currentRoles, roleValue]
+                        : currentRoles.filter(v => v !== roleValue);
+                      onFilterChange({ role: newRoles.length > 0 ? newRoles.join(',') : undefined });
+                    }}
+                    className="rounded border-border"
+                  />
+                  <span className="text-sm">{r.name}</span>
+                </label>
+              );
+            })
+          )}
+        </div>
       </div>
 
       {/* Last Attendance */}
